@@ -49,6 +49,9 @@ import { normalizeSpawnSessionResult } from './_shared';
 import { isAccountSettingsScopeChangedDuringSpawnPreparationError } from '@/sync/engine/settings/accountSettingsSpawnPreparationError';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { readMachineControlTargetForSession } from './sessionMachineTarget';
+import { machineDirectSessionCandidateDelete } from './machineDirectSessions';
+import { readDirectSessionLink } from '../domains/session/directSessions/readDirectSessionLink';
+import { log } from '@/log';
 import { stopSessionUsingCanonicalStrategy } from './sessionStopStrategy';
 import type { Metadata } from '../domains/state/storageTypes';
 import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
@@ -961,10 +964,46 @@ export async function sessionDelete(sessionId: string): Promise<{ success: boole
     });
 }
 
+/**
+ * A session linked to a provider session (direct storage) keeps its conversation on the machine.
+ * Deleting the session deletes that provider session first, so the machine and the list stay in
+ * sync; when the machine cannot confirm the deletion, the Happier session is kept.
+ */
+async function deleteLinkedProviderSession(
+    sessionId: string,
+    serverId: string | null,
+): Promise<{ success: true } | { success: false; message: string }> {
+    const link = readDirectSessionLink(storage.getState().sessions[sessionId]?.metadata);
+    if (!link) return { success: true };
+    try {
+        const response = await machineDirectSessionCandidateDelete({
+            machineId: link.machineId,
+            providerId: link.providerId,
+            source: link.source,
+            remoteSessionId: link.remoteSessionId,
+        }, { serverId });
+        if (response.ok) return { success: true };
+        // A provider that cannot delete, or no longer resolves, its copy keeps the Happier-only delete.
+        if (response.errorCode === 'provider_unavailable' || response.errorCode === 'invalid_request') {
+            log.log(`[sessionDelete] kept the provider session of ${sessionId}: ${response.errorCode}: ${response.error}`);
+            return { success: true };
+        }
+        return { success: false, message: response.error };
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Failed to delete the provider session',
+        };
+    }
+}
+
 export async function sessionDeleteWithServerScope(
     sessionId: string,
     opts?: Readonly<{ serverId?: string | null }>,
 ): Promise<{ success: boolean; message?: string }> {
+    const providerDeletion = await deleteLinkedProviderSession(sessionId, opts?.serverId ?? null);
+    if (!providerDeletion.success) return { success: false, message: providerDeletion.message };
+
     const context = await resolveServerScopedSessionContext({ serverId: opts?.serverId ?? null });
     try {
         if (context.scope === 'active') {
