@@ -8,6 +8,7 @@ import {
 
 import { createPollingDirectSessionFollowLease } from '@/api/directSessions/backgroundFollow/createPollingDirectSessionFollowLease';
 import {
+  DirectSessionsProviderUnavailableError,
   mergeDirectSessionEnvironmentVariables,
   type DirectSessionProviderOps,
 } from '@/backends/directSessions/providerOps';
@@ -19,6 +20,7 @@ import { pageCodexTranscript } from './pageCodexTranscript';
 import { readAfterCodexTranscript } from './readAfterCodexTranscript';
 import { resolveCodexHomeEntriesForDirectSessionsSource } from './resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveCodexAppServerProcessEnv } from '../appServer/resolveCodexAppServerProcessEnv';
+import { deleteCodexThreadViaAppServer } from '../appServer/session/deleteCodexThreadViaAppServer';
 import {
   CODEX_APP_SERVER_DAEMON_PROXY_TRANSPORT,
   CODEX_APP_SERVER_TRANSPORT_ENV_KEY,
@@ -68,7 +70,24 @@ function resolveCodexTakeoverSourceAuth(params: Readonly<{
 export const codexDirectSessionProviderOps: DirectSessionProviderOps = {
   listCandidates: async ({ source, cursor, limit, searchTerm, searchMode }) => {
     const res = await listCodexSessionCandidates({ source, activeServerDir: configuration.activeServerDir, cursor, limit, searchTerm, searchMode });
-    return { candidates: res.candidates, nextCursor: res.nextCursor ?? null, ...(res.searchIncomplete ? { searchIncomplete: true } : {}) };
+    return {
+      candidates: res.candidates,
+      nextCursor: res.nextCursor ?? null,
+      ...(res.searchIncomplete ? { searchIncomplete: true } : {}),
+      capabilities: { deleteCandidate: true },
+    };
+  },
+  deleteCandidate: async ({ source, remoteSessionId }) => {
+    const homeEntries = await resolveCodexHomeEntriesForDirectSessionsSource({
+      source,
+      activeServerDir: configuration.activeServerDir,
+      env: process.env,
+    });
+    const homeEntry = homeEntries.length === 1 ? homeEntries[0] : undefined;
+    if (!homeEntry) {
+      throw new DirectSessionsProviderUnavailableError('Codex session deletion needs exactly one Codex home for this source.');
+    }
+    await deleteCodexThreadViaAppServer({ homeEntry, env: process.env, threadId: remoteSessionId });
   },
   getActivity: async ({ source, remoteSessionId }) => {
     const res = await getCodexDirectSessionActivity({ source, activeServerDir: configuration.activeServerDir, remoteSessionId });

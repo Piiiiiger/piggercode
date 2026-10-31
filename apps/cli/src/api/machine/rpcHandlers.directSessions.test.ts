@@ -1,4 +1,4 @@
-import { appendFile, mkdir, mkdtemp, realpath, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -1457,6 +1457,97 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
       expect(res.runnerActive).toBe(false);
       expect(res.canForceStop).toBe(true);
       expect(res.trustedPid).toBe(process.pid);
+    } finally {
+      await rm(markerPath, { force: true });
+    }
+  });
+
+  async function setUpCodexDeleteFixture(prefix: string) {
+    const root = await mkdtemp(join(tmpdir(), prefix));
+    const codexHome = join(root, '.codex');
+    const requestsPath = join(root, 'app-server-requests.jsonl');
+    await mkdir(codexHome, { recursive: true });
+    const fakeAppServerPath = await writeFakeCodexAppServerThreadListScript({
+      dir: root,
+      nonArchivedThreads: [{ id: 'remote_codex_delete', updatedAt: Date.now() / 1000, cwd: '/tmp' }],
+      allowedCodexHomes: [codexHome],
+      requestsPath,
+    });
+    vi.stubEnv('CODEX_HOME', codexHome);
+    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServerPath);
+
+    const registered = new Map<string, (params: any) => Promise<any>>();
+    const rpcHandlerManager = {
+      registerHandler: (method: string, handler: (params: any) => Promise<any>) => {
+        registered.set(method, handler);
+      },
+    } as any;
+    registerMachineDirectSessionsRpcHandlers({ rpcHandlerManager });
+
+    const readRequests = async (): Promise<Array<{ method?: string; params?: unknown }>> => {
+      const raw = await readFile(requestsPath, 'utf8').catch(() => '');
+      return raw.split('\n').filter((line) => line.trim()).map((line) => JSON.parse(line));
+    };
+    return { registered, readRequests };
+  }
+
+  it('advertises candidate deletion when listing codex sessions', async () => {
+    const { registered } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-capability-');
+
+    const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSIONS_CANDIDATES_LIST)!({
+      machineId: 'm1',
+      providerId: 'codex',
+      source: { kind: 'codexHome', home: 'user' },
+      limit: 10,
+    });
+
+    expect(res.ok).toBe(true);
+    expect(res.candidates.map((c: any) => c.remoteSessionId)).toEqual(['remote_codex_delete']);
+    expect(res.capabilities).toEqual({ deleteCandidate: true });
+  });
+
+  it('deletes a codex candidate through the app-server thread/delete request in its codex home', async () => {
+    const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-');
+
+    const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE)!({
+      machineId: 'm1',
+      providerId: 'codex',
+      remoteSessionId: 'remote_codex_delete',
+      source: { kind: 'codexHome', home: 'user' },
+    });
+
+    expect(res).toEqual({ ok: true, deleted: true });
+    expect(await readRequests()).toContainEqual(expect.objectContaining({
+      method: 'thread/delete',
+      params: { threadId: 'remote_codex_delete' },
+    }));
+  });
+
+  it('refuses to delete a provider session that a live Happier runner still owns', async () => {
+    const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-owned-');
+    const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');
+    const markerPath = join(markerDir, `pid-${process.pid}.json`);
+    await mkdir(markerDir, { recursive: true });
+    await writeFile(markerPath, JSON.stringify({
+      pid: process.pid,
+      happySessionId: 'sess_running_codex',
+      happyHomeDir: '/tmp/happier-test-home',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      flavor: 'codex',
+      metadata: { flavor: 'codex', codexSessionId: 'remote_codex_delete' },
+    }), 'utf8');
+
+    try {
+      const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE)!({
+        machineId: 'm1',
+        providerId: 'codex',
+        remoteSessionId: 'remote_codex_delete',
+        source: { kind: 'codexHome', home: 'user' },
+      });
+
+      expect(res).toEqual(expect.objectContaining({ ok: false, errorCode: 'provider_unavailable' }));
+      expect((await readRequests()).some((request) => request.method === 'thread/delete')).toBe(false);
     } finally {
       await rm(markerPath, { force: true });
     }

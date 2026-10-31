@@ -121,6 +121,11 @@ export async function writeFakeCodexAppServerThreadListScript(params: Readonly<{
             '    process.stdout.write(JSON.stringify({ id: msg.id, result: { data: loadedThreadIds } }) + "\\n");',
             '    continue;',
             '  }',
+            // Codex 0.166.0 ThreadDeleteParams { threadId } -> ThreadDeleteResponse {}.
+            '  if (msg.method === "thread/delete") {',
+            '    process.stdout.write(JSON.stringify({ id: msg.id, result: {} }) + "\\n");',
+            '    continue;',
+            '  }',
             '  process.stdout.write(JSON.stringify({ id: msg.id, error: { code: -32601, message: "method not found" } }) + "\\n");',
             '}',
         ],

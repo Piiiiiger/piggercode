@@ -380,6 +380,22 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
       return err('invalid_request', validatedSource.error) satisfies DirectSessionCandidateDeleteResponse;
     }
 
+    // Deleting the provider transcript under a live Happier runner would break that session.
+    const liveMarkers = (await listSessionMarkers().catch(() => []))
+      .filter((marker) => Number.isFinite(marker.pid) && marker.pid > 0 && isPidAlive(marker.pid));
+    const owner = findTrustedDirectSessionOwner({
+      markers: liveMarkers,
+      providerId: parsed.data.providerId,
+      remoteSessionId: parsed.data.remoteSessionId,
+      isPidAlive,
+    });
+    if (owner) {
+      return err(
+        'provider_unavailable',
+        'This session is still running in Happier. Stop it before deleting it.',
+      ) satisfies DirectSessionCandidateDeleteResponse;
+    }
+
     try {
       const providerOps = await getDirectSessionProviderOps(parsed.data.providerId);
       await requireProviderOp(providerOps.deleteCandidate, parsed.data.providerId, 'candidate deletion')({
