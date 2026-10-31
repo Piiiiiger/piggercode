@@ -128,6 +128,24 @@ describe('Codex native paginated direct history (0.162.1 contract)', () => {
     await expect(pageCodexTranscript({ ...f.params, direction: 'older' })).rejects.toBeInstanceOf(DirectSessionsProviderUnavailableError);
   });
 
+  it('confirms empty native history for a paginated rollout that has recorded nothing yet', async () => {
+    const f = await fixture([]);
+    const sessions = join(f.codexHome, 'sessions');
+    await mkdir(sessions);
+    const rollout = join(sessions, 'rollout-2026-01-02T00-00-00-thread-native.jsonl');
+    const meta = JSON.stringify({ type: 'session_meta', payload: { id: 'thread-native', history_mode: 'paginated' } }) + '\n';
+    await writeFile(rollout, meta);
+    const page = await pageCodexTranscript({ ...f.params, direction: 'older' });
+    expect(page).toMatchObject({ items: [], hasMore: false, nextCursor: null });
+    await writeFile(f.nativeItemsPath, JSON.stringify([message('first', 'first message', 'user')]));
+    expect((await readAfterCodexTranscript({ ...f.params, cursor: page.tailCursor! })).items).toHaveLength(1);
+
+    await writeFile(f.nativeItemsPath, '[]');
+    await writeFile(rollout, meta + JSON.stringify({ type: 'response_item', payload: { type: 'message', role: 'user',
+      content: [{ type: 'input_text', text: 'recorded question' }] } }) + '\n');
+    await expect(pageCodexTranscript({ ...f.params, direction: 'older' })).rejects.toBeInstanceOf(DirectSessionsProviderUnavailableError);
+  });
+
   it('keeps a native cursor on its source when a legacy rollout appears later', async () => {
     const f = await fixture([message('original', 'native original', 'user')]);
     const page = await pageCodexTranscript({ ...f.params, direction: 'older' });

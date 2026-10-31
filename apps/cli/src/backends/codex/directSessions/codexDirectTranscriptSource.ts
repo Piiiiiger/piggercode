@@ -1,3 +1,5 @@
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
 import type { DirectSessionsSource } from '@happier-dev/protocol';
 import { DirectSessionsProviderUnavailableError, type DirectSessionTranscriptPage } from '@/backends/directSessions/providerOps';
 import { withCodexAppServerClient } from '../appServer/client/withCodexAppServerClient';
@@ -7,6 +9,23 @@ import { collectCodexSessionRolloutFiles } from './collectCodexSessionRolloutFil
 import { pageCodexRolloutStreams, readAfterCodexRolloutStreams } from './codexDirectTranscriptStreamPaging';
 import { decodeCodexNativeTranscriptCursor, pageCodexNativeTranscript } from './pageCodexNativeTranscript';
 import { resolveCodexHomesForDirectSessionsSource } from './resolveCodexHomesForDirectSessionsSource';
+
+async function hasRecordAfterSessionMeta(filePath: string): Promise<boolean> {
+  const stream = createReadStream(filePath, { encoding: 'utf8' });
+  const lines = createInterface({ input: stream, crlfDelay: Infinity });
+  try {
+    let sawSessionMeta = false;
+    for await (const line of lines) {
+      if (!line.trim()) continue;
+      if (sawSessionMeta) return true;
+      sawSessionMeta = true;
+    }
+    return false;
+  } finally {
+    lines.close();
+    stream.destroy();
+  }
+}
 
 /** One source decision for browse, import and follow. Native cursors retain their selected home. */
 export async function readCodexDirectTranscript(params: Readonly<{
@@ -28,6 +47,7 @@ export async function readCodexDirectTranscript(params: Readonly<{
   }
   let selectedNativeHome: string | undefined;
   let hasPaginatedRollout = false;
+  let paginatedRolloutMayHoldHistory = false;
   if (!nativeCursor) {
     const perHome = await Promise.all(homes.map(async home => ({ home,
       files: await collectCodexSessionRolloutFiles({ codexHome: home, remoteSessionId: params.remoteSessionId }) })));
@@ -35,8 +55,13 @@ export async function readCodexDirectTranscript(params: Readonly<{
       Math.max(...right.files.map(file => file.mtimeMs)) - Math.max(...left.files.map(file => file.mtimeMs)))[0];
     // A paginated rollout can be only a local segment with an inherited history_base.
     // Codex owns replaying that lineage; the legacy JSONL projection cannot prove completeness.
-    hasPaginatedRollout = Boolean(best && (await Promise.all(best.files.map(file => readCodexSessionMetaFromRollout(file.filePath))))
-      .some(metadata => metadata?.history_mode === 'paginated'));
+    const rollouts = best ? await Promise.all(best.files.map(async file => ({ file,
+      metadata: await readCodexSessionMetaFromRollout(file.filePath) }))) : [];
+    hasPaginatedRollout = rollouts.some(({ metadata }) => metadata?.history_mode === 'paginated');
+    // Only a rollout that inherits nothing and recorded nothing after its session_meta
+    // (a thread that never ran a turn) proves that empty native history is complete.
+    paginatedRolloutMayHoldHistory = hasPaginatedRollout && (await Promise.all(rollouts.map(({ file, metadata }) =>
+      !metadata || metadata.history_base != null ? true : hasRecordAfterSessionMeta(file.filePath)))).some(Boolean);
     selectedNativeHome = best?.home;
     if (best && !hasPaginatedRollout) {
       const input = { ...params, codexHome: best.home, initialRolloutFiles: best.files };
@@ -55,7 +80,7 @@ export async function readCodexDirectTranscript(params: Readonly<{
         affinity: { home: params.source.kind === 'codexHome' ? params.source.home : 'user', homePath: home } });
       const reset = Boolean(params.cursor && params.cursor !== 'tail' && !nativeCursor);
       const page = await withCodexAppServerClient({ processEnv, run: client => pageCodexNativeTranscript({
-        ...params, client, home, hasPaginatedRollout, cursor: nativeCursor ? params.cursor : undefined,
+        ...params, client, home, paginatedRolloutMayHoldHistory, cursor: nativeCursor ? params.cursor : undefined,
         tailOnly: params.follow && (!nativeCursor || params.cursor === 'tail'),
       }) });
       return reset ? { ...page, items: [], truncated: true, truncationReason: 'source_discontinuity' } : page;
