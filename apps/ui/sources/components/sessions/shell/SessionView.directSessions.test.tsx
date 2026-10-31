@@ -138,9 +138,6 @@ const transcriptIdsState = vi.hoisted(() => ({ ids: ['m1'] as string[] }));
 const chatHeaderPropsSpy = vi.hoisted(() => vi.fn());
 const chatHeaderHarnessState = vi.hoisted(() => ({ renderRightElement: false }));
 const voiceSurfacePropsSpy = vi.hoisted(() => vi.fn());
-const showDirectSessionTakeoverDialogSpy = vi.hoisted(() =>
-  vi.fn<() => Promise<{ action: 'direct' | 'persisted' | null; forceStop: boolean }>>(async () => ({ action: null, forceStop: false })),
-);
 const sendVoiceSessionComposerTextSpy = vi.hoisted(() =>
   vi.fn<
     (params: unknown) => Promise<
@@ -605,9 +602,6 @@ vi.mock('@/components/sessions/keyboardAvoidance', () => ({
       return () => {};
     },
   }),
-}));
-vi.mock('@/components/sessions/directSessions/takeover/showDirectSessionTakeoverDialog', () => ({
-  showDirectSessionTakeoverDialog: showDirectSessionTakeoverDialogSpy,
 }));
 vi.mock('@/voice/sessionBinding/sendVoiceSessionComposerText', () => ({
   sendVoiceSessionComposerText: (params: any) => sendVoiceSessionComposerTextSpy(params),
@@ -1230,7 +1224,6 @@ describe('SessionView (direct sessions)', () => {
     actionOperationRpcSpy.mockResolvedValue({ items: [], nextCursor: null });
     syncRefreshSessionsSpy.mockReset();
     machineDirectSessionStatusGetSpy.mockReset();
-    showDirectSessionTakeoverDialogSpy.mockReset();
     sendVoiceSessionComposerTextSpy.mockReset();
     sendVoiceSessionComposerTextSpy.mockResolvedValue({ ok: false, reason: 'not_voice_session' });
     resolveVoiceSessionComposerRoutingSpy.mockReset();
@@ -1305,7 +1298,6 @@ describe('SessionView (direct sessions)', () => {
 	      executionRunDelivery: 'steer_if_supported',
 	      setExecutionRunDelivery: vi.fn(),
     };
-    showDirectSessionTakeoverDialogSpy.mockResolvedValue({ action: null, forceStop: false });
     machineDirectSessionStatusGetSpy.mockResolvedValue({
       ok: true,
       machineOnline: true,
@@ -3649,7 +3641,6 @@ describe('SessionView (direct sessions)', () => {
         ],
       },
     };
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
 
@@ -3691,7 +3682,6 @@ describe('SessionView (direct sessions)', () => {
         });
       },
     );
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
     let agentInput = findAgentInput(screen);
@@ -3724,7 +3714,6 @@ describe('SessionView (direct sessions)', () => {
       options?.onLocalPendingProjectionCreated?.({ localId: 'direct-local-id' });
       throw new Error('direct send rejected');
     });
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
     let agentInput = findAgentInput(screen);
@@ -3765,7 +3754,6 @@ describe('SessionView (direct sessions)', () => {
       };
       throw new Error('direct send response lost');
     });
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
     let agentInput = findAgentInput(screen);
@@ -3803,7 +3791,6 @@ describe('SessionView (direct sessions)', () => {
       };
       throw new Error('direct send rejected before server custody');
     });
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
     let agentInput = findAgentInput(screen);
@@ -3852,7 +3839,6 @@ describe('SessionView (direct sessions)', () => {
           rejectSubmit = reject;
         });
       });
-      showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
       const screen = await renderSessionView();
       let agentInput = findAgentInput(screen);
@@ -4038,7 +4024,6 @@ describe('SessionView (direct sessions)', () => {
       active: true,
       metadata: { host: 'happy-host' },
     };
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
 
     const screen = await renderSessionView();
 
@@ -4231,8 +4216,7 @@ describe('SessionView (direct sessions)', () => {
     }
   });
 
-  it('prompts for takeover on send and submits after taking over the direct session', async () => {
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
+  it('takes over on send without a takeover-mode prompt and submits', async () => {
     const screen = await renderSessionView();
 
     const agentInput = findAgentInput(screen);
@@ -4244,11 +4228,6 @@ describe('SessionView (direct sessions)', () => {
       await agentInput.props.onSend();
     });
 
-    expect(showDirectSessionTakeoverDialogSpy).toHaveBeenCalledWith({
-      canTakeOverDirect: true,
-      canTakeOverPersist: true,
-      canForceStop: false,
-    });
     expect(machineDirectSessionTakeoverSpy).toHaveBeenCalledWith({
       machineId: 'machine-1',
       sessionId: 's1',
@@ -4263,8 +4242,22 @@ describe('SessionView (direct sessions)', () => {
 
   });
 
-  it('keeps the composer text when direct takeover is cancelled from the send prompt', async () => {
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: null, forceStop: false });
+  function mockLocallyOwnedDirectSessionStatus() {
+    machineDirectSessionStatusGetSpy.mockResolvedValue({
+      ok: true,
+      machineOnline: true,
+      runnerActive: false,
+      activity: 'running',
+      canTakeOverDirect: true,
+      canTakeOverPersist: true,
+      canForceStop: true,
+      trustedPid: 123,
+    });
+  }
+
+  it('keeps the composer text when stopping the local owner is declined on send', async () => {
+    mockLocallyOwnedDirectSessionStatus();
+    modalConfirmSpy.mockResolvedValueOnce(false);
     const screen = await renderSessionView();
 
     let agentInput = findAgentInput(screen);
@@ -4276,6 +4269,7 @@ describe('SessionView (direct sessions)', () => {
       await agentInput.props.onSend();
     });
 
+    expect(modalConfirmSpy).toHaveBeenCalledTimes(1);
     expect(machineDirectSessionTakeoverSpy).not.toHaveBeenCalled();
     expect(actionOperationRpcSpy.mock.calls.some(([request]) => request.method === 'daemon.directSessions.takeoverPersist.start')).toBe(false);
     expect(syncSubmitMessageSpy).not.toHaveBeenCalled();
@@ -4285,10 +4279,9 @@ describe('SessionView (direct sessions)', () => {
 
   });
 
-  it('keeps the composer text visible while a direct takeover send prompt is still pending', async () => {
-    showDirectSessionTakeoverDialogSpy.mockImplementationOnce(
-      () => new Promise<{ action: 'direct' | 'persisted' | null; forceStop: boolean }>(() => {}),
-    );
+  it('keeps the composer text visible while the local-owner confirmation is still pending', async () => {
+    mockLocallyOwnedDirectSessionStatus();
+    modalConfirmSpy.mockImplementationOnce(() => new Promise<boolean>(() => {}));
     const screen = await renderSessionView();
 
     let agentInput = findAgentInput(screen);
@@ -4306,41 +4299,28 @@ describe('SessionView (direct sessions)', () => {
 
   });
 
-  it('passes force-stop through when persisting takeover from the send prompt', async () => {
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'persisted', forceStop: true });
-    machineDirectSessionStatusGetSpy.mockResolvedValue({
-      ok: true,
-      machineOnline: true,
-      runnerActive: false,
-      activity: 'running',
-      canTakeOverDirect: true,
-      canTakeOverPersist: true,
-      canForceStop: true,
-      trustedPid: 123,
-    });
+  it('passes force-stop through when stopping the local owner is confirmed on send', async () => {
+    mockLocallyOwnedDirectSessionStatus();
+    modalConfirmSpy.mockResolvedValueOnce(true);
     const screen = await renderSessionView();
 
-    actionOperationRpcSpy.mockResolvedValue({ ok: true, operation: createActionOperationFixture({
-      operationId: `send-import-${operationAccountId}`,
-      scope: { accountId: operationAccountId, machineId: 'machine-1', sessionId: 's1' },
-      state: 'succeeded', settledAt: 110, cancellation: 'unsupported', result: { ok: true, converted: true },
-    }) });
     const agentInput = findAgentInput(screen);
     await act(async () => {
-      agentInput.props.onChangeText('persist this');
+      agentInput.props.onChangeText('take it over');
     });
 
     await act(async () => {
       await agentInput.props.onSend();
     });
 
-    expect(actionOperationRpcSpy).toHaveBeenCalledWith(expect.objectContaining({
-      method: 'daemon.directSessions.takeoverPersist.start', serverId: 'server-1',
-      payload: expect.objectContaining({ machineId: 'machine-1', sessionId: 's1', forceStop: true, requestId: expect.any(String) }),
-    }));
+    expect(machineDirectSessionTakeoverSpy).toHaveBeenCalledWith({
+      machineId: 'machine-1',
+      sessionId: 's1',
+      forceStop: true,
+    }, { serverId: 'server-1' });
     expect(syncSubmitMessageSpy).toHaveBeenCalledWith(
       's1',
-      'persist this',
+      'take it over',
       undefined,
       undefined,
       expectDirectSendProjectionOptions(),

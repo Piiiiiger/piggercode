@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { DIRECT_SESSION_TAKEOVER_ACTION_IDS, type ActionOperationSnapshotV1 } from '@happier-dev/protocol';
 
-import { showDirectSessionTakeoverDialog } from '@/components/sessions/directSessions/takeover/showDirectSessionTakeoverDialog';
 import { Modal } from '@/modal';
 import type { UseDirectSessionRuntimeResult } from '@/components/sessions/model/useDirectSessionRuntime';
 import { machineDirectSessionTakeover, machineDirectSessionTakeoverPersistStart } from '@/sync/ops/machineDirectSessions';
@@ -285,13 +284,8 @@ export function useDirectSessionTakeover(params: UseDirectSessionTakeoverParams)
             Modal.alert(t('common.error'), t('chatFooter.directSessionMachineOffline'));
             return false;
         }
-        const resolution = await showDirectSessionTakeoverDialog({
-            canTakeOverDirect: latestStatus.canTakeOverDirect,
-            canTakeOverPersist: latestStatus.canTakeOverPersist,
-            canForceStop: latestStatus.canForceStop,
-        });
-        if (!resolution.action) return false;
-        return requestTakeover(resolution.action, { forceStop: resolution.forceStop, promptForForceStop: false });
+        // Sending takes the session over in place; requestTakeover still asks before stopping a local owner.
+        return requestTakeover('direct');
     }, [observation, readLatestStatus, requestTakeover]);
 
     return React.useMemo(() => ({

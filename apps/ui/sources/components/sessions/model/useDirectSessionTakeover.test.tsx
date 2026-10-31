@@ -15,10 +15,8 @@ import { useDirectSessionTakeover } from './useDirectSessionTakeover';
 const machineRpcSpy = vi.hoisted(() => vi.fn());
 const refreshSessionMessagesSpy = vi.hoisted(() => vi.fn(async () => {}));
 const refreshSessionsSpy = vi.hoisted(() => vi.fn(async () => {}));
-const showDirectSessionTakeoverDialogSpy = vi.hoisted(() =>
-  vi.fn<() => Promise<{ action: 'direct' | 'persisted' | null; forceStop: boolean }>>(async () => ({ action: null, forceStop: false })),
-);
 const modalAlertSpy = vi.hoisted(() => vi.fn());
+const modalConfirmSpy = vi.hoisted(() => vi.fn(async (..._args: unknown[]) => false));
 
 let activeServerId = 'server-1';
 let accountId = '';
@@ -33,15 +31,12 @@ async function push(snapshot: ActionOperationSnapshotV1) {
   await act(async () => { actionOperationStore.merge(snapshot); });
 }
 
-vi.mock('@/components/sessions/directSessions/takeover/showDirectSessionTakeoverDialog', () => ({
-  showDirectSessionTakeoverDialog: showDirectSessionTakeoverDialogSpy,
-}));
 vi.mock('@/modal', async () => {
     const { createModalModuleMock } = await import('@/dev/testkit/mocks/modal');
     return createModalModuleMock({
         spies: {
             alert: modalAlertSpy,
-            confirm: vi.fn(async () => false),
+            confirm: modalConfirmSpy,
         },
     }).module;
 });
@@ -105,9 +100,9 @@ describe('useDirectSessionTakeover', () => {
     refreshSessionMessagesSpy.mockResolvedValue(undefined);
     refreshSessionsSpy.mockReset();
     refreshSessionsSpy.mockResolvedValue(undefined);
-    showDirectSessionTakeoverDialogSpy.mockReset();
-    showDirectSessionTakeoverDialogSpy.mockResolvedValue({ action: null, forceStop: false });
     modalAlertSpy.mockReset();
+    modalConfirmSpy.mockReset();
+    modalConfirmSpy.mockResolvedValue(false);
   });
 
   afterEach(() => {
@@ -386,24 +381,47 @@ describe('useDirectSessionTakeover', () => {
     await harness.unmount();
   });
 
-  it('uses the owning session server when send takeover is confirmed after an active-server switch', async () => {
+  it('takes over directly on send, without a takeover-mode dialog, through the owning session server', async () => {
     const refreshNow = vi.fn(async () => status);
-    showDirectSessionTakeoverDialogSpy.mockResolvedValueOnce({ action: 'direct', forceStop: false });
     const harness = await renderHarness({ directSessionLink, status, refreshNow });
 
     activeServerId = 'server-2';
+    let ready = false;
     await act(async () => {
-      await harness.getCurrent().ensureReadyForSend();
+      ready = await harness.getCurrent().ensureReadyForSend();
     });
 
-    expect(showDirectSessionTakeoverDialogSpy).toHaveBeenCalledWith({
-      canTakeOverDirect: true,
-      canTakeOverPersist: true,
-      canForceStop: false,
-    });
+    expect(ready).toBe(true);
     expect(machineRpcSpy).toHaveBeenCalledWith(expect.objectContaining({
       payload: { machineId: 'machine-1', sessionId: 's1' },
       method: 'daemon.directSessions.takeover', serverId: 'server-owned',
+    }));
+    await harness.unmount();
+  });
+
+  it('asks before stopping a local owner when sending takes over a direct session', async () => {
+    const ownedStatus = { ...status, canForceStop: true };
+    const refreshNow = vi.fn(async () => ownedStatus);
+    const harness = await renderHarness({ directSessionLink, status: ownedStatus, refreshNow });
+
+    modalConfirmSpy.mockResolvedValueOnce(false);
+    let declined = true;
+    await act(async () => {
+      declined = await harness.getCurrent().ensureReadyForSend();
+    });
+    expect(declined).toBe(false);
+    expect(modalConfirmSpy).toHaveBeenCalledTimes(1);
+    expect(machineRpcSpy.mock.calls.some(([request]) => request.method === 'daemon.directSessions.takeover')).toBe(false);
+
+    modalConfirmSpy.mockResolvedValueOnce(true);
+    let accepted = false;
+    await act(async () => {
+      accepted = await harness.getCurrent().ensureReadyForSend();
+    });
+    expect(accepted).toBe(true);
+    expect(machineRpcSpy).toHaveBeenCalledWith(expect.objectContaining({
+      payload: { machineId: 'machine-1', sessionId: 's1', forceStop: true },
+      method: 'daemon.directSessions.takeover',
     }));
     await harness.unmount();
   });
@@ -423,7 +441,6 @@ describe('useDirectSessionTakeover', () => {
 
     expect(ready).toBe(true);
     expect(refreshNow).toHaveBeenCalledTimes(1);
-    expect(showDirectSessionTakeoverDialogSpy).not.toHaveBeenCalled();
     expect(machineRpcSpy.mock.calls.some(([request]) => request.method === 'daemon.directSessions.takeover')).toBe(false);
     await harness.unmount();
   });
