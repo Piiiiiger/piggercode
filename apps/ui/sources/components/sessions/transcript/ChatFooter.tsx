@@ -142,8 +142,10 @@ export const ChatFooter = React.memo((props: ChatFooterProps) => {
             if (switchingToPersisted) return 'chatFooter.switchingToPersistedTakeover';
             if (switchingToDirect) return 'chatFooter.switchingToDirectTakeover';
             if (!props.directControl.machineOnline) return 'chatFooter.directSessionMachineOffline';
-            return 'chatFooter.directSessionTakeoverAvailable';
+            // Sending to an idle direct session takes it over, so there is nothing to announce.
+            return null;
         })();
+        if (textKey === null && !importing && !props.directControl.importStatusError) return null;
 
         const phase = operation?.progress?.kind === 'phase' ? operation.progress.phase
             : operation?.progress?.kind === 'determinate' ? 'importing' : 'preparing';
@@ -156,7 +158,7 @@ export const ChatFooter = React.memo((props: ChatFooterProps) => {
         const countLabel = operation?.progress?.kind === 'determinate'
             ? t('chatFooter.directImportCountWithTotal', { count: operation.progress.current, total: operation.progress.total }) : '';
         const progress = props.directControl.importStatusError ? t('chatFooter.directImportStatusUnavailable')
-            : importing ? [phaseLabel, countLabel].filter(Boolean).join(' ') : t(textKey);
+            : importing ? [phaseLabel, countLabel].filter(Boolean).join(' ') : textKey ? t(textKey) : '';
         const canStop = importing && operation?.cancellation === 'supported' && !isActionOperationCancellationRequested(operation)
             && typeof props.directControl.onCancelImport === 'function';
         const body = [progress, operation?.state === 'failed' ? operation.error?.error : null].filter(Boolean).join('\n');

@@ -279,9 +279,7 @@ describe('ChatFooter (local control)', () => {
         expect(screen.getTextContent()).not.toContain('chatFooter.switchToLocal');
     });
 
-    it('renders direct takeover actions for linked direct sessions that are not yet controlled by Happier', async () => {
-        const onRequestTakeOverDirect = vi.fn();
-        const onRequestTakeOverPersist = vi.fn();
+    it('shows no takeover notice for an idle direct session because sending takes it over', async () => {
         const screen = await renderFooter({
             controlledByUser: false,
             directControl: {
@@ -291,22 +289,28 @@ describe('ChatFooter (local control)', () => {
                 canTakeOverDirect: true,
                 canTakeOverPersist: true,
                 takeoverInFlight: null,
-                onRequestTakeOverDirect,
-                onRequestTakeOverPersist,
+                onRequestTakeOverDirect: vi.fn(),
+                onRequestTakeOverPersist: vi.fn(),
             },
         } as any);
 
-        expect(screen.getTextContent()).toContain('chatFooter.directSessionTakeoverAvailable');
-        expect(screen.findByTestId('session-chatFooter-takeOverDirect')).not.toBeNull();
-        expect(screen.findByTestId('session-chatFooter-takeOverPersist')).not.toBeNull();
+        expect(screen.findByTestId('session-chatFooter-directControl')).toBeNull();
+    });
 
-        await act(async () => {
-            screen.pressByTestId('session-chatFooter-takeOverDirect');
-            screen.pressByTestId('session-chatFooter-takeOverPersist');
-        });
+    it('still explains why a direct session on an offline machine cannot be continued', async () => {
+        const screen = await renderFooter({
+            controlledByUser: false,
+            directControl: {
+                machineOnline: false,
+                runnerActive: false,
+                activity: 'unknown',
+                canTakeOverDirect: false,
+                canTakeOverPersist: false,
+                takeoverInFlight: null,
+            },
+        } as any);
 
-        expect(onRequestTakeOverDirect).toHaveBeenCalledTimes(1);
-        expect(onRequestTakeOverPersist).toHaveBeenCalledTimes(1);
+        expect(screen.getTextContent()).toContain('chatFooter.directSessionMachineOffline');
     });
 
     it('renders a takeover-in-flight message and hides direct takeover actions while a direct switch is pending', async () => {
