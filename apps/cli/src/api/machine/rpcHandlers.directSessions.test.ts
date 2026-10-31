@@ -1523,6 +1523,23 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
     }));
   });
 
+  it('treats deleting a codex thread that is already gone as done', async () => {
+    const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-missing-');
+
+    const res = await registered.get(RPC_METHODS.DAEMON_DIRECT_SESSION_CANDIDATE_DELETE)!({
+      machineId: 'm1',
+      providerId: 'codex',
+      remoteSessionId: 'remote_codex_already_deleted',
+      source: { kind: 'codexHome', home: 'user' },
+    });
+
+    expect(res).toEqual({ ok: true, deleted: true });
+    expect(await readRequests()).toContainEqual(expect.objectContaining({
+      method: 'thread/delete',
+      params: { threadId: 'remote_codex_already_deleted' },
+    }));
+  });
+
   it('refuses to delete a provider session that a live Happier runner still owns', async () => {
     const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-owned-');
     const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');

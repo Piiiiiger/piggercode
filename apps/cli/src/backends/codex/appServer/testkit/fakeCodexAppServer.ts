@@ -121,8 +121,14 @@ export async function writeFakeCodexAppServerThreadListScript(params: Readonly<{
             '    process.stdout.write(JSON.stringify({ id: msg.id, result: { data: loadedThreadIds } }) + "\\n");',
             '    continue;',
             '  }',
-            // Codex 0.166.0 ThreadDeleteParams { threadId } -> ThreadDeleteResponse {}.
+            // Codex 0.166.0 ThreadDeleteParams { threadId } -> ThreadDeleteResponse {}; an unknown
+            // thread answers -32600 "no rollout found for thread id <id>".
             '  if (msg.method === "thread/delete") {',
+            '    const known = [...nonArchivedThreads, ...archivedThreads].some((thread) => thread && thread.id === msg.params?.threadId);',
+            '    if (!known) {',
+            '      process.stdout.write(JSON.stringify({ id: msg.id, error: { code: -32600, message: "no rollout found for thread id " + msg.params?.threadId } }) + "\\n");',
+            '      continue;',
+            '    }',
             '    process.stdout.write(JSON.stringify({ id: msg.id, result: {} }) + "\\n");',
             '    continue;',
             '  }',

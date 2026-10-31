@@ -75,6 +75,19 @@ export function isCodexAppServerDefinitiveMethodNotFoundError(error: unknown, me
         && (error as { [CODEX_APP_SERVER_RPC_ERROR]?: unknown })[CODEX_APP_SERVER_RPC_ERROR] === true;
 }
 
+/**
+ * Codex 0.166.0 answers `thread/delete` for a thread it no longer has with
+ * -32600 "no rollout found for thread id <id>". Only that correlated response
+ * proves the thread is already gone.
+ */
+export function isCodexAppServerThreadAlreadyDeletedError(error: unknown, threadId: string): boolean {
+    if (!error || typeof error !== 'object') return false;
+    return readCode(error) === -32600
+        && (error as { method?: unknown }).method === 'thread/delete'
+        && (error as { [CODEX_APP_SERVER_RPC_ERROR]?: unknown })[CODEX_APP_SERVER_RPC_ERROR] === true
+        && readMessage(error) === `no rollout found for thread id ${threadId}`;
+}
+
 export function isCodexAppServerInvalidParamsError(error: unknown): boolean {
     if (readCode(error) === -32602) return true;
     return /invalid\s+params/i.test(readMessage(error));
