@@ -4,9 +4,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
-import type { SessionStorageKind } from '@/sync/domains/session/sessionStorageKind';
 import { t } from '@/text';
-import { SessionListStorageTabsBar } from './SessionListStorageTabsBar';
 import { Icon } from '@/components/ui/icons/Icon';
 
 const stylesheet = StyleSheet.create(() => ({
@@ -24,41 +22,34 @@ const stylesheet = StyleSheet.create(() => ({
 
 export type SessionsListStorageChromeProps = Readonly<{
     directSessionsEnabled: boolean;
-    storageKind: SessionStorageKind;
-    onSelectStorageKind: (storageKind: SessionStorageKind) => void;
 }>;
 
+/**
+ * Happier and direct sessions share one list, so the only storage chrome is the
+ * entry for opening provider sessions that are not in the list yet.
+ */
 export const SessionsListStorageChrome = React.memo((props: SessionsListStorageChromeProps) => {
     const router = useRouter();
     const { theme } = useUnistyles();
     const styles = stylesheet;
-    const showDirectBrowseAction = props.directSessionsEnabled && props.storageKind === 'direct';
+
+    if (!props.directSessionsEnabled) return null;
 
     return (
-        <>
-            {props.directSessionsEnabled ? (
-                <SessionListStorageTabsBar
-                    activeTabId={props.storageKind}
-                    onSelectTab={props.onSelectStorageKind}
-                />
-            ) : null}
-            {showDirectBrowseAction ? (
-                <ItemGroup
-                    style={styles.browseActionContainer}
-                    containerStyle={styles.browseActionGroupSurface}
-                    constrainToContentWidth={false}
-                >
-                    <Item
-                        testID="direct-sessions-browse-button"
-                        title={t('directSessions.browseOpenExisting')}
-                        subtitle={t('directSessions.browseActionSubtitle')}
-                        icon={<Icon name="folder-open" size={20} color={theme.colors.text.secondary} />}
-                        onPress={() => {
-                            router.push('/direct/browse');
-                        }}
-                    />
-                </ItemGroup>
-            ) : null}
-        </>
+        <ItemGroup
+            style={styles.browseActionContainer}
+            containerStyle={styles.browseActionGroupSurface}
+            constrainToContentWidth={false}
+        >
+            <Item
+                testID="direct-sessions-browse-button"
+                title={t('directSessions.browseOpenExisting')}
+                subtitle={t('directSessions.browseActionSubtitle')}
+                icon={<Icon name="folder-open" size={20} color={theme.colors.text.secondary} />}
+                onPress={() => {
+                    router.push('/direct/browse');
+                }}
+            />
+        </ItemGroup>
     );
 });

@@ -4,8 +4,9 @@ import { usePathname } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { SessionGettingStartedGuidance } from '@/components/sessions/guidance/SessionGettingStartedGuidance';
-import { useSessionListStorageKind } from '@/components/sessions/model/useSessionListStorageKind';
 import { SessionsListStorageChrome } from '@/components/sessions/shell/SessionsListStorageChrome';
+import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
+import type { SessionListStorageFilter } from '@/sync/domains/session/sessionStorageKind';
 import {
     useVisibleSessionListPaneState,
     type VisibleSessionListViewDataOptions,
@@ -114,7 +115,9 @@ const ActiveSessionsListPaneStateSubscriber = React.memo((props: Readonly<{
 const SessionsListWrapperContent = React.memo((props: { pathname: string; surfaceRoutePathname: string }) => {
     const { theme } = useUnistyles();
     const isFocused = useIsFocused();
-    const { directSessionsEnabled, storageKind, setStorageKind } = useSessionListStorageKind();
+    const directSessionsEnabled = useFeatureEnabled('sessions.direct');
+    // Happier and direct sessions share one list.
+    const storageKind: SessionListStorageFilter = 'all';
     const newSessionDrafts = useNewSessionDraftProjections();
     const pathname = props.pathname;
     const surfaceRoutePathname = props.surfaceRoutePathname;
@@ -218,11 +221,7 @@ const SessionsListWrapperContent = React.memo((props: { pathname: string; surfac
     const { sessionListViewData, visibleSessionCount, hasHiddenInactiveSessions } = displayPaneState;
     const styles = stylesheet;
     const storageChrome = (
-        <SessionsListStorageChrome
-            directSessionsEnabled={directSessionsEnabled}
-            storageKind={storageKind}
-            onSelectStorageKind={setStorageKind}
-        />
+        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} />
     );
     const sessionListContent = React.useMemo(
         () => (

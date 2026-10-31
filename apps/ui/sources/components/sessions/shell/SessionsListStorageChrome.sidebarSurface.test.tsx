@@ -20,11 +20,6 @@ vi.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
 }));
 
-vi.mock('@/components/sessions/shell/SessionListStorageTabsBar', () => ({
-    SessionListStorageTabsBar: (props: Record<string, unknown>) =>
-        React.createElement('SessionListStorageTabsBar', props),
-}));
-
 vi.mock('@/components/ui/lists/Item', () => ({
     Item: (props: Record<string, unknown>) => React.createElement('Item', props),
 }));
@@ -42,18 +37,17 @@ function flattenStyle(style: unknown): Record<string, unknown> {
     return {};
 }
 
+function findStorageTabs(screen: { root: { findAll: (predicate: (node: { props: Record<string, unknown> }) => boolean) => unknown[] } }) {
+    return screen.root.findAll((node) => String(node.props.testID ?? '').startsWith('sessions-list-storage-tab:'));
+}
+
 describe('SessionsListStorageChrome sidebar surface', () => {
-    it('renders the direct browse action without main-content ItemGroup constraints', async () => {
+    it('renders only the direct browse action, without storage tabs, when direct sessions are enabled', async () => {
         const { SessionsListStorageChrome } = await import('./SessionsListStorageChrome');
 
-        const screen = await renderScreen(
-            <SessionsListStorageChrome
-                directSessionsEnabled
-                storageKind="direct"
-                onSelectStorageKind={() => {}}
-            />,
-        );
+        const screen = await renderScreen(<SessionsListStorageChrome directSessionsEnabled />);
 
+        expect(findStorageTabs(screen)).toHaveLength(0);
         const itemGroups = screen.findAllByType('ItemGroup' as never);
         expect(itemGroups).toHaveLength(1);
         expect(itemGroups[0]?.props.constrainToContentWidth).toBe(false);
@@ -68,5 +62,14 @@ describe('SessionsListStorageChrome sidebar surface', () => {
         expect(browseSurfaceStyle.boxShadow).toBe('none');
         expect(browseSurfaceStyle.shadowOpacity).toBe(0);
         expect(browseSurfaceStyle.elevation).toBe(0);
+    });
+
+    it('renders no storage chrome when direct sessions are disabled', async () => {
+        const { SessionsListStorageChrome } = await import('./SessionsListStorageChrome');
+
+        const screen = await renderScreen(<SessionsListStorageChrome directSessionsEnabled={false} />);
+
+        expect(findStorageTabs(screen)).toHaveLength(0);
+        expect(screen.findAllByType('ItemGroup' as never)).toHaveLength(0);
     });
 });

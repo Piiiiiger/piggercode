@@ -27,10 +27,6 @@ const emptyStateState = vi.hoisted(() => ({
 const featureDecisionState = vi.hoisted(() => ({
     enabled: false,
 }));
-const storageKindState = vi.hoisted(() => ({
-    storageKind: 'persisted' as 'persisted' | 'direct',
-    setStorageKind: vi.fn(),
-}));
 const serverSelectionState = vi.hoisted(() => ({
     selection: {
         activeTarget: { kind: 'server' as const, id: 'server-a', serverId: 'server-a' },
@@ -50,6 +46,9 @@ const focusState = vi.hoisted(() => ({
 }));
 const draftListState = vi.hoisted(() => ({ count: 0 }));
 installSessionShellCommonModuleMocks({
+    featureEnabled: async () => ({
+        useFeatureEnabled: (featureId: string) => featureId === 'sessions.direct' && featureDecisionState.enabled,
+    }),
     reactNative: async () => {
         const { createReactNativeWebMock } = await import('@/dev/testkit/mocks/reactNative');
         return createReactNativeWebMock({
@@ -140,13 +139,6 @@ vi.mock('@/hooks/session/useVisibleSessionListViewData', () => ({
         data?.reduce((count, item) => count + (item.type === 'session' ? 1 : 0), 0) ?? 0
     ),
 }));
-vi.mock('@/components/sessions/model/useSessionListStorageKind', () => ({
-    useSessionListStorageKind: () => ({
-        directSessionsEnabled: featureDecisionState.enabled,
-        storageKind: featureDecisionState.enabled ? storageKindState.storageKind : 'persisted',
-        setStorageKind: storageKindState.setStorageKind,
-    }),
-}));
 vi.mock('@/components/sessions/shell/SessionsListStorageChrome', () => ({
     SessionsListStorageChrome: (props: any) => React.createElement('SessionsListStorageChrome', props),
 }));
@@ -206,8 +198,6 @@ describe('SessionsListWrapper (empty state)', () => {
         routeState.listeners.clear();
         emptyStateState.hasHiddenInactiveSessions = false;
         featureDecisionState.enabled = false;
-        storageKindState.storageKind = 'persisted';
-        storageKindState.setStorageKind.mockReset();
         serverSelectionState.selection = {
             activeTarget: { kind: 'server', id: 'server-a', serverId: 'server-a' },
             activeServerId: 'server-a',
@@ -248,41 +238,37 @@ describe('SessionsListWrapper (empty state)', () => {
         await screen.unmount();
     });
 
-    it('uses the persisted storage filter when direct sessions are disabled', async () => {
+    it('lists every session storage kind together when direct sessions are disabled', async () => {
         const screen = await renderSessionsListWrapper();
 
         expect(sessionListState.storageKinds.length).toBeGreaterThan(0);
-        expect(sessionListState.storageKinds.every((kind) => kind === 'persisted')).toBe(true);
+        expect(sessionListState.storageKinds.every((kind) => kind === 'all')).toBe(true);
 
         await screen.unmount();
     });
 
-    it('shows storage tabs and uses the selected direct storage filter when direct sessions are enabled', async () => {
+    it('lists Happier and direct sessions together with the direct browse chrome when direct sessions are enabled', async () => {
         featureDecisionState.enabled = true;
-        storageKindState.storageKind = 'direct';
         sessionListState.data = [{ type: 'session', session: { id: 'session-1' } }];
 
         const screen = await renderSessionsListWrapper();
 
         expect(sessionListState.storageKinds.length).toBeGreaterThan(0);
-        expect(sessionListState.storageKinds.every((kind) => kind === 'direct')).toBe(true);
-        expect(() => screen.findByType('SessionsListStorageChrome' as any)).not.toThrow();
-        expect(screen.findByType('SessionsListStorageChrome' as any).props.storageKind).toBe('direct');
-        expect(screen.findByType('SessionsListContent' as any).props.storageKind).toBe('direct');
+        expect(sessionListState.storageKinds.every((kind) => kind === 'all')).toBe(true);
+        expect(screen.findByType('SessionsListStorageChrome' as any).props.directSessionsEnabled).toBe(true);
+        expect(screen.findByType('SessionsListContent' as any).props.storageKind).toBe('all');
         expect(screen.findByType('SessionsListContent' as any).props.data).toBe(sessionListState.data);
 
         await screen.unmount();
     });
 
-    it('keeps the storage chrome visible in the direct empty state', async () => {
+    it('keeps the direct browse chrome visible in the empty state', async () => {
         featureDecisionState.enabled = true;
-        storageKindState.storageKind = 'direct';
         sessionListState.data = [];
 
         const screen = await renderSessionsListWrapper();
 
-        expect(() => screen.findByType('SessionsListStorageChrome' as any)).not.toThrow();
-        expect(screen.findByType('SessionsListStorageChrome' as any).props.storageKind).toBe('direct');
+        expect(screen.findByType('SessionsListStorageChrome' as any).props.directSessionsEnabled).toBe(true);
 
         await screen.unmount();
     });
@@ -310,29 +296,26 @@ describe('SessionsListWrapper (empty state)', () => {
         await screen.unmount();
     });
 
-    it('keeps the storage chrome visible when the direct tab already has sessions', async () => {
+    it('keeps the direct browse chrome visible when the list already has sessions', async () => {
         featureDecisionState.enabled = true;
-        storageKindState.storageKind = 'direct';
         sessionListState.data = [{ type: 'session', session: { id: 'session-1' } }];
 
         const screen = await renderSessionsListWrapper();
 
-        expect(() => screen.findByType('SessionsListStorageChrome' as any)).not.toThrow();
-        expect(screen.findByType('SessionsListStorageChrome' as any).props.storageKind).toBe('direct');
-        expect(screen.findByType('SessionsListContent' as any).props.storageKind).toBe('direct');
+        expect(screen.findByType('SessionsListStorageChrome' as any).props.directSessionsEnabled).toBe(true);
+        expect(screen.findByType('SessionsListContent' as any).props.storageKind).toBe('all');
 
         await screen.unmount();
     });
 
     it('passes the precomputed visible list to the rendered sessions list path', async () => {
         featureDecisionState.enabled = true;
-        storageKindState.storageKind = 'direct';
         sessionListState.data = [{ type: 'session', session: { id: 'session-1' } }];
 
         const screen = await renderSessionsListWrapper();
 
         expect(sessionListState.paneHookCalls).toBeGreaterThanOrEqual(1);
-        expect(sessionListState.storageKinds.every((kind) => kind === 'direct')).toBe(true);
+        expect(sessionListState.storageKinds.every((kind) => kind === 'all')).toBe(true);
         expect(screen.findByType('SessionsListContent' as any).props.data).toBe(sessionListState.data);
 
         await screen.unmount();
@@ -624,46 +607,6 @@ describe('SessionsListWrapper (empty state)', () => {
         expect(() => inactiveScreen.findByType('SessionsListContent' as any)).toThrow();
 
         await inactiveScreen.unmount();
-    });
-
-    it('does not seed retained pane data after the storage kind changes while returning from a foreground session route', async () => {
-        const { SessionsListWrapper } = await import('./SessionsListWrapper');
-        const persistedData = [{ type: 'session', session: { id: 'persisted-session' } }];
-        const directData = [{ type: 'session', session: { id: 'direct-session' } }];
-        featureDecisionState.enabled = true;
-        storageKindState.storageKind = 'persisted';
-        sessionListState.data = persistedData;
-        focusState.isFocused = true;
-        routeState.pathname = '/';
-
-        const screen = await renderScreen(<SessionsListWrapper pathname="/" surfaceRoutePathname="/" />);
-
-        expect(sessionListState.paneOptions[0]).toEqual({
-            activeSessionId: null,
-            sessionListSurfaceDataActive: true,
-        });
-        const initialPaneOptionCount = sessionListState.paneOptions.length;
-
-        routeState.pathname = '/session/persisted-session';
-        await screen.update(<SessionsListWrapper pathname="/" surfaceRoutePathname="/session/persisted-session" />);
-        expect(sessionListState.paneOptions).toHaveLength(initialPaneOptionCount);
-
-        storageKindState.storageKind = 'direct';
-        sessionListState.data = directData;
-        await screen.update(<SessionsListWrapper pathname="/" surfaceRoutePathname="/session/persisted-session?storage=direct" />);
-        await flushHookEffects({ cycles: 1, turns: 4 });
-        expect(sessionListState.paneOptions).toHaveLength(initialPaneOptionCount);
-
-        routeState.pathname = '/';
-        await screen.update(<SessionsListWrapper pathname="/" surfaceRoutePathname="/" />);
-
-        expect(sessionListState.storageKinds.at(-1)).toBe('direct');
-        expect(sessionListState.paneOptions.at(-1)).toEqual({
-            activeSessionId: null,
-            sessionListSurfaceDataActive: true,
-        });
-
-        await screen.unmount();
     });
 
     it('does not re-render the list content when wrapper-only state changes keep the same visible data', async () => {

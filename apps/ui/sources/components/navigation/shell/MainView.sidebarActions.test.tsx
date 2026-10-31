@@ -162,7 +162,7 @@ vi.mock('@/hooks/server/useFeatureDecision', () => ({
 }));
 
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
-    useFeatureEnabled: () => false,
+    useFeatureEnabled: (featureId: string) => featureId === 'sessions.direct' && directSessionsFeatureState.enabled,
 }));
 
 vi.mock('@/hooks/ui/useTabState', () => ({
@@ -414,7 +414,7 @@ describe('MainView sidebar actions', () => {
         expect(sessionListHookState.useHasHiddenInactiveSessionsCalls).toBe(0);
         const list = screen.tree.findByType('SessionsListContent');
         expect(list.props.data).toBe(sessionListState.data);
-        expect(list.props.storageKind).toBe('persisted');
+        expect(list.props.storageKind).toBe('all');
     });
 
     it('passes the active route session into the sidebar session list data hook', async () => {
@@ -486,19 +486,18 @@ describe('MainView sidebar actions', () => {
         expect(() => renderedHeaderRight.findByProps({ testID: 'main-header-start-new-session' })).not.toThrow();
     });
 
-    it('renders direct session storage tabs in the sidebar empty state when direct sessions are enabled', async () => {
+    it('renders no storage tabs in the sidebar when direct sessions are enabled', async () => {
         directSessionsFeatureState.enabled = true;
-        localSettingsState.sessionsListStorageTab = 'direct';
 
         let tree: renderer.ReactTestRenderer | null = null;
         tree = (await renderScreen(<MainView variant="sidebar" />)).tree;
 
-        expect(() => tree!.findByProps({ testID: 'sessions-list-storage-tab:direct' })).not.toThrow();
+        expect(() => tree!.findByProps({ testID: 'sessions-list-storage-tab:direct' })).toThrow();
+        expect(() => tree!.findByProps({ testID: 'sessions-list-storage-tab:persisted' })).toThrow();
     });
 
-    it('renders the browse direct sessions action in the sidebar empty state when the direct tab is active', async () => {
+    it('renders the browse direct sessions action in the sidebar whenever direct sessions are enabled', async () => {
         directSessionsFeatureState.enabled = true;
-        localSettingsState.sessionsListStorageTab = 'direct';
 
         let tree: renderer.ReactTestRenderer | null = null;
         tree = (await renderScreen(<MainView variant="sidebar" />)).tree;

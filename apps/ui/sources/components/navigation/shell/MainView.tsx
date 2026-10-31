@@ -12,8 +12,8 @@ import { SessionGettingStartedGuidance } from '@/components/sessions/guidance/Se
 import { HiddenInactiveSessionsEmptyState } from '@/components/sessions/guidance/HiddenInactiveSessionsEmptyState';
 import { SessionsListContent } from '@/components/sessions/shell/SessionsList';
 import { readSessionIdFromPathname } from '@/components/sessions/shell/readSessionIdFromPathname';
-import { useSessionListStorageKind } from '@/components/sessions/model/useSessionListStorageKind';
 import { SessionsListStorageChrome } from '@/components/sessions/shell/SessionsListStorageChrome';
+import type { SessionListStorageFilter } from '@/sync/domains/session/sessionStorageKind';
 import {
     resolveSessionListSurfaceOwnership,
     resolveSidebarSessionListSurfaceInteractive,
@@ -300,7 +300,9 @@ const SidebarMainViewContent = React.memo(function SidebarMainViewContent({
     pathname: string;
 }>) {
     const { theme } = useUnistyles();
-    const { directSessionsEnabled, storageKind, setStorageKind } = useSessionListStorageKind();
+    const directSessionsEnabled = useFeatureEnabled('sessions.direct');
+    // Happier and direct sessions share one list.
+    const storageKind: SessionListStorageFilter = 'all';
     const router = useRouter();
     const resolveNewSessionOrdinaryEntryRoute = useResolveNewSessionOrdinaryEntryRoute();
     const activeSessionId = React.useMemo(() => readSessionIdFromPathname(pathname), [pathname]);
@@ -330,11 +332,7 @@ const SidebarMainViewContent = React.memo(function SidebarMainViewContent({
     }, [resolveNewSessionOrdinaryEntryRoute, router]);
 
     const storageChrome = (
-        <SessionsListStorageChrome
-            directSessionsEnabled={directSessionsEnabled}
-            storageKind={storageKind}
-            onSelectStorageKind={setStorageKind}
-        />
+        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} />
     );
 
     let content: React.ReactNode;
