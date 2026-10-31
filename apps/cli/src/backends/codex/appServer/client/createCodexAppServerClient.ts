@@ -375,7 +375,6 @@ type CreateCodexAppServerClientParams = Readonly<{
     onCleanup?: (cleanup: () => Promise<void>) => void;
     transport?:
         | Readonly<{ kind: 'stdio' }>
-        | Readonly<{ kind: 'daemonProxy' }>
         | Readonly<{ kind: 'unixWebSocket'; socketPath: string }>;
 }>;
 
@@ -435,9 +434,7 @@ async function createUnlockedCodexAppServerClient(params: CreateCodexAppServerCl
         });
     } else {
         const baseInvocation = await resolveCodexCliInvocation({
-            args: transport.kind === 'daemonProxy'
-                ? ['app-server', 'proxy']
-                : ['app-server', '--listen', 'stdio://'],
+            args: ['app-server', '--listen', 'stdio://'],
             cwd: params.cwd,
             processEnv,
             overrideEnvVarKeys: ['HAPPIER_CODEX_APP_SERVER_BIN', 'HAPPIER_CODEX_TUI_BIN', 'HAPPY_CODEX_TUI_BIN'],

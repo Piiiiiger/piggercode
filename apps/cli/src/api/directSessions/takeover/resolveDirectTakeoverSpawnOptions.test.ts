@@ -2,9 +2,10 @@ import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest';
 
 import { writeFakeCodexAppServerThreadListScript } from '@/backends/codex/appServer/testkit/fakeCodexAppServer';
+import { startFakeCodexAppServerDaemon } from '@/backends/codex/appServer/testkit/fakeCodexAppServerDaemon';
 import type { RawSessionRecord } from '@/session/transport/http/sessionsHttp';
 import type { Credentials } from '@/persistence';
 import type {
@@ -258,12 +259,9 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
     const projectDir = join(root, 'project');
     await mkdir(codexHome, { recursive: true });
     await mkdir(projectDir, { recursive: true });
-    const fakeAppServer = await writeFakeCodexAppServerThreadListScript({
-      dir: root,
-      loadedThreadIds: ['daemon-thread-1'],
-    });
+    const daemon = await startFakeCodexAppServerDaemon({ codexHome, loadedThreadIds: ['daemon-thread-1'] });
+    onTestFinished(() => daemon.close());
     vi.stubEnv('CODEX_HOME', codexHome);
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServer);
     bootstrapAccountSettingsContextMock.mockResolvedValueOnce({
       settings: {
         connectedServicesDefaultAuthByAgentIdV1: {
@@ -368,12 +366,9 @@ describe('resolveDirectTakeoverSpawnOptions', () => {
     const projectDir = join(root, 'project');
     await mkdir(codexHome, { recursive: true });
     await mkdir(projectDir, { recursive: true });
-    const fakeAppServer = await writeFakeCodexAppServerThreadListScript({
-      dir: root,
-      loadedThreadIds: ['daemon-thread-2'],
-    });
+    const daemon = await startFakeCodexAppServerDaemon({ codexHome, loadedThreadIds: ['daemon-thread-2'] });
+    onTestFinished(() => daemon.close());
     vi.stubEnv('CODEX_HOME', codexHome);
-    vi.stubEnv('HAPPIER_CODEX_APP_SERVER_BIN', fakeAppServer);
 
     const spawnOptions = await resolveDirectTakeoverSpawnOptions({
       credentials: TEST_CREDENTIALS,
