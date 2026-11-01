@@ -293,14 +293,15 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'boolean', privacy: 'safe', identityScope: 'person' },
     },
     sessionListActiveGroupingV1: {
-        schema: z.enum(['project', 'date']),
-        default: 'project',
+        // `directory` shows sessions as a folder tree of the directories they were started in.
+        schema: z.enum(['project', 'date', 'directory']),
+        default: 'directory',
         description: 'How to group active sessions in the session list',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
     },
     sessionListInactiveGroupingV1: {
-        schema: z.enum(['project', 'date']),
+        schema: z.enum(['project', 'date', 'directory']),
         default: 'date',
         description: 'How to group inactive sessions in the session list',
         storageScope: 'account',
@@ -308,21 +309,22 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
     },
     sessionListSectionModeV1: {
         schema: z.enum(['activity', 'single']),
-        default: 'activity',
+        default: 'single',
         description: 'Whether the session list separates active and inactive sessions or shows one combined section',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
     },
     sessionListActiveColorModeV1: {
         schema: z.enum(['activityAndAttention', 'attentionOnly', 'allActive']),
-        default: 'activityAndAttention',
+        // Running sessions keep the active color, so stopped ones read as dimmed in the one-section tree.
+        default: 'allActive',
         description: 'Which session rows use the active title color in the session list',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
     },
     sessionListAttentionPromotionModeV1: {
         schema: z.enum(SESSION_LIST_ATTENTION_PROMOTION_MODE_VALUES),
-        default: 'off',
+        default: 'global',
         description: 'Where sessions waiting for the user or ready to review appear in the session list',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },

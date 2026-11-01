@@ -89,6 +89,7 @@ installNavigationShellCommonModuleMocks({
                 if (name === 'sessionsListStorageTab') {
                     return [localSettingsState.sessionsListStorageTab, setSessionsListStorageTabSpy] as const;
                 }
+                if (name === 'sessionListAgentFilterV1') return [null, vi.fn()] as const;
                 throw new Error(`Unexpected local setting: ${name}`);
             },
         });

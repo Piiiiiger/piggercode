@@ -2,6 +2,7 @@ import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { renderScreen } from '@/dev/testkit';
+import type { SessionListViewItem } from '@/sync/domains/state/storage';
 import { installSessionShellCommonModuleMocks } from './sessionShellTestHelpers';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -14,6 +15,13 @@ installSessionShellCommonModuleMocks({
     router: async () => ({
         useRouter: () => routerState,
     }),
+    // The agent tabs render translated labels with parameters, which must stay strings.
+    text: async () => {
+        const { createTextModuleMock } = await import('@/dev/testkit/mocks/text');
+        return createTextModuleMock({
+            translate: (key: string) => key,
+        });
+    },
 });
 
 vi.mock('@expo/vector-icons', () => ({
@@ -62,6 +70,21 @@ describe('SessionsListStorageChrome sidebar surface', () => {
         expect(browseSurfaceStyle.boxShadow).toBe('none');
         expect(browseSurfaceStyle.shadowOpacity).toBe(0);
         expect(browseSurfaceStyle.elevation).toBe(0);
+    });
+
+    it('swaps the browse row for agent tabs with a browse button once the list has sessions', async () => {
+        const { SessionsListStorageChrome } = await import('./SessionsListStorageChrome');
+        const data = [
+            { type: 'header', headerKind: 'sessions', title: 'Sessions', groupKey: 'sessions:s1', serverId: 's1' },
+            { type: 'session', serverId: 's1', groupKey: 'g1', section: 'sessions', session: { id: 'a', metadata: { flavor: 'codex' } } },
+        ] as unknown as SessionListViewItem[];
+
+        const screen = await renderScreen(<SessionsListStorageChrome directSessionsEnabled data={data} />);
+
+        expect(screen.findAllByType('ItemGroup' as never)).toHaveLength(0);
+        expect(screen.findByTestId('session-list-agent-tabs:codex')).not.toBeNull();
+        await screen.pressByTestIdAsync('session-list-browse-provider-sessions');
+        expect(routerState.push).toHaveBeenCalledWith('/direct/browse');
     });
 
     it('renders no storage chrome when direct sessions are disabled', async () => {

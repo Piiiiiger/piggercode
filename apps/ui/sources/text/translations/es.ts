@@ -4801,6 +4801,8 @@ export const es: TranslationStructure = {
       projectSubtitle: "Agrupa sesiones por máquina + ruta",
       dateTitle: "Fecha",
       dateSubtitle: "Agrupa sesiones por la fecha de la última actividad",
+      directoryTitle: "Directorio",
+      directorySubtitle: "Muestra las sesiones como un árbol de carpetas de los directorios donde se iniciaron",
     },
     groupInactiveSessionsByProject: "Agrupar sesiones inactivas por proyecto",
     groupInactiveSessionsByProjectSubtitle:
@@ -6465,6 +6467,11 @@ export const es: TranslationStructure = {
     conflict: { title: 'Conflicto de borrador', description: 'Este campo cambió en otro dispositivo.', mine: 'En este dispositivo', synced: 'Sincronizado', useSynced: 'Usar sincronizado', keepDevice: 'Conservar dispositivo', copyMine: 'Copiar el mío', copied: 'Copiado', copyFailed: 'No se pudo copiar', field: { text: 'Texto', mentions: 'Menciones', attachments: 'Adjuntos', recipient: 'Destinatario', agentContinuation: 'Continuación del agente', executionRunDelivery: 'Entrega de ejecución' } },
   },
   sessionsList: {
+    agentTabAll: "Todas",
+    agentTabLabel: ({ name, count }: { name: string; count: number }) => `${name} ${count}`,
+    agentTabA11y: ({ name, count }: { name: string; count: number }) => `${name}, ${count} sesiones`,
+    pathFolderA11y: ({ name, count }: { name: string; count: number }) => `Carpeta ${name}, ${count} sesiones`,
+    pathFolderNewSessionA11y: ({ name }: { name: string }) => `Nueva sesión en ${name}`,
     serverHeader: ({ server }: { server: string }) => `Servidor: ${server}`,
     storagePersistedTab: "Happier",
     storageDirectTab: "Directas",

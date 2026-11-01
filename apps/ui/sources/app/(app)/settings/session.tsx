@@ -126,6 +126,11 @@ export default React.memo(function SessionSettingsScreen() {
 
     const groupingMenuItems = React.useMemo(() => [
         {
+            id: 'directory',
+            title: t('settingsFeatures.sessionListGrouping.directoryTitle'),
+            subtitle: t('settingsFeatures.sessionListGrouping.directorySubtitle'),
+        },
+        {
             id: 'project',
             title: t('settingsFeatures.sessionListGrouping.projectTitle'),
             subtitle: t('settingsFeatures.sessionListGrouping.projectSubtitle'),
@@ -138,7 +143,7 @@ export default React.memo(function SessionSettingsScreen() {
     ], []);
 
     const selectGrouping = React.useCallback((itemId: string, section: 'active' | 'inactive') => {
-        if (itemId !== 'project' && itemId !== 'date') return;
+        if (itemId !== 'directory' && itemId !== 'project' && itemId !== 'date') return;
         if (section === 'active') {
             setSessionListActiveGroupingV1(itemId);
             return;

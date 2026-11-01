@@ -3,8 +3,10 @@ import React from 'react';
 import { useResolvedActiveServerSelection } from '@/hooks/server/useEffectiveServerSelection';
 import { useFeatureDecision } from '@/hooks/server/useFeatureDecision';
 import { useIsTablet } from '@/utils/platform/responsive';
+import { isAgentId } from '@/agents/registry/registryCore';
 import {
     SessionListViewItem,
+    useLocalSetting,
     useLocalSettingMutable,
     useMachineDisplayById,
     useProfile,
@@ -13,6 +15,8 @@ import {
     useSettingMutable,
 } from '@/sync/domains/state/storage';
 import { applySessionFoldersToSessionListViewData } from '@/sync/domains/session/listing/sessionListViewData';
+import { filterSessionListViewDataByAgent } from '@/sync/domains/session/listing/sessionListAgentFilter';
+import { applySessionPathTreeToSessionListViewData } from '@/sync/domains/session/listing/sessionListPathTree';
 import {
     buildSessionListIndexFromViewData,
     type SessionListIndexItem,
@@ -169,6 +173,10 @@ export function useSessionListViewState({
     const workspaceMachineSubtitlesEnabled = useSetting('workspaceMachineSubtitlesEnabled') !== false;
     const [collapsedGroupKeysV1, setCollapsedGroupKeysV1] = useCollapsedGroupKeysMutable('collapsedGroupKeysV1');
     const sessionListDensity = useSetting('sessionListDensity');
+    const sessionListActiveGrouping = useSetting('sessionListActiveGroupingV1');
+    const sessionListInactiveGrouping = useSetting('sessionListInactiveGroupingV1');
+    const sessionListSectionModeSetting = useSetting('sessionListSectionModeV1');
+    const sessionListAgentFilter = useLocalSetting('sessionListAgentFilterV1');
     const profile = useProfile();
     const machineDisplayById = useMachineDisplayById();
     const renderMachineDisplayById = useSessionListSnapshotWhenInactive(
@@ -192,7 +200,17 @@ export function useSessionListViewState({
     const showServerBadge = selection.enabled && selection.presentation === 'flat-with-badge' && selectedServerCount > 1;
     const showPinnedServerBadge = selection.enabled && selectedServerCount > 1;
     const selectable = isTablet;
-    const folderActionsEnabled = storageKind !== 'direct' && sessionFoldersDecision?.state === 'enabled';
+    // Directory grouping shows sessions in a folder tree of their directories. The one-section list
+    // follows the active grouping.
+    const directoryTreeInActive = sessionListActiveGrouping === 'directory';
+    const directoryTreeInInactive = sessionListSectionModeSetting !== 'single' && sessionListInactiveGrouping === 'directory';
+    const pathTreeSections = React.useMemo(
+        () => ({ active: directoryTreeInActive, inactive: directoryTreeInInactive }),
+        [directoryTreeInActive, directoryTreeInInactive],
+    );
+    const pathTreeEnabled = directoryTreeInActive || directoryTreeInInactive;
+    // User folders nest sessions inside project groups, which the directory tree replaces.
+    const folderActionsEnabled = storageKind !== 'direct' && sessionFoldersDecision?.state === 'enabled' && !pathTreeEnabled;
     const sessionFolderViewMode: SessionFolderViewModeV1 = sessionFolderViewModeRaw === 'tree' ? 'tree' : 'off';
     const sessionListSavedFolderSortMode = normalizeSessionListFolderSortMode(sessionListFolderSortModeRaw);
     const sessionListOrderingMode = normalizeSessionListOrderingModeV1(sessionListOrderingModeRaw);
@@ -389,14 +407,25 @@ export function useSessionListViewState({
         });
     }, [getOrganizationMutationContext, runOrganizationMutation, workspaceLabelsV1]);
 
+    // The agent tabs above the list pick one agent's sessions; an agent without sessions shows all,
+    // matching the tab that stays selected (SessionListAgentTabs).
+    const agentFilteredData = React.useMemo(() => {
+        if (!data || !sessionListAgentFilter || !isAgentId(sessionListAgentFilter)) return data;
+        const filtered = filterSessionListViewDataByAgent(data, sessionListAgentFilter);
+        return filtered.length > 0 ? filtered : data;
+    }, [data, sessionListAgentFilter]);
+    const sessionListAgentFilterActive = agentFilteredData !== data;
+
     const folderPresentedData = React.useMemo(() => {
-        if (!data || !folderViewEnabled) return data;
-        return applySessionFoldersToSessionListViewData(data, {
+        if (!agentFilteredData) return agentFilteredData;
+        if (pathTreeEnabled) return applySessionPathTreeToSessionListViewData(agentFilteredData, pathTreeSections);
+        if (!folderViewEnabled) return agentFilteredData;
+        return applySessionFoldersToSessionListViewData(agentFilteredData, {
             enabled: true,
             folders: sessionFoldersV1,
             assignmentsBySessionKey: sessionFolderAssignmentsBySessionKey,
         });
-    }, [data, folderViewEnabled, sessionFolderAssignmentsBySessionKey, sessionFoldersV1]);
+    }, [agentFilteredData, folderViewEnabled, pathTreeEnabled, pathTreeSections, sessionFolderAssignmentsBySessionKey, sessionFoldersV1]);
 
     const headerFiltersActive = hasActiveSessionListHeaderFilters(headerFilters);
 
@@ -540,6 +569,8 @@ export function useSessionListViewState({
         selectable,
         folderActionsEnabled,
         folderViewEnabled,
+        pathTreeEnabled,
+        sessionListAgentFilterActive,
         allKnownTags,
         folderPresentedData,
         collapsedListItems,

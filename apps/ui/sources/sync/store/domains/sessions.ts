@@ -6,7 +6,7 @@ import type {
     Session,
 } from '../../domains/state/storageTypes';
 import type { NormalizedMessage } from '../../typesRaw';
-import type { SessionListViewItem } from '../../domains/session/listing/sessionListViewData';
+import type { SessionListGroupingV1, SessionListViewItem } from '../../domains/session/listing/sessionListViewData';
 import { readSessionArchivePending, type SessionArchiveOperation, type SessionArchiveOperations } from '../../domains/session/listing/sessionArchiveState';
 import { readStoredSessionMessagesFromStateLike } from '../../domains/messages/readStoredSessionMessages';
 import { isTranscriptRenderableAggregate } from '../../domains/messages/transcriptRenderableAggregate';
@@ -279,8 +279,8 @@ type SessionsDomainDependencies = {
     // Keep resilient: older settings payloads (or partial boot states) may not yet include this key.
     settings: {
         groupInactiveSessionsByProject?: boolean;
-        sessionListActiveGroupingV1?: 'project' | 'date';
-        sessionListInactiveGroupingV1?: 'project' | 'date';
+        sessionListActiveGroupingV1?: SessionListGroupingV1;
+        sessionListInactiveGroupingV1?: SessionListGroupingV1;
         sessionListSectionModeV1?: 'activity' | 'single';
         sessionListAttentionPromotionModeV1?: SessionListAttentionPromotionMode;
         sessionListWorkingPlacementModeV1?: SessionListWorkingPlacementMode;

@@ -6,7 +6,7 @@ import {
 } from '../../domains/machines/machineDisplayRenderable';
 import { resolveCanonicalMachineId } from '../../domains/machines/identity/resolveCanonicalMachineId';
 import type { Settings } from '../../domains/settings/settings';
-import type { SessionListViewItem } from '../../domains/session/listing/sessionListViewData';
+import { resolveSessionListSectionGrouping, type SessionListViewItem } from '../../domains/session/listing/sessionListViewData';
 import type { SessionListRenderableSession } from '../../domains/session/listing/sessionListRenderable';
 import { resolveSessionProjectGroupingKeyParts } from '../../domains/session/listing/sessionListProjectGroupingKeys';
 import {
@@ -53,15 +53,12 @@ type MachinesDomainDependencies = Readonly<{
     sessionListViewDataByServerId: Record<string, SessionListViewItem[] | null>;
 }>;
 
-function resolveGroupingForSection(
-    section: 'active' | 'inactive',
-    settings: Settings,
-): 'project' | 'date' {
-    if (section === 'active') {
-        return settings.sessionListActiveGroupingV1 ?? 'project';
-    }
-    if (settings.sessionListInactiveGroupingV1) return settings.sessionListInactiveGroupingV1;
-    return settings.groupInactiveSessionsByProject ? 'project' : 'date';
+function resolveGroupingForSection(section: 'active' | 'inactive', settings: Settings): 'project' | 'date' {
+    return resolveSessionListSectionGrouping(section, {
+        activeGroupingV1: settings.sessionListActiveGroupingV1,
+        inactiveGroupingV1: settings.sessionListInactiveGroupingV1,
+        groupInactiveSessionsByProject: settings.groupInactiveSessionsByProject,
+    });
 }
 
 function resolveMachineGroupId(

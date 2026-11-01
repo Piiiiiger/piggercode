@@ -55,6 +55,7 @@ import {
 import { SessionFolderScopeBreadcrumb } from './sessionFolderScopeBreadcrumb';
 import { DraggableSessionFolderHeaderFrame } from './DraggableSessionFolderHeaderFrame';
 import { ProjectGroupHeader } from './ProjectGroupHeader';
+import { SessionPathFolderHeader } from './pathTree/SessionPathFolderHeader';
 import { SessionListHeaderFrame } from './SessionListHeaderFrame';
 import { resolveSessionListRowModelAdjacency } from './row/buildSessionListRowModels';
 import { SessionListRowModelBoundary } from './row/SessionListRowModelBoundary';
@@ -628,6 +629,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         showPinnedServerBadge,
         folderActionsEnabled,
         folderViewEnabled,
+        sessionListAgentFilterActive,
         allKnownTags,
         hasMultipleMachines,
         reachableSessionDisplayByKey,
@@ -1047,52 +1049,68 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         setWorkspaceLabelsV1(next);
     }, [workspaceLabelsV1, setWorkspaceLabelsV1]);
 
+    const launchNewSessionInDirectory = React.useCallback((params: Readonly<{
+        serverId: string;
+        machineId: string;
+        directory: string;
+        /** When set, the new session starts with this session's agent, model and other choices. */
+        seedSessionId: string | null;
+    }>) => {
+        const seedSession = params.seedSessionId
+            ? ((storage.getState() as any)?.sessions?.[params.seedSessionId] as Session | undefined)
+            : undefined;
+        const draftId = resolveNewSessionDraftRouteIdentity({ routeDraftId: undefined }).draftId;
+        const routeParams = buildNewSessionLaunchRouteParams({
+            draftId,
+            machineId: params.machineId,
+            directory: params.directory,
+            targetServerId: params.serverId,
+        });
+        if (seedSession) {
+            const dataId = storeTempData(buildNewSessionTempDataFromSessionConfiguration({
+                session: seedSession,
+                machineId: params.machineId,
+                directoryOverride: params.directory,
+            }));
+            router.push({ pathname: '/new', params: { ...routeParams, dataId } } as any);
+            return;
+        }
+        router.push({ pathname: '/new', params: routeParams } as any);
+    }, [router]);
+
     const handleCreateSessionFromProject = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
         const workspaceScopeHint = item.workspaceScopeHint ?? null;
         if (!workspaceScopeHint) {
             return;
         }
         const seedSessionId = typeof item.seedSessionId === 'string' ? item.seedSessionId.trim() : '';
-        const seedSession = seedSessionId
-            ? ((storage.getState() as any)?.sessions?.[seedSessionId] as Session | undefined)
-            : undefined;
         const seedMachineTarget = seedSessionId
             ? readMachineControlTargetForSession(seedSessionId)
             : null;
         const directory = seedMachineTarget?.machineId === workspaceScopeHint.machineId
             ? seedMachineTarget.basePath
             : workspaceScopeHint.rootPath;
-        const draftId = resolveNewSessionDraftRouteIdentity({ routeDraftId: undefined }).draftId;
-        if (rememberLastProjectSessionSelections && seedSession) {
-            const dataId = storeTempData(buildNewSessionTempDataFromSessionConfiguration({
-                session: seedSession,
-                machineId: workspaceScopeHint.machineId,
-                directoryOverride: directory,
-            }));
-            router.push({
-                pathname: '/new',
-                params: {
-                    ...buildNewSessionLaunchRouteParams({
-                        draftId,
-                        machineId: workspaceScopeHint.machineId,
-                        directory,
-                        targetServerId: workspaceScopeHint.serverId,
-                    }),
-                    dataId,
-                },
-            } as any);
-            return;
-        }
-        router.push({
-            pathname: '/new',
-            params: buildNewSessionLaunchRouteParams({
-                draftId,
-                machineId: workspaceScopeHint.machineId,
-                directory,
-                targetServerId: workspaceScopeHint.serverId,
-            }),
-        } as any);
-    }, [rememberLastProjectSessionSelections, router]);
+        launchNewSessionInDirectory({
+            serverId: workspaceScopeHint.serverId,
+            machineId: workspaceScopeHint.machineId,
+            directory,
+            seedSessionId: rememberLastProjectSessionSelections && seedSessionId ? seedSessionId : null,
+        });
+    }, [launchNewSessionInDirectory, rememberLastProjectSessionSelections]);
+
+    // A path tree folder starts the session in that exact folder. With an agent tab picked, the seed
+    // (the folder's newest session) is that agent's, so the new session uses the picked agent.
+    const handleCreateSessionInPathFolder = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const workspaceScopeHint = item.workspaceScopeHint ?? null;
+        if (!workspaceScopeHint) return;
+        const seedSessionId = typeof item.seedSessionId === 'string' ? item.seedSessionId.trim() : '';
+        launchNewSessionInDirectory({
+            serverId: workspaceScopeHint.serverId,
+            machineId: workspaceScopeHint.machineId,
+            directory: workspaceScopeHint.rootPath,
+            seedSessionId: (rememberLastProjectSessionSelections || sessionListAgentFilterActive) && seedSessionId ? seedSessionId : null,
+        });
+    }, [launchNewSessionInDirectory, rememberLastProjectSessionSelections, sessionListAgentFilterActive]);
 
     const handleCreateSessionFromFolder = React.useCallback((folder: { workspace?: unknown }) => {
         const workspace = folder.workspace;
@@ -1884,6 +1902,27 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         const headerTestId = item.headerKind === 'project'
             ? `session-list-project-header:${item.groupKey ?? item.title}`
             : `session-list-header:${item.groupKey ?? item.title}`;
+        if (item.headerKind === 'pathFolder') {
+            const collapseKey = item.groupKey ?? '';
+            return (
+                <SessionListHeaderFrame
+                    treeRowId={`header:${collapseKey}`}
+                    onRegisterTreeRowBounds={registerTreeRowBounds}
+                    onUnregisterTreeRowBounds={unregisterTreeRowBounds}
+                >
+                    <SessionPathFolderHeader
+                        testID={headerTestId}
+                        title={item.title}
+                        depth={item.depth ?? 0}
+                        sessionCount={item.sessionCount ?? 0}
+                        activeSessionCount={item.activeSessionCount ?? 0}
+                        collapsed={Boolean(collapsedKeys[collapseKey])}
+                        onToggleCollapse={() => handleToggleCollapse(collapseKey)}
+                        onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInPathFolder(item) : null}
+                    />
+                </SessionListHeaderFrame>
+            );
+        }
         const folderHeader = folderViewEnabled ? asSessionFolderHeaderItem(item) : null;
         if (folderHeader) {
             const collapseKey = folderHeader.groupKey ?? `folder:${folderHeader.folderId}`;
@@ -2002,6 +2041,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleAddFolderToProject,
         handleAddSessionSubfolder,
         handleCreateSessionFromProject,
+        handleCreateSessionInPathFolder,
         handleCreateSessionFromFolder,
         handleDeleteSessionFolder,
         handleA11yDragStart,
@@ -2147,7 +2187,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
             groupKind: item.groupKind,
             userOrderingMode: sessionListOrderingMode,
         });
-        const dragEnabled = effectiveOrderingMode === 'custom' || showStructuralDragHandles;
+        // Directory tree rows (treeKey) sit where their directory puts them, so they do not drag.
+        const dragEnabled = !item.treeKey && (effectiveOrderingMode === 'custom' || showStructuralDragHandles);
         const rowStoreScopeKey = resolveSessionListRowStoreScopeKey({
             sessionId: item.session.id,
             serverId: item.serverId ?? null,

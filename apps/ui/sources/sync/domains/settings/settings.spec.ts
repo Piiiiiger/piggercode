@@ -58,13 +58,13 @@ describe('settings', () => {
             expect(settingsParse({ executionRunsGuidanceEnabled: false }).executionRunsGuidanceEnabled).toBe(false);
         });
 
-        it('defaults session list presentation to narrow agent logos with activity-and-attention active color', () => {
+        it('defaults session list presentation to narrow agent logos with running sessions in the active color', () => {
             const settings = settingsParse({});
             expect((settings as any).sessionListDensity).toBe('narrow');
             expect((settings as any).compactSessionView).toBe(true);
             expect((settings as any).compactSessionViewMinimal).toBe(true);
             expect(settings.sessionListIdentityDisplay).toBe('agentLogo');
-            expect(settings.sessionListActiveColorModeV1).toBe('activityAndAttention');
+            expect(settings.sessionListActiveColorModeV1).toBe('allActive');
         });
 
         it('defaults animated working status text in session rows to enabled', () => {
@@ -828,10 +828,12 @@ describe('settings', () => {
             expect((parsed as any).sessionListInactiveGroupingV1).toBe('project');
         });
 
-        it('defaults the session list section mode to activity grouping', () => {
+        it('defaults the session list to one section shown as a folder tree with attention at the top', () => {
             const parsed = settingsParse({});
 
-            expect((parsed as any).sessionListSectionModeV1).toBe('activity');
+            expect((parsed as any).sessionListSectionModeV1).toBe('single');
+            expect((parsed as any).sessionListActiveGroupingV1).toBe('directory');
+            expect((parsed as any).sessionListAttentionPromotionModeV1).toBe('global');
         });
 
         it('parses the unified session list section mode', () => {
@@ -848,12 +850,6 @@ describe('settings', () => {
             } as any);
 
             expect((parsed as any).sessionListActiveColorModeV1).toBe('attentionOnly');
-        });
-
-        it('defaults session list attention placement to disabled', () => {
-            const parsed = settingsParse({});
-
-            expect((parsed as any).sessionListAttentionPromotionModeV1).toBe('off');
         });
 
         it('defaults session list working placement to disabled', () => {

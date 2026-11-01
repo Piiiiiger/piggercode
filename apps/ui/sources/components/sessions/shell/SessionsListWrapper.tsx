@@ -221,7 +221,7 @@ const SessionsListWrapperContent = React.memo((props: { pathname: string; surfac
     const { sessionListViewData, visibleSessionCount, hasHiddenInactiveSessions } = displayPaneState;
     const styles = stylesheet;
     const storageChrome = (
-        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} />
+        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} data={sessionListViewData} />
     );
     const sessionListContent = React.useMemo(
         () => (

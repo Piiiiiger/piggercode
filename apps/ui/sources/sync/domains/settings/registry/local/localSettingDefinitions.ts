@@ -119,6 +119,12 @@ export const LOCAL_SETTING_DEFINITIONS = defineSettingDefinitions({
             serializeCurrent: (value: readonly unknown[]) => value.length,
         },
     },
+    sessionListAgentFilterV1: {
+        schema: z.string().nullable(),
+        default: null,
+        description: 'The agent (CLI) the session list shows on this device; null shows all',
+        storageScope: 'local',
+    },
     collapsedGroupKeysV1: {
         schema: z.record(z.string(), z.boolean()).default({}),
         default: {},

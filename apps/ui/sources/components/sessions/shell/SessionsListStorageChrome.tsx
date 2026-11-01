@@ -6,6 +6,10 @@ import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { t } from '@/text';
 import { Icon } from '@/components/ui/icons/Icon';
+import { useLocalSettingMutable, type SessionListViewItem } from '@/sync/domains/state/storage';
+import { countSessionListSessionsByAgent } from '@/sync/domains/session/listing/sessionListAgentFilter';
+
+import { SessionListAgentTabs } from './pathTree/SessionListAgentTabs';
 
 const stylesheet = StyleSheet.create(() => ({
     browseActionContainer: {
@@ -22,16 +26,35 @@ const stylesheet = StyleSheet.create(() => ({
 
 export type SessionsListStorageChromeProps = Readonly<{
     directSessionsEnabled: boolean;
+    /** The list's sessions, for the agent tabs; null while the list loads. */
+    data?: ReadonlyArray<SessionListViewItem> | null;
 }>;
 
 /**
- * Happier and direct sessions share one list, so the only storage chrome is the
- * entry for opening provider sessions that are not in the list yet.
+ * The bar above the session list: tabs that switch it between all sessions and one agent's (CLI's),
+ * with the entry for opening provider sessions that are not in the list yet. Before there are any
+ * sessions, that entry is a full row so a new list still points somewhere useful.
  */
 export const SessionsListStorageChrome = React.memo((props: SessionsListStorageChromeProps) => {
     const router = useRouter();
     const { theme } = useUnistyles();
     const styles = stylesheet;
+    const [selectedAgentId, setSelectedAgentId] = useLocalSettingMutable('sessionListAgentFilterV1');
+    const counts = React.useMemo(() => countSessionListSessionsByAgent(props.data ?? []), [props.data]);
+    const openBrowse = React.useCallback(() => {
+        router.push('/direct/browse');
+    }, [router]);
+
+    if (counts.size > 0) {
+        return (
+            <SessionListAgentTabs
+                counts={counts}
+                selectedAgentId={selectedAgentId ?? null}
+                onSelectAgent={setSelectedAgentId}
+                onBrowse={props.directSessionsEnabled ? openBrowse : null}
+            />
+        );
+    }
 
     if (!props.directSessionsEnabled) return null;
 
@@ -46,9 +69,7 @@ export const SessionsListStorageChrome = React.memo((props: SessionsListStorageC
                 title={t('directSessions.browseOpenExisting')}
                 subtitle={t('directSessions.browseActionSubtitle')}
                 icon={<Icon name="folder-open" size={20} color={theme.colors.text.secondary} />}
-                onPress={() => {
-                    router.push('/direct/browse');
-                }}
+                onPress={openBrowse}
             />
         </ItemGroup>
     );

@@ -1,6 +1,6 @@
 import { getServerProfileById } from '../domains/server/serverProfiles';
 import { getActiveServerSnapshot } from '../domains/server/serverRuntime';
-import { buildSessionListViewData, type SessionListViewItem } from '../domains/session/listing/sessionListViewData';
+import { buildSessionListViewData, type SessionListGroupingV1, type SessionListViewItem } from '../domains/session/listing/sessionListViewData';
 import type { WorkspacePathDisplayModeV1 } from '../domains/session/listing/sessionWorkspacePresentation';
 import type { MachineDisplayRenderable } from '../domains/machines/machineDisplayRenderable';
 import { resolveSessionDisplayTarget } from '../domains/machines/identity/resolveSessionMachineTargets';
@@ -98,8 +98,8 @@ export function buildSessionListViewDataWithServerScope(params: {
     machineRecords?: Record<string, Machine>;
     serverId?: string | null;
     groupInactiveSessionsByProject: boolean;
-    activeGroupingV1?: 'project' | 'date';
-    inactiveGroupingV1?: 'project' | 'date';
+    activeGroupingV1?: SessionListGroupingV1;
+    inactiveGroupingV1?: SessionListGroupingV1;
     sectionModeV1?: 'activity' | 'single';
     workspacePathDisplayModeV1?: WorkspacePathDisplayModeV1 | null;
     getProjectForSession?: (sessionId: string) => ProjectLookupResult;

@@ -37,6 +37,9 @@ export function filterCollapsedSessionListItems(
     let result: SessionListViewItem[] | undefined;
     let skipUntilNextSection = false;
     const collapsedFolderIds = new Set<string>();
+    // Path tree folders (see sessionListPathTree): a collapsed folder hides every folder and
+    // session below it, the same way user folders nest.
+    const collapsedTreeKeys = new Set<string>();
 
     const ensureResult = (index: number): SessionListViewItem[] => {
         if (result !== undefined) return result;
@@ -53,6 +56,7 @@ export function filterCollapsedSessionListItems(
             if (isSection) {
                 skipUntilNextSection = false;
                 collapsedFolderIds.clear();
+                collapsedTreeKeys.clear();
                 const collapseKey = item.groupKey || `${kind}:${item.serverId ?? 'local'}`;
                 if (keys[collapseKey]) {
                     ensureResult(index).push(item);
@@ -66,6 +70,16 @@ export function filterCollapsedSessionListItems(
             if (skipUntilNextSection) {
                 ensureResult(index);
                 continue;
+            }
+            if (kind === 'pathFolder' && item.treeKey) {
+                if (item.treeParentKey && collapsedTreeKeys.has(item.treeParentKey)) {
+                    collapsedTreeKeys.add(item.treeKey);
+                    ensureResult(index);
+                    continue;
+                }
+                if (item.groupKey && keys[item.groupKey]) {
+                    collapsedTreeKeys.add(item.treeKey);
+                }
             }
             if (kind === 'folder') {
                 const folderId = readFolderId(item);
@@ -93,7 +107,11 @@ export function filterCollapsedSessionListItems(
 
         const groupKey = item.groupKey ?? '';
         const folderId = readFolderId(item);
-        if ((folderId && collapsedFolderIds.has(folderId)) || (groupKey && keys[groupKey])) {
+        if (
+            (folderId && collapsedFolderIds.has(folderId))
+            || (item.treeKey && collapsedTreeKeys.has(item.treeKey))
+            || (groupKey && keys[groupKey])
+        ) {
             ensureResult(index);
             continue;
         }

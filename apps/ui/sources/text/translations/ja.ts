@@ -5083,6 +5083,8 @@ localTailscale: {
       projectSubtitle: "マシン + パスでセッションをグループ化",
       dateTitle: "日付",
       dateSubtitle: "最終アクティビティの日付でセッションをグループ化",
+      directoryTitle: "ディレクトリ",
+      directorySubtitle: "セッションを開始したディレクトリのフォルダーツリーで表示",
     },
     groupInactiveSessionsByProject:
       "非アクティブセッションをプロジェクト別にグループ化",
@@ -6730,6 +6732,11 @@ localTailscale: {
     conflict: { title: '下書きの競合', description: 'このフィールドは別のデバイスで変更されました。', mine: 'このデバイス', synced: '同期済み', useSynced: '同期版を使用', keepDevice: 'デバイス版を保持', copyMine: '自分の版をコピー', copied: 'コピーしました', copyFailed: 'コピーできませんでした', field: { text: 'テキスト', mentions: 'メンション', attachments: '添付ファイル', recipient: '受信者', agentContinuation: 'エージェント継続', executionRunDelivery: '実行配信' } },
   },
   sessionsList: {
+    agentTabAll: "すべて",
+    agentTabLabel: ({ name, count }: { name: string; count: number }) => `${name} ${count}`,
+    agentTabA11y: ({ name, count }: { name: string; count: number }) => `${name}、${count} 件のセッション`,
+    pathFolderA11y: ({ name, count }: { name: string; count: number }) => `フォルダー ${name}、${count} 件のセッション`,
+    pathFolderNewSessionA11y: ({ name }: { name: string }) => `${name} で新しいセッション`,
     serverHeader: ({ server }: { server: string }) => `サーバー: ${server}`,
     storagePersistedTab: "Happier",
     storageDirectTab: "ダイレクト",

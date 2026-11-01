@@ -107,6 +107,16 @@ function ensureHeaderIncludedInOriginalOrder(
     return items.filter((item) => item === header || resultSet.has(item));
 }
 
+type ListHeader = Extract<SessionListViewItem, { type: 'header' }>;
+
+/**
+ * Path tree folders above a match stay; folders at `depth` or deeper are siblings or cousins of
+ * what comes next, so they are dropped while still pending.
+ */
+function dropPendingPathFoldersFromDepth(pending: ListHeader[], depth: number): ListHeader[] {
+    return pending.filter((header) => header.headerKind !== 'pathFolder' || (header.depth ?? 0) < depth);
+}
+
 export function filterSessionListItemsForHeaderControls(
     items: ReadonlyArray<SessionListViewItem>,
     input: SessionListHeaderFilterState,
@@ -128,6 +138,8 @@ export function filterSessionListItemsForHeaderControls(
                     anchorHeader = item;
                 }
                 pendingHeaders = [item];
+            } else if (item.headerKind === 'pathFolder') {
+                pendingHeaders = [...dropPendingPathFoldersFromDepth(pendingHeaders, item.depth ?? 0), item];
             } else {
                 pendingHeaders.push(item);
             }
@@ -142,6 +154,9 @@ export function filterSessionListItemsForHeaderControls(
             continue;
         }
 
+        if (item.treeKey) {
+            pendingHeaders = dropPendingPathFoldersFromDepth(pendingHeaders, item.folderDepth ?? 0);
+        }
         if (pendingHeaders.length > 0) {
             result.push(...pendingHeaders);
             pendingHeaders = [];

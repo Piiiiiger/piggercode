@@ -4750,6 +4750,8 @@ export const ru: TranslationStructure = {
       projectSubtitle: "Группировать сессии по машине и пути",
       dateTitle: "Дата",
       dateSubtitle: "Группировать сессии по дате последней активности",
+      directoryTitle: "Папка",
+      directorySubtitle: "Показывать сессии деревом папок, в которых они были запущены",
     },
     groupInactiveSessionsByProject:
       "Группировать неактивные сессии по проектам",
@@ -5408,6 +5410,11 @@ export const ru: TranslationStructure = {
     conflict: { title: 'Конфликт черновика', description: 'Это поле изменено на другом устройстве.', mine: 'На этом устройстве', synced: 'Синхронизировано', useSynced: 'Использовать синхронизированное', keepDevice: 'Оставить с устройства', copyMine: 'Скопировать моё', copied: 'Скопировано', copyFailed: 'Не удалось скопировать', field: { text: 'Текст', mentions: 'Упоминания', attachments: 'Вложения', recipient: 'Получатель', agentContinuation: 'Продолжение агента', executionRunDelivery: 'Доставка запуска' } },
   },
   sessionsList: {
+    agentTabAll: "Все",
+    agentTabLabel: ({ name, count }: { name: string; count: number }) => `${name} ${count}`,
+    agentTabA11y: ({ name, count }: { name: string; count: number }) => `${name}, сессий: ${count}`,
+    pathFolderA11y: ({ name, count }: { name: string; count: number }) => `Папка ${name}, сессий: ${count}`,
+    pathFolderNewSessionA11y: ({ name }: { name: string }) => `Новая сессия в ${name}`,
     serverHeader: ({ server }: { server: string }) => `Сервер: ${server}`,
     storagePersistedTab: "Happier",
     storageDirectTab: "Прямые",

@@ -332,7 +332,7 @@ const SidebarMainViewContent = React.memo(function SidebarMainViewContent({
     }, [resolveNewSessionOrdinaryEntryRoute, router]);
 
     const storageChrome = (
-        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} />
+        <SessionsListStorageChrome directSessionsEnabled={directSessionsEnabled} data={sessionListViewData} />
     );
 
     let content: React.ReactNode;

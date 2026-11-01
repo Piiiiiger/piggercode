@@ -77,6 +77,50 @@ describe('filterSessionListItemsForHeaderControls', () => {
         ]);
     });
 
+    it('keeps only the folders above a match in the path tree', () => {
+        const folder = (title: string, treeKey: string, depth: number): SessionListViewItem => ({
+            type: 'header', headerKind: 'pathFolder', title, groupKey: treeKey, treeKey, depth, serverId: 'server-a',
+        });
+        const inFolder = (id: string, name: string, treeKey: string, depth: number): SessionListViewItem => ({
+            ...sessionItem(id, { name, path: '/x', host: 'h' }, { groupKey: treeKey, groupKind: 'project' }),
+            treeKey,
+            folderDepth: depth,
+        });
+        const result = filterSessionListItemsForHeaderControls([
+            activeHeader,
+            folder('~', 'home', 0),
+            folder('code/happier', 'happier', 1),
+            inFolder('a', 'Rename app', 'happier', 2),
+            folder('Downloads', 'downloads', 1),
+            inFolder('d', 'Sort downloads', 'downloads', 2),
+            inFolder('b', 'Greeting', 'home', 1),
+            folder('/', 'root', 0),
+            folder('var/log', 'log', 1),
+            inFolder('c', 'Read logs', 'log', 2),
+        ], {
+            searchQuery: 'downloads',
+            selectedTags: [],
+            sessionTags: {},
+            searchableTextBySessionKey: {},
+        });
+
+        expect(result.map((item) => item.type === 'session' ? item.session.id : item.title)).toEqual(['Active', '~', 'Downloads', 'd']);
+
+        const second = filterSessionListItemsForHeaderControls([
+            activeHeader,
+            folder('~', 'home', 0),
+            folder('Downloads', 'downloads', 1),
+            inFolder('d', 'Sort downloads', 'downloads', 2),
+            inFolder('b', 'Greeting', 'home', 1),
+        ], {
+            searchQuery: 'greeting',
+            selectedTags: [],
+            sessionTags: {},
+            searchableTextBySessionKey: {},
+        });
+        expect(second.map((item) => item.type === 'session' ? item.session.id : item.title)).toEqual(['Active', '~', 'b']);
+    });
+
     it('filters sessions by decrypted text already present in the store', () => {
         const result = filterSessionListItemsForHeaderControls([
             activeHeader,

@@ -24,10 +24,15 @@ export type SessionListViewItem =
     | {
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder';
+        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder';
         groupKey?: string;
         workspaceKey?: string;
         workspace?: SessionFolderWorkspaceRefV1;
+        /** Path tree: this folder's key and its parent folder's key (see sessionListPathTree). */
+        treeKey?: string;
+        treeParentKey?: string | null;
+        /** Path tree: sessions below this folder that are running. */
+        activeSessionCount?: number;
         renderWorkspaceKey?: string;
         folderId?: string;
         parentFolderId?: string | null;
@@ -55,12 +60,34 @@ export type SessionListViewItem =
         serverId?: string;
         serverName?: string;
         workspace?: SessionFolderWorkspaceRefV1;
+        /** Path tree: the folder this session sits in (see sessionListPathTree). */
+        treeKey?: string;
     };
+
+/** `directory` groups like `project`; the list then shows those groups as a folder tree (see sessionListPathTree). */
+export type SessionListGroupingV1 = 'project' | 'date' | 'directory';
+
+export type SessionListSectionGroupingInput = Readonly<{
+    activeGroupingV1?: SessionListGroupingV1 | null;
+    inactiveGroupingV1?: SessionListGroupingV1 | null;
+    groupInactiveSessionsByProject?: boolean | null;
+}>;
+
+/** How the store groups a section's sessions. In one-section mode every session uses the `active` grouping. */
+export function resolveSessionListSectionGrouping(
+    section: 'active' | 'inactive',
+    input: SessionListSectionGroupingInput,
+): 'project' | 'date' {
+    const configured = section === 'active' ? (input.activeGroupingV1 ?? 'project') : input.inactiveGroupingV1;
+    if (configured === 'directory') return 'project';
+    if (configured) return configured;
+    return input.groupInactiveSessionsByProject === true ? 'project' : 'date';
+}
 
 export interface BuildSessionListViewDataOptions {
     groupInactiveSessionsByProject: boolean;
-    activeGroupingV1?: 'project' | 'date';
-    inactiveGroupingV1?: 'project' | 'date';
+    activeGroupingV1?: SessionListGroupingV1;
+    inactiveGroupingV1?: SessionListGroupingV1;
     sectionModeV1?: 'activity' | 'single';
     workspacePathDisplayModeV1?: WorkspacePathDisplayModeV1 | null;
     /**
@@ -97,17 +124,6 @@ function resolveSectionForSession(
 ): SessionListActivitySection {
     if (section !== 'sessions') return section;
     return isSessionActive(session) ? 'active' : 'inactive';
-}
-
-function resolveGroupingForSection(
-    section: 'active' | 'inactive',
-    options: BuildSessionListViewDataOptions,
-): 'project' | 'date' {
-    if (section === 'active') {
-        return options.activeGroupingV1 ?? 'project';
-    }
-    if (options.inactiveGroupingV1) return options.inactiveGroupingV1;
-    return options.groupInactiveSessionsByProject ? 'project' : 'date';
 }
 
 function normalizeServerIdForKey(serverId?: string): string {
@@ -720,7 +736,7 @@ export function buildSessionListViewData(
         const allOwnedSessions = [...activeSessions, ...inactiveSessions].sort(compareSessionsStableNewestFirst);
         const allSharedSessions = [...activeSharedSessions, ...inactiveSharedSessions].sort(compareSessionsStableNewestFirst);
         if (allOwnedSessions.length > 0 || allSharedSessions.length > 0) {
-            const grouping = resolveGroupingForSection('active', options);
+            const grouping = resolveSessionListSectionGrouping('active', options);
             listData.push({
                 type: 'header',
                 title: t('tabs.sessions'),
@@ -752,7 +768,7 @@ export function buildSessionListViewData(
     }
 
     if (activeSessions.length > 0 || activeSharedSessions.length > 0) {
-        const grouping = resolveGroupingForSection('active', options);
+        const grouping = resolveSessionListSectionGrouping('active', options);
         listData.push({ type: 'header', title: 'Active', headerKind: 'active', ...serverScopeMeta });
         pushSharedSessionsToList({
             listData,
@@ -776,7 +792,7 @@ export function buildSessionListViewData(
     }
 
     if (inactiveSessions.length > 0 || inactiveSharedSessions.length > 0) {
-        const grouping = resolveGroupingForSection('inactive', options);
+        const grouping = resolveSessionListSectionGrouping('inactive', options);
         listData.push({ type: 'header', title: 'Inactive', headerKind: 'inactive', ...serverScopeMeta });
         pushSharedSessionsToList({
             listData,

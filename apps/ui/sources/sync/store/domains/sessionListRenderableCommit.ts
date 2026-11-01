@@ -2,6 +2,8 @@ import type { MachineDisplayRenderable } from '../../domains/machines/machineDis
 import { resolveSessionListCacheServerId } from '../../domains/session/listing/sessionListPresentation';
 import {
     resolveSessionListDateGroupingAt,
+    resolveSessionListSectionGrouping,
+    type SessionListGroupingV1,
     type SessionListViewItem,
 } from '../../domains/session/listing/sessionListViewData';
 import {
@@ -38,8 +40,8 @@ import {
 
 type SessionListRenderableCommitSettings = Readonly<{
     groupInactiveSessionsByProject?: boolean;
-    sessionListActiveGroupingV1?: 'project' | 'date';
-    sessionListInactiveGroupingV1?: 'project' | 'date';
+    sessionListActiveGroupingV1?: SessionListGroupingV1;
+    sessionListInactiveGroupingV1?: SessionListGroupingV1;
     sessionListSectionModeV1?: 'activity' | 'single';
     sessionListAttentionPromotionModeV1?: SessionListAttentionPromotionMode;
     sessionListWorkingPlacementModeV1?: SessionListWorkingPlacementMode;
@@ -97,13 +99,11 @@ function resolveSessionListGroupingForSettings(
     section: 'active' | 'inactive',
     settings: SessionListRenderableCommitSettings,
 ): 'project' | 'date' {
-    if (section === 'active') {
-        return settings.sessionListActiveGroupingV1 ?? 'project';
-    }
-    if (settings.sessionListInactiveGroupingV1) {
-        return settings.sessionListInactiveGroupingV1;
-    }
-    return settings.groupInactiveSessionsByProject === true ? 'project' : 'date';
+    return resolveSessionListSectionGrouping(section, {
+        activeGroupingV1: settings.sessionListActiveGroupingV1,
+        inactiveGroupingV1: settings.sessionListInactiveGroupingV1,
+        groupInactiveSessionsByProject: settings.groupInactiveSessionsByProject,
+    });
 }
 
 function isSessionListDateGroupingForRenderable(

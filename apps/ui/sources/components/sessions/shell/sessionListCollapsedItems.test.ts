@@ -62,4 +62,35 @@ describe('filterCollapsedSessionListItems', () => {
             'session:root-session',
         ]);
     });
+    it('hides everything below a collapsed path folder and keeps its siblings', () => {
+        const pathFolder = (title: string, treeKey: string, treeParentKey: string | null, depth: number): SessionListViewItem => ({
+            type: 'header', headerKind: 'pathFolder', title, groupKey: `pathTree:${treeKey}`, treeKey, treeParentKey, depth, serverId: 'server-a',
+        });
+        const inFolder = (id: string, treeKey: string, depth: number): SessionListViewItem => ({
+            ...session(id, `pathTree:${treeKey}`, null, depth),
+            treeKey,
+        });
+        const items: SessionListViewItem[] = [
+            { type: 'header', headerKind: 'sessions', title: 'Sessions', serverId: 'server-a' },
+            pathFolder('~', 'home', null, 0),
+            pathFolder('code', 'code', 'home', 1),
+            pathFolder('happier', 'happier', 'code', 2),
+            inFolder('deep', 'happier', 3),
+            inFolder('in-code', 'code', 2),
+            pathFolder('Downloads', 'downloads', 'home', 1),
+            inFolder('in-downloads', 'downloads', 2),
+            inFolder('in-home', 'home', 1),
+        ];
+
+        const filtered = filterCollapsedSessionListItems(items, { 'pathTree:code': true });
+
+        expect(filtered.map((item) => item.type === 'header' ? `header:${item.title}` : `session:${item.session.id}`)).toEqual([
+            'header:Sessions',
+            'header:~',
+            'header:code',
+            'header:Downloads',
+            'session:in-downloads',
+            'session:in-home',
+        ]);
+    });
 });
