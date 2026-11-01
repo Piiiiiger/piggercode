@@ -45,12 +45,13 @@ describe('text/i18n', () => {
 
     it('shows the product name configured for the build in translated text', () => {
         const extra = Constants.expoConfig!.extra as Record<string, unknown>;
-        extra.app = { productName: 'Pigger' };
+        extra.app = { productName: 'Pigger', cliCommandName: 'piggercode' };
         try {
             expect(t('settings.aboutFooter')).toBe(
                 'Pigger is a Codex, Claude Code and OpenCode mobile client. It\'s end-to-end encrypted by default, with account restore for your other devices. Not affiliated with Anthropic.',
             );
             expect(t('settingsVoice.mode.happier')).toBe('Happier Voice');
+            expect(t('sessionInfo.resumeCommand', { sessionId: 'abc' })).toBe('piggercode resume abc');
             setPreferredLanguageFromSettings('zh-Hans');
             expect(t('settings.aboutFooter')).toMatch(/^Pigger 是一个 Codex/);
         } finally {

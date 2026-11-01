@@ -155,7 +155,7 @@ describe('app.config.js', () => {
 
         expect(exp.extra?.app?.variant).toBe('preview');
         expect(exp.extra?.app?.identityVariant).toBe('publicdev');
-        expect(exp.name).toBe('Pigger (dev)');
+        expect(exp.name).toBe('PiggerCode (dev)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.publicdev');
         expect(exp.android?.package).toBe('dev.happier.app.publicdev');
         expect(exp.scheme).toBe('happier-dev');
@@ -228,7 +228,7 @@ describe('app.config.js', () => {
 
         expect(exp.extra?.app?.variant).toBe('preview');
         expect(exp.extra?.app?.identityVariant).toBe('internalpreview');
-        expect(exp.name).toBe('Pigger (internal preview)');
+        expect(exp.name).toBe('PiggerCode (internal preview)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.internalpreview');
         expect(exp.android?.package).toBe('dev.happier.app.internalpreview');
         expect(exp.scheme).toBe('happier-internalpreview');
@@ -257,15 +257,16 @@ describe('app.config.js', () => {
         ]);
     });
 
-    it('names and versions the app as Pigger 0.0.0', () => {
+    it('names and versions the app as PiggerCode 0.0.0 with the piggercode command', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'production';
             return getPublicConfig();
         });
 
-        expect(exp.name).toBe('Pigger');
+        expect(exp.name).toBe('PiggerCode');
         expect(exp.version).toBe('0.0.0');
-        expect(exp.extra?.app?.productName).toBe('Pigger');
+        expect(exp.extra?.app?.productName).toBe('PiggerCode');
+        expect(exp.extra?.app?.cliCommandName).toBe('piggercode');
     });
 
     it('defaults EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV based on the app variant', () => {

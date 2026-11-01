@@ -462,6 +462,8 @@ const baseExpoConfig = {
                 // production bundle IDs without disabling production-only native configuration.
                 // The product name shown in copy (translations name the upstream app).
                 productName: APP_BRAND.productName,
+                // The command shown in copy (translations name the upstream `happier` command).
+                cliCommandName: APP_BRAND.cliCommandName,
                 variant: appVariantOverride || appVariant,
                 identityVariant: appIdentityVariant,
                 postHogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY || process.env.EXPO_PUBLIC_POSTHOG_API_KEY,

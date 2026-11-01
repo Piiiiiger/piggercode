@@ -14,6 +14,18 @@ describe('applyProductName', () => {
         );
     });
 
+    it('runs commands under the configured command name and keeps paths, links and packages', () => {
+        expect(applyProductName(
+            'Run `happier attach`, add happier to PATH, or type $ happier. '
+            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @happier-dev/cli, happier.dev and happier-dev.',
+            'PiggerCode',
+            'piggercode',
+        )).toBe(
+            'Run `piggercode attach`, add piggercode to PATH, or type $ piggercode. '
+            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @happier-dev/cli, happier.dev and happier-dev.',
+        );
+    });
+
     it('leaves text alone when the product keeps the upstream name', () => {
         const text = 'Happier Coder can reach the Happier CLI.';
         expect(applyProductName(text, 'Happier')).toBe(text);

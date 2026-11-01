@@ -5,7 +5,7 @@
  * keyed by it.
  */
 export const BUILTIN_RELAY = Object.freeze({
-  name: 'Pigger',
+  name: 'PiggerCode',
   serverUrl: 'https://relay.example.test',
   webappUrl: 'https://relay.example.test',
 });

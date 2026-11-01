@@ -4,10 +4,11 @@ const path = require('node:path');
 // We load the canonical release ring catalog from the checked-in CJS entrypoint.
 const releaseRings = require(path.resolve(__dirname, '..', '..', 'packages', 'release-runtime', 'releaseRings.cjs'));
 
-// The identity this fork's app shows: the name in titles, menus and copy, and the version in
-// Settings. Native bundle ids, URL schemes and update channels keep upstream's values.
+// The identity this fork's app shows: the name in titles, menus and copy, the command people type,
+// and the version in Settings. Native bundle ids, URL schemes and update channels keep upstream's values.
 const APP_BRAND = Object.freeze({
-    productName: 'Pigger',
+    productName: 'PiggerCode',
+    cliCommandName: 'piggercode',
     version: '0.0.0',
 });
 const { productName } = APP_BRAND;

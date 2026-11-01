@@ -1,7 +1,7 @@
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGE_CODES, SUPPORTED_LANGUAGES, getLanguageEnglishName, getLanguageNativeName, type SupportedLanguage } from './_all';
 import type { TranslationStructure, Translations } from './_types';
 import { getDeviceLocales } from './deviceLocales';
-import { applyProductName, resolveConfiguredProductName } from './productName';
+import { applyProductName, resolveConfiguredCliCommandName, resolveConfiguredProductName } from './productName';
 import { ca } from './translations/ca';
 import { de } from './translations/de';
 import { en } from './translations/en';
@@ -184,9 +184,9 @@ export function t<K extends TranslationKey>(
 ): string {
     const callable = resolveCallableTranslation(key);
     const text = callable ? callable(params[0] as never) : resolveStringValue(key);
-    return applyProductName(text, resolveConfiguredProductName());
+    return applyProductName(text, resolveConfiguredProductName(), resolveConfiguredCliCommandName());
 }
 
 export function tLoose(key: string): string {
-    return applyProductName(resolveStringValue(key), resolveConfiguredProductName());
+    return applyProductName(resolveStringValue(key), resolveConfiguredProductName(), resolveConfiguredCliCommandName());
 }

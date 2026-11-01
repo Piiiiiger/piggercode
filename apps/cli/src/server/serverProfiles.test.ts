@@ -54,7 +54,7 @@ describe('server profiles', () => {
 
       const before = await getActiveServerProfile();
       expect(before.id).toBe('cloud');
-      expect(before.name).toBe('Pigger');
+      expect(before.name).toBe('PiggerCode');
       expect(before.serverUrl).toBe('https://relay.example.test');
 
       const created = await addServerProfile({
