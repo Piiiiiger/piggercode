@@ -79,7 +79,7 @@ function showConnectHelp(targets: ReadonlyArray<CloudConnectTarget>, opts: Reado
       ? targets.map((t) => formatTargetLine(t)).join('\n')
       : '  (no connect targets registered)';
     console.log(`
-${chalk.bold('happier connect')} - Connect AI vendor subscriptions and API keys to Happier cloud
+${chalk.bold('happier connect')} - Connect AI vendor subscriptions and API keys to your relay
 
 ${chalk.bold('Usage:')}
 ${targetLines}
@@ -100,7 +100,7 @@ ${targetLines}
 
 ${chalk.bold('Description:')}
   The connect command allows you to securely store your connected-service credentials
-  in Happier cloud. This enables you to use these services through Happier
+  on your relay. This enables you to use these services through Happier
   without exposing credentials locally.
 
 ${chalk.bold('Examples:')}
@@ -109,8 +109,8 @@ ${chalk.bold('Examples:')}
 
 ${chalk.bold('Notes:')} 
   • You must be authenticated with Happier first (run 'happier auth login')
-  • Credentials are encrypted and stored securely in Happier cloud
-  • You can manage your stored keys at cloud.happier.dev
+  • Credentials are encrypted and stored securely on your relay
+  • You can manage your stored keys in the app
   ${opts.includeExperimental ? '' : '• Some providers are experimental; use --all to show them'}
 `);
 }
@@ -121,7 +121,7 @@ function formatTargetLine(target: CloudConnectTarget): string {
 }
 
 async function handleConnectVendor(target: CloudConnectTarget, options: ConnectParsedOptions): Promise<void> {
-    console.log(`\n${sectionTitle(`Connecting ${target.vendorDisplayName} to Happier cloud`)}\n`);
+    console.log(`\n${sectionTitle(`Connecting ${target.vendorDisplayName} to your relay`)}\n`);
 
     // Check if authenticated
     const credentials = await readCredentials();

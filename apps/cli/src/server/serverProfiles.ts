@@ -6,6 +6,7 @@ import { existsSync } from 'node:fs';
 import { chmod, copyFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { resolveHappyHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { BUILTIN_RELAY } from './builtinRelay';
 
 function normalizeServerUrlForEnvId(url: string): string {
   return String(url ?? '').trim().replace(/\/+$/, '');
@@ -107,7 +108,7 @@ function coerceProfile(value: any): ServerProfile | null {
 
   if (!id || !serverUrl || !webappUrl) return null;
   const displayName = id === 'cloud'
-    ? 'Happier Cloud'
+    ? BUILTIN_RELAY.name
     : name;
   if (!displayName) return null;
   return {
@@ -549,7 +550,7 @@ export async function removeServerProfile(
     throw new Error(`Server profile not found: ${identifier}`);
   }
   if (resolvedId === 'cloud') {
-    throw new Error('Cannot remove the Happier Cloud server profile');
+    throw new Error(`Cannot remove the built-in ${BUILTIN_RELAY.name} server profile`);
   }
 
   if (resolvedId === activeServerId && !force) {

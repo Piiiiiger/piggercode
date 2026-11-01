@@ -185,7 +185,7 @@ describe('happier setup — choosing a relay', () => {
 
     const prompt = multipleChoicePrompts.join('\n');
     expect(prompt).toContain('How would you like to connect your devices?');
-    expect(prompt).toContain('No server maintenance');
+    expect(prompt).toContain('https://relay.example.test');
     expect(prompt).toContain('Happier app or your administrator');
     expect(prompt).toContain('additional server');
     expect(prompt).toContain('reachable network route');

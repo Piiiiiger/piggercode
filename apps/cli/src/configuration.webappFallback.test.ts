@@ -58,19 +58,39 @@ describe('configuration env url fallback', () => {
     }
   });
 
-  it('keeps the cloud default webappUrl when HAPPIER_SERVER_URL matches the cloud default and webapp is unset', async () => {
+  it('uses the built-in Pigger relay when nothing is configured', async () => {
     const homeDir = createTempDirSync('happier-cli-config-');
     tempDirs.push(homeDir);
     process.env.HAPPIER_HOME_DIR = homeDir;
-    process.env.HAPPIER_SERVER_URL = 'https://api.happier.dev';
+    for (const key of ['HAPPIER_SERVER_URL', 'HAPPIER_LOCAL_SERVER_URL', 'HAPPIER_PUBLIC_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_ACTIVE_SERVER_ID']) {
+      delete process.env[key];
+    }
+
+    const output = captureConsoleText();
+    try {
+      const configMod = await import('./configuration');
+      configMod.reloadConfiguration();
+      expect(configMod.configuration.activeServerId).toBe('cloud');
+      expect(configMod.configuration.serverUrl).toBe('https://relay.example.test');
+      expect(configMod.configuration.webappUrl).toBe('https://relay.example.test');
+    } finally {
+      output.restore();
+    }
+  });
+
+  it('keeps the built-in webappUrl when HAPPIER_SERVER_URL is the built-in relay and webapp is unset', async () => {
+    const homeDir = createTempDirSync('happier-cli-config-');
+    tempDirs.push(homeDir);
+    process.env.HAPPIER_HOME_DIR = homeDir;
+    process.env.HAPPIER_SERVER_URL = 'https://relay.example.test';
     delete process.env.HAPPIER_WEBAPP_URL;
 
     const output = captureConsoleText();
     try {
       const configMod = await import('./configuration');
       configMod.reloadConfiguration();
-      expect(configMod.configuration.serverUrl).toBe('https://api.happier.dev');
-      expect(configMod.configuration.webappUrl).toBe('https://cloud.happier.dev');
+      expect(configMod.configuration.serverUrl).toBe('https://relay.example.test');
+      expect(configMod.configuration.webappUrl).toBe('https://relay.example.test');
     } finally {
       output.restore();
     }

@@ -26,6 +26,7 @@ import {
   type ClientEncryptionRequirement,
 } from '@happier-dev/protocol'
 import packageJson from '../package.json'
+import { BUILTIN_RELAY } from '@/server/builtinRelay'
 import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings'
 
 export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 100_000_000;
@@ -1145,8 +1146,8 @@ function resolveServerSelection(params: Readonly<{
   persisted: PersistedServerSettings | null;
   serversDir: string;
 }>): Readonly<{ activeServerId: string; serverUrl: string; apiServerUrl: string; webappUrl: string }> {
-  const DEFAULT_SERVER_URL = 'https://api.happier.dev';
-  const DEFAULT_WEBAPP_URL = 'https://cloud.happier.dev';
+  const DEFAULT_SERVER_URL = BUILTIN_RELAY.serverUrl;
+  const DEFAULT_WEBAPP_URL = BUILTIN_RELAY.webappUrl;
   const resolveActiveServerId = (fallbackId: string): string =>
     sanitizeServerIdForFilesystem(params.envActiveServerId ?? fallbackId, 'cloud');
 

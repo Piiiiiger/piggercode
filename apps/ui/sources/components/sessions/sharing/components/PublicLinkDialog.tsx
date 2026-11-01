@@ -18,6 +18,7 @@ import { Text } from '@/components/ui/text/Text';
 import { useScrollViewWheelScrollTo } from '@/components/ui/scroll/useScrollViewWheelScrollTo';
 import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { Icon } from '@/components/ui/icons/Icon';
+import { BUILTIN_RELAY } from '@/sync/domains/server/serverProfiles';
 
 
 export interface PublicLinkDialogProps {
@@ -61,7 +62,7 @@ export const PublicLinkDialog = memo(function PublicLinkDialog({
         }
 
         const configuredWebAppUrl = (process.env.EXPO_PUBLIC_HAPPY_WEBAPP_URL || '').trim();
-        const webAppUrl = configuredWebAppUrl || 'https://cloud.happier.dev';
+        const webAppUrl = configuredWebAppUrl || BUILTIN_RELAY.webappUrl;
         return `${webAppUrl}${path}`;
     }, []);
 

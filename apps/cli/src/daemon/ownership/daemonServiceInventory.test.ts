@@ -125,9 +125,9 @@ describe('daemonServiceInventory', () => {
             envScope.patch({
                 HAPPIER_HOME_DIR: homeDir,
                 HAPPIER_ACTIVE_SERVER_ID: 'cloud',
-                HAPPIER_SERVER_URL: 'https://api.happier.dev',
-                HAPPIER_WEBAPP_URL: 'https://app.happier.dev',
-                HAPPIER_PUBLIC_SERVER_URL: 'https://api.happier.dev',
+                HAPPIER_SERVER_URL: 'https://relay.example.test',
+                HAPPIER_WEBAPP_URL: 'https://relay.example.test',
+                HAPPIER_PUBLIC_SERVER_URL: 'https://relay.example.test',
                 HAPPIER_PUBLIC_RELEASE_CHANNEL: 'stable',
                 HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
                 HAPPIER_DAEMON_SERVICE_USER_HOME_DIR: homeDir,

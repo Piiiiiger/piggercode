@@ -44,6 +44,7 @@ import type {
   ServerProfileMissing,
 } from '@/diagnostics/doctorRepair';
 import { cmd as presentationCmd } from '@happier-dev/cli-common/output';
+import { BUILTIN_RELAY } from '@/server/builtinRelay';
 
 export const CLEAN_STATE_HEADER = '✓ Your Happier installation looks good.';
 export const MISMATCHED_STATE_HEADER = chalk.yellow.bold('Your Happier setup might need some attention:');
@@ -818,7 +819,7 @@ export function copyNoServersConfigured(invoker: string = 'happier'): readonly s
   return [
     'You need at least one server profile to connect to.',
     '',
-    'Sign in to Happier cloud with:',
+    `Sign in to the built-in relay (${BUILTIN_RELAY.name}) with:`,
     `  ${authSignInCommand(invoker)}`,
     '',
     'Or connect to a self-hosted server with:',

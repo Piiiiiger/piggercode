@@ -231,9 +231,9 @@ describe('happier relay --json', () => {
             const parsed = JSON.parse(output.logs.join('\n').trim());
             expect(parsed.ok).toBe(true);
             expect(parsed.kind).toBe('relay_inspect_target');
-            expect(parsed.data?.active?.serverUrl).toBe('https://api.happier.dev');
-            expect(parsed.data?.active?.webappUrl).toBe('https://cloud.happier.dev');
-            expect(parsed.data?.active?.comparableKey).toBe('https://api.happier.dev');
+            expect(parsed.data?.active?.serverUrl).toBe('https://relay.example.test');
+            expect(parsed.data?.active?.webappUrl).toBe('https://relay.example.test');
+            expect(parsed.data?.active?.comparableKey).toBe('https://relay.example.test');
             expect(process.exitCode).toBe(0);
         } finally {
             output.restore();

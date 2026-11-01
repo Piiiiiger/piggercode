@@ -53,6 +53,7 @@ import { openBrowser } from '@/ui/openBrowser';
 import { spawnHappyCLI } from '@/utils/spawnHappyCLI';
 
 import { defaultNameFromUrl } from './server/commandUtilities';
+import { BUILTIN_RELAY } from '@/server/builtinRelay';
 import { DEFER_SERVER_SELECTION_FOLLOW_UP_ENV } from './backgroundServiceFollowUp';
 import {
     buildSetupPlan,
@@ -81,7 +82,7 @@ Usage:
   happier setup [options]
 
 Options:
-  --cloud                 Use Happier Cloud without being asked
+  --cloud                 Use the built-in relay (${BUILTIN_RELAY.name}) without being asked
   --relay <url>           Use a relay you already run
   --this-computer         Install and use a relay on this computer
   --yes                   Ask nothing. Every step that needs no answer runs, then
@@ -243,7 +244,7 @@ async function askWhereTheRelayLives(): Promise<SetupRelaySelection> {
         subtitle: 'Connect your devices. Your coding agents run here.',
         question: 'How would you like to connect your devices?',
         choices: [
-            { id: 'cloud', key: 'c', label: 'Happier Cloud (recommended)', description: 'No server maintenance', isDefault: true },
+            { id: 'cloud', key: 'c', label: `${BUILTIN_RELAY.name} (recommended)`, description: BUILTIN_RELAY.serverUrl, isDefault: true },
             { id: 'existing', key: 'r', label: 'Existing server', description: 'Address from the Happier app or your administrator' },
             { id: 'thisComputer', key: 't', label: 'Host on this computer', description: 'Installs an additional server; needs a reachable network route' },
         ],

@@ -16,6 +16,15 @@ export type ServerProfileSource = 'manual' | 'url' | 'stack-env' | 'notification
  */
 export const HAPPIER_CLOUD_SERVER_URL = 'https://api.happier.dev' as const;
 
+/**
+ * The relay this build ships as its built-in server: native builds seed it when nothing else is
+ * configured (web uses its own origin). This fork ships its own relay instead of Happier Cloud.
+ */
+export const BUILTIN_RELAY = Object.freeze({
+    serverUrl: 'https://relay.example.test',
+    webappUrl: 'https://relay.example.test',
+});
+
 export type ServerProfile = Readonly<{
     id: string;
     name: string;
@@ -247,9 +256,9 @@ function parsePreconfiguredServersFromEnv(): PreconfiguredServer[] {
         }
     }
 
-    // On native builds, never start "serverless": seed Happier Cloud when no preconfigured server exists.
+    // On native builds, never start "serverless": seed the built-in relay when no preconfigured server exists.
     if (entries.length === 0 && !isWebRuntime()) {
-        append(HAPPIER_CLOUD_SERVER_URL, 'Happier Cloud', 'preconfigured');
+        append(BUILTIN_RELAY.serverUrl, '', 'preconfigured');
     }
 
     return entries;

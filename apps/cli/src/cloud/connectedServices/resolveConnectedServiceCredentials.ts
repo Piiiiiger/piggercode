@@ -1,7 +1,7 @@
 /**
  * Connected service credential resolver (client-side)
  *
- * Fetches sealed ciphertext from Happier Cloud and decrypts it locally using account-scoped crypto
+ * Fetches sealed ciphertext from the relay and decrypts it locally using account-scoped crypto
  * material. The server never decrypts these payloads.
  */
 

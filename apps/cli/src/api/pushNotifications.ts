@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { BUILTIN_RELAY } from '@/server/builtinRelay';
 import { boundExpoPushMessage } from './boundExpoPushMessage'
 import { logger } from '@/ui/logger'
 import { Expo, ExpoPushMessage } from 'expo-server-sdk'
@@ -99,7 +100,7 @@ export class PushNotificationClient {
     private pushTokenFetchFailureCooldownUntilMs = 0
     private didLogPushTokenFetchCooldown = false
 
-    constructor(token: string, baseUrl: string = 'https://api.happier.dev') {
+    constructor(token: string, baseUrl: string = BUILTIN_RELAY.serverUrl) {
         this.token = token
         this.baseUrl = baseUrl
         this.expo = new Expo()

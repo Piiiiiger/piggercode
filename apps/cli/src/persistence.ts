@@ -28,6 +28,7 @@ import { reclaimJsonOwnerFileLockSnapshot } from '@/utils/fs/jsonOwnerFileLock';
 import { isPidAliveBySignal } from '@/daemon/processRunState';
 import type { PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
 import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { BUILTIN_RELAY } from '@/server/builtinRelay';
 import type { MachineReplacementReason } from '@happier-dev/protocol';
 
 async function bestEffortChmod(path: string, mode: number): Promise<void> {
@@ -207,9 +208,9 @@ const defaultSettings: Settings = {
   servers: {
     cloud: {
       id: 'cloud',
-      name: 'Happier Cloud',
-      serverUrl: 'https://api.happier.dev',
-      webappUrl: 'https://cloud.happier.dev',
+      name: BUILTIN_RELAY.name,
+      serverUrl: BUILTIN_RELAY.serverUrl,
+      webappUrl: BUILTIN_RELAY.webappUrl,
       createdAt: 0,
       updatedAt: 0,
       lastUsedAt: 0,
@@ -247,8 +248,8 @@ function migrateSettings(raw: any, fromVersion: number): any {
 
   // Migration from v4 to v5 (server profiles + per-server state)
   if (fromVersion < 5) {
-    const DEFAULT_SERVER_URL = 'https://api.happier.dev';
-    const DEFAULT_WEBAPP_URL = 'https://cloud.happier.dev';
+    const DEFAULT_SERVER_URL = BUILTIN_RELAY.serverUrl;
+    const DEFAULT_WEBAPP_URL = BUILTIN_RELAY.webappUrl;
     const now = Date.now();
 
     const cloudId = 'cloud';
@@ -256,7 +257,7 @@ function migrateSettings(raw: any, fromVersion: number): any {
     migrated.servers = {
       [cloudId]: {
         id: cloudId,
-        name: 'Happier Cloud',
+        name: BUILTIN_RELAY.name,
         serverUrl: DEFAULT_SERVER_URL,
         webappUrl: DEFAULT_WEBAPP_URL,
         createdAt: now,
