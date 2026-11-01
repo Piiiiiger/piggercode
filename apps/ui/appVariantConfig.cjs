@@ -3,6 +3,14 @@ const path = require('node:path');
 // Keep this module dependency-free so it can run in GitHub Actions before `yarn install`.
 // We load the canonical release ring catalog from the checked-in CJS entrypoint.
 const releaseRings = require(path.resolve(__dirname, '..', '..', 'packages', 'release-runtime', 'releaseRings.cjs'));
+
+// The identity this fork's app shows: the name in titles, menus and copy, and the version in
+// Settings. Native bundle ids, URL schemes and update channels keep upstream's values.
+const APP_BRAND = Object.freeze({
+    productName: 'Pigger',
+    version: '0.0.0',
+});
+const { productName } = APP_BRAND;
 const { getReleaseRingCatalogEntry, normalizeReleaseRingId } = releaseRings;
 
 function resolveLogicalVariantFromRing(ring) {
@@ -43,31 +51,31 @@ function buildProductionConfig(overrides) {
 
 const APP_ENVIRONMENT_CONFIGS = {
     internaldev: buildRingBackedConfig('internaldev', {
-        name: 'Happier (internal dev)',
+        name: `${productName} (internal dev)`,
         iosBundleId: 'dev.happier.app.dev.internal',
         androidPackage: 'dev.happier.app.internaldev',
         enableAssociatedDomains: false,
     }),
     internalpreview: buildRingBackedConfig('internalpreview', {
-        name: 'Happier (internal preview)',
+        name: `${productName} (internal preview)`,
         iosBundleId: 'dev.happier.app.internalpreview',
         androidPackage: 'dev.happier.app.internalpreview',
         enableAssociatedDomains: false,
     }),
     publicdev: buildRingBackedConfig('publicdev', {
-        name: 'Happier (dev)',
+        name: `${productName} (dev)`,
         iosBundleId: 'dev.happier.app.publicdev',
         androidPackage: 'dev.happier.app.publicdev',
         enableAssociatedDomains: false,
     }),
     preview: buildRingBackedConfig('preview', {
-        name: 'Happier (preview)',
+        name: `${productName} (preview)`,
         iosBundleId: 'dev.happier.app.preview',
         androidPackage: 'dev.happier.app.preview',
         enableAssociatedDomains: false,
     }),
     production: buildProductionConfig({
-        name: 'Happier',
+        name: productName,
         iosBundleId: 'dev.happier.app',
         androidPackage: 'dev.happier.app',
         enableAssociatedDomains: true,
@@ -92,6 +100,7 @@ function getAppEnvironmentConfig(raw) {
 }
 
 module.exports = {
+    APP_BRAND,
     APP_ENVIRONMENT_CONFIGS,
     getAppEnvironmentConfig,
     normalizeAppEnvironmentId,

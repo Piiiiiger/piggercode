@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Happier",
-  "short_name": "Happier",
+  "name": "Pigger",
+  "short_name": "Pigger",
   "description": "Monitor and control your coding agents from anywhere.",
   "start_url": "/",
   "scope": "/",

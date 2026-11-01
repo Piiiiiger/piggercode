@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { en } from './translations/en';
@@ -40,6 +41,23 @@ describe('text/i18n', () => {
 
         setPreferredLanguageFromSettings(null);
         expect(t('tabs.inbox')).toBe(en.tabs.inbox);
+    });
+
+    it('shows the product name configured for the build in translated text', () => {
+        const extra = Constants.expoConfig!.extra as Record<string, unknown>;
+        extra.app = { productName: 'Pigger' };
+        try {
+            expect(t('settings.aboutFooter')).toBe(
+                'Pigger is a Codex, Claude Code and OpenCode mobile client. It\'s end-to-end encrypted by default, with account restore for your other devices. Not affiliated with Anthropic.',
+            );
+            expect(t('settingsVoice.mode.happier')).toBe('Happier Voice');
+            setPreferredLanguageFromSettings('zh-Hans');
+            expect(t('settings.aboutFooter')).toMatch(/^Pigger 是一个 Codex/);
+        } finally {
+            delete extra.app;
+        }
+        setPreferredLanguageFromSettings(null);
+        expect(t('settings.aboutFooter')).toBe(en.settings.aboutFooter);
     });
 
     it('ignores an unsupported preferred language instead of losing translations', () => {

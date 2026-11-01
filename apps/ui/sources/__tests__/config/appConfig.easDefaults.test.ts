@@ -57,6 +57,7 @@ function withCleanEnv<T>(fn: () => T): T {
         'EXPO_UPDATES_URL',
         'EXPO_UPDATES_CHANNEL',
         'EXPO_APP_VERSION',
+        'EXPO_APP_NAME',
         'EXPO_APP_OWNER',
         'EXPO_APP_SLUG',
         'EXPO_APP_BUNDLE_ID',
@@ -154,7 +155,7 @@ describe('app.config.js', () => {
 
         expect(exp.extra?.app?.variant).toBe('preview');
         expect(exp.extra?.app?.identityVariant).toBe('publicdev');
-        expect(exp.name).toBe('Happier (dev)');
+        expect(exp.name).toBe('Pigger (dev)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.publicdev');
         expect(exp.android?.package).toBe('dev.happier.app.publicdev');
         expect(exp.scheme).toBe('happier-dev');
@@ -227,7 +228,7 @@ describe('app.config.js', () => {
 
         expect(exp.extra?.app?.variant).toBe('preview');
         expect(exp.extra?.app?.identityVariant).toBe('internalpreview');
-        expect(exp.name).toBe('Happier (internal preview)');
+        expect(exp.name).toBe('Pigger (internal preview)');
         expect(exp.ios?.bundleIdentifier).toBe('dev.happier.app.internalpreview');
         expect(exp.android?.package).toBe('dev.happier.app.internalpreview');
         expect(exp.scheme).toBe('happier-internalpreview');
@@ -256,12 +257,15 @@ describe('app.config.js', () => {
         ]);
     });
 
-    it('uses the ui package.json version for expo.version by default', () => {
-        const exp = withCleanEnv(() => getPublicConfig());
-        // Avoid pinning a literal version; keep config tied to the package version.
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const pkg = require('../../../package.json');
-        expect(exp.version).toBe(pkg.version);
+    it('names and versions the app as Pigger 0.0.0', () => {
+        const exp = withCleanEnv(() => {
+            process.env.APP_ENV = 'production';
+            return getPublicConfig();
+        });
+
+        expect(exp.name).toBe('Pigger');
+        expect(exp.version).toBe('0.0.0');
+        expect(exp.extra?.app?.productName).toBe('Pigger');
     });
 
     it('defaults EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV based on the app variant', () => {

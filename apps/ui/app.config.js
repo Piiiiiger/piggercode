@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { getAppEnvironmentConfig } = require('./appVariantConfig.cjs');
+const { APP_BRAND, getAppEnvironmentConfig } = require('./appVariantConfig.cjs');
 const { EXPO_PROJECT_CONFIG } = require('./appProjectConfig.cjs');
 
 function normalizeVariantOverride(raw) {
@@ -80,10 +80,6 @@ const packageJson = (() => {
         return null;
     }
 })();
-const packageJsonVersion =
-    packageJson && typeof packageJson.version === 'string'
-        ? packageJson.version.trim()
-        : '';
 const packageJsonRuntimeVersion =
     packageJson && typeof packageJson.happierExpoRuntimeVersion === 'string'
         ? packageJson.happierExpoRuntimeVersion.trim()
@@ -283,7 +279,7 @@ if (!process.env.EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS) {
 const baseExpoConfig = {
         name,
         slug,
-        version: versionOverride || packageJsonVersion || "0.1.0",
+        version: versionOverride || APP_BRAND.version,
         runtimeVersion: explicitRuntimeVersion || resolveDefaultExpoRuntimeVersion(),
         orientation: "default",
         icon: "./sources/assets/images/icon.png",
@@ -464,6 +460,8 @@ const baseExpoConfig = {
                 // `variant` is used by the JS app runtime for environment-specific guidance and lanes.
                 // Keep the native identity (`APP_ENV`) separate so we can ship preview-lane behavior to
                 // production bundle IDs without disabling production-only native configuration.
+                // The product name shown in copy (translations name the upstream app).
+                productName: APP_BRAND.productName,
                 variant: appVariantOverride || appVariant,
                 identityVariant: appIdentityVariant,
                 postHogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY || process.env.EXPO_PUBLIC_POSTHOG_API_KEY,
