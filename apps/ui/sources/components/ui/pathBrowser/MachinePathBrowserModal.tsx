@@ -75,6 +75,10 @@ export type MachinePathBrowserViewProps = Readonly<{
      * Used by popover renderers to cap the view height.
      */
     maxHeight?: number;
+    /** Shown when the listed folder has nothing in it. */
+    emptyLabel?: string;
+    /** Changing this reloads the listing, for callers that changed the folder themselves. */
+    refreshNonce?: number;
     /**
      * When provided (typically by `CustomModal`), the view should drive modal card chrome through it
      * instead of re-implementing its own header/footer container.
@@ -731,6 +735,15 @@ export function MachinePathBrowserView(props: MachinePathBrowserViewProps): Reac
         setExpandedPaths([]);
     }, []);
 
+    const refreshRef = React.useRef(refresh);
+    refreshRef.current = refresh;
+    const appliedRefreshNonceRef = React.useRef(props.refreshNonce);
+    React.useEffect(() => {
+        if (appliedRefreshNonceRef.current === props.refreshNonce) return;
+        appliedRefreshNonceRef.current = props.refreshNonce;
+        refreshRef.current();
+    }, [props.refreshNonce]);
+
     const canClearSearch = searchQuery.trim().length > 0;
     const filterSelected = showHidden !== true;
 
@@ -1124,7 +1137,7 @@ export function MachinePathBrowserView(props: MachinePathBrowserViewProps): Reac
                     loadingLabel={t('common.loading')}
                     loadingLabelCentered={t('common.loading')}
                     inlineRetryLabel={t('common.retry')}
-                    emptyLabel={t('newSession.pathPicker.emptySuggested')}
+                    emptyLabel={props.emptyLabel ?? t('newSession.pathPicker.emptySuggested')}
                     style={{ flex: 1, minHeight: 0 }}
                     contentContainerStyle={{ paddingBottom: variant === 'modal' ? 16 : 0 }}
                     listRef={browserListRef}

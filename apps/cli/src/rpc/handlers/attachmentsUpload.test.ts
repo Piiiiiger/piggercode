@@ -725,9 +725,9 @@ describe('attachments upload (chunked)', () => {
         const firstDone: any = await handlers.finalize({ uploadId: first.uploadId });
         const secondDone: any = await handlers.finalize({ uploadId: second.uploadId });
         expect(firstDone).toMatchObject({ success: true, path: join(sharedFolder, '季度报告.txt'), sizeBytes: 3 });
-        expect(secondDone).toMatchObject({ success: true, path: join(sharedFolder, '季度报告 (2).txt'), sizeBytes: 3 });
+        expect(secondDone).toMatchObject({ success: true, path: join(sharedFolder, '季度报告 (1).txt'), sizeBytes: 3 });
         await expect(readFile(join(sharedFolder, '季度报告.txt'), 'utf8')).resolves.toBe('one');
-        await expect(readFile(join(sharedFolder, '季度报告 (2).txt'), 'utf8')).resolves.toBe('two');
+        await expect(readFile(join(sharedFolder, '季度报告 (1).txt'), 'utf8')).resolves.toBe('two');
         await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toBe('# workspace\n');
         expect(handlers.writeAllowedDirs.current).toEqual([]);
       } finally {

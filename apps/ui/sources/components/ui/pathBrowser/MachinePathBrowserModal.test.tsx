@@ -187,6 +187,8 @@ vi.mock('@/components/ui/buttons/RoundButton', () => ({
 }));
 
 vi.mock('@/sync/domains/input/machineFileBrowser', () => ({
+    clearCachedMachineFileBrowserEntries: () => {},
+    clearCachedMachineFileBrowserRoots: () => {},
     getCachedMachineFileBrowserDirectoryMetadata: () => null,
     getCachedMachineFileBrowserEntries: () => null,
     getCachedMachineFileBrowserRoots: () => null,
@@ -281,6 +283,45 @@ describe('MachinePathBrowserModal', () => {
         expect(onPickPath).toHaveBeenCalledWith('/repo/README.md');
         expect(onRequestClose).not.toHaveBeenCalled();
         expect(screen.findByTestId(PATH_BROWSER_CONFIRM_TEST_ID)).toBeNull();
+    });
+
+    it('shows the caller\'s empty label and reloads the scoped folder when refreshNonce changes', async () => {
+        const { MachinePathBrowserView } = await import('./MachinePathBrowserModal');
+
+        listMachineFileBrowserDirectoryEntriesMock.mockReset();
+        listMachineFileBrowserDirectoryEntriesMock
+            .mockResolvedValueOnce({ ok: true as const, entries: [], truncated: false })
+            .mockResolvedValue({
+                ok: true as const,
+                entries: [{ name: 'a.txt', path: '/share/a.txt', type: 'file' as const }],
+                truncated: false,
+            });
+
+        const renderView = (refreshNonce: number) => (
+            <MachinePathBrowserView
+                machineId="machine-1"
+                rootDirectoryPath="/share"
+                includeFiles
+                selectionMode="file"
+                variant="popover"
+                interaction="immediate"
+                maxHeight={320}
+                emptyLabel="Nothing shared yet"
+                refreshNonce={refreshNonce}
+                onPickPath={vi.fn()}
+                onRequestClose={vi.fn()}
+            />
+        );
+
+        const screen = await renderScreen(renderView(0));
+        await flushHookEffects({ cycles: 3, turns: 3 });
+        expect(screen.getTextContent()).toContain('Nothing shared yet');
+
+        act(() => {
+            screen.tree.update(renderView(1));
+        });
+        await waitForTestId(screen, getPathBrowserRowTestId('/share/a.txt'));
+        expect(screen.getTextContent()).not.toContain('Nothing shared yet');
     });
 
     it('can search deep paths on the machine when scoped, not just already-loaded nodes', async () => {

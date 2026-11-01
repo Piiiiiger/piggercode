@@ -3129,13 +3129,40 @@ export const ca: TranslationStructure = {
         },
         sharedFolder: {
             title: 'Carpeta compartida',
-            footer: 'Una carpeta a la màquina que executa la sessió. ~ és la carpeta personal d’aquesta màquina. Si ja hi ha un fitxer amb el mateix nom, s’hi afegeix un número, per exemple report (2).pdf.',
+            footer: 'Una carpeta a la màquina que executa la sessió. ~ és la carpeta personal d’aquesta màquina. Si ja hi ha un fitxer amb el mateix nom, s’hi afegeix un número, per exemple report (1).pdf.',
             folder: {
                 title: 'Carpeta',
                 promptTitle: 'Carpeta compartida',
                 promptMessage: 'Introdueix un camí complet o que comenci per ~, per exemple ~/Downloads.',
                 invalidTitle: 'Carpeta no vàlida',
                 invalidMessage: 'Fes servir un camí complet com /home/me/Downloads, o un que comenci per ~, sense . ni ..',
+            },
+            mountGuide: {
+                itemTitle: 'Obre-la a l’ordinador',
+                itemSubtitle: 'Munta-la amb SSHFS perquè aparegui al gestor de fitxers',
+                title: 'La carpeta compartida a l’ordinador',
+                intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS s’instal·la al teu ordinador; el servidor no necessita res. Un cop muntada, ${mountPoint} a l’ordinador és ${folder} al servidor, i els fitxers només es transfereixen quan els obres o els copies.`,
+                platformLinux: 'Linux',
+                platformMacos: 'macOS',
+                address: {
+                    title: 'Adreça del servidor',
+                    notSet: 'Sense definir',
+                    promptTitle: 'Adreça del servidor',
+                    promptMessage: 'L’adreça amb què entres per SSH, per exemple user@203.0.113.10:2222. Per al port 22 pots ometre :port.',
+                    invalidTitle: 'Adreça no vàlida',
+                    invalidMessage: 'Fes servir user@host o user@host:port.',
+                    missing: 'Afegeix l’adreça del servidor a dalt per obtenir ordres llestes per copiar.',
+                },
+                steps: {
+                    installTitle: 'Instal·la SSHFS',
+                    installNoteLinux: 'Aquesta és l’ordre per a Arch Linux. A Debian o Ubuntu fes servir sudo apt install sshfs.',
+                    installNoteMacos: 'Instal·la FUSE-T i el seu SSHFS amb Homebrew. No cal cap extensió del nucli.',
+                    checkTitle: 'Comprova que pots entrar',
+                    checkNote: 'Hauria de mostrar ok. Si falla, configura primer l’accés SSH des d’aquest ordinador.',
+                    mountTitle: 'Munta la carpeta compartida',
+                    mountNote: ({ mountPoint }: { mountPoint: string }) => `Després, ${mountPoint} mostra la carpeta compartida. Torna a executar l’ordre després de reiniciar l’ordinador.`,
+                    unmountTitle: 'Desmunta-la quan acabis',
+                },
             },
         },
         workspaceDirectory: {
@@ -6890,6 +6917,16 @@ deps: {
     },
 
       files: {
+          sharedFolder: {
+              open: 'Obre la carpeta compartida',
+              title: 'Carpeta compartida',
+              upload: 'Puja fitxers',
+              hintWeb: 'Fes clic en un fitxer per baixar-lo o deixa anar fitxers aquí per pujar-los.',
+              hintNative: 'Toca un fitxer per baixar-lo.',
+              empty: 'Encara no hi ha res. Els fitxers que pugis apareixeran aquí.',
+              unavailableTitle: 'Carpeta compartida no disponible',
+              unavailableMessage: 'Ara mateix no es pot accedir a la màquina que executa aquesta sessió. Torna-ho a provar quan estigui connectada.',
+          },
             revealInFiles: "Mostra a Fitxers",
             openChanges: "Obre els canvis",
           searchPlaceholder: 'Cerca fitxers...',

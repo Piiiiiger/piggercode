@@ -3043,13 +3043,40 @@ export const fr: TranslationStructure = {
         },
         sharedFolder: {
             title: 'Dossier partagé',
-            footer: 'Un dossier sur la machine qui exécute la session. ~ désigne le dossier personnel de cette machine. Si un fichier du même nom existe déjà, un numéro est ajouté, par exemple report (2).pdf.',
+            footer: 'Un dossier sur la machine qui exécute la session. ~ désigne le dossier personnel de cette machine. Si un fichier du même nom existe déjà, un numéro est ajouté, par exemple report (1).pdf.',
             folder: {
                 title: 'Dossier',
                 promptTitle: 'Dossier partagé',
                 promptMessage: 'Saisis un chemin complet ou commençant par ~, par exemple ~/Downloads.',
                 invalidTitle: 'Dossier invalide',
                 invalidMessage: 'Utilise un chemin complet comme /home/me/Downloads, ou commençant par ~, sans . ni ..',
+            },
+            mountGuide: {
+                itemTitle: 'Ouvrir sur ton ordinateur',
+                itemSubtitle: 'Monte-le avec SSHFS pour le voir dans ton gestionnaire de fichiers',
+                title: 'Le dossier partagé sur ton ordinateur',
+                intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS s’installe sur ton propre ordinateur ; le serveur n’a besoin de rien. Une fois monté, ${mountPoint} sur ton ordinateur correspond à ${folder} sur le serveur, et les fichiers ne transitent que quand tu les ouvres ou les copies.`,
+                platformLinux: 'Linux',
+                platformMacos: 'macOS',
+                address: {
+                    title: 'Adresse du serveur',
+                    notSet: 'Non définie',
+                    promptTitle: 'Adresse du serveur',
+                    promptMessage: 'L’adresse avec laquelle tu te connectes en SSH, par exemple user@203.0.113.10:2222. Pour le port 22, tu peux omettre :port.',
+                    invalidTitle: 'Adresse invalide',
+                    invalidMessage: 'Utilise user@host ou user@host:port.',
+                    missing: 'Indique l’adresse du serveur ci-dessus pour obtenir des commandes à copier.',
+                },
+                steps: {
+                    installTitle: 'Installer SSHFS',
+                    installNoteLinux: 'Commande pour Arch Linux. Sous Debian ou Ubuntu, utilise plutôt sudo apt install sshfs.',
+                    installNoteMacos: 'Installe FUSE-T et son SSHFS avec Homebrew. Aucune extension du noyau n’est nécessaire.',
+                    checkTitle: 'Vérifier la connexion',
+                    checkNote: 'La commande doit afficher ok. En cas d’échec, configure d’abord la connexion SSH depuis cet ordinateur.',
+                    mountTitle: 'Monter le dossier partagé',
+                    mountNote: ({ mountPoint }: { mountPoint: string }) => `${mountPoint} affiche ensuite le dossier partagé. Relance la commande après un redémarrage.`,
+                    unmountTitle: 'Démonter une fois terminé',
+                },
             },
         },
         workspaceDirectory: {
@@ -6879,6 +6906,16 @@ export const fr: TranslationStructure = {
     },
 
         files: {
+            sharedFolder: {
+                open: 'Ouvrir le dossier partagé',
+                title: 'Dossier partagé',
+                upload: 'Envoyer des fichiers',
+                hintWeb: 'Clique sur un fichier pour le télécharger, ou dépose des fichiers ici pour les envoyer.',
+                hintNative: 'Touche un fichier pour le télécharger.',
+                empty: 'Rien ici pour l’instant. Les fichiers envoyés arrivent ici.',
+                unavailableTitle: 'Dossier partagé indisponible',
+                unavailableMessage: 'La machine qui exécute cette session est injoignable pour le moment. Réessaie une fois qu’elle est connectée.',
+            },
             revealInFiles: "Afficher dans Fichiers",
             openChanges: "Ouvrir les modifications",
             searchPlaceholder: 'Rechercher des fichiers…',

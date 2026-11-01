@@ -3200,13 +3200,40 @@ export const zhHans: TranslationStructure = {
     },
     sharedFolder: {
       title: "共享文件夹",
-      footer: "运行会话的那台机器上的文件夹，~ 表示那台机器的主目录。如果已有同名文件，会自动加上编号，例如 report (2).pdf。",
+      footer: "运行会话的那台机器上的文件夹，~ 表示那台机器的主目录。如果已有同名文件，会自动加上编号，例如 report (1).pdf。",
       folder: {
         title: "文件夹",
         promptTitle: "共享文件夹",
         promptMessage: "输入完整路径或以 ~ 开头的路径，例如 ~/Downloads。",
         invalidTitle: "文件夹无效",
         invalidMessage: "请使用完整路径（如 /home/me/Downloads）或以 ~ 开头的路径，不要包含 . 或 ..。",
+      },
+      mountGuide: {
+        itemTitle: "在电脑上打开",
+        itemSubtitle: "用 SSHFS 挂载，让它出现在电脑的文件管理器里",
+        title: "在电脑上打开共享文件夹",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS 装在你自己的电脑上，服务器不用装任何东西。挂载后，电脑上的 ${mountPoint} 就是服务器上的 ${folder}，只有打开或复制文件时才会传输。`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "服务器地址",
+          notSet: "未设置",
+          promptTitle: "服务器地址",
+          promptMessage: "你用 SSH 登录服务器时的地址，例如 user@203.0.113.10:2222。端口是 22 时可以省略 :端口。",
+          invalidTitle: "地址无效",
+          invalidMessage: "请使用 用户名@地址 或 用户名@地址:端口 的格式。",
+          missing: "先在上面填好服务器地址，下面会生成可以直接复制的命令。",
+        },
+        steps: {
+          installTitle: "安装 SSHFS",
+          installNoteLinux: "这是 Arch Linux 的命令；Debian 或 Ubuntu 请改用 sudo apt install sshfs。",
+          installNoteMacos: "用 Homebrew 安装 FUSE-T 和它的 SSHFS，不需要内核扩展。",
+          checkTitle: "确认能登录服务器",
+          checkNote: "应该会输出 ok。如果失败，请先在这台电脑上配好 SSH 登录。",
+          mountTitle: "挂载共享文件夹",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `之后 ${mountPoint} 就是共享文件夹。电脑重启后需要重新运行这条命令。`,
+          unmountTitle: "不用时卸载",
+        },
       },
     },
     workspaceDirectory: {
@@ -7102,6 +7129,16 @@ export const zhHans: TranslationStructure = {
   },
 
   files: {
+    sharedFolder: {
+      open: "打开共享文件夹",
+      title: "共享文件夹",
+      upload: "上传文件",
+      hintWeb: "点文件即可下载，把文件拖到这里即可上传。",
+      hintNative: "点文件即可下载。",
+      empty: "这里还没有文件，上传的文件会出现在这里。",
+      unavailableTitle: "无法打开共享文件夹",
+      unavailableMessage: "暂时连不上运行这个会话的机器，等它连上后再试。",
+    },
             revealInFiles: "在文件中显示",
             openChanges: "打开更改",
     searchPlaceholder: "搜索文件...",

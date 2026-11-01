@@ -11,6 +11,8 @@ import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
 import { resolveAttachmentsUploadConfig } from '@/components/sessions/attachments/useAttachmentsUploadConfig';
 
+import { SharedFolderMountGuideModal } from './SharedFolderMountGuideModal';
+
 type IoniconName = IconName;
 
 const UPLOAD_LOCATION_OPTIONS: ReadonlyArray<{
@@ -83,6 +85,15 @@ function normalizeSharedFolderPath(input: string): string | null {
     if (!isHomeRelative && !isAbsolute) return null;
     if (trimmed.split(/[\\/]+/g).some((p) => p === '.' || p === '..')) return null;
     return trimmed;
+}
+
+function openSharedFolderMountGuide(): void {
+    Modal.show({
+        chrome: { kind: 'card', dimensions: { maxHeightRatio: 0.92 } },
+        component: SharedFolderMountGuideModal,
+        props: {},
+        closeOnBackdrop: true,
+    });
 }
 
 function parsePositiveInt(input: string, opts: Readonly<{ min: number; max: number }>): number | null {
@@ -179,6 +190,13 @@ export const AttachmentsSettingsView = React.memo(function AttachmentsSettingsVi
                             }
                             setSharedFolderPath(normalized);
                         }}
+                    />
+                    <Item
+                        testID="settings-attachments-shared-folder-mount-guide"
+                        title={t('settingsAttachments.sharedFolder.mountGuide.itemTitle')}
+                        subtitle={t('settingsAttachments.sharedFolder.mountGuide.itemSubtitle')}
+                        icon={renderIcon('desktop')}
+                        onPress={openSharedFolderMountGuide}
                     />
                 </ItemGroup>
             ) : null}

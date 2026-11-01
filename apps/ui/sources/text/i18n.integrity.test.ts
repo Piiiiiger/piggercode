@@ -19,6 +19,9 @@ import {
 } from '../../tools/i18n/translationAudit';
 
 const IGNORED_UNTRANSLATED_KEYS = new Set([
+    // Operating system names, shared across locales.
+    'settingsAttachments.sharedFolder.mountGuide.platformLinux',
+    'settingsAttachments.sharedFolder.mountGuide.platformMacos',
     'promptLibrary.supportingFilePathPlaceholder',
     'files.sourceControlOperations.update.remotes.namePlaceholder',
     'settingsSession.handoff.includeIgnoredMode.globsPlaceholder',

@@ -3044,13 +3044,40 @@ export const en = {
         },
         sharedFolder: {
             title: 'Shared folder',
-            footer: 'A folder on the machine that runs the session. ~ is that machine’s home folder. If a file with the same name is already there, a number is added, like report (2).pdf.',
+            footer: 'A folder on the machine that runs the session. ~ is that machine’s home folder. If a file with the same name is already there, a number is added, like report (1).pdf.',
             folder: {
                 title: 'Folder',
                 promptTitle: 'Shared folder',
                 promptMessage: 'Enter a full path or one starting with ~, for example ~/Downloads.',
                 invalidTitle: 'Invalid folder',
                 invalidMessage: 'Use a full path such as /home/me/Downloads, or one starting with ~, without . or .. parts.',
+            },
+            mountGuide: {
+                itemTitle: 'Open on your computer',
+                itemSubtitle: 'Mount it with SSHFS so it shows up in your file manager',
+                title: 'Shared folder on your computer',
+                intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS goes on your own computer; the server needs nothing new. Once mounted, ${mountPoint} on your computer is ${folder} on the server, and files travel only when you open or copy them.`,
+                platformLinux: 'Linux',
+                platformMacos: 'macOS',
+                address: {
+                    title: 'Server address',
+                    notSet: 'Not set',
+                    promptTitle: 'Server address',
+                    promptMessage: 'The address you log in to with SSH, like user@203.0.113.10:2222. Leave out :port for port 22.',
+                    invalidTitle: 'Invalid address',
+                    invalidMessage: 'Use user@host or user@host:port.',
+                    missing: 'Add the server address above to get commands you can copy.',
+                },
+                steps: {
+                    installTitle: 'Install SSHFS',
+                    installNoteLinux: 'This is for Arch Linux. On Debian or Ubuntu, run sudo apt install sshfs instead.',
+                    installNoteMacos: 'Installs FUSE-T and its SSHFS with Homebrew. No kernel extension needed.',
+                    checkTitle: 'Check that you can log in',
+                    checkNote: 'It should print ok. If it fails, fix SSH login from this computer first.',
+                    mountTitle: 'Mount the shared folder',
+                    mountNote: ({ mountPoint }: { mountPoint: string }) => `${mountPoint} then shows the shared folder. Run it again after you restart your computer.`,
+                    unmountTitle: 'Unmount when you’re done',
+                },
             },
         },
         workspaceDirectory: {
@@ -6924,6 +6951,16 @@ export const en = {
     },
 
         files: {
+            sharedFolder: {
+                open: 'Open shared folder',
+                title: 'Shared folder',
+                upload: 'Upload files',
+                hintWeb: 'Click a file to download it, or drop files here to upload them.',
+                hintNative: 'Tap a file to download it.',
+                empty: 'Nothing here yet. Files you upload land here.',
+                unavailableTitle: 'Shared folder unavailable',
+                unavailableMessage: 'The machine that runs this session can’t be reached right now. Try again once it’s connected.',
+            },
             revealInFiles: "Reveal in Files",
             openChanges: "Open Changes",
             searchPlaceholder: 'Search files...',

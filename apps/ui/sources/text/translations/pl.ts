@@ -3311,13 +3311,40 @@ export const pl: TranslationStructure = {
     },
     sharedFolder: {
       title: "Folder współdzielony",
-      footer: "Folder na maszynie, na której działa sesja. ~ oznacza katalog domowy tej maszyny. Jeśli plik o tej nazwie już istnieje, dodawany jest numer, np. report (2).pdf.",
+      footer: "Folder na maszynie, na której działa sesja. ~ oznacza katalog domowy tej maszyny. Jeśli plik o tej nazwie już istnieje, dodawany jest numer, np. report (1).pdf.",
       folder: {
         title: "Ścieżka folderu",
         promptTitle: "Folder współdzielony",
         promptMessage: "Wpisz pełną ścieżkę lub ścieżkę zaczynającą się od ~, np. ~/Downloads.",
         invalidTitle: "Nieprawidłowy folder",
         invalidMessage: "Użyj pełnej ścieżki, np. /home/me/Downloads, lub ścieżki zaczynającej się od ~, bez . i ..",
+      },
+      mountGuide: {
+        itemTitle: "Otwórz na komputerze",
+        itemSubtitle: "Zamontuj go przez SSHFS, aby był widoczny w menedżerze plików",
+        title: "Folder współdzielony na twoim komputerze",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS instalujesz na swoim komputerze; serwer niczego nie potrzebuje. Po zamontowaniu ${mountPoint} na komputerze to ${folder} na serwerze, a pliki są przesyłane dopiero wtedy, gdy je otwierasz lub kopiujesz.`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "Adres serwera",
+          notSet: "Nie ustawiono",
+          promptTitle: "Adres serwera",
+          promptMessage: "Adres, pod którym logujesz się przez SSH, np. user@203.0.113.10:2222. Dla portu 22 możesz pominąć :port.",
+          invalidTitle: "Nieprawidłowy adres",
+          invalidMessage: "Użyj formatu user@host lub user@host:port.",
+          missing: "Wpisz powyżej adres serwera, aby dostać polecenia gotowe do skopiowania.",
+        },
+        steps: {
+          installTitle: "Zainstaluj SSHFS",
+          installNoteLinux: "To polecenie dla Arch Linux. W Debianie lub Ubuntu użyj sudo apt install sshfs.",
+          installNoteMacos: "Instaluje FUSE-T i jego SSHFS przez Homebrew. Rozszerzenie jądra nie jest potrzebne.",
+          checkTitle: "Sprawdź logowanie",
+          checkNote: "Powinno wypisać ok. Jeśli się nie uda, najpierw skonfiguruj logowanie SSH z tego komputera.",
+          mountTitle: "Zamontuj folder współdzielony",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `Od tej chwili ${mountPoint} pokazuje folder współdzielony. Po ponownym uruchomieniu komputera wykonaj polecenie jeszcze raz.`,
+          unmountTitle: "Odmontuj, gdy skończysz",
+        },
       },
     },
     workspaceDirectory: {
@@ -7337,6 +7364,16 @@ export const pl: TranslationStructure = {
   },
 
   files: {
+    sharedFolder: {
+      open: "Otwórz folder współdzielony",
+      title: "Folder współdzielony",
+      upload: "Prześlij pliki",
+      hintWeb: "Kliknij plik, aby go pobrać, albo upuść tu pliki, aby je przesłać.",
+      hintNative: "Stuknij plik, aby go pobrać.",
+      empty: "Na razie pusto. Przesłane pliki pojawią się tutaj.",
+      unavailableTitle: "Folder współdzielony niedostępny",
+      unavailableMessage: "Maszyna, na której działa ta sesja, jest teraz nieosiągalna. Spróbuj ponownie, gdy się połączy.",
+    },
             revealInFiles: "Pokaż w plikach",
             openChanges: "Otwórz zmiany",
     searchPlaceholder: "Wyszukaj pliki...",

@@ -44,6 +44,16 @@ export type WorkspaceDownloadState =
     | Readonly<{ status: 'error'; error: string }>;
 
 type TransferResult = { ok: true } | { ok: false; error: string; canceled?: boolean };
+
+/**
+ * Where uploads land. By default `destinationDir` is relative to the session workspace. With
+ * `destinationIsAbsolute` it is an absolute folder on the session's machine (the shared folder);
+ * each file's relative path must still stay inside it.
+ */
+type WorkspaceUploadDestination = Readonly<{
+    destinationDir: string;
+    destinationIsAbsolute?: boolean;
+}>;
 export type WorkspaceFileTransferResult = TransferResult;
 export type WorkspaceFileDownloadAction = 'save' | 'open' | 'share';
 type WorkspaceFileDownloadInput = Readonly<{ path: string; asZip: boolean; action?: WorkspaceFileDownloadAction }>;
@@ -82,20 +92,26 @@ async function openWorkspaceUploadSourceReader(entry: WorkspaceUploadEntry): Pro
     };
 }
 
-export async function buildUploadEntryPlan(input: Readonly<{
+export async function buildUploadEntryPlan(input: WorkspaceUploadDestination & Readonly<{
     sessionId: string;
     entries: readonly WorkspaceUploadEntry[];
-    destinationDir: string;
     onResolveConflicts?: ((params: Readonly<{ conflictCount: number; totalCount: number }>) => Promise<UploadConflictStrategy>) | null;
 }>): Promise<{ ok: true; tasks: Array<{ entry: WorkspaceUploadEntry; targetPath: string; overwrite: boolean; sizeBytes: number }> } | { ok: false; error: string }> {
     const destinationDir = String(input.destinationDir ?? '').trim().replace(/\\/g, '/').replace(/\/+$/g, '');
     const tasks: Array<{ entry: WorkspaceUploadEntry; targetPath: string; overwrite: boolean; sizeBytes: number }> = [];
 
     const invalidPaths: string[] = [];
+    const absoluteDestination = input.destinationIsAbsolute === true;
+    if (absoluteDestination && !destinationDir.startsWith('/')) {
+        return { ok: false, error: 'No valid files to upload' };
+    }
     for (const entry of input.entries) {
         const relativePath = String(entry.relativePath ?? '').trim();
         const targetPath = joinRepoPath(destinationDir, relativePath);
-        if (!targetPath || !isSafeWorkspaceRelativePath(targetPath)) {
+        const safe = absoluteDestination
+            ? isSafeWorkspaceRelativePath(relativePath)
+            : Boolean(targetPath) && isSafeWorkspaceRelativePath(targetPath);
+        if (!safe) {
             invalidPaths.push(relativePath || '(empty)');
             continue;
         }
@@ -208,7 +224,7 @@ export function useWorkspaceFileTransfers(params: Readonly<{
 }>): Readonly<{
     uploadState: WorkspaceUploadState;
     downloadState: WorkspaceDownloadState;
-    startUploads: (input: Readonly<{ entries: readonly WorkspaceUploadEntry[]; destinationDir: string }>) => Promise<TransferResult>;
+    startUploads: (input: WorkspaceUploadDestination & Readonly<{ entries: readonly WorkspaceUploadEntry[] }>) => Promise<TransferResult>;
     cancelUploads: () => void;
     startDownload: (input: WorkspaceFileDownloadInput) => Promise<TransferResult>;
     cancelDownload: () => void;
@@ -234,7 +250,7 @@ export function useWorkspaceFileTransfers(params: Readonly<{
         if (operation?.cancelable) operation.controller.abort();
     }, []);
 
-    const startUploads = React.useCallback(async (input: Readonly<{ entries: readonly WorkspaceUploadEntry[]; destinationDir: string }>): Promise<TransferResult> => {
+    const startUploads = React.useCallback(async (input: WorkspaceUploadDestination & Readonly<{ entries: readonly WorkspaceUploadEntry[] }>): Promise<TransferResult> => {
         if (uploadAbortRef.current) {
             return { ok: false, error: 'Uploads already in progress' };
         }
@@ -255,6 +271,7 @@ export function useWorkspaceFileTransfers(params: Readonly<{
                 sessionId,
                 entries: input.entries,
                 destinationDir: input.destinationDir,
+                destinationIsAbsolute: input.destinationIsAbsolute,
                 onResolveConflicts: onResolveUploadConflicts ?? null,
             });
             if (!plan.ok) {

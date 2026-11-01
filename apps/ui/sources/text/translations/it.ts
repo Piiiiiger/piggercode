@@ -3625,13 +3625,40 @@ export const it: TranslationStructure = {
     },
     sharedFolder: {
       title: "Cartella condivisa",
-      footer: "Una cartella sulla macchina che esegue la sessione. ~ è la cartella home di quella macchina. Se esiste già un file con lo stesso nome, viene aggiunto un numero, ad esempio report (2).pdf.",
+      footer: "Una cartella sulla macchina che esegue la sessione. ~ è la cartella home di quella macchina. Se esiste già un file con lo stesso nome, viene aggiunto un numero, ad esempio report (1).pdf.",
       folder: {
         title: "Cartella",
         promptTitle: "Cartella condivisa",
         promptMessage: "Inserisci un percorso completo o che inizi con ~, ad esempio ~/Downloads.",
         invalidTitle: "Cartella non valida",
         invalidMessage: "Usa un percorso completo come /home/me/Downloads, o uno che inizi con ~, senza . o ..",
+      },
+      mountGuide: {
+        itemTitle: "Apri sul tuo computer",
+        itemSubtitle: "Montala con SSHFS per vederla nel gestore file",
+        title: "La cartella condivisa sul tuo computer",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS va installato sul tuo computer; sul server non serve nulla. Una volta montata, ${mountPoint} sul tuo computer è ${folder} sul server e i file vengono trasferiti solo quando li apri o li copi.`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "Indirizzo del server",
+          notSet: "Non impostato",
+          promptTitle: "Indirizzo del server",
+          promptMessage: "L’indirizzo con cui accedi via SSH, ad esempio user@203.0.113.10:2222. Per la porta 22 puoi omettere :porta.",
+          invalidTitle: "Indirizzo non valido",
+          invalidMessage: "Usa user@host oppure user@host:port.",
+          missing: "Inserisci sopra l’indirizzo del server per ottenere comandi pronti da copiare.",
+        },
+        steps: {
+          installTitle: "Installa SSHFS",
+          installNoteLinux: "Questo è il comando per Arch Linux. Su Debian o Ubuntu usa sudo apt install sshfs.",
+          installNoteMacos: "Installa FUSE-T e il suo SSHFS con Homebrew. Non serve alcuna estensione del kernel.",
+          checkTitle: "Verifica l’accesso",
+          checkNote: "Dovrebbe stampare ok. Se non funziona, configura prima l’accesso SSH da questo computer.",
+          mountTitle: "Monta la cartella condivisa",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `Da quel momento ${mountPoint} mostra la cartella condivisa. Riesegui il comando dopo aver riavviato il computer.`,
+          unmountTitle: "Smonta quando hai finito",
+        },
       },
     },
     workspaceDirectory: {
@@ -7659,6 +7686,16 @@ export const it: TranslationStructure = {
   },
 
   files: {
+    sharedFolder: {
+      open: "Apri cartella condivisa",
+      title: "Cartella condivisa",
+      upload: "Carica file",
+      hintWeb: "Fai clic su un file per scaricarlo oppure trascina qui i file per caricarli.",
+      hintNative: "Tocca un file per scaricarlo.",
+      empty: "Ancora niente qui. I file caricati compariranno qui.",
+      unavailableTitle: "Cartella condivisa non disponibile",
+      unavailableMessage: "Al momento la macchina che esegue questa sessione non è raggiungibile. Riprova quando sarà connessa.",
+    },
             revealInFiles: "Mostra in File",
             openChanges: "Apri modifiche",
     searchPlaceholder: "Cerca file...",

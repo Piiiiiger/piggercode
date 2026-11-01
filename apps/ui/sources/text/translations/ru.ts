@@ -3233,13 +3233,40 @@ export const ru: TranslationStructure = {
     },
     sharedFolder: {
       title: "Общая папка",
-      footer: "Папка на машине, где работает сессия. ~ — домашняя папка этой машины. Если файл с таким именем уже есть, к имени добавляется номер, например report (2).pdf.",
+      footer: "Папка на машине, где работает сессия. ~ — домашняя папка этой машины. Если файл с таким именем уже есть, к имени добавляется номер, например report (1).pdf.",
       folder: {
         title: "Папка",
         promptTitle: "Общая папка",
         promptMessage: "Введите полный путь или путь, начинающийся с ~, например ~/Downloads.",
         invalidTitle: "Неверная папка",
         invalidMessage: "Укажите полный путь, например /home/me/Downloads, или путь, начинающийся с ~, без частей . и ..",
+      },
+      mountGuide: {
+        itemTitle: "Открыть на компьютере",
+        itemSubtitle: "Подключите её через SSHFS, чтобы она появилась в файловом менеджере",
+        title: "Общая папка на компьютере",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS устанавливается на ваш компьютер, на сервере ничего не нужно. После подключения ${mountPoint} на компьютере — это ${folder} на сервере, а файлы передаются, только когда вы их открываете или копируете.`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "Адрес сервера",
+          notSet: "Не задан",
+          promptTitle: "Адрес сервера",
+          promptMessage: "Адрес, по которому вы входите по SSH, например user@203.0.113.10:2222. Для порта 22 :порт можно не указывать.",
+          invalidTitle: "Неверный адрес",
+          invalidMessage: "Используйте формат user@host или user@host:port.",
+          missing: "Укажите адрес сервера выше, и здесь появятся команды, которые можно скопировать.",
+        },
+        steps: {
+          installTitle: "Установите SSHFS",
+          installNoteLinux: "Это команда для Arch Linux. В Debian или Ubuntu используйте sudo apt install sshfs.",
+          installNoteMacos: "Устанавливает FUSE-T и его SSHFS через Homebrew. Расширение ядра не нужно.",
+          checkTitle: "Проверьте вход на сервер",
+          checkNote: "Должно вывести ok. Если не получается, сначала настройте вход по SSH с этого компьютера.",
+          mountTitle: "Подключите общую папку",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `После этого ${mountPoint} показывает общую папку. После перезагрузки компьютера выполните команду снова.`,
+          unmountTitle: "Отключите, когда закончите",
+        },
       },
     },
     workspaceDirectory: {
@@ -7320,6 +7347,16 @@ export const ru: TranslationStructure = {
   },
 
   files: {
+    sharedFolder: {
+      open: "Открыть общую папку",
+      title: "Общая папка",
+      upload: "Загрузить файлы",
+      hintWeb: "Нажмите на файл, чтобы скачать его, или перетащите файлы сюда, чтобы загрузить.",
+      hintNative: "Нажмите на файл, чтобы скачать его.",
+      empty: "Здесь пока пусто. Загруженные файлы появятся здесь.",
+      unavailableTitle: "Общая папка недоступна",
+      unavailableMessage: "Машина, на которой работает эта сессия, сейчас недоступна. Попробуйте снова, когда она подключится.",
+    },
             revealInFiles: "Показать в файлах",
             openChanges: "Открыть изменения",
     searchPlaceholder: "Поиск файлов...",

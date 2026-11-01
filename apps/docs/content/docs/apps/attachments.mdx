@@ -155,9 +155,25 @@ Attachments are saved directly into one folder on the machine that runs the sess
 `~` is the home folder of the user running the Happier daemon on that machine. To use another folder, open **Shared folder** on the same settings screen and enter a full path or one starting with `~`.
 
 - Files keep their names, including names in non-Latin scripts. Characters that shells or file systems treat specially become `_`.
-- If a file with the same name is already there, the upload is saved as `name (2).ext`, `name (3).ext`, and so on. Existing files are never overwritten.
+- If a file with the same name is already there, the upload is saved as `name (1).ext`, `name (2).ext`, and so on. Existing files are never overwritten.
 - The folder is created with the first upload.
-- Because uploads collect in one place, you can also mount that folder on your computer (for example with SSHFS) and copy files into it directly.
+
+#### Browse the shared folder
+
+In a session's **Files** panel, the shared folder button opens the shared folder of that session's machine:
+
+- Click a file to download it.
+- Drop files or folders onto the window, or use **Upload files**, to put them there. Folder structure is kept, and you choose whether a file with a taken name replaces the old one or is kept next to it.
+- The folder is created on the machine if it does not exist yet.
+
+#### Open it on your computer
+
+**Settings → Attachments → Open on your computer** builds the commands that mount the shared folder on your own Linux or macOS computer with SSHFS, so it shows up in your file manager. SSHFS goes on your computer; the server needs nothing new.
+
+1. Enter the address you log in to the server with over SSH, such as `user@203.0.113.10:2222`. It is saved with your account settings.
+2. Copy the commands in order: install SSHFS (Arch Linux, or FUSE-T on macOS), check that you can log in, mount, and unmount when you are done.
+
+Files then travel only when you open or copy them. Mount again after restarting your computer.
 
 Agents that only read inside the workspace may ask for permission first, or be unable to read the folder in stricter sandboxes.
 

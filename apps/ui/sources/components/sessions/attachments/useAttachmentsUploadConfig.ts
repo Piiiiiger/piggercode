@@ -8,6 +8,11 @@ function trimmedOr(value: unknown, fallback: string): string {
     return typeof value === 'string' && value.trim().length > 0 ? value.trim() : fallback;
 }
 
+/** The shared folder as the user set it (`~` allowed), or the default when it is blank. */
+export function resolveSharedFolderPathSetting(value: unknown): string {
+    return trimmedOr(value, settingsDefaults.attachmentsUploadsSharedFolderPath);
+}
+
 /** Turns the account's attachment settings into the config each upload sends to the machine. */
 export function resolveAttachmentsUploadConfig(settings: Readonly<{
     uploadLocation: unknown;
@@ -32,7 +37,7 @@ export function resolveAttachmentsUploadConfig(settings: Readonly<{
 
     return {
         uploadLocation,
-        sharedFolderPath: trimmedOr(settings.sharedFolderPath, settingsDefaults.attachmentsUploadsSharedFolderPath),
+        sharedFolderPath: resolveSharedFolderPathSetting(settings.sharedFolderPath),
         workspaceRelativeDir: trimmedOr(settings.workspaceRelativeDir, settingsDefaults.attachmentsUploadsWorkspaceRelativeDir),
         vcsIgnoreStrategy,
         vcsIgnoreWritesEnabled: settings.vcsIgnoreWritesEnabled !== false,

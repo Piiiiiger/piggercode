@@ -1,17 +1,4 @@
-function splitFileName(fileName: string): { stem: string; ext: string } {
-    const name = fileName.trim();
-    const dot = name.lastIndexOf('.');
-    if (dot <= 0 || dot === name.length - 1) {
-        return { stem: name, ext: '' };
-    }
-    return { stem: name.slice(0, dot), ext: name.slice(dot) };
-}
-
-function withKeepBothSuffix(fileName: string, n: number): string {
-    const { stem, ext } = splitFileName(fileName);
-    if (!stem) return fileName;
-    return `${stem} (${n})${ext}`;
-}
+import { withKeepBothSuffix } from '@happier-dev/transfers';
 
 export async function resolveKeepBothTargetPath(input: Readonly<{
     desiredPath: string;

@@ -3404,13 +3404,40 @@ export const pt: TranslationStructure = {
     },
     sharedFolder: {
       title: "Pasta compartilhada",
-      footer: "Uma pasta na máquina que executa a sessão. ~ é a pasta pessoal dessa máquina. Se já existir um arquivo com o mesmo nome, um número é adicionado, por exemplo report (2).pdf.",
+      footer: "Uma pasta na máquina que executa a sessão. ~ é a pasta pessoal dessa máquina. Se já existir um arquivo com o mesmo nome, um número é adicionado, por exemplo report (1).pdf.",
       folder: {
         title: "Pasta",
         promptTitle: "Pasta compartilhada",
         promptMessage: "Digite um caminho completo ou que comece com ~, por exemplo ~/Downloads.",
         invalidTitle: "Pasta inválida",
         invalidMessage: "Use um caminho completo como /home/me/Downloads, ou um que comece com ~, sem . ou ..",
+      },
+      mountGuide: {
+        itemTitle: "Abrir no seu computador",
+        itemSubtitle: "Monte com SSHFS para vê-la no gerenciador de arquivos",
+        title: "A pasta compartilhada no seu computador",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `O SSHFS é instalado no seu próprio computador; o servidor não precisa de nada. Depois de montada, ${mountPoint} no seu computador é ${folder} no servidor, e os arquivos só trafegam quando você os abre ou copia.`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "Endereço do servidor",
+          notSet: "Não definido",
+          promptTitle: "Endereço do servidor",
+          promptMessage: "O endereço que você usa para entrar via SSH, por exemplo user@203.0.113.10:2222. Para a porta 22, pode omitir :porta.",
+          invalidTitle: "Endereço inválido",
+          invalidMessage: "Use user@host ou user@host:port.",
+          missing: "Informe acima o endereço do servidor para obter comandos prontos para copiar.",
+        },
+        steps: {
+          installTitle: "Instalar o SSHFS",
+          installNoteLinux: "Este é o comando para Arch Linux. No Debian ou Ubuntu, use sudo apt install sshfs.",
+          installNoteMacos: "Instala o FUSE-T e o SSHFS dele com o Homebrew. Não precisa de extensão de kernel.",
+          checkTitle: "Confirmar que você consegue entrar",
+          checkNote: "Deve mostrar ok. Se falhar, configure primeiro o acesso SSH a partir deste computador.",
+          mountTitle: "Montar a pasta compartilhada",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `Depois disso, ${mountPoint} mostra a pasta compartilhada. Execute de novo depois de reiniciar o computador.`,
+          unmountTitle: "Desmontar ao terminar",
+        },
       },
     },
     workspaceDirectory: {
@@ -7446,6 +7473,16 @@ export const pt: TranslationStructure = {
   },
 
   files: {
+    sharedFolder: {
+      open: "Abrir pasta compartilhada",
+      title: "Pasta compartilhada",
+      upload: "Enviar arquivos",
+      hintWeb: "Clique em um arquivo para baixá-lo ou solte arquivos aqui para enviá-los.",
+      hintNative: "Toque em um arquivo para baixá-lo.",
+      empty: "Ainda não há nada aqui. Os arquivos enviados aparecem aqui.",
+      unavailableTitle: "Pasta compartilhada indisponível",
+      unavailableMessage: "A máquina que executa esta sessão não está acessível agora. Tente de novo quando ela estiver conectada.",
+    },
             revealInFiles: "Mostrar em Arquivos",
             openChanges: "Abrir alterações",
     searchPlaceholder: "Buscar arquivos...",

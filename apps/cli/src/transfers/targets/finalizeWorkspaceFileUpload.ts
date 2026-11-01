@@ -1,5 +1,7 @@
 import { mkdir, open, rm, stat } from 'fs/promises';
-import { basename, dirname, extname, join } from 'path';
+import { basename, dirname, join } from 'path';
+
+import { withKeepBothSuffix } from '@happier-dev/transfers';
 
 import { moveFileWithCrossDeviceFallback } from '../../utils/fs/moveFileWithCrossDeviceFallback';
 import type { UploadTransferFinalizeResult } from './uploadTransferTarget';
@@ -9,16 +11,14 @@ function readErrorCode(error: unknown): unknown {
 }
 
 /**
- * Claims the first free name among `name.ext`, `name (2).ext`, `name (3).ext`, ... by creating it
+ * Claims the first free name among `name.ext`, `name (1).ext`, `name (2).ext`, ... by creating it
  * exclusively, so two uploads with the same name never end up in the same file.
  */
 async function claimFreeFilePath(destPath: string): Promise<string> {
   const directory = dirname(destPath);
   const fileName = basename(destPath);
-  const extension = extname(fileName);
-  const stem = fileName.slice(0, fileName.length - extension.length);
-  for (let attempt = 1; ; attempt += 1) {
-    const candidate = attempt === 1 ? destPath : join(directory, `${stem} (${attempt})${extension}`);
+  for (let attempt = 0; ; attempt += 1) {
+    const candidate = attempt === 0 ? destPath : join(directory, withKeepBothSuffix(fileName, attempt));
     try {
       const handle = await open(candidate, 'wx');
       await handle.close();
@@ -39,7 +39,7 @@ export async function finalizeWorkspaceFileUpload(input: Readonly<{
   destPath: string;
   destDisplayPath: string;
   overwrite: boolean;
-  /** Keep an existing file and store the upload under the next free `name (n).ext` instead. */
+  /** Keep an existing file and store the upload under the next free `name (n).ext` instead (see `withKeepBothSuffix`). */
   renameIfExists?: boolean;
   sizeBytes: number;
 }>): Promise<UploadTransferFinalizeResult> {

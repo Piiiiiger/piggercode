@@ -39,6 +39,7 @@ import { shouldUseRepositoryRootDropTarget } from '@/components/sessions/files/r
 import { createRepositoryTreeUploadMenuConfig } from '@/components/sessions/files/repositoryTree/createRepositoryTreeUploadMenuConfig';
 import { useRepositoryTreeWebDropState } from '@/components/sessions/files/repositoryTree/useRepositoryTreeWebDropState';
 import { promptRepositoryUploadDestination } from '@/components/sessions/files/views/promptRepositoryUploadDestination';
+import { openSharedFolderModal } from '@/components/sessions/sharedFolder/openSharedFolderModal';
 import { RepositoryTreeChangedFilesPane } from '@/components/sessions/files/views/repositoryTreeBrowser/RepositoryTreeChangedFilesPane';
 import { SegmentedTabBar } from '@/components/ui/navigation/SegmentedTabBar';
 import { Text } from '@/components/ui/text/Text';
@@ -486,6 +487,15 @@ export const SessionRepositoryTreeBrowserView = React.memo((props: SessionReposi
                 onPress: () => setUploadMenuOpen(true),
             },
             {
+                id: 'repository-tree-shared-folder',
+                priority: 7,
+                order: 2.5,
+                icon: <Icon name="tray" size={16} color={theme.colors.text.secondary} />,
+                menuIcon: 'tray',
+                accessibilityLabel: t('files.sharedFolder.open'),
+                onPress: () => openSharedFolderModal({ sessionId: props.sessionId }),
+            },
+            {
                 id: 'repository-tree-create-file',
                 priority: 5,
                 order: 3,
@@ -570,6 +580,7 @@ export const SessionRepositoryTreeBrowserView = React.memo((props: SessionReposi
         showChangedOnly,
         uploadDestinationDir.length,
         props.onRequestClose,
+        props.sessionId,
         theme.colors.text.link,
         theme.colors.text.secondary,
         treeRootLoading,

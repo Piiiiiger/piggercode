@@ -3581,13 +3581,40 @@ localTailscale: {
     },
     sharedFolder: {
       title: "共有フォルダ",
-      footer: "セッションを実行しているマシン上のフォルダです。~ はそのマシンのホームフォルダを表します。同じ名前のファイルがある場合は report (2).pdf のように番号が付きます。",
+      footer: "セッションを実行しているマシン上のフォルダです。~ はそのマシンのホームフォルダを表します。同じ名前のファイルがある場合は report (1).pdf のように番号が付きます。",
       folder: {
         title: "フォルダ",
         promptTitle: "共有フォルダ",
         promptMessage: "フルパスか ~ で始まるパスを入力してください（例: ~/Downloads）。",
         invalidTitle: "無効なフォルダ",
         invalidMessage: "/home/me/Downloads のようなフルパスか ~ で始まるパスを使い、. や .. は含めないでください。",
+      },
+      mountGuide: {
+        itemTitle: "パソコンで開く",
+        itemSubtitle: "SSHFS でマウントして、ファイルマネージャーに表示します",
+        title: "パソコンで共有フォルダを開く",
+        intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS は自分のパソコンに入れます。サーバー側には何も必要ありません。マウントすると、パソコンの ${mountPoint} がサーバーの ${folder} になり、ファイルは開いたりコピーしたりしたときだけ転送されます。`,
+        platformLinux: "Linux",
+        platformMacos: "macOS",
+        address: {
+          title: "サーバーのアドレス",
+          notSet: "未設定",
+          promptTitle: "サーバーのアドレス",
+          promptMessage: "SSH でログインするときのアドレスです（例: user@203.0.113.10:2222）。ポートが 22 なら :ポート は省略できます。",
+          invalidTitle: "無効なアドレス",
+          invalidMessage: "user@host か user@host:port の形式で入力してください。",
+          missing: "上でサーバーのアドレスを入力すると、そのままコピーできるコマンドが表示されます。",
+        },
+        steps: {
+          installTitle: "SSHFS をインストール",
+          installNoteLinux: "Arch Linux 用のコマンドです。Debian や Ubuntu では sudo apt install sshfs を使ってください。",
+          installNoteMacos: "Homebrew で FUSE-T とその SSHFS をインストールします。カーネル拡張は不要です。",
+          checkTitle: "ログインできるか確認",
+          checkNote: "ok と表示されれば大丈夫です。失敗する場合は、先にこのパソコンから SSH でログインできるようにしてください。",
+          mountTitle: "共有フォルダをマウント",
+          mountNote: ({ mountPoint }: { mountPoint: string }) => `以降は ${mountPoint} が共有フォルダになります。パソコンを再起動したらもう一度実行してください。`,
+          unmountTitle: "使い終わったらアンマウント",
+        },
       },
     },
     workspaceDirectory: {
@@ -7585,6 +7612,16 @@ localTailscale: {
   },
 
   files: {
+    sharedFolder: {
+      open: "共有フォルダを開く",
+      title: "共有フォルダ",
+      upload: "ファイルをアップロード",
+      hintWeb: "ファイルをクリックするとダウンロード、ここにドロップするとアップロードします。",
+      hintNative: "ファイルをタップするとダウンロードします。",
+      empty: "まだ何もありません。アップロードしたファイルはここに入ります。",
+      unavailableTitle: "共有フォルダを開けません",
+      unavailableMessage: "このセッションを実行しているマシンに今は接続できません。接続されたらもう一度お試しください。",
+    },
             revealInFiles: "ファイルで表示",
             openChanges: "変更を開く",
     searchPlaceholder: "ファイルを検索...",

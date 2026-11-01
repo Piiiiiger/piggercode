@@ -161,6 +161,12 @@ export const ACCOUNT_DISPLAY_SETTING_DEFINITIONS = defineSettingDefinitions({
         description: 'Folder on the session machine for attachments when uploadLocation=shared_folder (~ is that machine\'s home)',
         storageScope: 'account',
     },
+    attachmentsUploadsSharedFolderSshAddress: {
+        schema: z.string(),
+        default: '',
+        description: 'SSH address (user@host:port) used to build the commands that mount the shared folder on a computer',
+        storageScope: 'account',
+    },
     attachmentsUploadsVcsIgnoreStrategy: {
         schema: z.enum(['git_info_exclude', 'gitignore', 'none']),
         default: 'git_info_exclude',

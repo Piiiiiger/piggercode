@@ -38,3 +38,6 @@ export {
     resolveServerRoutedTransferMaxBytesFromEnv,
     resolveServerRoutedTransferMaxBytesFromFeatures,
 } from './policy/serverRoutedTransferPolicy.js';
+export {
+    withKeepBothSuffix,
+} from './naming/keepBothFileName.js';

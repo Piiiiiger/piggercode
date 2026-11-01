@@ -3016,13 +3016,40 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         },
         sharedFolder: {
             title: '共享資料夾',
-            footer: '執行工作階段的那台機器上的資料夾，~ 表示那台機器的主目錄。如果已有同名檔案，會自動加上編號，例如 report (2).pdf。',
+            footer: '執行工作階段的那台機器上的資料夾，~ 表示那台機器的主目錄。如果已有同名檔案，會自動加上編號，例如 report (1).pdf。',
             folder: {
                 title: '資料夾',
                 promptTitle: '共享資料夾',
                 promptMessage: '輸入完整路徑或以 ~ 開頭的路徑，例如 ~/Downloads。',
                 invalidTitle: '資料夾無效',
                 invalidMessage: '請使用完整路徑（如 /home/me/Downloads）或以 ~ 開頭的路徑，不要包含 . 或 ..。',
+            },
+            mountGuide: {
+                itemTitle: '在電腦上開啟',
+                itemSubtitle: '用 SSHFS 掛載，讓它出現在電腦的檔案管理員裡',
+                title: '在電腦上開啟共享資料夾',
+                intro: ({ mountPoint, folder }: { mountPoint: string; folder: string }) => `SSHFS 裝在你自己的電腦上，伺服器不用裝任何東西。掛載後，電腦上的 ${mountPoint} 就是伺服器上的 ${folder}，只有開啟或複製檔案時才會傳輸。`,
+                platformLinux: 'Linux',
+                platformMacos: 'macOS',
+                address: {
+                    title: '伺服器位址',
+                    notSet: '未設定',
+                    promptTitle: '伺服器位址',
+                    promptMessage: '你用 SSH 登入伺服器時的位址，例如 user@203.0.113.10:2222。連接埠是 22 時可以省略 :連接埠。',
+                    invalidTitle: '位址無效',
+                    invalidMessage: '請使用 使用者名稱@位址 或 使用者名稱@位址:連接埠 的格式。',
+                    missing: '先在上面填好伺服器位址，下面會產生可以直接複製的命令。',
+                },
+                steps: {
+                    installTitle: '安裝 SSHFS',
+                    installNoteLinux: '這是 Arch Linux 的命令；Debian 或 Ubuntu 請改用 sudo apt install sshfs。',
+                    installNoteMacos: '用 Homebrew 安裝 FUSE-T 和它的 SSHFS，不需要核心擴充功能。',
+                    checkTitle: '確認能登入伺服器',
+                    checkNote: '應該會輸出 ok。如果失敗，請先在這台電腦上設定好 SSH 登入。',
+                    mountTitle: '掛載共享資料夾',
+                    mountNote: ({ mountPoint }: { mountPoint: string }) => `之後 ${mountPoint} 就是共享資料夾。電腦重新開機後需要重新執行這條命令。`,
+                    unmountTitle: '不用時卸載',
+                },
             },
         },
         workspaceDirectory: {
@@ -6131,6 +6158,16 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
     },
 
     files: {
+        sharedFolder: {
+            open: '開啟共享資料夾',
+            title: '共享資料夾',
+            upload: '上傳檔案',
+            hintWeb: '點檔案即可下載，把檔案拖到這裡即可上傳。',
+            hintNative: '點檔案即可下載。',
+            empty: '這裡還沒有檔案，上傳的檔案會出現在這裡。',
+            unavailableTitle: '無法開啟共享資料夾',
+            unavailableMessage: '暫時連不上執行這個工作階段的機器，等它連上後再試。',
+        },
             revealInFiles: "在檔案中顯示",
             openChanges: "開啟變更",
         searchPlaceholder: '搜尋檔案...',
