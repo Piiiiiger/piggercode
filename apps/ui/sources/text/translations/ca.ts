@@ -9536,6 +9536,8 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: 'Acoblar terminal',
+        attachedSessionOpen: 'Obre la CLI de l’agent',
+        attachedSessionTitle: 'CLI de l’agent',
         settings: {
             locationTitle: 'Ubicació del terminal incrustat',
         },

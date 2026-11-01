@@ -54,6 +54,40 @@ const sessionState = vi.hoisted(() => ({
     } as Record<string, unknown> | null,
 }));
 
+/** A daemon-started Codex App Server session as its runner publishes it while no TUI is attached. */
+function codexAppServerSession(overrides: Readonly<{
+    active?: boolean;
+    vendorSessionId?: string | null;
+    localControl?: Record<string, unknown>;
+}> = {}): Record<string, unknown> {
+    const vendorSessionId = overrides.vendorSessionId === undefined ? 'thread-1' : overrides.vendorSessionId;
+    return {
+        id: 'session-1',
+        active: overrides.active ?? true,
+        metadata: {
+            flavor: 'codex',
+            path: '/home/user/project',
+            agentRuntimeDescriptorV1: {
+                v: 1,
+                providerId: 'codex',
+                provider: {
+                    backendMode: 'appServer',
+                    ...(vendorSessionId ? { vendorSessionId } : {}),
+                },
+            },
+        },
+        agentState: {
+            localControl: overrides.localControl ?? {
+                attached: false,
+                topology: 'shared',
+                canAttach: true,
+                canDetach: false,
+                remoteWritable: true,
+            },
+        },
+    };
+}
+
 vi.mock('@/components/appShell/panes/hooks/useAppPaneScope', () => ({
     useAppPaneScope: () => ({
         scopeState: null,
@@ -198,6 +232,17 @@ describe('useOpenAttachedSessionTerminal', () => {
         expect(paneState.openRight).not.toHaveBeenCalled();
     });
 
+    it('offers the Codex CLI for a running App Server session that publishes shared local control', async () => {
+        sessionState.session = codexAppServerSession();
+        const { useOpenAttachedSessionTerminal } = await import('./openAttachedSessionTerminal');
+
+        const hook = await renderHook(() => useOpenAttachedSessionTerminal('session-1'));
+        expect(hook.getCurrent()).toEqual(expect.objectContaining({ available: true, unavailableReason: null }));
+
+        hook.getCurrent().open();
+        expect(paneState.openRight).toHaveBeenCalledWith({ tabId: 'terminal' });
+    });
+
     it('fails closed when the target daemon does not advertise typed session attach', async () => {
         machineState.sessionAttachSupported = undefined;
         const { useOpenAttachedSessionTerminal } = await import('./openAttachedSessionTerminal');
@@ -215,7 +260,19 @@ describe('useOpenAttachedSessionTerminal', () => {
 
     it.each([
         {
-            name: 'Codex terminal session',
+            name: 'Codex App Server session before its thread exists',
+            session: codexAppServerSession({ vendorSessionId: null }),
+        },
+        {
+            name: 'Codex App Server session without shared local control',
+            session: codexAppServerSession({ localControl: { attached: false, topology: 'exclusive', canAttach: true } }),
+        },
+        {
+            name: 'stopped Codex App Server session',
+            session: codexAppServerSession({ active: false }),
+        },
+        {
+            name: 'Codex terminal session without an App Server thread',
             session: {
                 id: 'session-1',
                 active: true,

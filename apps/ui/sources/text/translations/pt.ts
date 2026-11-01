@@ -10277,6 +10277,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Ancorar terminal",
+    attachedSessionOpen: "Abrir a CLI do agente",
+    attachedSessionTitle: "CLI do agente",
     settings: {
       locationTitle: "Local do terminal incorporado",
     },

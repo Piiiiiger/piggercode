@@ -10488,6 +10488,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Aggancia terminale",
+    attachedSessionOpen: "Apri la CLI dell’agente",
+    attachedSessionTitle: "CLI dell’agente",
     settings: {
       locationTitle: "Posizione del terminale incorporato",
     },

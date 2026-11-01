@@ -10165,6 +10165,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Dokuj terminal",
+    attachedSessionOpen: "Otwórz CLI agenta",
+    attachedSessionTitle: "CLI agenta",
     settings: {
       locationTitle: "Lokalizacja wbudowanego terminala",
     },

@@ -5,6 +5,7 @@ import { resolveCodexBrowseSourceOptions } from '@/agents/providers/codex/direct
 import { resolveCodexLinkEnsureRequestExtras } from '@/agents/providers/codex/directSessions/resolveCodexLinkEnsureRequestExtras';
 import { resolveCodexLockedBrowseSourceOption } from '@/agents/providers/codex/directSessions/resolveCodexLockedBrowseSourceOption';
 import { buildCodexSessionHandoffProviderPatch } from '@/agents/providers/codex/sessionHandoff';
+import { isCodexSharedAttachedSessionTerminalAvailable } from '@/agents/providers/codex/attachedSessionTerminal';
 
 import type {
     AgentResumeExperiments,
@@ -122,6 +123,9 @@ export const CODEX_UI_BEHAVIOR_OVERRIDE: AgentUiBehavior = {
             if (persistedIdentity) return persistedIdentity.backendMode === 'appServer';
             return session.active === true || hasCodexGoalWorkState(session.metadata ?? null);
         },
+    },
+    attachedSessionTerminal: {
+        isAvailable: ({ session }) => isCodexSharedAttachedSessionTerminalAvailable(session),
     },
     mcpServers: {
         supportsDetectedConfigScan: true,

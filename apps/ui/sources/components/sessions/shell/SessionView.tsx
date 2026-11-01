@@ -987,7 +987,7 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
     }, [props.currentSessionRouteServerId, props.sessionId]);
 
     const handleHeaderExtraItemSelect = React.useCallback((actionId: string) => {
-        if (actionId === 'header.openAttachedClaudeTerminal') {
+        if (actionId === 'header.openAttachedSessionTerminal') {
             attachedSessionTerminal.open();
             return true;
         }
@@ -1021,8 +1021,8 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
         }
         if (attachedSessionTerminal.available) {
             items.push({
-                id: 'header.openAttachedClaudeTerminal',
-                title: t('tools.askUserQuestion.claudeDialogNotice.openTerminal'),
+                id: 'header.openAttachedSessionTerminal',
+                title: t('terminalEmbedded.attachedSessionOpen'),
                 icon: <Icon name="terminal" size={16} color={theme.colors.text.secondary} />,
             });
         }

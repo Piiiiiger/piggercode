@@ -1044,13 +1044,13 @@ describe('SessionView header action menu visibility', () => {
     expect(Boolean(findPressableByAccessibilityLabel(screen, 'settings.terminal'))).toBe(surface === 'classic');
   });
 
-  it('offers and handles the attached Claude terminal action when supported', async () => {
+  it('offers and handles the attached session terminal action when supported', async () => {
     attachedTerminalState.available = true;
     await renderSessionView();
 
     const props = getLastHeaderActionMenuProps();
-    expect(getHeaderExtraItemIds(props)).toContain('header.openAttachedClaudeTerminal');
-    expect(props.onSelectExtraItem('header.openAttachedClaudeTerminal')).toBe(true);
+    expect(getHeaderExtraItemIds(props)).toContain('header.openAttachedSessionTerminal');
+    expect(props.onSelectExtraItem('header.openAttachedSessionTerminal')).toBe(true);
     expect(attachedTerminalState.open).toHaveBeenCalledTimes(1);
   });
 

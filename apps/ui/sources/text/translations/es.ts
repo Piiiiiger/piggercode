@@ -10171,6 +10171,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Acoplar terminal",
+    attachedSessionOpen: "Abrir la CLI del agente",
+    attachedSessionTitle: "CLI del agente",
     settings: {
       locationTitle: "Ubicación del terminal incrustado",
     },

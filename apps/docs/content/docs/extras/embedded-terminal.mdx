@@ -38,6 +38,17 @@ On phones, Happier uses a more focused terminal presentation instead of trying t
   It uses the same dock preference as the header button.
 </Callout>
 
+### Open the agent’s own CLI
+
+Some sessions can show the agent’s own terminal interface instead of a plain shell. When the session supports it, the session menu offers **Open agent CLI**. Happier then runs `happier attach <session-id>` on the session’s machine inside this terminal, so you see the provider’s real TUI for the same conversation and can type in it.
+
+This is available for:
+
+- running [Codex](/agents/codex#start-in-happier-continue-in-the-terminal) App Server sessions that use shared control and already have a thread,
+- running [Claude unified terminal](/sessions/claude-unified-terminal) sessions.
+
+The terminal uses the same dock location as the shell terminal. Closing it closes only that terminal client; the session keeps running.
+
 Inside the terminal toolbar you can:
 
 - move it to another dock location,

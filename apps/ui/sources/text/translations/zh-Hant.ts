@@ -8220,6 +8220,8 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: '停靠終端',
+        attachedSessionOpen: '開啟 CLI 介面',
+        attachedSessionTitle: 'CLI 介面',
         settings: {
             locationTitle: '嵌入式終端位置',
         },

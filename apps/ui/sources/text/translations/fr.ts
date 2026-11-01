@@ -9587,6 +9587,8 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: 'Ancrer le terminal',
+        attachedSessionOpen: 'Ouvrir la CLI de l’agent',
+        attachedSessionTitle: 'CLI de l’agent',
         settings: {
             locationTitle: 'Emplacement du terminal intégré',
         },

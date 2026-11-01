@@ -10124,6 +10124,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Закрепить терминал",
+    attachedSessionOpen: "Открыть CLI агента",
+    attachedSessionTitle: "CLI агента",
     settings: {
       locationTitle: "Расположение встроенного терминала",
     },

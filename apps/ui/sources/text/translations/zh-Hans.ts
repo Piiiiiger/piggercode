@@ -9803,6 +9803,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "停靠终端",
+    attachedSessionOpen: "打开 CLI 界面",
+    attachedSessionTitle: "CLI 界面",
     settings: {
       locationTitle: "嵌入式终端位置",
     },

@@ -91,7 +91,7 @@ export const SessionEmbeddedTerminalPane = React.memo(function SessionEmbeddedTe
         <View style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
             <EmbeddedTerminalPane
                 title={terminalMode === 'session_attach'
-                    ? t('tools.askUserQuestion.claudeDialogNotice.openTerminal')
+                    ? t('terminalEmbedded.attachedSessionTitle')
                     : t('settings.terminal')}
                 controller={controller}
                 terminalRef={terminalRendererRef}

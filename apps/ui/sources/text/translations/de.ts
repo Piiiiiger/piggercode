@@ -9600,6 +9600,8 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: 'Terminal andocken',
+        attachedSessionOpen: 'Agent-CLI öffnen',
+        attachedSessionTitle: 'Agent-CLI',
         settings: {
             locationTitle: 'Ort des eingebetteten Terminals',
         },

@@ -10393,6 +10393,8 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "ターミナルをドック",
+    attachedSessionOpen: "エージェントの CLI を開く",
+    attachedSessionTitle: "エージェント CLI",
     settings: {
       locationTitle: "埋め込みターミナルの場所",
     },
