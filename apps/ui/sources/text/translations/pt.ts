@@ -3384,10 +3384,14 @@ export const pt: TranslationStructure = {
     uploadLocation: {
       title: "Local de upload",
       footer:
-        "Os uploads no workspace são a opção mais compatível. Uploads para o diretório temporário do sistema podem ser úteis para evitar artefatos no repositório, mas podem não ser legíveis em sandboxes mais rígidos.",
+        "Uma pasta compartilhada reúne os uploads com o próprio nome, fora do repositório. Os uploads no workspace são a opção mais compatível; uma pasta compartilhada ou o diretório temporário do sistema podem não ser legíveis em sandboxes mais rígidos.",
       options: {
+        sharedFolder: {
+          title: "Pasta compartilhada",
+          subtitle: "Os arquivos são salvos com o próprio nome em uma pasta da máquina, por exemplo ~/Downloads.",
+        },
         workspace: {
-          title: "Diretório do workspace (recomendado)",
+          title: "Diretório do workspace",
           subtitle:
             "Os uploads são gravados em um diretório relativo ao workspace para que o sandbox do agente possa lê-los de forma confiável.",
         },
@@ -3396,6 +3400,17 @@ export const pt: TranslationStructure = {
           subtitle:
             "Os uploads são gravados no diretório temporário do sistema operacional. Isso pode falhar em sandboxes mais rígidos.",
         },
+      },
+    },
+    sharedFolder: {
+      title: "Pasta compartilhada",
+      footer: "Uma pasta na máquina que executa a sessão. ~ é a pasta pessoal dessa máquina. Se já existir um arquivo com o mesmo nome, um número é adicionado, por exemplo report (2).pdf.",
+      folder: {
+        title: "Pasta",
+        promptTitle: "Pasta compartilhada",
+        promptMessage: "Digite um caminho completo ou que comece com ~, por exemplo ~/Downloads.",
+        invalidTitle: "Pasta inválida",
+        invalidMessage: "Use um caminho completo como /home/me/Downloads, ou um que comece com ~, sem . ou ..",
       },
     },
     workspaceDirectory: {

@@ -650,4 +650,137 @@ describe('attachments upload (chunked)', () => {
       await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
     }
   });
+  describe('shared folder uploads', () => {
+    async function registerSharedFolderHandlers(input: Readonly<{
+      workingDirectory: string;
+      accessPolicy?: Parameters<typeof registerSessionTransferRpcHandlers>[1]['accessPolicy'];
+    }>) {
+      const readAllowedDirs: { current: string[] } = { current: [] };
+      const writeAllowedDirs: { current: string[] } = { current: [] };
+      const mgr = createRpcHandlerManager();
+      const pathAllowanceRegistry = createTransferPathAllowanceRegistry({
+        onReadDirsChange: (dirs) => {
+          readAllowedDirs.current = [...dirs];
+        },
+        onWriteDirsChange: (dirs) => {
+          writeAllowedDirs.current = [...dirs];
+        },
+      });
+      registerTransferHandlersForTest(mgr as unknown as RpcHandlerManager, {
+        workingDirectory: input.workingDirectory,
+        ...(input.accessPolicy ? { accessPolicy: input.accessPolicy } : {}),
+        getAdditionalAllowedReadDirs: () => readAllowedDirs.current,
+        getAdditionalAllowedWriteDirs: () => writeAllowedDirs.current,
+        attachmentUpload: {
+          pathAllowanceRegistry,
+        },
+      });
+      const init = mgr.handlers.get(RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_INIT);
+      const chunk = mgr.handlers.get(RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_CHUNK);
+      const finalize = mgr.handlers.get(RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_FINALIZE);
+      if (!init || !chunk || !finalize) {
+        throw new Error('expected attachment upload handlers to be registered');
+      }
+      return { init, chunk, finalize, readAllowedDirs, writeAllowedDirs };
+    }
+
+    function sharedFolderInit(sharedFolderPath: string, fileName: string, sizeBytes: number) {
+      return {
+        t: 'session_attachment_upload_v1',
+        messageLocalId: 'message-shared',
+        fileName,
+        sizeBytes,
+        uploadLocation: 'shared_folder',
+        sharedFolderPath,
+        workspaceRelativeDir: '.happier/uploads',
+        vcsIgnoreStrategy: 'gitignore',
+        vcsIgnoreWritesEnabled: true,
+      };
+    }
+
+    async function sendChunk(handlers: Awaited<ReturnType<typeof registerSharedFolderHandlers>>, initResult: any, text: string) {
+      expect(await handlers.chunk(createEncryptedUploadChunkRequest({
+        uploadId: initResult.uploadId,
+        index: 0,
+        payload: Buffer.from(text, 'utf8'),
+        recipientPublicKeyBase64: initResult.recipientPublicKeyBase64,
+      }))).toEqual({ success: true });
+    }
+
+    it('stores attachments in the shared folder under their own names and keeps every file when names collide', async () => {
+      const workingDirectory = await mkdtemp(join(tmpdir(), 'happier-attach-shared-work-'));
+      const machineHome = await mkdtemp(join(tmpdir(), 'happier-attach-shared-home-'));
+      const sharedFolder = join(machineHome, 'Downloads');
+      try {
+        await writeFile(join(workingDirectory, '.gitignore'), '# workspace\n', 'utf8');
+        const handlers = await registerSharedFolderHandlers({ workingDirectory });
+
+        const first: any = await handlers.init(sharedFolderInit(sharedFolder, '季度报告.txt', 3));
+        const second: any = await handlers.init(sharedFolderInit(sharedFolder, '季度报告.txt', 3));
+        expect(first).toMatchObject({ success: true });
+        expect(second).toMatchObject({ success: true });
+        await sendChunk(handlers, first, 'one');
+        await sendChunk(handlers, second, 'two');
+
+        const firstDone: any = await handlers.finalize({ uploadId: first.uploadId });
+        const secondDone: any = await handlers.finalize({ uploadId: second.uploadId });
+        expect(firstDone).toMatchObject({ success: true, path: join(sharedFolder, '季度报告.txt'), sizeBytes: 3 });
+        expect(secondDone).toMatchObject({ success: true, path: join(sharedFolder, '季度报告 (2).txt'), sizeBytes: 3 });
+        await expect(readFile(join(sharedFolder, '季度报告.txt'), 'utf8')).resolves.toBe('one');
+        await expect(readFile(join(sharedFolder, '季度报告 (2).txt'), 'utf8')).resolves.toBe('two');
+        await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toBe('# workspace\n');
+        expect(handlers.writeAllowedDirs.current).toEqual([]);
+      } finally {
+        await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
+        await rm(machineHome, { recursive: true, force: true }).catch(() => {});
+      }
+    });
+
+    it('resolves a ~ shared folder against the machine user home', async () => {
+      const workingDirectory = await mkdtemp(join(tmpdir(), 'happier-attach-shared-work-'));
+      const machineHome = await mkdtemp(join(tmpdir(), 'happier-attach-shared-home-'));
+      try {
+        process.env.HOME = machineHome;
+        const handlers = await registerSharedFolderHandlers({ workingDirectory });
+
+        const initResult: any = await handlers.init(sharedFolderInit('~/Downloads', 'notes.md', 2));
+        expect(initResult).toMatchObject({ success: true });
+        await sendChunk(handlers, initResult, 'hi');
+        const done: any = await handlers.finalize({ uploadId: initResult.uploadId });
+        expect(done).toMatchObject({ success: true, path: join(machineHome, 'Downloads', 'notes.md') });
+        await expect(readFile(join(machineHome, 'Downloads', 'notes.md'), 'utf8')).resolves.toBe('hi');
+      } finally {
+        await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
+        await rm(machineHome, { recursive: true, force: true }).catch(() => {});
+      }
+    });
+
+    it.each(['Downloads', '/srv/../etc', ''])('rejects the shared folder path %j', async (sharedFolderPath) => {
+      const workingDirectory = await mkdtemp(join(tmpdir(), 'happier-attach-shared-work-'));
+      try {
+        const handlers = await registerSharedFolderHandlers({ workingDirectory });
+        await expect(handlers.init(sharedFolderInit(sharedFolderPath, 'a.txt', 1)))
+          .resolves.toEqual({ success: false, error: 'Invalid sharedFolderPath' });
+      } finally {
+        await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
+      }
+    });
+
+    it('keeps the shared folder inside restricted filesystem roots', async () => {
+      const workingDirectory = await mkdtemp(join(tmpdir(), 'happier-attach-shared-work-'));
+      const outside = await mkdtemp(join(tmpdir(), 'happier-attach-shared-outside-'));
+      try {
+        const handlers = await registerSharedFolderHandlers({
+          workingDirectory,
+          accessPolicy: { kind: 'restrictedRoots', roots: [workingDirectory] },
+        });
+        const initResult: any = await handlers.init(sharedFolderInit(join(outside, 'Downloads'), 'a.txt', 1));
+        expect(initResult).toMatchObject({ success: false, error: expect.stringContaining('Access denied') });
+        expect(handlers.writeAllowedDirs.current).toEqual([]);
+      } finally {
+        await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
+        await rm(outside, { recursive: true, force: true }).catch(() => {});
+      }
+    });
+  });
 });

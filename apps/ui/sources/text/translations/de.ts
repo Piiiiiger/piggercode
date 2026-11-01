@@ -3025,16 +3025,31 @@ export const de: TranslationStructure = {
         },
         uploadLocation: {
             title: 'Upload-Ort',
-            footer: 'Uploads in den Workspace sind am kompatibelsten. Uploads ins temporäre OS-Verzeichnis vermeiden Artefakte im Repository, sind in strengeren Sandboxes aber womöglich nicht lesbar.',
+            footer: 'Ein geteilter Ordner sammelt Uploads unter ihrem eigenen Namen außerhalb des Repositorys. Uploads in den Workspace sind am kompatibelsten; ein geteilter Ordner oder das temporäre OS-Verzeichnis ist in strengeren Sandboxes womöglich nicht lesbar.',
             options: {
+                sharedFolder: {
+                    title: 'Geteilter Ordner',
+                    subtitle: 'Dateien werden unter ihrem eigenen Namen in einem Ordner auf der Maschine gespeichert, etwa ~/Downloads.',
+                },
                 workspace: {
-                    title: 'Workspace-Verzeichnis (empfohlen)',
+                    title: 'Workspace-Verzeichnis',
                     subtitle: 'Uploads landen in einem Verzeichnis relativ zum Workspace, damit die Agent-Sandbox sie zuverlässig lesen kann.',
                 },
                 osTemp: {
                     title: 'Temporäres OS-Verzeichnis',
                     subtitle: 'Uploads landen im temporären Verzeichnis deines Betriebssystems. In strengeren Sandboxes kann das fehlschlagen.',
                 },
+            },
+        },
+        sharedFolder: {
+            title: 'Geteilter Ordner',
+            footer: 'Ein Ordner auf der Maschine, auf der die Session läuft. ~ ist dort der Home-Ordner. Gibt es schon eine Datei mit demselben Namen, wird eine Nummer angehängt, etwa report (2).pdf.',
+            folder: {
+                title: 'Ordner',
+                promptTitle: 'Geteilter Ordner',
+                promptMessage: 'Gib einen vollständigen Pfad oder einen Pfad mit ~ am Anfang ein, etwa ~/Downloads.',
+                invalidTitle: 'Ungültiger Ordner',
+                invalidMessage: 'Nutze einen vollständigen Pfad wie /home/me/Downloads oder einen Pfad mit ~ am Anfang, ohne . oder ..',
             },
         },
         workspaceDirectory: {

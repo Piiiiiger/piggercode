@@ -143,9 +143,9 @@ export const ACCOUNT_DISPLAY_SETTING_DEFINITIONS = defineSettingDefinitions({
         },
     },
     attachmentsUploadsUploadLocation: {
-        schema: z.enum(['workspace', 'os_temp']),
-        default: 'workspace',
-        description: 'Where to store uploaded attachments (workspace or OS temp)',
+        schema: z.enum(['shared_folder', 'workspace', 'os_temp']),
+        default: 'shared_folder',
+        description: 'Where to store uploaded attachments (shared folder, workspace or OS temp)',
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
     },
@@ -153,6 +153,12 @@ export const ACCOUNT_DISPLAY_SETTING_DEFINITIONS = defineSettingDefinitions({
         schema: z.string(),
         default: '.happier/uploads',
         description: 'Workspace-relative directory for attachments when uploadLocation=workspace',
+        storageScope: 'account',
+    },
+    attachmentsUploadsSharedFolderPath: {
+        schema: z.string(),
+        default: '~/Downloads',
+        description: 'Folder on the session machine for attachments when uploadLocation=shared_folder (~ is that machine\'s home)',
         storageScope: 'account',
     },
     attachmentsUploadsVcsIgnoreStrategy: {

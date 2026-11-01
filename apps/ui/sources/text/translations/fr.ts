@@ -3025,16 +3025,31 @@ export const fr: TranslationStructure = {
         },
         uploadLocation: {
             title: 'Emplacement des envois',
-            footer: 'Les envois dans le workspace sont l’option la plus compatible. Les envois dans le dossier temporaire de l’OS évitent des artefacts dans le dépôt, mais peuvent être illisibles dans les sandbox plus stricts.',
+            footer: 'Un dossier partagé regroupe les envois sous leur propre nom, hors du dépôt. Les envois dans le workspace sont l’option la plus compatible ; un dossier partagé ou le dossier temporaire de l’OS peut être illisible dans les sandbox plus stricts.',
             options: {
+                sharedFolder: {
+                    title: 'Dossier partagé',
+                    subtitle: 'Les fichiers sont enregistrés sous leur propre nom dans un seul dossier de la machine, par exemple ~/Downloads.',
+                },
                 workspace: {
-                    title: 'Répertoire du workspace (recommandé)',
+                    title: 'Répertoire du workspace',
                     subtitle: 'Les envois sont écrits dans un répertoire relatif au workspace pour que le sandbox de l’agent puisse les lire de façon fiable.',
                 },
                 osTemp: {
                     title: 'Répertoire temporaire de l’OS',
                     subtitle: 'Les envois sont écrits dans le répertoire temporaire de ton OS. Cela peut casser dans les sandbox plus stricts.',
                 },
+            },
+        },
+        sharedFolder: {
+            title: 'Dossier partagé',
+            footer: 'Un dossier sur la machine qui exécute la session. ~ désigne le dossier personnel de cette machine. Si un fichier du même nom existe déjà, un numéro est ajouté, par exemple report (2).pdf.',
+            folder: {
+                title: 'Dossier',
+                promptTitle: 'Dossier partagé',
+                promptMessage: 'Saisis un chemin complet ou commençant par ~, par exemple ~/Downloads.',
+                invalidTitle: 'Dossier invalide',
+                invalidMessage: 'Utilise un chemin complet comme /home/me/Downloads, ou commençant par ~, sans . ni ..',
             },
         },
         workspaceDirectory: {

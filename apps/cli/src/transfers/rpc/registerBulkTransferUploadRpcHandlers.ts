@@ -40,6 +40,7 @@ type BulkTransferUploadInitRequest =
       fileName: string;
       sizeBytes: number;
       uploadLocation?: AttachmentUploadLocation;
+      sharedFolderPath?: string;
       workspaceRootPath?: string;
       workspaceRelativeDir?: string;
       vcsIgnoreStrategy?: AttachmentVcsIgnoreStrategy;
@@ -71,6 +72,7 @@ function resolveAttachmentTransferConfig(request: Extract<BulkTransferUploadInit
   return {
     uploadLocation,
     workspaceRelativeDir,
+    ...(typeof request?.sharedFolderPath === 'string' ? { sharedFolderPath: request.sharedFolderPath } : {}),
     vcsIgnoreStrategy,
     vcsIgnoreWritesEnabled,
   };
@@ -100,10 +102,15 @@ function joinAttachmentPath(...segments: readonly string[]): string {
 }
 
 function buildAttachmentUploadPath(input: Readonly<{
+  uploadLocation: AttachmentUploadLocation;
   uploadBasePath: string;
   messageLocalId: string;
   fileName: string;
 }>): string {
+  if (input.uploadLocation === 'shared_folder') {
+    // The shared folder holds files under their own names; a clash is resolved when the upload finishes.
+    return joinAttachmentPath(input.uploadBasePath, sanitizeAttachmentFileName(input.fileName));
+  }
   const prefix = randomUUID().slice(0, 8);
   return joinAttachmentPath(
     input.uploadBasePath,
@@ -218,6 +225,7 @@ export function registerBulkTransferUploadRpcHandlers(
       }
 
       const path = buildAttachmentUploadPath({
+        uploadLocation: config.uploadLocation,
         uploadBasePath: resolvedTarget.uploadBasePath,
         messageLocalId,
         fileName: request.fileName,
@@ -229,6 +237,7 @@ export function registerBulkTransferUploadRpcHandlers(
         path,
         sizeBytes: request.sizeBytes,
         overwrite: false,
+        renameIfExists: config.uploadLocation === 'shared_folder',
         additionalAllowedWriteDirs: resolvedTarget.target.additionalAllowedWriteDirs,
         sessionRpcTransferMaxBytes: deps.sessionRpcTransferMaxBytes ?? null,
       });

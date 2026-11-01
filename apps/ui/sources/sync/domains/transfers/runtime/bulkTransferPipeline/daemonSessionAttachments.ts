@@ -12,7 +12,9 @@ export type SessionAttachmentsUploadInitRequest = Readonly<{
     messageLocalId: string;
     fileName: string;
     sizeBytes: number;
-    uploadLocation: 'workspace' | 'os_temp';
+    uploadLocation: 'shared_folder' | 'workspace' | 'os_temp';
+    /** Folder on the session's machine for `shared_folder` uploads; `~` is that machine's home. */
+    sharedFolderPath?: string;
     workspaceRootPath?: string;
     workspaceRelativeDir: string;
     vcsIgnoreStrategy: 'git_info_exclude' | 'gitignore' | 'none';

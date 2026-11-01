@@ -386,6 +386,51 @@ describe('uploadSessionAttachment', () => {
         expect(last).toMatchObject({ uploadedBytes: 5, totalBytes: 5 });
     });
 
+    it('asks the machine to store the file in the shared folder when that location is chosen', async () => {
+        const { sessionAttachmentsUploadFile } = await import('./uploadSessionAttachment');
+
+        const initPayloads: unknown[] = [];
+        sessionRPCSpy.mockImplementation(async (_sessionId: string, method: string, payload: unknown) => {
+            if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_INIT) {
+                initPayloads.push(payload);
+                return { success: true, uploadId: 'u1', chunkSizeBytes: 8, recipientPublicKeyBase64 };
+            }
+            if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_CHUNK) return { success: true };
+            if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_FINALIZE) {
+                return { success: true, path: '/home/u/Downloads/hello.txt', sizeBytes: 5, sha256: 'h1' };
+            }
+            return { success: false, error: `unexpected method ${method}` };
+        });
+
+        const file = typeof File === 'function'
+            ? new File([new TextEncoder().encode('hello')], 'hello.txt', { type: 'text/plain' })
+            : ({ name: 'hello.txt', size: 5, type: 'text/plain', slice: () => new Blob([]) } as any);
+
+        const res = await sessionAttachmentsUploadFile({
+            sessionId: 's1',
+            file: { kind: 'web', file },
+            messageLocalId: 'm1',
+            config: {
+                uploadLocation: 'shared_folder',
+                sharedFolderPath: '~/Downloads',
+                workspaceRelativeDir: '.happier/uploads',
+                vcsIgnoreStrategy: 'git_info_exclude',
+                vcsIgnoreWritesEnabled: true,
+                maxFileBytes: 25 * 1024 * 1024,
+            },
+        });
+
+        expect(initPayloads).toEqual([
+            expect.objectContaining({
+                t: 'session_attachment_upload_v1',
+                fileName: 'hello.txt',
+                uploadLocation: 'shared_folder',
+                sharedFolderPath: '~/Downloads',
+            }),
+        ]);
+        expect(res).toMatchObject({ success: true, path: '/home/u/Downloads/hello.txt' });
+    });
+
     it('uploads a native file through the canonical attachment upload init and closes the native handle', async () => {
         const { sessionAttachmentsUploadFile } = await import('./uploadSessionAttachment');
 

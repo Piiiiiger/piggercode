@@ -9,6 +9,7 @@ import {
     type SessionMediaCategory,
 } from './sessionMediaCategories';
 import {
+    normalizeSessionMediaSharedFolderPath,
     normalizeSessionMediaWorkspaceRelativeDir,
     type SessionMediaTransferConfig,
 } from './sessionMediaConfig';
@@ -36,6 +37,15 @@ export function resolveSessionMediaTransferTarget(input: Readonly<{
     tempUploadRoot: string;
     category: SessionMediaCategory;
 }>): SessionMediaTransferTarget {
+    if (input.config.uploadLocation === 'shared_folder') {
+        // Files land directly in the folder the user picked, next to whatever is already there.
+        return {
+            uploadBasePath: normalizeSessionMediaSharedFolderPath(input.config.sharedFolderPath) ?? '',
+            additionalAllowedReadDirs: [],
+            additionalAllowedWriteDirs: [],
+        };
+    }
+
     const directory = sessionMediaCategoryToDirectory(input.category);
     const workspaceRelativeDir =
         normalizeSessionMediaWorkspaceRelativeDir(input.config.workspaceRelativeDir)
@@ -77,6 +87,14 @@ export function resolveConfiguredSessionMediaTransferTarget(input: Readonly<{
             success: false,
             target,
             error: 'Invalid workspaceRelativeDir',
+        };
+    }
+
+    if (effectiveConfig.uploadLocation === 'shared_folder' && !target.uploadBasePath) {
+        return {
+            success: false,
+            target,
+            error: 'Invalid sharedFolderPath',
         };
     }
 

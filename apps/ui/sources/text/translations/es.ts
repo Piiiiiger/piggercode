@@ -3261,10 +3261,14 @@ export const es: TranslationStructure = {
     uploadLocation: {
       title: "Ubicación de subida",
       footer:
-        "Las subidas en el espacio de trabajo son la opción más compatible. Las subidas al directorio temporal del sistema pueden ser útiles para evitar artefactos en el repositorio, pero pueden no ser legibles en sandboxes más estrictos.",
+        "Una carpeta compartida reúne las subidas con su propio nombre, fuera del repositorio. Las subidas en el espacio de trabajo son la opción más compatible; una carpeta compartida o el directorio temporal del sistema pueden no ser legibles en sandboxes más estrictos.",
       options: {
+        sharedFolder: {
+          title: "Carpeta compartida",
+          subtitle: "Los archivos se guardan con su propio nombre en una carpeta de la máquina, por ejemplo ~/Downloads.",
+        },
         workspace: {
-          title: "Directorio del espacio de trabajo (recomendado)",
+          title: "Directorio del espacio de trabajo",
           subtitle:
             "Las subidas se escriben en un directorio relativo al espacio de trabajo para que el sandbox del agente pueda leerlas de forma fiable.",
         },
@@ -3273,6 +3277,17 @@ export const es: TranslationStructure = {
           subtitle:
             "Las subidas se escriben en el directorio temporal del sistema. Esto puede fallar en sandboxes más estrictos.",
         },
+      },
+    },
+    sharedFolder: {
+      title: "Carpeta compartida",
+      footer: "Una carpeta en la máquina que ejecuta la sesión. ~ es la carpeta personal de esa máquina. Si ya existe un archivo con el mismo nombre, se añade un número, por ejemplo report (2).pdf.",
+      folder: {
+        title: "Carpeta",
+        promptTitle: "Carpeta compartida",
+        promptMessage: "Introduce una ruta completa o que empiece por ~, por ejemplo ~/Downloads.",
+        invalidTitle: "Carpeta no válida",
+        invalidMessage: "Usa una ruta completa como /home/me/Downloads, o una que empiece por ~, sin . ni ..",
       },
     },
     workspaceDirectory: {

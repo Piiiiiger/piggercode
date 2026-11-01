@@ -9,15 +9,22 @@ import { t, type TranslationKey } from '@/text';
 import { useSettingMutable } from '@/sync/domains/state/storage';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
+import { resolveAttachmentsUploadConfig } from '@/components/sessions/attachments/useAttachmentsUploadConfig';
 
 type IoniconName = IconName;
 
 const UPLOAD_LOCATION_OPTIONS: ReadonlyArray<{
-    id: 'workspace' | 'os_temp';
+    id: 'shared_folder' | 'workspace' | 'os_temp';
     titleKey: TranslationKey;
     subtitleKey: TranslationKey;
     iconName: IoniconName;
 }> = [
+    {
+        id: 'shared_folder',
+        titleKey: 'settingsAttachments.uploadLocation.options.sharedFolder.title',
+        subtitleKey: 'settingsAttachments.uploadLocation.options.sharedFolder.subtitle',
+        iconName: 'folder-open',
+    },
     {
         id: 'workspace',
         titleKey: 'settingsAttachments.uploadLocation.options.workspace.title',
@@ -67,6 +74,17 @@ function normalizeWorkspaceRelativeDir(input: string): string | null {
     return parts.join('/');
 }
 
+/** An absolute path or one starting with `~`; the session's machine resolves `~` to its own home. */
+function normalizeSharedFolderPath(input: string): string | null {
+    const trimmed = input.trim();
+    if (!trimmed) return null;
+    const isHomeRelative = trimmed === '~' || trimmed.startsWith('~/') || trimmed.startsWith('~\\');
+    const isAbsolute = trimmed.startsWith('/') || trimmed.startsWith('\\\\') || /^[a-zA-Z]:[\\/]/.test(trimmed);
+    if (!isHomeRelative && !isAbsolute) return null;
+    if (trimmed.split(/[\\/]+/g).some((p) => p === '.' || p === '..')) return null;
+    return trimmed;
+}
+
 function parsePositiveInt(input: string, opts: Readonly<{ min: number; max: number }>): number | null {
     const raw = Number(input);
     if (!Number.isFinite(raw)) return null;
@@ -80,17 +98,25 @@ export const AttachmentsSettingsView = React.memo(function AttachmentsSettingsVi
     const attachmentsEnabled = useFeatureEnabled('attachments.uploads');
 
     const [uploadLocation, setUploadLocation] = useSettingMutable('attachmentsUploadsUploadLocation');
+    const [sharedFolderPath, setSharedFolderPath] = useSettingMutable('attachmentsUploadsSharedFolderPath');
     const [workspaceRelativeDir, setWorkspaceRelativeDir] = useSettingMutable('attachmentsUploadsWorkspaceRelativeDir');
     const [vcsIgnoreStrategy, setVcsIgnoreStrategy] = useSettingMutable('attachmentsUploadsVcsIgnoreStrategy');
     const [vcsIgnoreWritesEnabled, setVcsIgnoreWritesEnabled] = useSettingMutable('attachmentsUploadsVcsIgnoreWritesEnabled');
     const [maxFileBytes, setMaxFileBytes] = useSettingMutable('attachmentsUploadsMaxFileBytes');
 
-    const effectiveUploadLocation = uploadLocation === 'os_temp' ? 'os_temp' : 'workspace';
-    const effectiveIgnoreStrategy =
-        vcsIgnoreStrategy === 'gitignore' || vcsIgnoreStrategy === 'none' ? vcsIgnoreStrategy : 'git_info_exclude';
-    const effectiveWorkspaceRelativeDir = typeof workspaceRelativeDir === 'string' && workspaceRelativeDir.trim().length > 0
-        ? workspaceRelativeDir.trim()
-        : '.happier/uploads';
+    // Show exactly what uploads will use.
+    const effective = resolveAttachmentsUploadConfig({
+        uploadLocation,
+        sharedFolderPath,
+        workspaceRelativeDir,
+        vcsIgnoreStrategy,
+        vcsIgnoreWritesEnabled,
+        maxFileBytes,
+    });
+    const effectiveUploadLocation = effective.uploadLocation;
+    const effectiveIgnoreStrategy = effective.vcsIgnoreStrategy;
+    const effectiveWorkspaceRelativeDir = effective.workspaceRelativeDir;
+    const effectiveSharedFolderPath = effective.sharedFolderPath ?? '';
 
     if (!attachmentsEnabled) {
         return (
@@ -133,51 +159,79 @@ export const AttachmentsSettingsView = React.memo(function AttachmentsSettingsVi
                 ))}
             </ItemGroup>
 
-            <ItemGroup title={t('settingsAttachments.workspaceDirectory.title')} footer={t('settingsAttachments.workspaceDirectory.footer')}>
-                <Item
-                    title={t('settingsAttachments.workspaceDirectory.uploadsDirectory.title')}
-                    subtitle={effectiveWorkspaceRelativeDir}
-                    icon={renderIcon('folder')}
-                    onPress={async () => {
-                        const raw = await Modal.prompt(
-                            t('settingsAttachments.workspaceDirectory.uploadsDirectory.promptTitle'),
-                            t('settingsAttachments.workspaceDirectory.uploadsDirectory.promptMessage'),
-                            { placeholder: effectiveWorkspaceRelativeDir },
-                        );
-                        if (raw === null) return;
-                        const normalized = normalizeWorkspaceRelativeDir(raw);
-                        if (!normalized) {
-                            Modal.alert(t('settingsAttachments.workspaceDirectory.uploadsDirectory.invalidDirectoryTitle'), t('settingsAttachments.workspaceDirectory.uploadsDirectory.invalidDirectoryMessage'));
-                            return;
-                        }
-                        setWorkspaceRelativeDir(normalized);
-                    }}
-                />
-            </ItemGroup>
-
-            <ItemGroup
-                title={t('settingsAttachments.sourceControlIgnore.title')}
-                footer={t('settingsAttachments.sourceControlIgnore.footer')}
-            >
-                {VCS_IGNORE_OPTIONS.map((option) => (
+            {effectiveUploadLocation === 'shared_folder' ? (
+                <ItemGroup title={t('settingsAttachments.sharedFolder.title')} footer={t('settingsAttachments.sharedFolder.footer')}>
                     <Item
-                        key={option.id}
-                        title={t(option.titleKey)}
-                        subtitle={t(option.subtitleKey)}
-                        icon={renderIcon(option.iconName)}
-                        rightElement={effectiveIgnoreStrategy === option.id ? <Icon name="check" size={20} color={theme.colors.accent.blue} /> : null}
-                        onPress={() => setVcsIgnoreStrategy(option.id)}
-                        showChevron={false}
+                        title={t('settingsAttachments.sharedFolder.folder.title')}
+                        subtitle={effectiveSharedFolderPath}
+                        icon={renderIcon('folder-open')}
+                        onPress={async () => {
+                            const raw = await Modal.prompt(
+                                t('settingsAttachments.sharedFolder.folder.promptTitle'),
+                                t('settingsAttachments.sharedFolder.folder.promptMessage'),
+                                { placeholder: effectiveSharedFolderPath, defaultValue: effectiveSharedFolderPath },
+                            );
+                            if (raw === null) return;
+                            const normalized = normalizeSharedFolderPath(raw);
+                            if (!normalized) {
+                                Modal.alert(t('settingsAttachments.sharedFolder.folder.invalidTitle'), t('settingsAttachments.sharedFolder.folder.invalidMessage'));
+                                return;
+                            }
+                            setSharedFolderPath(normalized);
+                        }}
                     />
-                ))}
-                <Item
-                    title={t('settingsAttachments.sourceControlIgnore.writeIgnoreRules.title')}
-                    subtitle={vcsIgnoreWritesEnabled === false ? t('common.disabled') : t('common.enabled')}
-                    icon={renderIcon('pencil-simple')}
-                    showChevron={false}
-                    onPress={() => setVcsIgnoreWritesEnabled(!(vcsIgnoreWritesEnabled === false))}
-                />
-            </ItemGroup>
+                </ItemGroup>
+            ) : null}
+
+            {effectiveUploadLocation === 'workspace' ? (
+                <>
+                    <ItemGroup title={t('settingsAttachments.workspaceDirectory.title')} footer={t('settingsAttachments.workspaceDirectory.footer')}>
+                        <Item
+                            title={t('settingsAttachments.workspaceDirectory.uploadsDirectory.title')}
+                            subtitle={effectiveWorkspaceRelativeDir}
+                            icon={renderIcon('folder')}
+                            onPress={async () => {
+                                const raw = await Modal.prompt(
+                                    t('settingsAttachments.workspaceDirectory.uploadsDirectory.promptTitle'),
+                                    t('settingsAttachments.workspaceDirectory.uploadsDirectory.promptMessage'),
+                                    { placeholder: effectiveWorkspaceRelativeDir },
+                                );
+                                if (raw === null) return;
+                                const normalized = normalizeWorkspaceRelativeDir(raw);
+                                if (!normalized) {
+                                    Modal.alert(t('settingsAttachments.workspaceDirectory.uploadsDirectory.invalidDirectoryTitle'), t('settingsAttachments.workspaceDirectory.uploadsDirectory.invalidDirectoryMessage'));
+                                    return;
+                                }
+                                setWorkspaceRelativeDir(normalized);
+                            }}
+                        />
+                    </ItemGroup>
+
+                    <ItemGroup
+                        title={t('settingsAttachments.sourceControlIgnore.title')}
+                        footer={t('settingsAttachments.sourceControlIgnore.footer')}
+                    >
+                        {VCS_IGNORE_OPTIONS.map((option) => (
+                            <Item
+                                key={option.id}
+                                title={t(option.titleKey)}
+                                subtitle={t(option.subtitleKey)}
+                                icon={renderIcon(option.iconName)}
+                                rightElement={effectiveIgnoreStrategy === option.id ? <Icon name="check" size={20} color={theme.colors.accent.blue} /> : null}
+                                onPress={() => setVcsIgnoreStrategy(option.id)}
+                                showChevron={false}
+                            />
+                        ))}
+                        <Item
+                            title={t('settingsAttachments.sourceControlIgnore.writeIgnoreRules.title')}
+                            subtitle={vcsIgnoreWritesEnabled === false ? t('common.disabled') : t('common.enabled')}
+                            icon={renderIcon('pencil-simple')}
+                            showChevron={false}
+                            onPress={() => setVcsIgnoreWritesEnabled(!(vcsIgnoreWritesEnabled === false))}
+                        />
+                    </ItemGroup>
+                </>
+            ) : null}
 
             <ItemGroup title={t('settingsAttachments.limits.title')} footer={t('settingsAttachments.limits.footer')}>
                 <Item

@@ -31,6 +31,8 @@ export function resolveWorkspaceFileUploadTarget(input: Readonly<{
     path: unknown;
     sizeBytes: unknown;
     overwrite: unknown;
+    /** Keep an existing file and store the upload as `name (2).ext`, `name (3).ext`, ... instead. */
+    renameIfExists?: boolean;
     additionalAllowedWriteDirs?: readonly string[];
     sessionRpcTransferMaxBytes?: number | null;
 }>): WorkspaceFileUploadTargetResult {
@@ -75,6 +77,7 @@ export function resolveWorkspaceFileUploadTarget(input: Readonly<{
                     destPath,
                     destDisplayPath: path,
                     overwrite,
+                    renameIfExists: input.renameIfExists === true,
                     sizeBytes: finalizedSizeBytes,
                 }),
         },

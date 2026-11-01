@@ -3026,16 +3026,31 @@ export const en = {
         },
         uploadLocation: {
             title: 'Upload location',
-            footer: 'Workspace uploads are the most compatible option. OS temp uploads can be useful to avoid repository artifacts, but may not be readable in stricter sandboxes.',
+            footer: 'A shared folder keeps uploads together under their own names, outside your repository. Workspace uploads are the most compatible option; a shared folder or the OS temp directory may not be readable in stricter sandboxes.',
             options: {
+                sharedFolder: {
+                    title: 'Shared folder',
+                    subtitle: 'Files are saved under their own names in one folder on the machine, such as ~/Downloads.',
+                },
                 workspace: {
-                    title: 'Workspace directory (recommended)',
+                    title: 'Workspace directory',
                     subtitle: 'Uploads are written under a workspace-relative directory so the agent sandbox can read them reliably.',
                 },
                 osTemp: {
                     title: 'OS temp directory',
                     subtitle: 'Uploads are written to your OS temp directory. This can break in stricter sandboxes.',
                 },
+            },
+        },
+        sharedFolder: {
+            title: 'Shared folder',
+            footer: 'A folder on the machine that runs the session. ~ is that machine’s home folder. If a file with the same name is already there, a number is added, like report (2).pdf.',
+            folder: {
+                title: 'Folder',
+                promptTitle: 'Shared folder',
+                promptMessage: 'Enter a full path or one starting with ~, for example ~/Downloads.',
+                invalidTitle: 'Invalid folder',
+                invalidMessage: 'Use a full path such as /home/me/Downloads, or one starting with ~, without . or .. parts.',
             },
         },
         workspaceDirectory: {

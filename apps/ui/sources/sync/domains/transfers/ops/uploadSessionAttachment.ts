@@ -3,11 +3,13 @@ import { openLocalUploadSourceReader, resolveLocalUploadSourceSizeBytes } from '
 import { uploadDaemonSessionAttachmentFromReader } from '@/sync/domains/transfers/runtime/bulkTransferPipeline';
 import { readRpcErrorCode } from '@/sync/runtime/rpcErrors';
 
-export type AttachmentsUploadLocation = 'workspace' | 'os_temp';
+export type AttachmentsUploadLocation = 'shared_folder' | 'workspace' | 'os_temp';
 export type VcsIgnoreStrategy = 'git_info_exclude' | 'gitignore' | 'none';
 
 export type AttachmentsUploadConfig = Readonly<{
     uploadLocation: AttachmentsUploadLocation;
+    /** Folder on the session's machine for `shared_folder` uploads; `~` is that machine's home. */
+    sharedFolderPath?: string;
     workspaceRelativeDir: string;
     vcsIgnoreStrategy: VcsIgnoreStrategy;
     vcsIgnoreWritesEnabled: boolean;
@@ -132,6 +134,9 @@ export async function sessionAttachmentsUploadFile(args: Readonly<{
                 fileName: described.name,
                 sizeBytes: described.sizeBytes,
                 uploadLocation: args.config.uploadLocation,
+                ...(args.config.uploadLocation === 'shared_folder' && args.config.sharedFolderPath
+                    ? { sharedFolderPath: args.config.sharedFolderPath }
+                    : {}),
                 workspaceRelativeDir: args.config.workspaceRelativeDir,
                 vcsIgnoreStrategy: args.config.vcsIgnoreStrategy,
                 vcsIgnoreWritesEnabled: args.config.vcsIgnoreWritesEnabled,

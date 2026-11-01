@@ -2998,16 +2998,31 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         },
         uploadLocation: {
             title: '上傳位置',
-            footer: '上傳到工作區目錄最相容。上傳到系統暫存目錄可用於避免在儲存庫中留下檔案，但在更嚴格的沙盒中可能無法讀取。',
+            footer: '共享資料夾讓上傳的檔案以原名集中存放，不進入儲存庫。上傳到工作區目錄最相容；共享資料夾和系統暫存目錄在更嚴格的沙盒中可能無法讀取。',
             options: {
+                sharedFolder: {
+                    title: '共享資料夾',
+                    subtitle: '檔案以原名儲存在機器上的同一個資料夾，例如 ~/Downloads。',
+                },
                 workspace: {
-                    title: '工作區目錄（推薦）',
+                    title: '工作區目錄',
                     subtitle: '上傳內容會寫入工作區相對目錄，以便代理沙盒能可靠讀取。',
                 },
                 osTemp: {
                     title: '系統暫存目錄',
                     subtitle: '上傳內容會寫入系統暫存目錄。在更嚴格的沙盒中可能會出問題。',
                 },
+            },
+        },
+        sharedFolder: {
+            title: '共享資料夾',
+            footer: '執行工作階段的那台機器上的資料夾，~ 表示那台機器的主目錄。如果已有同名檔案，會自動加上編號，例如 report (2).pdf。',
+            folder: {
+                title: '資料夾',
+                promptTitle: '共享資料夾',
+                promptMessage: '輸入完整路徑或以 ~ 開頭的路徑，例如 ~/Downloads。',
+                invalidTitle: '資料夾無效',
+                invalidMessage: '請使用完整路徑（如 /home/me/Downloads）或以 ~ 開頭的路徑，不要包含 . 或 ..。',
             },
         },
         workspaceDirectory: {

@@ -3291,10 +3291,14 @@ export const pl: TranslationStructure = {
     uploadLocation: {
       title: "Lokalizacja przesyłania",
       footer:
-        "Przesyłanie do katalogu workspace to najbardziej kompatybilna opcja. Przesyłanie do katalogu tymczasowego systemu może pomóc uniknąć artefaktów w repozytorium, ale może nie być czytelne w bardziej restrykcyjnych sandboxach.",
+        "Folder współdzielony zbiera przesłane pliki pod ich własnymi nazwami, poza repozytorium. Przesyłanie do katalogu workspace to najbardziej kompatybilna opcja; folder współdzielony i katalog tymczasowy systemu mogą nie być czytelne w bardziej restrykcyjnych sandboxach.",
       options: {
+        sharedFolder: {
+          title: "Folder współdzielony",
+          subtitle: "Pliki są zapisywane pod własnymi nazwami w jednym folderze na maszynie, np. ~/Downloads.",
+        },
         workspace: {
-          title: "Katalog workspace (zalecane)",
+          title: "Katalog workspace",
           subtitle:
             "Pliki są zapisywane w katalogu względnym względem workspace, aby sandbox agenta mógł je niezawodnie odczytać.",
         },
@@ -3303,6 +3307,17 @@ export const pl: TranslationStructure = {
           subtitle:
             "Pliki są zapisywane w katalogu tymczasowym systemu. To może nie działać w bardziej restrykcyjnych sandboxach.",
         },
+      },
+    },
+    sharedFolder: {
+      title: "Folder współdzielony",
+      footer: "Folder na maszynie, na której działa sesja. ~ oznacza katalog domowy tej maszyny. Jeśli plik o tej nazwie już istnieje, dodawany jest numer, np. report (2).pdf.",
+      folder: {
+        title: "Ścieżka folderu",
+        promptTitle: "Folder współdzielony",
+        promptMessage: "Wpisz pełną ścieżkę lub ścieżkę zaczynającą się od ~, np. ~/Downloads.",
+        invalidTitle: "Nieprawidłowy folder",
+        invalidMessage: "Użyj pełnej ścieżki, np. /home/me/Downloads, lub ścieżki zaczynającej się od ~, bez . i ..",
       },
     },
     workspaceDirectory: {

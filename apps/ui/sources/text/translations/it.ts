@@ -3605,10 +3605,14 @@ export const it: TranslationStructure = {
     uploadLocation: {
       title: "Posizione di caricamento",
       footer:
-        "I caricamenti nel workspace sono l’opzione più compatibile. I caricamenti nella directory temporanea del sistema possono essere utili per evitare artefatti nel repository, ma potrebbero non essere leggibili in sandboxes più rigide.",
+        "Una cartella condivisa raccoglie i caricamenti con il loro nome, fuori dal repository. I caricamenti nel workspace sono l’opzione più compatibile; una cartella condivisa o la directory temporanea del sistema potrebbero non essere leggibili in sandboxes più rigide.",
       options: {
+        sharedFolder: {
+          title: "Cartella condivisa",
+          subtitle: "I file vengono salvati con il loro nome in una cartella della macchina, ad esempio ~/Downloads.",
+        },
         workspace: {
-          title: "Directory del workspace (consigliata)",
+          title: "Directory del workspace",
           subtitle:
             "I caricamenti vengono scritti in una directory relativa al workspace così il sandbox dell’agente può leggerli in modo affidabile.",
         },
@@ -3617,6 +3621,17 @@ export const it: TranslationStructure = {
           subtitle:
             "I caricamenti vengono scritti nella directory temporanea del sistema operativo. Questo può rompersi in sandboxes più rigide.",
         },
+      },
+    },
+    sharedFolder: {
+      title: "Cartella condivisa",
+      footer: "Una cartella sulla macchina che esegue la sessione. ~ è la cartella home di quella macchina. Se esiste già un file con lo stesso nome, viene aggiunto un numero, ad esempio report (2).pdf.",
+      folder: {
+        title: "Cartella",
+        promptTitle: "Cartella condivisa",
+        promptMessage: "Inserisci un percorso completo o che inizi con ~, ad esempio ~/Downloads.",
+        invalidTitle: "Cartella non valida",
+        invalidMessage: "Usa un percorso completo come /home/me/Downloads, o uno che inizi con ~, senza . o ..",
       },
     },
     workspaceDirectory: {

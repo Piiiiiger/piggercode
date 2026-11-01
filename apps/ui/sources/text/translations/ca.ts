@@ -3111,16 +3111,31 @@ export const ca: TranslationStructure = {
         },
         uploadLocation: {
             title: 'Ubicació de pujada',
-            footer: 'Les pujades a l’espai de treball són l’opció més compatible. Les pujades al directori temporal del sistema poden ser útils per evitar artefactes al repositori, però poden no ser llegibles en sandboxes més estrictes.',
+            footer: 'Una carpeta compartida aplega les pujades amb el seu propi nom, fora del repositori. Les pujades a l’espai de treball són l’opció més compatible; una carpeta compartida o el directori temporal del sistema poden no ser llegibles en sandboxes més estrictes.',
             options: {
+                sharedFolder: {
+                    title: 'Carpeta compartida',
+                    subtitle: 'Els fitxers es desen amb el seu propi nom en una carpeta de la màquina, per exemple ~/Downloads.',
+                },
                 workspace: {
-                    title: 'Directori de l’espai de treball (recomanat)',
+                    title: 'Directori de l’espai de treball',
                     subtitle: 'Les pujades s’escriuen en un directori relatiu a l’espai de treball perquè el sandbox de l’agent les pugui llegir de manera fiable.',
                 },
                 osTemp: {
                     title: 'Directori temporal del sistema',
                     subtitle: 'Les pujades s’escriuen al directori temporal del sistema. Això pot fallar en sandboxes més estrictes.',
                 },
+            },
+        },
+        sharedFolder: {
+            title: 'Carpeta compartida',
+            footer: 'Una carpeta a la màquina que executa la sessió. ~ és la carpeta personal d’aquesta màquina. Si ja hi ha un fitxer amb el mateix nom, s’hi afegeix un número, per exemple report (2).pdf.',
+            folder: {
+                title: 'Carpeta',
+                promptTitle: 'Carpeta compartida',
+                promptMessage: 'Introdueix un camí complet o que comenci per ~, per exemple ~/Downloads.',
+                invalidTitle: 'Carpeta no vàlida',
+                invalidMessage: 'Fes servir un camí complet com /home/me/Downloads, o un que comenci per ~, sense . ni ..',
             },
         },
         workspaceDirectory: {

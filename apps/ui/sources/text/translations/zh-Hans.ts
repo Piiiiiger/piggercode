@@ -3180,10 +3180,14 @@ export const zhHans: TranslationStructure = {
     uploadLocation: {
       title: "上传位置",
       footer:
-        "上传到工作区目录最兼容。上传到系统临时目录可用于避免在仓库中留下文件，但在更严格的沙盒中可能无法读取。",
+        "共享文件夹让上传的文件以原名集中存放，不进入仓库。上传到工作区目录最兼容；共享文件夹和系统临时目录在更严格的沙盒中可能无法读取。",
       options: {
+        sharedFolder: {
+          title: "共享文件夹",
+          subtitle: "文件以原名保存在机器上的同一个文件夹里，例如 ~/Downloads。",
+        },
         workspace: {
-          title: "工作区目录（推荐）",
+          title: "工作区目录",
           subtitle:
             "上传内容会写入工作区相对目录，以便代理沙盒能够可靠读取。",
         },
@@ -3192,6 +3196,17 @@ export const zhHans: TranslationStructure = {
           subtitle:
             "上传内容会写入系统临时目录。在更严格的沙盒中可能会出问题。",
         },
+      },
+    },
+    sharedFolder: {
+      title: "共享文件夹",
+      footer: "运行会话的那台机器上的文件夹，~ 表示那台机器的主目录。如果已有同名文件，会自动加上编号，例如 report (2).pdf。",
+      folder: {
+        title: "文件夹",
+        promptTitle: "共享文件夹",
+        promptMessage: "输入完整路径或以 ~ 开头的路径，例如 ~/Downloads。",
+        invalidTitle: "文件夹无效",
+        invalidMessage: "请使用完整路径（如 /home/me/Downloads）或以 ~ 开头的路径，不要包含 . 或 ..。",
       },
     },
     workspaceDirectory: {
