@@ -369,6 +369,28 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
  * - New translation keys must be added to ALL language files
  */
 export const en = {
+    passwordLogin: {
+        settingsTitle: "Username and password",
+        settingsItemSubtitle: "Sign in on other browsers without your secret key",
+        settingsIntro: "Sign in on any browser with a username and password. Your password stays on your device: it unlocks your account key there and is never sent to the Relay.",
+        usernameLabel: "Username",
+        passwordLabel: "Password",
+        newPasswordLabel: "New password",
+        confirmPasswordLabel: "Confirm password",
+        usernameHint: "3–32 characters: lowercase letters, digits, dots, dashes or underscores.",
+        passwordHint: ({ count }: { count: number }) => `At least ${count} characters. Longer is harder to guess.`,
+        passwordMismatch: "The passwords don't match.",
+        usernameTaken: "That username is already taken.",
+        secretUnavailable: "This device doesn't hold your account key, so it can't set a password. Sign in here with your secret key first.",
+        currentUsername: ({ username }: { username: string }) => `Your username: ${username}`,
+        noPasswordYet: "No password yet. Set one to sign in without your secret key.",
+        save: "Save",
+        saved: ({ username }: { username: string }) => `Saved. Sign in as ${username} with this password.`,
+        signIn: "Sign in",
+        invalidCredentials: "That username and password don't match. Check them and try again.",
+        unavailable: "Couldn't reach the Relay. Check your connection and try again.",
+        useRecoveryKey: "Use your secret key instead",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

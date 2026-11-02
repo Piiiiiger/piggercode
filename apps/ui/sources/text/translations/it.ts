@@ -553,6 +553,28 @@ function plural({
  * Must match the exact structure of the English translations
  */
 export const it: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Nome utente e password",
+        settingsItemSubtitle: "Accedi da altri browser senza la chiave segreta",
+        settingsIntro: "Accedi da qualsiasi browser con nome utente e password. La password resta sul tuo dispositivo: lì sblocca la chiave del tuo account e non viene mai inviata al Relay.",
+        usernameLabel: "Nome utente",
+        passwordLabel: "Password",
+        newPasswordLabel: "Nuova password",
+        confirmPasswordLabel: "Conferma password",
+        usernameHint: "Da 3 a 32 caratteri: lettere minuscole, cifre, punti, trattini o trattini bassi.",
+        passwordHint: ({ count }: { count: number }) => `Almeno ${count} caratteri. Più è lunga, più è difficile da indovinare.`,
+        passwordMismatch: "Le password non coincidono.",
+        usernameTaken: "Questo nome utente è già in uso.",
+        secretUnavailable: "Questo dispositivo non ha la chiave del tuo account, quindi non può impostare una password. Accedi prima qui con la chiave segreta.",
+        currentUsername: ({ username }: { username: string }) => `Il tuo nome utente: ${username}`,
+        noPasswordYet: "Nessuna password ancora. Impostane una per accedere senza la chiave segreta.",
+        save: "Salva",
+        saved: ({ username }: { username: string }) => `Salvato. Accedi come ${username} con questa password.`,
+        signIn: "Accedi",
+        invalidCredentials: "Nome utente e password non corrispondono. Controllali e riprova.",
+        unavailable: "Impossibile raggiungere il Relay. Controlla la connessione e riprova.",
+        useRecoveryKey: "Usa invece la chiave segreta",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

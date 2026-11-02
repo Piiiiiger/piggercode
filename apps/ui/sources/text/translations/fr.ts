@@ -371,6 +371,28 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
  * - New translation keys must be added to ALL language files
  */
 export const fr: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Nom d'utilisateur et mot de passe",
+        settingsItemSubtitle: "Se connecter sur d'autres navigateurs sans clé secrète",
+        settingsIntro: "Connecte-toi depuis n'importe quel navigateur avec un nom d'utilisateur et un mot de passe. Le mot de passe reste sur ton appareil : il y déverrouille la clé de ton compte et n'est jamais envoyé au relay.",
+        usernameLabel: "Nom d'utilisateur",
+        passwordLabel: "Mot de passe",
+        newPasswordLabel: "Nouveau mot de passe",
+        confirmPasswordLabel: "Confirmer le mot de passe",
+        usernameHint: "3 à 32 caractères : lettres minuscules, chiffres, points, tirets ou traits de soulignement.",
+        passwordHint: ({ count }: { count: number }) => `Au moins ${count} caractères. Plus il est long, plus il est difficile à deviner.`,
+        passwordMismatch: "Les mots de passe ne correspondent pas.",
+        usernameTaken: "Ce nom d'utilisateur est déjà pris.",
+        secretUnavailable: "Cet appareil ne détient pas la clé de ton compte et ne peut donc pas définir de mot de passe. Connecte-toi d'abord ici avec ta clé secrète.",
+        currentUsername: ({ username }: { username: string }) => `Ton nom d'utilisateur : ${username}`,
+        noPasswordYet: "Pas encore de mot de passe. Définis-en un pour te connecter sans clé secrète.",
+        save: "Enregistrer",
+        saved: ({ username }: { username: string }) => `Enregistré. Connecte-toi en tant que ${username} avec ce mot de passe.`,
+        signIn: "Se connecter",
+        invalidCredentials: "Le nom d'utilisateur et le mot de passe ne correspondent pas. Vérifie-les et réessaie.",
+        unavailable: "Impossible de joindre le relay. Vérifie ta connexion et réessaie.",
+        useRecoveryKey: "Utiliser plutôt ta clé secrète",
+    },
     settingsKeyboard: {
         title: 'Raccourcis clavier',
         entrySubtitle: 'Découvre et configure les raccourcis de l’app',

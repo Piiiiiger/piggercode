@@ -733,8 +733,29 @@ first. Plain Accounts retain their genuine historical key custody and token-only
 pairing behavior. These checks establish authority at the current read; they do
 not introduce a new ordering or revocation protocol for concurrent mode changes.
 
+## Password login
+
+An E2EE Account can also sign in with a username and password. The password never leaves the
+browser: the client stretches it with scrypt (parameters stored per credential, default
+N=2^15, r=8, p=1) and derives two independent keys with HMAC-SHA-256 — an auth key and a wrapping
+key. The server stores the login name, the KDF parameters, an scrypt hash of the auth key, and the
+Account secret sealed with the wrapping key (NaCl secretbox). The server can therefore check a login
+but cannot open the secret.
+
+Login runs in three requests: `POST /v1/auth/password/params` returns the KDF parameters (unknown
+names get stable parameters derived from the server secret, so the reply does not reveal whether a
+name exists), `POST /v1/auth/password/login` returns the sealed secret for a matching auth key, and
+the client then signs in through the normal key challenge (`POST /v1/auth`), which issues the token.
+Both password routes are rate limited per IP. A signed-in client that holds the Account secret sets
+or replaces the credential with `POST /v1/account/password`.
+
+Anyone who obtains the database can attempt offline guesses against the sealed secret at scrypt cost,
+so the password is only as strong as its length; the recovery key remains the way back when the
+password is lost.
+
 ## Implementation references
 - Client crypto: `apps/cli/src/api/encryption.ts`
+- Password login: `packages/protocol/src/auth/passwordLogin.ts`, `apps/server/sources/app/api/routes/auth/registerPasswordAuthRoutes.ts`, `apps/ui/sources/auth/password/`
 - Session message format: `apps/cli/src/api/types.ts`
 - Server message ingestion: `apps/server/sources/app/api/socket/sessionUpdateHandler.ts`
 - Artifact/KV routes: `apps/server/sources/app/api/routes/artifactsRoutes.ts`, `apps/server/sources/app/kv/kvMutate.ts`

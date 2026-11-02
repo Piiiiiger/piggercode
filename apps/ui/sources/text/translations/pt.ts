@@ -604,6 +604,28 @@ function plural({
  * Must match the exact structure of the English translations
  */
 export const pt: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Nome de usuário e senha",
+        settingsItemSubtitle: "Entre em outros navegadores sem a chave secreta",
+        settingsIntro: "Entre em qualquer navegador com nome de usuário e senha. A senha fica no seu dispositivo: ela desbloqueia a chave da sua conta ali e nunca é enviada ao Relay.",
+        usernameLabel: "Nome de usuário",
+        passwordLabel: "Senha",
+        newPasswordLabel: "Nova senha",
+        confirmPasswordLabel: "Confirmar senha",
+        usernameHint: "De 3 a 32 caracteres: letras minúsculas, dígitos, pontos, hifens ou sublinhados.",
+        passwordHint: ({ count }: { count: number }) => `Pelo menos ${count} caracteres. Quanto mais longa, mais difícil de adivinhar.`,
+        passwordMismatch: "As senhas não coincidem.",
+        usernameTaken: "Esse nome de usuário já está em uso.",
+        secretUnavailable: "Este dispositivo não tem a chave da sua conta, então não pode definir uma senha. Entre aqui primeiro com a sua chave secreta.",
+        currentUsername: ({ username }: { username: string }) => `Seu nome de usuário: ${username}`,
+        noPasswordYet: "Ainda sem senha. Defina uma para entrar sem a chave secreta.",
+        save: "Salvar",
+        saved: ({ username }: { username: string }) => `Salvo. Entre como ${username} com esta senha.`,
+        signIn: "Entrar",
+        invalidCredentials: "O nome de usuário e a senha não correspondem. Verifique-os e tente novamente.",
+        unavailable: "Não foi possível acessar o Relay. Verifique sua conexão e tente novamente.",
+        useRecoveryKey: "Usar a chave secreta",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

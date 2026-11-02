@@ -99,6 +99,7 @@ export type SocialFriendsFeatureEnv = Readonly<{
 export type AuthFeatureEnv = Readonly<{
   recoveryProviderResetEnabled: boolean;
   loginKeyChallengeEnabled: boolean;
+  loginPasswordEnabled: boolean;
   pairingDesktopQrMobileScanEnabled: boolean;
   uiAutoRedirectEnabled: boolean;
   uiAutoRedirectProviderId: string;
@@ -395,6 +396,7 @@ export function readAuthFeatureEnv(env: NodeJS.ProcessEnv): AuthFeatureEnv {
       true,
     ),
     loginKeyChallengeEnabled: parseBooleanEnv(env[FEATURE_ENV_KEYS.authLoginKeyChallengeEnabled], true),
+    loginPasswordEnabled: parseBooleanEnv(env[FEATURE_ENV_KEYS.authLoginPasswordEnabled], true),
     pairingDesktopQrMobileScanEnabled: parseBooleanEnv(env[FEATURE_ENV_KEYS.authPairingDesktopQrMobileScanEnabled], true),
     uiAutoRedirectEnabled: parseBooleanEnv(
       env[FEATURE_ENV_KEYS.authUiAutoRedirectEnabled] ?? legacyUiAutoRedirectEnabled,

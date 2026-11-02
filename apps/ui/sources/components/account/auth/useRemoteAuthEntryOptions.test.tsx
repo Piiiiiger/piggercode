@@ -40,6 +40,7 @@ function createInput(overrides: Partial<RemoteAuthEntryOptionsInput> = {}): Remo
             preferredProviderId: null,
         },
         loginOptions: {
+            passwordEnabled: false,
             mtlsEnabled: false,
             keylessProviderIds: Object.freeze([]),
             preferredKeylessProviderId: null,
@@ -87,6 +88,7 @@ describe('deriveRemoteAuthEntryOptions', () => {
                     preferredProviderId: null,
                 },
                 loginOptions: {
+                    passwordEnabled: false,
                     mtlsEnabled: true,
                     keylessProviderIds: Object.freeze([]),
                     preferredKeylessProviderId: null,
@@ -108,6 +110,7 @@ describe('deriveRemoteAuthEntryOptions', () => {
                     preferredProviderId: null,
                 },
                 loginOptions: {
+                    passwordEnabled: false,
                     mtlsEnabled: false,
                     keylessProviderIds: Object.freeze(['github']),
                     preferredKeylessProviderId: 'github',
@@ -135,6 +138,40 @@ describe('deriveRemoteAuthEntryOptions', () => {
         expect(options.primaryAction).toBeNull();
         expect(options.showAnonymousSignup).toBe(false);
         expect(options.showProviderSignup).toBe(false);
+    });
+
+    it('shows the password form only when the relay offers password login', () => {
+        const withPassword = deriveRemoteAuthEntryOptions(createInput({
+            loginOptions: {
+                passwordEnabled: true,
+                mtlsEnabled: false,
+                keylessProviderIds: Object.freeze([]),
+                preferredKeylessProviderId: null,
+            },
+        }));
+        expect(withPassword.showPasswordLogin).toBe(true);
+        expect(deriveRemoteAuthEntryOptions(createInput()).showPasswordLogin).toBe(false);
+    });
+});
+
+describe('resolveRemoteAuthCapabilityOptions', () => {
+    function featuresWithPasswordLogin(enabled: boolean): FeaturesResponse {
+        return {
+            capabilities: {
+                auth: {
+                    methods: [
+                        { id: 'key_challenge', actions: [{ id: 'login', enabled: true, mode: 'keyed' }] },
+                        { id: 'password', actions: [{ id: 'login', enabled, mode: 'keyed' }] },
+                    ],
+                },
+            },
+        } as unknown as FeaturesResponse;
+    }
+
+    it('reads password login from the relay auth methods and fails closed when it is disabled', () => {
+        expect(resolveRemoteAuthCapabilityOptions(featuresWithPasswordLogin(true)).loginOptions.passwordEnabled).toBe(true);
+        expect(resolveRemoteAuthCapabilityOptions(featuresWithPasswordLogin(false)).loginOptions.passwordEnabled).toBe(false);
+        expect(resolveRemoteAuthCapabilityOptions(null).loginOptions.passwordEnabled).toBe(false);
     });
 });
 
@@ -211,6 +248,45 @@ describe('RemoteWelcomeDecisionPanel', () => {
         expect(screen.findAllByTestId('welcome-primary-start')).toHaveLength(0);
         expect(flattenStyle(screen.findByTestId('welcome-secondary-login')?.props.style).backgroundColor)
             .toBe(lightTheme.colors.button.primary.background);
+    });
+
+    it('offers the password form in place of the secret-key row and keeps a link to the secret-key flow', async () => {
+        const onRestore = vi.fn();
+        const options = deriveRemoteAuthEntryOptions(createInput({
+            signupOptions: {
+                anonymousEnabled: false,
+                providerIds: Object.freeze([]),
+                preferredProviderId: null,
+            },
+            loginOptions: {
+                passwordEnabled: true,
+                mtlsEnabled: false,
+                keylessProviderIds: Object.freeze([]),
+                preferredKeylessProviderId: null,
+            },
+        }));
+        const screen = await renderScreen(
+            <RemoteWelcomeDecisionPanel
+                options={options}
+                isDesktopShell={false}
+                layout="portrait"
+                onAnonymousSignup={noop}
+                onChangeRelay={noop}
+                onKeylessProviderLogin={noop}
+                onMtlsLogin={noop}
+                onOpenSetup={noop}
+                onProviderSignup={noop}
+                onRestore={onRestore}
+            />,
+        );
+
+        expect(screen.findByTestId('password-login-form')).toBeTruthy();
+        expect(screen.findAllByTestId('welcome-secondary-login')).toHaveLength(0);
+        expect(screen.findAllByTestId('welcome-signup-disabled')).toHaveLength(0);
+
+        await screen.pressByTestIdAsync('password-login-use-recovery-key');
+
+        expect(onRestore).toHaveBeenCalledTimes(1);
     });
 
     it('routes the restore action through the supplied login callback', async () => {
@@ -325,6 +401,7 @@ describe('RemoteWelcomeDecisionPanel', () => {
                         preferredProviderId: null,
                     },
                     loginOptions: {
+                        passwordEnabled: false,
                         mtlsEnabled: true,
                         keylessProviderIds: Object.freeze([]),
                         preferredKeylessProviderId: null,
@@ -359,6 +436,7 @@ describe('RemoteWelcomeDecisionPanel', () => {
                         preferredProviderId: null,
                     },
                     loginOptions: {
+                        passwordEnabled: false,
                         mtlsEnabled: false,
                         keylessProviderIds: Object.freeze(['github']),
                         preferredKeylessProviderId: 'github',
@@ -393,6 +471,7 @@ describe('RemoteWelcomeDecisionPanel', () => {
                         preferredProviderId: null,
                     },
                     loginOptions: {
+                        passwordEnabled: false,
                         mtlsEnabled: false,
                         keylessProviderIds: Object.freeze(['github']),
                         preferredKeylessProviderId: 'github',

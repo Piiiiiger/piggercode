@@ -105,6 +105,8 @@ const ALLOW_SAME_STRING_KEYS_BY_LOCALE: Readonly<Record<string, ReadonlySet<stri
     // These are correctly translated in some locales even though they match English.
     'common.no': new Set(['es', 'it', 'ca']),
     'common.error': new Set(['es', 'ca']),
+    // "Password" is the usual Italian word for a login password.
+    'passwordLogin.passwordLabel': new Set(['it']),
     'tools.fullView.error': new Set(['es', 'ca']),
     'status.error': new Set(['es']),
     // "Terminal" is the correct word in these locales and matches English.

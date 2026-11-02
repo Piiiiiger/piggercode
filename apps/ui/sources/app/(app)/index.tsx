@@ -164,6 +164,7 @@ function NotAuthenticated() {
         preferredProviderId: null,
     });
     const [loginOptions, setLoginOptions] = React.useState<RemoteLoginOptions>({
+        passwordEnabled: false,
         mtlsEnabled: false,
         keylessProviderIds: Object.freeze([]),
         preferredKeylessProviderId: null,

@@ -19,6 +19,7 @@ import { t } from '@/text';
 
 import type { RemoteAuthEntryOptions } from './useRemoteAuthEntryOptions';
 import { useReturningGreeting } from './useReturningGreeting';
+import { PasswordLoginForm } from './PasswordLoginForm';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
 
 // Premium-feel hover affordances on the welcome buttons. The whole button
@@ -355,7 +356,7 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
                     <Text style={styles.intentBody}>{t('setupOnboarding.resumeIntentBody')}</Text>
                 </View>
             ) : null}
-            {options.showAuthActions && options.primaryAction === null ? (
+            {options.showAuthActions && options.primaryAction === null && !options.showPasswordLogin ? (
                 <Text testID="welcome-signup-disabled" style={[styles.serverStatusBody, styles.signupDisabledNotice]}>
                     {t('errors.signupDisabled')}
                 </Text>
@@ -384,7 +385,7 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
                             : options.showAnonymousSignup ? (
                             <DecisionActionRow
                                 testID="welcome-primary-start"
-                                primary={!isReturningUser}
+                                primary={!isReturningUser && !options.showPasswordLogin}
                                 title={isReturningUser ? t('welcome.welcomeReturningStartFreshButton') : t('welcome.welcomePrimaryButton')}
                                 subtitle={isReturningUser ? t('welcome.welcomeReturningStartFreshSubtitle') : t('welcome.welcomePrimarySubtitle')}
                                 iconName="arrow-right"
@@ -397,13 +398,17 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
                                         ? 'welcome-signup-provider'
                                         : 'welcome-create-account'
                                 }
-                                primary
+                                primary={!options.showPasswordLogin}
                                 title={options.primaryAction.title}
                                 iconName={options.primaryAction.kind === 'mtls' ? 'shield-check' : 'arrow-right'}
                                 onPress={primarySignupAction}
                             />
                         );
-                        const loginButton = (
+                        // A relay that offers username + password sign-in gets the form in place of the
+                        // secret-key login row; the form keeps a link to the secret-key flow.
+                        const loginButton = options.showPasswordLogin ? (
+                            <PasswordLoginForm onUseRecoveryKey={props.onRestore} />
+                        ) : (
                             <DecisionActionRow
                                 testID="welcome-secondary-login"
                                 primary={(isReturningUser && options.showAnonymousSignup) || options.primaryAction === null}
@@ -443,11 +448,11 @@ export function RemoteWelcomeDecisionPanel(props: RemoteWelcomeDecisionPanelProp
                                 ) : null}
                             </>
                         );
-                        // Returning anonymous: Login first (primary), extras,
-                        // then Start fresh as a bordered secondary. Anything
-                        // else keeps the original first-time ordering with
-                        // Login last.
-                        return isReturningUser && options.showAnonymousSignup ? (
+                        // Password sign-in or a returning anonymous user: Login
+                        // first, extras, then Start fresh as a bordered
+                        // secondary. Anything else keeps the original
+                        // first-time ordering with Login last.
+                        return options.showPasswordLogin || (isReturningUser && options.showAnonymousSignup) ? (
                             <>
                                 {loginButton}
                                 {inlineExtras}

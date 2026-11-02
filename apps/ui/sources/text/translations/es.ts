@@ -555,6 +555,28 @@ function plural({
  * Must match the exact structure of the English translations
  */
 export const es: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Usuario y contraseña",
+        settingsItemSubtitle: "Inicia sesión en otros navegadores sin la clave secreta",
+        settingsIntro: "Inicia sesión desde cualquier navegador con un usuario y una contraseña. La contraseña se queda en tu dispositivo: allí desbloquea la clave de tu cuenta y nunca se envía al Relay.",
+        usernameLabel: "Usuario",
+        passwordLabel: "Contraseña",
+        newPasswordLabel: "Nueva contraseña",
+        confirmPasswordLabel: "Confirmar contraseña",
+        usernameHint: "De 3 a 32 caracteres: minúsculas, dígitos, puntos, guiones o guiones bajos.",
+        passwordHint: ({ count }: { count: number }) => `Al menos ${count} caracteres. Cuanto más larga, más difícil de adivinar.`,
+        passwordMismatch: "Las contraseñas no coinciden.",
+        usernameTaken: "Ese usuario ya está en uso.",
+        secretUnavailable: "Este dispositivo no tiene la clave de tu cuenta, así que no puede definir una contraseña. Inicia sesión aquí primero con tu clave secreta.",
+        currentUsername: ({ username }: { username: string }) => `Tu usuario: ${username}`,
+        noPasswordYet: "Aún no hay contraseña. Define una para iniciar sesión sin la clave secreta.",
+        save: "Guardar",
+        saved: ({ username }: { username: string }) => `Guardado. Inicia sesión como ${username} con esta contraseña.`,
+        signIn: "Iniciar sesión",
+        invalidCredentials: "El usuario y la contraseña no coinciden. Revísalos e inténtalo de nuevo.",
+        unavailable: "No se pudo conectar con el Relay. Revisa tu conexión e inténtalo de nuevo.",
+        useRecoveryKey: "Usar la clave secreta",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

@@ -555,6 +555,28 @@ function plural({
 }
 
 export const zhHans: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "用户名和密码",
+        settingsItemSubtitle: "无需密钥即可在其他浏览器登录",
+        settingsIntro: "设置后，可以在任意浏览器用用户名和密码登录。密码只在你的设备上使用：它在本地解锁你的账户密钥，不会发送到 Relay。",
+        usernameLabel: "用户名",
+        passwordLabel: "密码",
+        newPasswordLabel: "新密码",
+        confirmPasswordLabel: "确认密码",
+        usernameHint: "3–32 个字符：小写字母、数字、点、连字符或下划线。",
+        passwordHint: ({ count }: { count: number }) => `至少 ${count} 个字符，越长越难被猜到。`,
+        passwordMismatch: "两次输入的密码不一致。",
+        usernameTaken: "该用户名已被占用。",
+        secretUnavailable: "此设备上没有你的账户密钥，无法设置密码。请先在此设备上用密钥登录。",
+        currentUsername: ({ username }: { username: string }) => `你的用户名：${username}`,
+        noPasswordYet: "尚未设置密码。设置后即可不用密钥登录。",
+        save: "保存",
+        saved: ({ username }: { username: string }) => `已保存。现在可以用 ${username} 和这个密码登录。`,
+        signIn: "登录",
+        invalidCredentials: "用户名或密码不正确，请检查后重试。",
+        unavailable: "无法连接到 Relay，请检查网络后重试。",
+        useRecoveryKey: "改用密钥登录",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

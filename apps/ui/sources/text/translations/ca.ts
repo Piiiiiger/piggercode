@@ -545,6 +545,28 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
  * Must match the exact structure of the English translations
  */
 export const ca: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Nom d'usuari i contrasenya",
+        settingsItemSubtitle: "Inicia la sessió en altres navegadors sense la clau secreta",
+        settingsIntro: "Inicia la sessió des de qualsevol navegador amb un nom d'usuari i una contrasenya. La contrasenya es queda al teu dispositiu: hi desbloqueja la clau del teu compte i mai no s'envia al Relay.",
+        usernameLabel: "Nom d'usuari",
+        passwordLabel: "Contrasenya",
+        newPasswordLabel: "Contrasenya nova",
+        confirmPasswordLabel: "Confirma la contrasenya",
+        usernameHint: "De 3 a 32 caràcters: minúscules, dígits, punts, guions o guions baixos.",
+        passwordHint: ({ count }: { count: number }) => `Com a mínim ${count} caràcters. Com més llarga, més difícil d'endevinar.`,
+        passwordMismatch: "Les contrasenyes no coincideixen.",
+        usernameTaken: "Aquest nom d'usuari ja està agafat.",
+        secretUnavailable: "Aquest dispositiu no té la clau del teu compte, així que no pot definir una contrasenya. Primer inicia la sessió aquí amb la clau secreta.",
+        currentUsername: ({ username }: { username: string }) => `El teu nom d'usuari: ${username}`,
+        noPasswordYet: "Encara no hi ha contrasenya. Defineix-ne una per iniciar la sessió sense la clau secreta.",
+        save: "Desa",
+        saved: ({ username }: { username: string }) => `Desat. Inicia la sessió com a ${username} amb aquesta contrasenya.`,
+        signIn: "Inicia la sessió",
+        invalidCredentials: "El nom d'usuari i la contrasenya no coincideixen. Revisa'ls i torna-ho a provar.",
+        unavailable: "No s'ha pogut contactar amb el Relay. Revisa la connexió i torna-ho a provar.",
+        useRecoveryKey: "Fes servir la clau secreta",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

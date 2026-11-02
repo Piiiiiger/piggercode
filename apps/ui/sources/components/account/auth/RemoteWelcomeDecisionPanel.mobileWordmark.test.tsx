@@ -36,6 +36,7 @@ function createInput(): RemoteAuthEntryOptionsInput {
             preferredProviderId: null,
         },
         loginOptions: {
+            passwordEnabled: false,
             mtlsEnabled: false,
             keylessProviderIds: Object.freeze([]),
             preferredKeylessProviderId: null,

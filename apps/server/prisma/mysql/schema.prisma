@@ -88,6 +88,7 @@ model Account {
     SessionOrganizationOrderEntry SessionOrganizationOrderEntry[]
     SessionOrganizationLabel SessionOrganizationLabel[]
     SessionOrganizationCheckpoint SessionOrganizationCheckpoint?
+    AccountPasswordCredential AccountPasswordCredential?
     AccountIdentity        AccountIdentity[]
     automations            Automation[]
     automationRuns         AutomationRun[]
@@ -634,6 +635,24 @@ model SessionOrganizationLabel {
 
     @@unique([accountId, labelKind, scopeHash])
     @@index([accountId, labelKind, archivedAt])
+}
+
+/// Username + password login for an account. The password itself never reaches the server: it keeps a
+/// hash of the client-derived auth key, the client's KDF parameters, and the account secret wrapped
+/// with a client-derived key.
+model AccountPasswordCredential {
+    id            String   @id @default(cuid())
+    accountId     String   @unique
+    loginName     String   @unique
+    /// Client KDF parameters as JSON (`PasswordKdfV1`).
+    kdf           String
+    verifierSalt  Bytes
+    verifierHash  Bytes
+    wrappedSecret Bytes
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 model SessionOrganizationCheckpoint {

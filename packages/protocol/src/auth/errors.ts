@@ -26,6 +26,9 @@ export const AUTH_ERROR_CODES = [
   'invalid-public-key',
   'invalid-signature',
   'forbidden',
+
+  // Password login
+  'invalid-credentials',
 ] as const;
 
 export const AuthErrorCodeSchema = z.enum(AUTH_ERROR_CODES);

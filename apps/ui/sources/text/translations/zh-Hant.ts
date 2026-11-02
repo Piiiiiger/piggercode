@@ -577,6 +577,28 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
 }
 
 const zhHantOverrides: DeepPartial<TranslationStructure> = {
+  passwordLogin: {
+    settingsTitle: "使用者名稱和密碼",
+    settingsItemSubtitle: "無需金鑰即可在其他瀏覽器登入",
+    settingsIntro: "設定後，可以在任何瀏覽器以使用者名稱和密碼登入。密碼只在你的裝置上使用：它在本機解鎖你的帳戶金鑰，不會傳送到 Relay。",
+    usernameLabel: "使用者名稱",
+    passwordLabel: "密碼",
+    newPasswordLabel: "新密碼",
+    confirmPasswordLabel: "確認密碼",
+    usernameHint: "3–32 個字元：小寫字母、數字、點、連字號或底線。",
+    passwordHint: ({ count }: { count: number }) => `至少 ${count} 個字元，越長越難被猜到。`,
+    passwordMismatch: "兩次輸入的密碼不一致。",
+    usernameTaken: "此使用者名稱已被使用。",
+    secretUnavailable: "此裝置上沒有你的帳戶金鑰，無法設定密碼。請先在此裝置上以金鑰登入。",
+    currentUsername: ({ username }: { username: string }) => `你的使用者名稱：${username}`,
+    noPasswordYet: "尚未設定密碼。設定後即可不用金鑰登入。",
+    save: "儲存",
+    saved: ({ username }: { username: string }) => `已儲存。現在可以用 ${username} 和這個密碼登入。`,
+    signIn: "登入",
+    invalidCredentials: "使用者名稱或密碼不正確，請檢查後再試。",
+    unavailable: "無法連線到 Relay，請檢查網路後再試。",
+    useRecoveryKey: "改用金鑰登入",
+  },
   settingsKeyboard: {
       title: 'Keyboard shortcuts',
       entrySubtitle: 'Discover and control app shortcuts',

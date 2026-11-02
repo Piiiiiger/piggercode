@@ -14,6 +14,8 @@ export type RemoteSignupOptions = Readonly<{
 }>;
 
 export type RemoteLoginOptions = Readonly<{
+    /** The relay advertises username + password login (`password` method, keyed `login` action). */
+    passwordEnabled: boolean;
     mtlsEnabled: boolean;
     keylessProviderIds: readonly string[];
     preferredKeylessProviderId: string | null;
@@ -59,6 +61,7 @@ export type RemoteAuthEntryOptions = Readonly<{
     mtlsPrimary: boolean;
     mtlsTitle: string;
     showKeylessProviderLogin: boolean;
+    showPasswordLogin: boolean;
     keylessProviderId: string | null;
     keylessPrimary: boolean;
     providerKeylessTitle: string;
@@ -147,11 +150,13 @@ export function resolveRemoteAuthCapabilityOptions(features: FeaturesResponse | 
               .filter((id) => id !== 'key_challenge')
               .filter((id) => hasEnabledAction(resolveMethodById(authMethods, id), 'login', ['keyless', 'either']))
         : legacyEnabledLoginIds.filter((id) => id !== 'key_challenge');
+    const passwordEnabled = hasAuthMethods
+        && hasEnabledAction(resolveMethodById(authMethods, 'password'), 'login', ['keyed', 'either']);
 
     if (!hasAuthMethods && legacyEnabledSignupIds.length === 0 && legacyEnabledLoginIds.length === 0) {
         return {
             signupOptions: { anonymousEnabled: true, providerIds: Object.freeze([]), preferredProviderId: null },
-            loginOptions: { mtlsEnabled: false, keylessProviderIds: Object.freeze([]), preferredKeylessProviderId: null },
+            loginOptions: { passwordEnabled: false, mtlsEnabled: false, keylessProviderIds: Object.freeze([]), preferredKeylessProviderId: null },
             serverAvailability: 'legacy',
             autoRedirect: { enabled: false, providerId: null, target: null },
         };
@@ -190,6 +195,7 @@ export function resolveRemoteAuthCapabilityOptions(features: FeaturesResponse | 
             preferredProviderId,
         },
         loginOptions: {
+            passwordEnabled,
             mtlsEnabled,
             keylessProviderIds: Object.freeze(keylessProviderIds),
             preferredKeylessProviderId,
@@ -244,6 +250,7 @@ export function deriveRemoteAuthEntryOptions(input: RemoteAuthEntryOptionsInput)
         mtlsPrimary,
         mtlsTitle,
         showKeylessProviderLogin,
+        showPasswordLogin: input.loginOptions.passwordEnabled,
         keylessProviderId,
         keylessPrimary,
         providerKeylessTitle,
@@ -263,6 +270,7 @@ export function useRemoteAuthEntryOptions(input: RemoteAuthEntryOptionsInput): R
             input.hasPendingTerminalConnect,
             input.loginOptions.keylessProviderIds,
             input.loginOptions.mtlsEnabled,
+            input.loginOptions.passwordEnabled,
             input.loginOptions.preferredKeylessProviderId,
             input.providerDisplayNameById,
             input.retryServerCheck,

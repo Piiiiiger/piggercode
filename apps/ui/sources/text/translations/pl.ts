@@ -566,6 +566,28 @@ function plural({
  * Must match the exact structure of the English translations
  */
 export const pl: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Nazwa użytkownika i hasło",
+        settingsItemSubtitle: "Logowanie w innych przeglądarkach bez klucza tajnego",
+        settingsIntro: "Zaloguj się w dowolnej przeglądarce nazwą użytkownika i hasłem. Hasło zostaje na Twoim urządzeniu: odblokowuje tam klucz konta i nigdy nie jest wysyłane do Relay.",
+        usernameLabel: "Nazwa użytkownika",
+        passwordLabel: "Hasło",
+        newPasswordLabel: "Nowe hasło",
+        confirmPasswordLabel: "Potwierdź hasło",
+        usernameHint: "3–32 znaki: małe litery, cyfry, kropki, myślniki lub podkreślenia.",
+        passwordHint: ({ count }: { count: number }) => `Co najmniej ${count} znaków. Im dłuższe, tym trudniejsze do odgadnięcia.`,
+        passwordMismatch: "Hasła nie są takie same.",
+        usernameTaken: "Ta nazwa użytkownika jest już zajęta.",
+        secretUnavailable: "To urządzenie nie ma klucza Twojego konta, więc nie może ustawić hasła. Najpierw zaloguj się tutaj kluczem tajnym.",
+        currentUsername: ({ username }: { username: string }) => `Twoja nazwa użytkownika: ${username}`,
+        noPasswordYet: "Nie ustawiono jeszcze hasła. Ustaw je, aby logować się bez klucza tajnego.",
+        save: "Zapisz",
+        saved: ({ username }: { username: string }) => `Zapisano. Zaloguj się jako ${username} tym hasłem.`,
+        signIn: "Zaloguj się",
+        invalidCredentials: "Nazwa użytkownika i hasło nie pasują do siebie. Sprawdź je i spróbuj ponownie.",
+        unavailable: "Nie można połączyć się z Relay. Sprawdź połączenie i spróbuj ponownie.",
+        useRecoveryKey: "Użyj klucza tajnego",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

@@ -538,6 +538,28 @@ const settingsSessionHandoffTranslationExtensions = {
 } as const;
 
 export const ja: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "ユーザー名とパスワード",
+        settingsItemSubtitle: "シークレットキーなしで他のブラウザからサインイン",
+        settingsIntro: "ユーザー名とパスワードで、どのブラウザからでもサインインできます。パスワードはこのデバイス上でのみ使われ、ここでアカウントキーを解錠します。Relay には送信されません。",
+        usernameLabel: "ユーザー名",
+        passwordLabel: "パスワード",
+        newPasswordLabel: "新しいパスワード",
+        confirmPasswordLabel: "パスワード（確認）",
+        usernameHint: "3〜32文字：小文字の英字、数字、ドット、ハイフン、アンダースコア。",
+        passwordHint: ({ count }: { count: number }) => `${count}文字以上。長いほど推測されにくくなります。`,
+        passwordMismatch: "パスワードが一致しません。",
+        usernameTaken: "このユーザー名はすでに使われています。",
+        secretUnavailable: "このデバイスにはアカウントキーがないため、パスワードを設定できません。まずこのデバイスでシークレットキーを使ってサインインしてください。",
+        currentUsername: ({ username }: { username: string }) => `ユーザー名：${username}`,
+        noPasswordYet: "パスワードはまだ設定されていません。設定すると、シークレットキーなしでサインインできます。",
+        save: "保存",
+        saved: ({ username }: { username: string }) => `保存しました。${username} とこのパスワードでサインインできます。`,
+        signIn: "サインイン",
+        invalidCredentials: "ユーザー名またはパスワードが正しくありません。確認してもう一度お試しください。",
+        unavailable: "Relay に接続できませんでした。接続を確認してもう一度お試しください。",
+        useRecoveryKey: "代わりにシークレットキーを使う",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

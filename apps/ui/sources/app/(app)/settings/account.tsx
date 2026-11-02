@@ -302,6 +302,19 @@ export default React.memo(() => {
                     );
                 })()}
 
+                {/* Username and password sign-in (needs the account key held on this device) */}
+                {formattedSecret ? (
+                    <ItemGroup>
+                        <Item
+                            testID="settings-account-password-item"
+                            title={t('passwordLogin.settingsTitle')}
+                            subtitle={t('passwordLogin.settingsItemSubtitle')}
+                            icon={<Icon name="lock" size={29} color={theme.colors.accent.blue} />}
+                            onPress={() => router.push('/settings/password')}
+                        />
+                    </ItemGroup>
+                ) : null}
+
                 {/* Backup Section */}
                 {formattedSecret ? (
                     <ItemGroup title={t('settingsAccount.backup')} footer={t('settingsAccount.backupDescription')}>

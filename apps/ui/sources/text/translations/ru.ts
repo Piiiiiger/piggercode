@@ -570,6 +570,28 @@ function plural({
  * Must match the exact structure of the English translations
  */
 export const ru: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Имя пользователя и пароль",
+        settingsItemSubtitle: "Вход в других браузерах без секретного ключа",
+        settingsIntro: "Входите в любом браузере по имени пользователя и паролю. Пароль остаётся на вашем устройстве: он открывает там ключ вашего аккаунта и никогда не отправляется на Relay.",
+        usernameLabel: "Имя пользователя",
+        passwordLabel: "Пароль",
+        newPasswordLabel: "Новый пароль",
+        confirmPasswordLabel: "Подтвердите пароль",
+        usernameHint: "3–32 символа: строчные латинские буквы, цифры, точки, дефисы или подчёркивания.",
+        passwordHint: ({ count }: { count: number }) => `Не меньше ${count} символов. Чем длиннее, тем сложнее подобрать.`,
+        passwordMismatch: "Пароли не совпадают.",
+        usernameTaken: "Это имя пользователя уже занято.",
+        secretUnavailable: "На этом устройстве нет ключа вашего аккаунта, поэтому задать пароль нельзя. Сначала войдите здесь с секретным ключом.",
+        currentUsername: ({ username }: { username: string }) => `Ваше имя пользователя: ${username}`,
+        noPasswordYet: "Пароль ещё не задан. Задайте его, чтобы входить без секретного ключа.",
+        save: "Сохранить",
+        saved: ({ username }: { username: string }) => `Сохранено. Входите как ${username} с этим паролем.`,
+        signIn: "Войти",
+        invalidCredentials: "Имя пользователя и пароль не совпадают. Проверьте их и попробуйте снова.",
+        unavailable: "Не удалось связаться с Relay. Проверьте подключение и попробуйте снова.",
+        useRecoveryKey: "Войти с секретным ключом",
+    },
     settingsKeyboard: {
         title: 'Keyboard shortcuts',
         entrySubtitle: 'Discover and control app shortcuts',

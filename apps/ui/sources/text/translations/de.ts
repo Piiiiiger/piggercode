@@ -371,6 +371,28 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
  * - New translation keys must be added to ALL language files
  */
 export const de: TranslationStructure = {
+    passwordLogin: {
+        settingsTitle: "Benutzername und Passwort",
+        settingsItemSubtitle: "In anderen Browsern ohne Secret Key anmelden",
+        settingsIntro: "Melde dich in jedem Browser mit Benutzername und Passwort an. Das Passwort bleibt auf deinem Gerät: Es entsperrt dort deinen Kontoschlüssel und wird nie an das Relay gesendet.",
+        usernameLabel: "Benutzername",
+        passwordLabel: "Passwort",
+        newPasswordLabel: "Neues Passwort",
+        confirmPasswordLabel: "Passwort bestätigen",
+        usernameHint: "3–32 Zeichen: Kleinbuchstaben, Ziffern, Punkte, Bindestriche oder Unterstriche.",
+        passwordHint: ({ count }: { count: number }) => `Mindestens ${count} Zeichen. Je länger, desto schwerer zu erraten.`,
+        passwordMismatch: "Die Passwörter stimmen nicht überein.",
+        usernameTaken: "Dieser Benutzername ist bereits vergeben.",
+        secretUnavailable: "Dieses Gerät hat deinen Kontoschlüssel nicht und kann daher kein Passwort festlegen. Melde dich hier zuerst mit deinem Secret Key an.",
+        currentUsername: ({ username }: { username: string }) => `Dein Benutzername: ${username}`,
+        noPasswordYet: "Noch kein Passwort. Lege eines fest, um dich ohne Secret Key anzumelden.",
+        save: "Speichern",
+        saved: ({ username }: { username: string }) => `Gespeichert. Melde dich als ${username} mit diesem Passwort an.`,
+        signIn: "Anmelden",
+        invalidCredentials: "Benutzername und Passwort passen nicht zusammen. Prüfe sie und versuche es erneut.",
+        unavailable: "Das Relay ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.",
+        useRecoveryKey: "Stattdessen den Secret Key verwenden",
+    },
     settingsKeyboard: {
         title: 'Tastenkürzel',
         entrySubtitle: 'App-Kürzel entdecken und steuern',

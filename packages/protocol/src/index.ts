@@ -3488,6 +3488,24 @@ export {
 export { AuthProviderIdSchema, type AuthProviderId } from './auth/providers.js';
 export { AUTH_ERROR_CODES, AuthErrorCodeSchema, type AuthErrorCode } from './auth/errors.js';
 export {
+  PASSWORD_LOGIN_KEY_LABELS,
+  DEFAULT_PASSWORD_KDF_PARAMS,
+  PASSWORD_MIN_LENGTH,
+  PasswordKdfV1Schema,
+  normalizePasswordLoginName,
+  PasswordLoginParamsRequestSchema,
+  PasswordLoginParamsResponseSchema,
+  PasswordLoginRequestSchema,
+  PasswordLoginResponseSchema,
+  AccountPasswordSetRequestSchema,
+  AccountPasswordStatusResponseSchema,
+  type PasswordKdfV1,
+  type PasswordLoginParamsResponse,
+  type PasswordLoginResponse,
+  type AccountPasswordSetRequest,
+  type AccountPasswordStatusResponse,
+} from './auth/passwordLogin.js';
+export {
   ExternalOAuthErrorResponseSchema,
   ExternalOAuthFinalizeAuthRequestSchema,
   ExternalOAuthFinalizeAuthSuccessResponseSchema,
