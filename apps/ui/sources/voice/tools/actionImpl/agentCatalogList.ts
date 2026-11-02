@@ -1,4 +1,5 @@
 import { AGENT_IDS, getAgentCore, isAgentId, type AgentId } from '@/agents/catalog/catalog';
+import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
 import { buildBackendTargetKey, parseBackendTargetKey } from '@happier-dev/protocol';
 import { getAgentStaticModels } from '@happier-dev/agents';
 import { getResolvedBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
@@ -56,8 +57,8 @@ function resolveBackendCatalogItemsForVoiceTool(params: Readonly<{
   const backendEnabledByTargetKey = state.settings?.backendEnabledByTargetKey ?? null;
   const acpCatalogSettingsV1 = state.settings?.acpCatalogSettingsV1 ?? { v: 2, backends: [] };
   const enabledBuiltInAgentIds = params.includeDisabled
-    ? Array.from(AGENT_IDS)
-    : Array.from(AGENT_IDS).filter((id) => backendEnabledByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: id })] !== false);
+    ? AGENT_IDS.filter(isAgentOffered)
+    : AGENT_IDS.filter((agentId) => isAgentEnabled({ agentId, backendEnabledByTargetKey }));
 
   return getResolvedBackendCatalogEntries({
     enabledAgentIds: enabledBuiltInAgentIds,

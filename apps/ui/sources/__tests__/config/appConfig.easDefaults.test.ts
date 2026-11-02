@@ -264,9 +264,11 @@ describe('app.config.js', () => {
         });
 
         expect(exp.name).toBe('PiggerCode');
-        expect(exp.version).toBe('0.1.0');
+        expect(exp.version).toBe('0.2.0');
         expect(exp.extra?.app?.productName).toBe('PiggerCode');
         expect(exp.extra?.app?.cliCommandName).toBe('piggercode');
+        expect(exp.extra?.app?.agentIds).toEqual(['claude', 'codex']);
+        expect(exp.extra?.app?.repositoryUrl).toBe('https://github.com/Piiiiiger/piggercode');
     });
 
     it('defaults EXPO_PUBLIC_HAPPIER_FEATURE_POLICY_ENV based on the app variant', () => {

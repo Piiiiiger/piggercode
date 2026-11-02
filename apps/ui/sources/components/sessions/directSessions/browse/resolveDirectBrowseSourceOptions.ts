@@ -1,6 +1,7 @@
 import type { AccountProfile, DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
 
 import { AGENT_IDS, getAgentBehavior, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import type { DirectBrowseLinkEnsureRequestExtras, DirectBrowseSourceOption } from '@/agents/registry/registryUiBehavior';
 import type { Settings } from '@/sync/domains/settings/settings';
 
@@ -28,7 +29,8 @@ export function resolveDirectBrowseSourceOptions(params: Readonly<{
 export function listDirectBrowseProviderIds(): DirectSessionsProviderId[] {
     return AGENT_IDS
         .filter((agentId) => (
-            getAgentCore(agentId).sessionStorage.direct === true
+            isAgentOffered(agentId)
+            && getAgentCore(agentId).sessionStorage.direct === true
             && typeof getAgentBehavior(agentId).directSessions?.browse?.getSourceOptions === 'function'
             && getAgentBehavior(agentId).directSessions?.browse?.resumeOnly !== true
         ))

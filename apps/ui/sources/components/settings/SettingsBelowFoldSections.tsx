@@ -8,6 +8,8 @@ import { t } from '@/text';
 import { trackWhatsNewClicked } from '@/track';
 import { requestReview } from '@/utils/system/requestReview';
 import { ICON_SIZE, Icon } from '@/components/ui/icons/Icon';
+import { resolveConfiguredRepositoryUrl } from '@/sync/runtime/appBrand';
+import { openExternalUrl } from '@/utils/url/openExternalUrl';
 
 type SettingsBelowFoldSectionsRouter = ReturnType<typeof useRouter>;
 type SettingsBelowFoldSectionsTheme = ReturnType<typeof useUnistyles>['theme'];
@@ -352,6 +354,13 @@ const SettingsDeveloperSection = React.memo(function SettingsDeveloperSection({
     );
 });
 
+/** `owner/repo` for a GitHub link, otherwise the host and path. */
+function formatRepositoryLabel(repositoryUrl: string): string {
+    const url = new URL(repositoryUrl);
+    const path = url.pathname.replace(/^\/+|\/+$/g, '');
+    return url.hostname === 'github.com' ? path : `${url.hostname}/${path}`;
+}
+
 type SettingsAboutSectionProps = Readonly<Pick<SettingsBelowFoldSectionsProps,
     | 'appVersion'
     | 'handleVersionClick'
@@ -369,9 +378,10 @@ const SettingsAboutSection = React.memo(function SettingsAboutSection({
     showRateUs,
     theme,
 }: SettingsAboutSectionProps) {
+    const repositoryUrl = resolveConfiguredRepositoryUrl();
     return (
-        // PiggerCode drops upstream's links here (GitHub, issue reports, privacy policy, terms, EULA) and its
-        // description; the changelog and store rating stay off through the production feature policy.
+        // PiggerCode links its own repository instead of upstream's (no issue reports, privacy policy, terms,
+        // EULA or description); the changelog and store rating stay off through the production feature policy.
         <ItemGroup title={t('settings.about')}>
             {showChangelog ? (
                 <Item
@@ -391,6 +401,16 @@ const SettingsAboutSection = React.memo(function SettingsAboutSection({
                     icon={<Icon name="star" size={29} color={theme.colors.accent.orange} />}
                     onPress={() => {
                         void requestReview();
+                    }}
+                />
+            ) : null}
+            {repositoryUrl ? (
+                <Item
+                    title={t('connectedServices.serviceNames.github')}
+                    subtitle={formatRepositoryLabel(repositoryUrl)}
+                    icon={<Icon name="github-logo" size={29} color={theme.colors.text.primary} />}
+                    onPress={() => {
+                        void openExternalUrl(repositoryUrl);
                     }}
                 />
             ) : null}

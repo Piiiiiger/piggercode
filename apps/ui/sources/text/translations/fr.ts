@@ -10483,7 +10483,7 @@ settingsSession: {
         duplicateName: 'Un profil portant ce nom existe déjà',
         setupInstructions: {
             title: 'Instructions de configuration',
-            viewCloudGuide: 'Voir le guide de configuration Happier Cloud',
+            viewCloudGuide: 'Voir le guide de configuration officiel',
         },
         machineLogin: {
             title: 'Connexion CLI',

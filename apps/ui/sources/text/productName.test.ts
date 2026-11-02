@@ -6,12 +6,17 @@ describe('applyProductName', () => {
     it('names the app with the configured product and keeps Happier offerings and commands', () => {
         expect(applyProductName(
             'Happier Coder 是一个客户端。Happier can reach the Happier CLI, run `happier attach`, and open a Happier-Session. '
-            + 'Happier Voice, Happier-Voice-Agent, Happier Cloud, Happier-Cloud and Happier Desktop stay. Dein Happier-Coder-Konto.',
+            + 'Happier Voice, Happier-Voice-Agent, Happier Cloud and Happier-Cloud stay. Dein Happier-Coder-Konto.',
             'Pigger',
         )).toBe(
             'Pigger 是一个客户端。Pigger can reach the Pigger CLI, run `happier attach`, and open a Pigger-Session. '
-            + 'Happier Voice, Happier-Voice-Agent, Happier Cloud, Happier-Cloud and Happier Desktop stay. Dein Pigger-Konto.',
+            + 'Happier Voice, Happier-Voice-Agent, Happier Cloud and Happier-Cloud stay. Dein Pigger-Konto.',
         );
+    });
+
+    it('names this app\'s desktop build after the product', () => {
+        expect(applyProductName('Happier Desktop only removes the PATH entries it added.', 'PiggerCode'))
+            .toBe('PiggerCode Desktop only removes the PATH entries it added.');
     });
 
     it('runs commands under the configured command name and keeps paths, links and packages', () => {

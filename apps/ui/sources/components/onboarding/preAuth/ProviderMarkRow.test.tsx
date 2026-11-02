@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Animated } from 'react-native';
+import Constants from 'expo-constants';
 import { describe, expect, it, vi } from 'vitest';
 
 import { renderScreen } from '@/dev/testkit';
@@ -33,6 +34,20 @@ describe('ProviderMarkRow', () => {
         for (const agentId of AGENT_IDS) {
             const cell = screen.findByTestId(`provider-mark-${agentId}`);
             expect(cell).toBeTruthy();
+        }
+    });
+
+    it('shows only the agents the build offers', async () => {
+        const extra = Constants.expoConfig!.extra as Record<string, unknown>;
+        extra.app = { agentIds: ['claude', 'codex'] };
+        try {
+            const screen = await renderScreen(<ProviderMarkRow />);
+
+            expect(screen.findByTestId('provider-mark-claude')).toBeTruthy();
+            expect(screen.findByTestId('provider-mark-codex')).toBeTruthy();
+            expect(screen.findByTestId('provider-mark-gemini')).toBeNull();
+        } finally {
+            delete extra.app;
         }
     });
 

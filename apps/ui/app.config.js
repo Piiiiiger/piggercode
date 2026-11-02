@@ -464,6 +464,9 @@ const baseExpoConfig = {
                 productName: APP_BRAND.productName,
                 // The command shown in copy (translations name the upstream `happier` command).
                 cliCommandName: APP_BRAND.cliCommandName,
+                // The coding agents this build offers, and its source repository.
+                agentIds: [...APP_BRAND.agentIds],
+                repositoryUrl: APP_BRAND.repositoryUrl,
                 variant: appVariantOverride || appVariant,
                 identityVariant: appIdentityVariant,
                 postHogKey: process.env.EXPO_PUBLIC_POSTHOG_KEY || process.env.EXPO_PUBLIC_POSTHOG_API_KEY,

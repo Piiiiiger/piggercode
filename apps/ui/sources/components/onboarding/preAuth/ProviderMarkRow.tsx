@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { AGENT_IDS } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { t } from '@/text';
 
@@ -31,8 +32,8 @@ export type ProviderMarkRowProps = Readonly<{
  * New component in remote-dev (no prior `WelcomeProvidersShowcase` here). No
  * animation; each mark is rendered via the canonical `AgentIcon` from
  * `@/agents/registry`, with a single tint derived from `tone`. Wraps to
- * additional rows only when the container is too narrow to fit all
- * `AGENT_IDS` in one line.
+ * additional rows only when the container is too narrow to fit every
+ * agent the build offers in one line.
  */
 export const ProviderMarkRow = React.memo(function ProviderMarkRow(props: ProviderMarkRowProps) {
     const { theme } = useUnistyles();
@@ -55,7 +56,7 @@ export const ProviderMarkRow = React.memo(function ProviderMarkRow(props: Provid
             accessibilityRole="image"
             accessibilityLabel={t('welcome.providerMarkRowAccessibilityLabel')}
         >
-            {AGENT_IDS.map((agentId) => (
+            {AGENT_IDS.filter(isAgentOffered).map((agentId) => (
                 <View
                     key={agentId}
                     style={[styles.cell, { opacity: cellOpacity }]}

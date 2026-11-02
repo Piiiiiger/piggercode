@@ -3,7 +3,7 @@ import { act, type ReactTestInstance } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
 import { pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 import {
-  modelPackDevice as device, modelPackManifest, seedInstalledPack, useModelPackDeviceBoundary, voiceFilesRoot,
+  modelPackDevice as device, modelPackManifest, seedInstalledPack, useModelPackDeviceBoundary, useModelPackManifests, voiceFilesRoot,
 } from '../modelPack/modelPackSettings.testHarness';
 import { DEFAULT_KOKORO_NATIVE_MODEL_PACK_ID as packId } from '@/voice/kokoro/assets/kokoroAssetSets';
 import { t } from '@/text';
@@ -11,6 +11,7 @@ import { t } from '@/text';
 const modelTitle = () => t('settingsVoice.local.kokoro.model.title');
 const removeTitle = () => t('settingsVoice.local.kokoro.removeAssets.title');
 useModelPackDeviceBoundary();
+useModelPackManifests({ [packId]: 'https://model-packs.test/tts__manifest.json' });
 
 function collectText(node: ReactTestInstance | string): string {
   return typeof node === 'string' ? node : node.children.map(collectText).join(' ');

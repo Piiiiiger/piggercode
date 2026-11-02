@@ -12,10 +12,8 @@ describe('modelPacks manifests', () => {
     expect(source).toContain('process.env.EXPO_PUBLIC_KOKORO_NATIVE_MANIFEST_URL');
   });
 
-  it('falls back to the default Happier assets release when no manifest is configured', () => {
-    expect(resolveModelPackManifestUrl({ packId: 'kokoro-tts-en-v1', env: {} })).toBe(
-      'https://github.com/happier-dev/happier-assets/releases/download/model-packs/kokoro-tts-en-v1__manifest.json',
-    );
+  it('has no manifest when the build configures none (nothing is fetched from upstream assets)', () => {
+    expect(resolveModelPackManifestUrl({ packId: 'kokoro-tts-en-v1', env: {} })).toBeNull();
   });
 
   it('resolves from the new per-pack manifest map when present', () => {

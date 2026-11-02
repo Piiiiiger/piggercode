@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 
 import { AGENT_IDS, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import { DropdownMenu, type DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Switch } from '@/components/ui/forms/Switch';
 import { Item } from '@/components/ui/lists/Item';
@@ -29,6 +30,7 @@ export function resolveProviderStateSharingAgentIds(
     agentIds: readonly AgentId[] = AGENT_IDS,
 ): readonly AgentId[] {
     return agentIds.filter((agentId) => {
+        if (!isAgentOffered(agentId)) return false;
         const capability = getAgentCore(agentId).connectedServices?.providerStateSharing;
         return capability?.config.supported === true || capability?.state.supported === true;
     });

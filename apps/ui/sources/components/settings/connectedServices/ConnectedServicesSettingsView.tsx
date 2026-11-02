@@ -16,6 +16,7 @@ import { useApplySettings } from '@/sync/store/settingsWriters';
 import { Modal } from '@/modal';
 import { CONNECTED_SERVICES_REGISTRY, getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
 import { AGENT_IDS, getAgentCore } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import {
     ConnectedServicesProviderStateSharingSettingsV1Schema,
     buildConnectedServicesDefaultAuthSettingsPatch,
@@ -302,7 +303,7 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
         title={t('connectedServices.defaultAuth.title')}
         footer={t('connectedServices.defaultAuth.footer')}
       >
-        {AGENT_IDS.map((agentId) => {
+        {AGENT_IDS.filter(isAgentOffered).map((agentId) => {
           const agentCore = getAgentCore(agentId);
           if ((agentCore.connectedServices?.supportedServiceIds ?? []).length === 0) return null;
           return (

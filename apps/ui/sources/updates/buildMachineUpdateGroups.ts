@@ -1,4 +1,5 @@
 import { AGENT_IDS, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import { buildAgentCliCapabilityId } from '@/capabilities/agentCliCapabilityId';
 import { buildMachineUpdateFactsRequest } from '@/capabilities/requests';
 import { getInstallablesRegistryEntries, type InstallableDepDataLike } from '@/capabilities/installablesRegistry';
@@ -38,6 +39,7 @@ function buildMachineRows(params: Readonly<{
 }>): UpdateItem[] {
     const rows: UpdateItem[] = [];
     for (const agentId of AGENT_IDS) {
+        if (!isAgentOffered(agentId)) continue;
         const capabilityId = buildAgentCliCapabilityId(agentId);
         if (isProbeFailed(params.snapshot, capabilityId)) {
             // The probe itself failed: nothing is known about this agent here — "Couldn't check",

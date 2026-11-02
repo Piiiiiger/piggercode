@@ -10496,7 +10496,7 @@ settingsSession: {
         duplicateName: 'Ein Profil mit diesem Namen gibt es schon',
         setupInstructions: {
             title: 'Einrichtungsanleitung',
-            viewCloudGuide: 'Anleitung für Happier Cloud ansehen',
+            viewCloudGuide: 'Offizielle Einrichtungsanleitung ansehen',
         },
         machineLogin: {
             title: 'CLI-Anmeldung',

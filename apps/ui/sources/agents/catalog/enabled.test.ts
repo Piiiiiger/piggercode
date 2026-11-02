@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect } from 'vitest';
+import Constants from 'expo-constants';
 import { buildBackendTargetKey } from '@happier-dev/protocol';
 
-import { getEnabledAgentIds, isAgentEnabled } from './enabled';
+import { getEnabledAgentIds, isAgentEnabled, isAgentOffered } from './enabled';
 import { AGENT_IDS } from './catalog';
+
+function setBuildAgentIds(agentIds: unknown): void {
+    (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds };
+}
 
 describe('agents/enabled', () => {
     it('enables all agents by default when no explicit backend map is provided', () => {
@@ -58,5 +63,35 @@ describe('agents/enabled', () => {
 
     it('ignores unknown backend ids in the toggle map', () => {
         expect(getEnabledAgentIds({ backendEnabledByTargetKey: { unknownAgent: false } })).toEqual(['claude', 'codex', 'opencode', 'gemini', 'auggie', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'fx', 'droid', 'codebuddy', 'agy']);
+    });
+
+    describe('agents the build offers', () => {
+        afterEach(() => {
+            delete (Constants.expoConfig!.extra as Record<string, unknown>).app;
+        });
+
+        it('offers only the agents the build names, in catalog order', () => {
+            setBuildAgentIds(['codex', 'claude', 'notAnAgent']);
+
+            expect(isAgentOffered('claude')).toBe(true);
+            expect(isAgentOffered('gemini')).toBe(false);
+            expect(isAgentEnabled({ agentId: 'gemini', backendEnabledByTargetKey: {} })).toBe(false);
+            expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex']);
+        });
+
+        it('still lets the user switch an offered agent off', () => {
+            setBuildAgentIds(['claude', 'codex']);
+
+            expect(getEnabledAgentIds({
+                backendEnabledByTargetKey: { [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: false },
+            })).toEqual(['claude']);
+        });
+
+        it('offers every agent when the build names no known agent', () => {
+            setBuildAgentIds(['notAnAgent']);
+
+            expect(isAgentOffered('gemini')).toBe(true);
+            expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual([...AGENT_IDS]);
+        });
     });
 });

@@ -3,7 +3,7 @@ import { act, type ReactTestInstance } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
 import { pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 import {
-  modelPackDevice as device, modelPackManifest, useModelPackDeviceBoundary, voiceFilesRoot,
+  modelPackDevice as device, modelPackManifest, useModelPackDeviceBoundary, useModelPackManifests, voiceFilesRoot,
 } from '../../../modelPack/modelPackSettings.testHarness';
 import { VoiceLocalSttSchema } from '@/sync/domains/settings/voiceLocalSttSettings';
 import { t } from '@/text';
@@ -12,6 +12,7 @@ const packId = 'stt-pack';
 const modelTitle = () => t('settingsVoice.local.localNeuralStt.modelFiles.title');
 const removeTitle = () => t('settingsVoice.local.localNeuralStt.removeModelFiles.title');
 useModelPackDeviceBoundary();
+useModelPackManifests({ [packId]: 'https://model-packs.test/stt__manifest.json' });
 
 function collectText(node: ReactTestInstance | string): string {
   return typeof node === 'string' ? node : node.children.map(collectText).join(' ');

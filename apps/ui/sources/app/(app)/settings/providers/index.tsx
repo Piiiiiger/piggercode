@@ -8,15 +8,18 @@ import { ItemList } from '@/components/ui/lists/ItemList';
 import { AcpCatalogSettingsSections } from '@/components/settings/acpCatalog/AcpCatalogSettingsSections';
 import { ProviderSetupFlow } from '@/components/settings/providers/setup/ProviderSetupFlow';
 import { AGENT_IDS, getAgentCore } from '@/agents/catalog/catalog';
+import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
 import { useSetting } from '@/sync/domains/state/storage';
 import { t } from '@/text';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
-
-const PROVIDER_SETTINGS_AGENT_IDS = AGENT_IDS.filter((agentId) => agentId !== 'customAcp');
 
 export default React.memo(function ProviderSettingsIndexScreen() {
     const router = useRouter();
     const backendEnabledByTargetKey = useSetting('backendEnabledByTargetKey');
+    // Only the agents this build offers; Custom ACP is set up in the ACP sections below.
+    const providerIds = React.useMemo(
+        () => AGENT_IDS.filter((agentId) => agentId !== 'customAcp' && isAgentOffered(agentId)),
+        [],
+    );
 
     return (
         <ItemList style={{ paddingTop: 0 }}>
@@ -24,10 +27,9 @@ export default React.memo(function ProviderSettingsIndexScreen() {
                 title={t('settingsProviders.title')}
                 footer={t('settingsProviders.footer')}
             >
-                {PROVIDER_SETTINGS_AGENT_IDS.map((agentId) => {
+                {providerIds.map((agentId) => {
                     const core = getAgentCore(agentId);
-                    const targetKey = buildBackendTargetKey({ kind: 'builtInAgent', agentId });
-                    const isEnabled = backendEnabledByTargetKey?.[targetKey] !== false;
+                    const isEnabled = isAgentEnabled({ agentId, backendEnabledByTargetKey });
                     const state = isEnabled ? t('settingsProviders.stateEnabled') : t('settingsProviders.stateDisabled');
                     const channel = core.availability.experimental ? t('settingsProviders.channelExperimental') : t('settingsProviders.channelStable');
                     return (
@@ -41,8 +43,8 @@ export default React.memo(function ProviderSettingsIndexScreen() {
                     );
                 })}
             </ItemGroup>
-            <ProviderSetupFlow providerIds={PROVIDER_SETTINGS_AGENT_IDS} />
-            <AcpCatalogSettingsSections />
+            <ProviderSetupFlow providerIds={providerIds} />
+            {isAgentOffered('customAcp') ? <AcpCatalogSettingsSections /> : null}
         </ItemList>
     );
 });

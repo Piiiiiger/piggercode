@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import Constants from 'expo-constants';
 import { standardCleanup } from '@/dev/testkit';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 import {
@@ -62,6 +63,7 @@ vi.mock('@/agents/catalog/catalog', async (importOriginal) => {
 });
 
 afterEach(() => {
+    delete (Constants.expoConfig!.extra as Record<string, unknown>).app;
     resetSessionSettingsEntryState();
     standardCleanup();
 });
@@ -83,5 +85,15 @@ describe('ProviderSettingsIndexScreen', () => {
         });
 
         expect(sessionSettingsEntryState.routerPushSpy).toHaveBeenCalledWith('/settings/providers/codex');
+    });
+
+    it('lists only the agents the build offers, without the ACP sections when Custom ACP is not offered', async () => {
+        (Constants.expoConfig!.extra as Record<string, unknown>).app = { agentIds: ['claude', 'codex'] };
+        const Screen = (await import('@/app/(app)/settings/providers')).default;
+        const screen = await renderSettingsView(React.createElement(Screen));
+
+        expect(screen.findRowByTitle('agent.codex')).toBeTruthy();
+        expect(screen.findRowByTitle('agent.kiro')).toBeFalsy();
+        expect(screen.findAllByType('AcpCatalogSettingsSections' as any).length).toBe(0);
     });
 });

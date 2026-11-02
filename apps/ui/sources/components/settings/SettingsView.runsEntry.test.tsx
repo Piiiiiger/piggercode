@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Constants from 'expo-constants';
 import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { installSettingsViewCommonModuleMocks } from './settingsViewTestHelpers';
@@ -343,6 +344,20 @@ describe('SettingsView (runs entry)', () => {
             'settings.eula',
         ]) {
             expect(screen.findRowByTitle(upstreamEntry)).toBeNull();
+        }
+    });
+
+    it("links About to the build's own repository", async () => {
+        // This file's expo-constants mock has no `extra`; give it the build's brand config for this case.
+        const expoConfig = Constants.expoConfig as { extra?: Record<string, unknown> };
+        expoConfig.extra = { app: { repositoryUrl: 'https://github.com/Piiiiiger/piggercode' } };
+        try {
+            const screen = await renderSettingsViewUnderTest();
+
+            const repositoryRow = screen.findRowByTitle('connectedServices.serviceNames.github');
+            expect(repositoryRow?.props.subtitle).toBe('Piiiiiger/piggercode');
+        } finally {
+            delete expoConfig.extra;
         }
     });
 

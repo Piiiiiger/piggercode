@@ -1,4 +1,5 @@
 import { AGENT_IDS } from '@/agents/catalog/catalog';
+import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
 import { resolveBuiltInAgentTitle } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { buildBackendTargetKey } from '@happier-dev/protocol';
 import { getMachineCapabilitiesSnapshot } from '@/hooks/server/useMachineCapabilitiesCache';
@@ -38,8 +39,8 @@ export async function listReviewEnginesForVoiceTool(params: Readonly<{ sessionId
   const backendEnabledByTargetKey: Record<string, boolean> | null | undefined = state?.settings?.backendEnabledByTargetKey ?? null;
   const includeDisabled = params.includeDisabled === true;
   const agentIds = includeDisabled
-    ? Array.from(AGENT_IDS)
-    : Array.from(AGENT_IDS).filter((id) => backendEnabledByTargetKey?.[buildBackendTargetKey({ kind: 'builtInAgent', agentId: id })] !== false);
+    ? AGENT_IDS.filter(isAgentOffered)
+    : AGENT_IDS.filter((agentId) => isAgentEnabled({ agentId, backendEnabledByTargetKey }));
   const items = buildAvailableReviewEngineOptions({
     enabledAgentIds: agentIds,
     executionRunsBackends,

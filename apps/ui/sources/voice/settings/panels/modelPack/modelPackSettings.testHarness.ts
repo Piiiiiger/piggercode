@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 import type { DownloadOptions, DownloadProgressData, DownloadResumable, FileSystemDownloadResult } from 'expo-file-system/legacy';
 
 export type NativeModelPackTransfer = Readonly<{
@@ -146,5 +146,15 @@ export function useModelPackDeviceBoundary() {
     boundary.alert.mockReset().mockImplementation((_title, _message, buttons) => {
       buttons?.find(button => button.style !== 'cancel')?.onPress?.();
     });
+  });
+}
+
+/** Names each pack's manifest the way a build does (EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS). */
+export function useModelPackManifests(manifestUrlByPackId: Record<string, string>) {
+  beforeEach(() => {
+    vi.stubEnv('EXPO_PUBLIC_HAPPIER_MODEL_PACK_MANIFESTS', JSON.stringify(manifestUrlByPackId));
+  });
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 }

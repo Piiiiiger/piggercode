@@ -5,6 +5,7 @@ import { useUnistyles } from 'react-native-unistyles';
 import { isTauriDesktop } from '@/utils/platform/tauri';
 
 import { AGENT_IDS, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
+import { isAgentOffered } from '@/agents/catalog/enabled';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { getProviderLocalAuthPlugin } from '@/agents/providers/registry/providerLocalAuthRegistry';
 import { usePrimaryMachineFromActiveSelection } from '@/components/settings/server/hooks/usePrimaryMachineFromActiveSelection';
@@ -29,7 +30,9 @@ import {
 import { useProviderCliInstallQueue, type ProviderCliInstallStatus } from './useProviderCliInstallQueue';
 import { Icon } from '@/components/ui/icons/Icon';
 
-const DEFAULT_PROVIDER_IDS = AGENT_IDS.filter((agentId) => agentId !== 'customAcp');
+function listDefaultProviderIds(): AgentId[] {
+    return AGENT_IDS.filter((agentId) => agentId !== 'customAcp' && isAgentOffered(agentId));
+}
 
 function resolveProviderStepState(params: Readonly<{
     providerId: AgentId;
@@ -66,7 +69,7 @@ export const ProviderSetupFlow = React.memo(function ProviderSetupFlow(props: Re
     const { theme } = useUnistyles();
     const defaultMachineId = usePrimaryMachineFromActiveSelection();
     const providerIds = React.useMemo(
-        () => (props.providerIds?.length ? [...props.providerIds] : [...DEFAULT_PROVIDER_IDS]),
+        () => (props.providerIds?.length ? [...props.providerIds] : listDefaultProviderIds()),
         [props.providerIds],
     );
     const serverId = props.serverId ?? getActiveServerId();

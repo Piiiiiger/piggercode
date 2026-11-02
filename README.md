@@ -4,7 +4,7 @@
   <p>A personal fork of <a href="https://github.com/happier-dev/happier">Happier</a>, run on its own server.</p>
 </div>
 
-PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支。Codex、Claude Code 等代理跑在自己的服务器上，网页端（和 Happier 官方手机 App）通过自建的中继连接它们，随时查看、发消息、审批和接着干活。会话内容端到端加密，中继只负责转发。
+PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支。Codex 和 Claude Code 跑在自己的服务器上，网页端（和 Happier 官方手机 App）通过自建的中继连接它们，随时查看、发消息、审批和接着干活。会话内容端到端加密，中继只负责转发。
 
 ## 和上游 Happier 的区别
 
@@ -12,7 +12,8 @@ PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支
 - **一个会话列表**：不再分 Happier / 直连两个标签；需要时可以从「浏览提供方会话」打开服务器上已有的 Codex 会话。
 - **直接接管**：给直连会话发消息时直接在原会话里接管，只有需要停掉本地正在用的会话时才会问。
 - **删除同步**：在网页端删除直连会话，会同时删除服务器上对应的 Codex 会话。
-- **没有原版残留**：设置的「关于」只显示版本号；不收集使用统计和崩溃报告；没有反馈问题、更新日志、评分和原版文档链接；不会提示从 happier.dev 安装或更新原版 CLI。
+- **只有 Claude Code 和 Codex**：新建会话、设置里的服务商、欢迎页等只列这两个代理。其它代理的代码还在，在 `apps/ui/appVariantConfig.cjs` 的 `APP_BRAND.agentIds` 里加上就会出现。
+- **没有原版残留**：设置的「关于」只有版本号和本仓库的 GitHub 链接；不收集使用统计和崩溃报告；没有反馈问题、更新日志、评分、原版文档链接和 Happier Voice 订阅；不会提示从 happier.dev 安装或更新原版 CLI，也不从原版仓库下载语音模型。
 - **共享文件夹**：
   - 发送的附件按原文件名存到服务器上的一个文件夹（默认 `~/Downloads`），同名文件编号为 `名字 (1).扩展名`，不会覆盖；
   - 文件面板里的「共享文件夹」窗口：点文件下载，拖文件或文件夹进去上传；
