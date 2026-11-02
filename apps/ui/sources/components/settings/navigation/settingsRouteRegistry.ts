@@ -81,7 +81,6 @@ const SETTINGS_ROUTE_CHROME_DEFINITIONS: readonly SettingsRouteChromeDefinition[
     { name: 'prompts/templates/new', titleKey: 'promptLibrary.newTemplate' },
     { name: 'providers/[providerId]', titleKey: 'settingsProviders.title' },
     { name: 'providers/index', titleKey: 'settingsProviders.title' },
-    { name: 'report-issue', titleKey: 'settings.reportIssue' },
     { name: 'secrets', titleKey: 'settings.secrets' },
     { name: 'server', titleKey: 'server.serverConfiguration' },
     { name: 'session', titleKey: 'settings.sessions' },

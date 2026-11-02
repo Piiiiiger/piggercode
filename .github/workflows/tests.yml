@@ -273,9 +273,6 @@ jobs:
               - 'vitest.config.ts'
               - 'scripts/ci/install_sapling_ubuntu22.sh'
               - 'scripts/testing/featureTestGating*'
-              - 'scripts/generateBuiltInPrompts.mjs'
-              - 'scripts/generateBuiltInPrompts.test.mjs'
-              - 'skills/happier-diagnose/**'
             server:
               - 'apps/server/**'
               - 'package.json'
@@ -872,21 +869,14 @@ jobs:
           HAPPIER_UNRELEASED_TREE: ${{ github.workspace }}/.ci/unreleased-v0.3
         run: yarn -s test:shared-packages:local
 
-      - name: Verify generated built-in prompts
-        id: built_in_prompts
-        if: ${{ !cancelled() }}
-        continue-on-error: true
-        run: node --test scripts/generateBuiltInPrompts.test.mjs
-
       - name: Require all shared package checks
         id: require-shared-package-checks
         if: ${{ always() }}
         env:
           SHARED_PACKAGES_OUTCOME: ${{ steps.shared_packages.outcome }}
-          BUILT_IN_PROMPTS_OUTCOME: ${{ steps.built_in_prompts.outcome }}
         run: |
-          if [ "$SHARED_PACKAGES_OUTCOME" != "success" ] || [ "$BUILT_IN_PROMPTS_OUTCOME" != "success" ]; then
-            echo "One or more shared package checks failed: packages=$SHARED_PACKAGES_OUTCOME built_in_prompts=$BUILT_IN_PROMPTS_OUTCOME" >&2
+          if [ "$SHARED_PACKAGES_OUTCOME" != "success" ]; then
+            echo "One or more shared package checks failed: packages=$SHARED_PACKAGES_OUTCOME" >&2
             exit 1
           fi
 

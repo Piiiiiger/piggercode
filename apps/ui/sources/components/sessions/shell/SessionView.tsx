@@ -59,7 +59,6 @@ import { useAppPaneActionRailVisible } from '@/components/appShell/panes/hooks/u
 import { useSessionCockpitChromeRegistration } from '@/components/workspaceCockpit/session/SessionCockpitChromeRegistry';
 import { SessionHeaderSubagentsButton } from '@/components/sessions/actions/SessionHeaderSubagentsButton';
 import { SessionHeaderTerminalButton } from '@/components/sessions/actions/SessionHeaderTerminalButton';
-import { useOpenAttachedSessionTerminal } from '@/components/sessions/terminal/openAttachedSessionTerminal';
 import { SessionHeaderTranscriptNavigationButton, useTranscriptNavigationSurface } from '@/components/sessions/actions/SessionHeaderTranscriptNavigationButton';
 import { ChatList, type TranscriptViewportChangeState } from '@/components/sessions/transcript/ChatList';
 import { applyTranscriptJumpHighlightForJumpResult } from '@/components/sessions/transcript/navigation/transcriptJumpHighlightStore';
@@ -954,7 +953,6 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
     const cockpitChrome = useSessionCockpitChromeRegistration();
     const cockpitOwnsSession = cockpitChrome?.sessionId === props.sessionId;
     const cockpitHasTerminal = cockpitOwnsSession && cockpitChrome.terminalTabAvailable;
-    const attachedSessionTerminal = useOpenAttachedSessionTerminal(props.sessionId);
     const transcriptNavigation = useTranscriptNavigationSurface({
         scopeId: props.paneScopeId,
         sessionId: props.sessionId,
@@ -987,10 +985,6 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
     }, [props.currentSessionRouteServerId, props.sessionId]);
 
     const handleHeaderExtraItemSelect = React.useCallback((actionId: string) => {
-        if (actionId === 'header.openAttachedSessionTerminal') {
-            attachedSessionTerminal.open();
-            return true;
-        }
         if (actionId === props.mobileWorkspaceExperienceToggleActionId) {
             if (actionId === 'header.openMobileWorkspaceCockpit') {
                 Keyboard.dismiss();
@@ -1008,7 +1002,7 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
         // glyph is folded away, so on a phone this menu item is the only way into the roster — and
         // it used to open a right pane that is structurally hidden there.
         return openAgentRoster({ kind: 'agentRoster' });
-    }, [attachedSessionTerminal, openAgentRoster, transcriptNavigation, props.mobileWorkspaceExperienceToggleActionId, props.onToggleWorkspaceExperience]);
+    }, [openAgentRoster, transcriptNavigation, props.mobileWorkspaceExperienceToggleActionId, props.onToggleWorkspaceExperience]);
 
     const headerExtraItems = React.useMemo(() => {
         const items: DropdownMenuItem[] = [];
@@ -1017,13 +1011,6 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
                 id: props.mobileWorkspaceExperienceToggleActionId,
                 title: t(props.mobileWorkspaceExperienceToggleLabelKey),
                 icon: <Icon name="device-mobile" size={16} color={theme.colors.text.secondary} />,
-            });
-        }
-        if (attachedSessionTerminal.available) {
-            items.push({
-                id: 'header.openAttachedSessionTerminal',
-                title: t('terminalEmbedded.attachedSessionOpen'),
-                icon: <Icon name="terminal" size={16} color={theme.colors.text.secondary} />,
             });
         }
         if (!props.shouldFoldHeaderIconActions) return items;
@@ -1061,7 +1048,6 @@ const SessionHeaderRightElement = React.memo(function SessionHeaderRightElement(
         }
         return items;
     }, [
-        attachedSessionTerminal.available,
         props.mobileWorkspaceExperienceToggleActionId,
         props.mobileWorkspaceExperienceToggleLabelKey,
         props.shouldFoldHeaderIconActions,

@@ -94,11 +94,6 @@ vi.mock('expo-splash-screen', () => ({
     hideAsync: hideAsyncMock,
 }));
 
-const consumeRestartBugReportIntentMock = vi.fn(async (..._args: unknown[]) => false);
-vi.mock('@/utils/system/restartBugReportIntent', () => ({
-    consumeRestartBugReportIntent: consumeRestartBugReportIntentMock,
-}));
-
 vi.mock('expo-font', () => ({
     loadAsync: loadAsyncMock,
 }));
@@ -448,7 +443,6 @@ describe('app/_layout init resilience', () => {
         routerPushMock.mockClear();
         chromeSafeAreaWarmupMock.mockClear();
         desktopSetupInspectMock.mockClear();
-        consumeRestartBugReportIntentMock.mockClear();
         if (previousSentryDsn === undefined) delete process.env.EXPO_PUBLIC_SENTRY_DSN;
         else process.env.EXPO_PUBLIC_SENTRY_DSN = previousSentryDsn;
         if (previousSentryLogs === undefined) delete process.env.EXPO_PUBLIC_SENTRY_ENABLE_LOGS;
@@ -618,15 +612,6 @@ describe('app/_layout init resilience', () => {
 
         expect(screen.findByTestId('posthog-provider')).toBeTruthy();
         expect(screen.findByTestId('settings-analytics-runtime')).toBeTruthy();
-    });
-
-    it('navigates to the bug report screen on boot when a restart bug report intent is present', async () => {
-        mockedPlatformOS = 'ios';
-        consumeRestartBugReportIntentMock.mockResolvedValueOnce(true);
-
-        await renderSettledRootLayout();
-
-        expect(routerPushMock).toHaveBeenCalledWith('/settings/report-issue');
     });
 
     it('loads every injected web font family before completing startup', async () => {

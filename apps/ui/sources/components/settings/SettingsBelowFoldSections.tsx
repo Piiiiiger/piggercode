@@ -1,4 +1,4 @@
-import { View, Platform, Linking } from 'react-native';
+import { View } from 'react-native';
 import * as React from 'react';
 import { useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
@@ -19,8 +19,6 @@ type SettingsBelowFoldSectionsProps = Readonly<{
     connectedServicesEnabled: boolean;
     devModeEnabled: boolean;
     executionRunsEnabled: boolean;
-    handleGitHub: () => void | Promise<void>;
-    handleReportIssue: () => void | Promise<void>;
     handleVersionClick: () => void;
     mcpServersEnabled: boolean;
     memorySearchEnabled: boolean;
@@ -44,8 +42,6 @@ export const SettingsBelowFoldSections = React.memo(function SettingsBelowFoldSe
     connectedServicesEnabled,
     devModeEnabled,
     executionRunsEnabled,
-    handleGitHub,
-    handleReportIssue,
     handleVersionClick,
     mcpServersEnabled,
     memorySearchEnabled,
@@ -100,8 +96,6 @@ export const SettingsBelowFoldSections = React.memo(function SettingsBelowFoldSe
             {stage >= 4 ? (
                 <SettingsAboutSection
                     appVersion={appVersion}
-                    handleGitHub={handleGitHub}
-                    handleReportIssue={handleReportIssue}
                     handleVersionClick={handleVersionClick}
                     router={router}
                     showChangelog={showChangelog}
@@ -360,8 +354,6 @@ const SettingsDeveloperSection = React.memo(function SettingsDeveloperSection({
 
 type SettingsAboutSectionProps = Readonly<Pick<SettingsBelowFoldSectionsProps,
     | 'appVersion'
-    | 'handleGitHub'
-    | 'handleReportIssue'
     | 'handleVersionClick'
     | 'router'
     | 'showChangelog'
@@ -371,8 +363,6 @@ type SettingsAboutSectionProps = Readonly<Pick<SettingsBelowFoldSectionsProps,
 
 const SettingsAboutSection = React.memo(function SettingsAboutSection({
     appVersion,
-    handleGitHub,
-    handleReportIssue,
     handleVersionClick,
     router,
     showChangelog,
@@ -380,7 +370,9 @@ const SettingsAboutSection = React.memo(function SettingsAboutSection({
     theme,
 }: SettingsAboutSectionProps) {
     return (
-        <ItemGroup title={t('settings.about')} footer={t('settings.aboutFooter')}>
+        // PiggerCode drops upstream's links here (GitHub, issue reports, privacy policy, terms, EULA) and its
+        // description; the changelog and store rating stay off through the production feature policy.
+        <ItemGroup title={t('settings.about')}>
             {showChangelog ? (
                 <Item
                     title={t('settings.whatsNew')}
@@ -402,52 +394,6 @@ const SettingsAboutSection = React.memo(function SettingsAboutSection({
                     }}
                 />
             ) : null}
-            <Item
-                title={t('settings.github')}
-                icon={<Icon name="github-logo" size={29} color={theme.colors.text.primary} />}
-                subtitle="happier-dev/happier"
-                onPress={handleGitHub}
-            />
-            <Item
-                title={t('settings.reportIssue')}
-                icon={<Icon name="bug" size={29} color={theme.colors.state.danger.foreground} />}
-                onPress={handleReportIssue}
-            />
-            <Item
-                title={t('settings.privacyPolicy')}
-                icon={<Icon name="shield-check" size={29} color={theme.colors.accent.blue} />}
-                onPress={async () => {
-                    const url = 'https://docs.happier.dev/legal/privacy';
-                    const supported = await Linking.canOpenURL(url);
-                    if (supported) {
-                        await Linking.openURL(url);
-                    }
-                }}
-            />
-            <Item
-                title={t('settings.termsOfService')}
-                icon={<Icon name="file-text" size={29} color={theme.colors.accent.blue} />}
-                onPress={async () => {
-                    const url = 'https://docs.happier.dev/legal/terms';
-                    const supported = await Linking.canOpenURL(url);
-                    if (supported) {
-                        await Linking.openURL(url);
-                    }
-                }}
-            />
-            {Platform.OS === 'ios' && (
-                <Item
-                    title={t('settings.eula')}
-                    icon={<Icon name="file-text" size={29} color={theme.colors.accent.blue} />}
-                    onPress={async () => {
-                        const url = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
-                        const supported = await Linking.canOpenURL(url);
-                        if (supported) {
-                            await Linking.openURL(url);
-                        }
-                    }}
-                />
-            )}
             <Item
                 title={t('common.version')}
                 detail={appVersion}

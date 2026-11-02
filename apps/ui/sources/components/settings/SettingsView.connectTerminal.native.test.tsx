@@ -194,14 +194,6 @@ vi.mock('@/agents/catalog/catalog', () => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/components/settings/supportUsBehavior', () => ({
-    resolveSupportUsAction: () => 'github',
-}));
-
-vi.mock('@/utils/system/bugReportActionTrail', () => ({
-    recordBugReportUserAction: vi.fn(),
-}));
-
 vi.mock('@/hooks/server/useAutomationsSupport', () => ({
     useAutomationsSupport: () => ({ enabled: false }),
 }));
@@ -343,22 +335,22 @@ describe('SettingsView (native connect terminal)', () => {
             expect(findItemByTitle(screen.tree, 'settingsProviders.title')).toBeTruthy();
             expect(Boolean(findItemByTitle(screen.tree, 'settings.sessions'))).toBe(false);
             expect(Boolean(findItemByTitle(screen.tree, 'settings.servers'))).toBe(false);
-            expect(Boolean(findItemByTitle(screen.tree, 'settings.github'))).toBe(false);
+            expect(Boolean(findItemByTitle(screen.tree, 'common.version'))).toBe(false);
 
             await flushDeferredSettingsDelay(20);
 
             expect(findItemByTitle(screen.tree, 'settings.sessions')).toBeTruthy();
             expect(Boolean(findItemByTitle(screen.tree, 'settings.servers'))).toBe(false);
-            expect(Boolean(findItemByTitle(screen.tree, 'settings.github'))).toBe(false);
+            expect(Boolean(findItemByTitle(screen.tree, 'common.version'))).toBe(false);
 
             await flushDeferredSettingsDelay(20);
 
             expect(findItemByTitle(screen.tree, 'settings.servers')).toBeTruthy();
-            expect(Boolean(findItemByTitle(screen.tree, 'settings.github'))).toBe(false);
+            expect(Boolean(findItemByTitle(screen.tree, 'common.version'))).toBe(false);
 
             await flushDeferredSettingsDelay(20);
 
-            expect(findItemByTitle(screen.tree, 'settings.github')).toBeTruthy();
+            expect(findItemByTitle(screen.tree, 'common.version')).toBeTruthy();
         } finally {
             vi.useRealTimers();
         }

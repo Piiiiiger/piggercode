@@ -319,9 +319,6 @@ test('the source-CI classifier fail-closes shared tooling and reaches direct roo
     assert.ok(filters.ui_e2e.includes(setupOwner), `${setupOwner} must select the composed real-hsetup browser lane even in an otherwise classified PR`);
   }
   assert.match(workflow.jobs.ci_plan.outputs.run_ui_e2e, /steps\.changes\.outputs\.ui_e2e == 'true'/);
-  assert.ok(filters.ui.includes('scripts/generateBuiltInPrompts.mjs'));
-  assert.ok(filters.ui.includes('scripts/generateBuiltInPrompts.test.mjs'));
-  assert.ok(filters.ui.includes('skills/happier-diagnose/**'));
   assert.ok(filters.cli.includes('scripts/ensureCliCommonDistModule.mjs'));
   assert.ok(filters.cli.includes('scripts/ensureCliCommonDistModule.test.mjs'));
   for (const lane of ['ui', 'server', 'cli', 'stack']) {

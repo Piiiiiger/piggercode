@@ -202,7 +202,9 @@ describe('SessionGettingStartedGuidanceView', () => {
       });
 
       expect(screen.findByTestId('session-getting-started-cli-follow-up')).not.toBeNull();
-      expect(screen.findByTestId('session-getting-started-step-install_cli')).not.toBeNull();
+      // PiggerCode never tells people to install upstream's CLI from happier.dev: the steps start at setup.
+      expect(screen.findByTestId('session-getting-started-step-install_cli')).toBeNull();
+      expect(screen.getTextContent()).not.toContain('happier.dev/install');
       expect(screen.findByTestId('session-getting-started-step-auth_login')).not.toBeNull();
     } finally {
       vi.useRealTimers();

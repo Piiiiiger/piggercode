@@ -1044,14 +1044,15 @@ describe('SessionView header action menu visibility', () => {
     expect(Boolean(findPressableByAccessibilityLabel(screen, 'settings.terminal'))).toBe(surface === 'classic');
   });
 
-  it('offers and handles the attached session terminal action when supported', async () => {
+  // PiggerCode dropped "Open agent CLI" from the session menu (owner, 2026-11-02): it stays out even
+  // when the session could attach its CLI.
+  it('leaves the agent CLI out of the session menu even when the session could attach it', async () => {
     attachedTerminalState.available = true;
     await renderSessionView();
 
     const props = getLastHeaderActionMenuProps();
-    expect(getHeaderExtraItemIds(props)).toContain('header.openAttachedSessionTerminal');
-    expect(props.onSelectExtraItem('header.openAttachedSessionTerminal')).toBe(true);
-    expect(attachedTerminalState.open).toHaveBeenCalledTimes(1);
+    expect(getHeaderExtraItemIds(props)).not.toContain('header.openAttachedSessionTerminal');
+    expect(attachedTerminalState.open).not.toHaveBeenCalled();
   });
 
   /**

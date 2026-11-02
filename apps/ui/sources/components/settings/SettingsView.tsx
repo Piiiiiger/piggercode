@@ -1,4 +1,4 @@
-import { View, Pressable, Platform, Linking, useWindowDimensions } from 'react-native';
+import { View, Pressable, Platform, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import * as React from 'react';
 import { Text } from '@/components/ui/text/Text';
@@ -11,9 +11,8 @@ import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { useConnectTerminal } from '@/hooks/session/useConnectTerminal';
 import { useAuth } from '@/auth/context/AuthContext';
-import { useEntitlement, useLocalSettingMutable, useSetting, useProfile } from '@/sync/domains/state/storage';
+import { useLocalSettingMutable, useSetting, useProfile } from '@/sync/domains/state/storage';
 import { sync } from '@/sync/sync';
-import { trackPaywallButtonClicked } from '@/track';
 import { Modal } from '@/modal';
 import { useMultiClick } from '@/hooks/ui/useMultiClick';
 import { useUnistyles } from 'react-native-unistyles';
@@ -25,8 +24,6 @@ import { t } from '@/text';
 import { canRequestReview, requestReview } from '@/utils/system/requestReview';
 import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromConnectedServiceId } from '@/agents/catalog/catalog';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
-import { resolveSupportUsAction } from '@/components/settings/supportUsBehavior';
-import { recordBugReportUserAction } from '@/utils/system/bugReportActionTrail';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
@@ -56,8 +53,6 @@ export const SettingsView = React.memo(function SettingsView() {
     const auth = useAuth();
     const isPhoneSizedWeb = Platform.OS === 'web' && isWebMobileLikeQrScannerHost({ width, height });
     const [devModeEnabled, setDevModeEnabled] = useLocalSettingMutable('devModeEnabled');
-    const voiceEntitlement = useEntitlement('voice');
-    const isPro = __DEV__ || voiceEntitlement;
     const usageReportingEnabled = useFeatureEnabled('usage.reporting');
     const executionRunsEnabled = useFeatureEnabled('execution.runs');
     const connectedServicesEnabled = useFeatureEnabled('connectedServices');
@@ -156,44 +151,6 @@ export const SettingsView = React.memo(function SettingsView() {
             cancelled = true;
         };
     }, []);
-
-    const handleGitHub = async () => {
-        const url = 'https://github.com/happier-dev/happier';
-        const supported = await Linking.canOpenURL(url);
-        if (supported) {
-            await Linking.openURL(url);
-        }
-    };
-
-    const handleReportIssue = async () => {
-        recordBugReportUserAction('settings.report_issue_open');
-        const overrideUrl = String(process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL ?? '').trim();
-        if (overrideUrl.length > 0) {
-            const supported = await Linking.canOpenURL(overrideUrl);
-            if (supported) {
-                await Linking.openURL(overrideUrl);
-                return;
-            }
-        }
-        pushRoute('/settings/report-issue');
-    };
-
-    const handleSubscribe = async () => {
-        trackPaywallButtonClicked();
-        const result = await sync.presentPaywall();
-        if (!result.success) {
-            Modal.alert(t('common.error'), result.error || t('errors.unknownError'));
-        }
-    };
-
-    const handleSupportUs = async () => {
-        const action = resolveSupportUsAction({ isPro });
-        if (action === 'github') {
-            await handleGitHub();
-            return;
-        }
-        await handleSubscribe();
-    };
 
     // Use the multi-click hook for version clicks
     const handleVersionClick = useMultiClick(() => {
@@ -399,17 +356,6 @@ export const SettingsView = React.memo(function SettingsView() {
             {/* Hidden / unfinished buttons (toggle via Developer Mode) */}
             {showHiddenSettingsButtons && (
                 <>
-                    {/* Support Us */}
-                    <ItemGroup>
-                        <Item
-                            title={t('settings.supportUs')}
-                            subtitle={isPro ? t('settings.supportUsSubtitlePro') : t('settings.supportUsSubtitle')}
-                            icon={<Icon name="heart" size={29} color={theme.colors.state.danger.foreground} />}
-                            showChevron={false}
-                            onPress={handleSupportUs}
-                        />
-                    </ItemGroup>
-
                     <ItemGroup title={t('settings.connectedAccounts')}>
                         <Item
                             title={anthropicAgentCore.uiConnectedService.label}
@@ -456,8 +402,6 @@ export const SettingsView = React.memo(function SettingsView() {
                     connectedServicesEnabled={connectedServicesEnabled}
                     devModeEnabled={devModeEnabled}
                     executionRunsEnabled={executionRunsEnabled}
-                    handleGitHub={handleGitHub}
-                    handleReportIssue={handleReportIssue}
                     handleVersionClick={handleVersionClick}
                     mcpServersEnabled={mcpServersEnabled}
                     memorySearchEnabled={memorySearchEnabled}

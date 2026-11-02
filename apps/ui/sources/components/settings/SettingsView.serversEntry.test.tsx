@@ -206,14 +206,6 @@ vi.mock('@/agents/catalog/catalog', () => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/components/settings/supportUsBehavior', () => ({
-    resolveSupportUsAction: () => 'github',
-}));
-
-vi.mock('@/utils/system/bugReportActionTrail', () => ({
-    recordBugReportUserAction: vi.fn(),
-}));
-
 vi.mock('@/hooks/server/useAutomationsSupport', () => ({
     useAutomationsSupport: () => ({ enabled: false }),
 }));
@@ -307,74 +299,6 @@ describe('SettingsView', () => {
         expect(shared.deferOnWebSpy).toHaveBeenCalledTimes(1);
         expect(shared.navigateWithBlurOnWebSpy).toHaveBeenCalledTimes(1);
         expect(shared.routerPushSpy).toHaveBeenCalledWith('/settings/features');
-    });
-
-    it('routes to the in-app bug report composer by default when Report issue is pressed', async () => {
-        const screen = await renderSettingsViewUnderTest();
-
-        expect(screen.findRowByTitle('settings.reportIssue')).toBeTruthy();
-
-        await act(async () => {
-            await screen.pressRowByTitle('settings.reportIssue');
-        });
-
-        expect(shared.routerPushSpy).toHaveBeenCalledWith('/settings/report-issue');
-        expect(shared.linkingOpenURLSpy).not.toHaveBeenCalled();
-    });
-
-    it('opens EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL when set and supported instead of routing to the composer', async () => {
-        const previousUrl = process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL;
-        process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL = 'https://example.test/report-issue';
-        shared.linkingCanOpenURLSpy.mockResolvedValue(true);
-
-        try {
-            const screen = await renderSettingsViewUnderTest();
-
-            expect(screen.findRowByTitle('settings.reportIssue')).toBeTruthy();
-
-            await act(async () => {
-                await screen.pressRowByTitle('settings.reportIssue');
-            });
-
-            expect(shared.linkingCanOpenURLSpy).toHaveBeenCalledWith('https://example.test/report-issue');
-            expect(shared.linkingOpenURLSpy).toHaveBeenCalledWith('https://example.test/report-issue');
-            expect(shared.routerPushSpy).not.toHaveBeenCalledWith('/settings/report-issue');
-        } finally {
-            if (previousUrl === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL;
-            else process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL = previousUrl;
-        }
-    });
-
-    it('falls back to routing when EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL is set but cannot be opened', async () => {
-        const previousUrl = process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL;
-        process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL = 'https://example.test/report-issue';
-        shared.linkingCanOpenURLSpy.mockResolvedValue(false);
-
-        try {
-            const screen = await renderSettingsViewUnderTest();
-
-            expect(screen.findRowByTitle('settings.reportIssue')).toBeTruthy();
-
-            await act(async () => {
-                await screen.pressRowByTitle('settings.reportIssue');
-            });
-
-            expect(shared.linkingCanOpenURLSpy).toHaveBeenCalledWith('https://example.test/report-issue');
-            expect(shared.linkingOpenURLSpy).not.toHaveBeenCalled();
-            expect(shared.routerPushSpy).toHaveBeenCalledWith('/settings/report-issue');
-        } finally {
-            if (previousUrl === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL;
-            else process.env.EXPO_PUBLIC_HAPPIER_REPORT_ISSUE_URL = previousUrl;
-        }
-    });
-
-    it('renders the GitHub repository as subtitle, not right-side detail', async () => {
-        const screen = await renderSettingsViewUnderTest();
-        const githubItem = screen.findRowByTitle('settings.github');
-
-        expect(githubItem).toBeTruthy();
-        expect(githubItem?.props.subtitle).toBe('happier-dev/happier');
-        expect(githubItem?.props.detail).toBeUndefined();
     });
 
     it('shows Rate us right below What’s New and triggers store review only when pressed', async () => {

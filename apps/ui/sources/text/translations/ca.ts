@@ -1111,7 +1111,6 @@ export const ca: TranslationStructure = {
             'Happier ha patit un error inesperat. Pots reiniciar la interfície de l\'app o copiar els detalls per al suport.',
         detailsTitle: 'Detalls de l\'error',
         restart: 'Reinicia l\'app',
-        restartAndReportIssue: 'Reinicia i obre l\'informe d\'error',
         copyDetails: 'Copia els detalls de l\'error',
     },
 
@@ -1373,136 +1372,6 @@ export const ca: TranslationStructure = {
         },
     },
 
-    bugReports: {
-        composer: {
-            alerts: {
-                previewUnavailableTitle: 'Previsualització no disponible',
-                previewUnavailableBody: 'No s\'ha pogut construir la previsualització de diagnòstics.',
-                submittedTitle: 'Informe d\'error enviat',
-                submittedExistingIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-                    `S\'ha publicat un comentari a la incidència #${issueNumber}.\n\nID de l\'informe: ${reportId}`,
-                submittedNewIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-                    `S\'ha creat la incidència #${issueNumber}.\n\nID de l\'informe: ${reportId}`,
-                submitFailedTitle: 'Enviament fallit',
-                submitFailedFallbackMessage: 'No s\'ha pogut enviar aquest informe.',
-                submitFailedBody: ({ message }: { message: string }) =>
-                    `${message}\n\nVols obrir una incidència de GitHub preomplerta en el seu lloc?`,
-                openFallbackIssueButton: 'Obre una incidència alternativa',
-            },
-            diagnostics: {
-                title: 'Diagnòstics',
-                subtitle: 'Tria què incloure i previsualitza abans d’enviar.',
-                includeTitle: 'Inclou diagnòstics',
-                includeSubtitle: 'Adjunta artefactes de depuració sanejats per a una diagnosi més ràpida.',
-                disabledByServerSuffix: ' (desactivat pel servidor)',
-                pasteDoctorJson: {
-                    title: 'JSON del doctor del CLI (opcional)',
-                    subtitle: 'Si la teva màquina no és accessible des de la UI, executa `happier doctor --json` a l’ordinador i enganxa’l aquí.',
-                    placeholder: '{ "capturedAt": "...", ... }',
-                    invalid: ({ error }: { error: string }) => `JSON del doctor no vàlid: ${error}`,
-                    valid: 'El JSON del doctor sembla vàlid i s’adjuntarà a l’informe.',
-                },
-                previewButton: 'Previsualitza diagnòstics',
-                preview: {
-                    title: 'Previsualització de diagnòstics',
-                    helper: 'Aquests artefactes es pujaran amb l’informe (sanititzats i amb mida limitada). Toca un element per veure’n el contingut complet.',
-                    empty: 'No s’enviarà cap artefacte de diagnòstic.',
-                    openArtifactA11y: ({ filename }: { filename: string }) => `Obre ${filename}`,
-                },
-                kinds: {
-                    app: {
-                        title: 'Diagnòstics de l’app',
-                        detail: 'Logs de l’app, accions recents de l’usuari i resum de la sessió.',
-                    },
-                    daemon: {
-                        title: 'Diagnòstics del dimoni',
-                        detail: 'Resum del dimoni i logs recents del dimoni de les màquines seleccionades.',
-                    },
-                    stackService: {
-                        title: 'Diagnòstics del servei Stack',
-                        detail: 'Context del stack i logs recents del stack (si estan disponibles).',
-                    },
-                    server: {
-                        title: 'Diagnòstics del servidor',
-                        detail: 'Snapshot del servidor actualment actiu.',
-                    },
-                },
-            },
-            issueDetails: {
-                title: 'Descriu el problema',
-                subtitle: 'Proporciona prou detall perquè el puguem reproduir i diagnosticar ràpidament.',
-                titleLabel: 'Títol (obligatori)',
-                titlePlaceholder: 'Títol curt',
-                githubUsernameLabel: 'Usuari de GitHub (opcional)',
-                githubUsernamePlaceholder: 'S’usa com a contacte al cos de l’issue',
-                summaryLabel: 'Resum concís (obligatori)',
-                summaryPlaceholder: 'Resum d’un paràgraf',
-                currentBehaviorLabel: 'Comportament actual (opcional)',
-                currentBehaviorPlaceholder: 'Què passa realment?',
-                expectedBehaviorLabel: 'Comportament esperat (opcional)',
-                expectedBehaviorPlaceholder: 'Què hauria de passar en lloc d’això?',
-                reproductionStepsLabel: 'Passos de reproducció (opcional)',
-                reproductionStepsPlaceholder: '1. Obre Happier\n2. Inicia una sessió\n3. ...',
-                whatChangedLabel: 'Què ha canviat recentment (opcional)',
-                whatChangedPlaceholder: 'Actualitzacions, canvis de configuració, nous passos de configuració...',
-            },
-            similarIssues: {
-                title: 'Possibles duplicats',
-                subtitle: 'Si algun d’aquests coincideix, pots publicar el teu informe com a comentari en lloc d’obrir una incidència nova.',
-                searching: 'S’estan cercant incidències…',
-                selectedTitle: ({ number }: { number: number }) => `S’està usant la incidència #${number}`,
-                selectedSubtitle: 'Toca per tornar a crear una incidència nova.',
-                useIssueA11y: ({ number }: { number: number }) => `Usa la incidència #${number}`,
-                issueState: {
-                    open: 'Incidència oberta',
-                    closed: 'Incidència tancada',
-                },
-            },
-            frequencySeverity: {
-                title: 'Freqüència i gravetat',
-                frequencyLabel: 'Freqüència',
-                severityLabel: 'Gravetat',
-                frequency: {
-                    always: 'Sempre',
-                    often: 'Sovint',
-                    sometimes: 'De vegades',
-                    once: 'Un cop',
-                },
-                severity: {
-                    blocker: 'Bloquejant',
-                    high: 'Alta',
-                    medium: 'Mitjana',
-                    low: 'Baixa',
-                },
-            },
-            environment: {
-                title: 'Entorn (editable)',
-                appVersionLabel: 'Versió de l’app',
-                platformLabel: 'Plataforma',
-                osVersionLabel: 'Versió del SO',
-                deviceModelLabel: 'Model del dispositiu',
-                serverUrlLabel: 'URL del servidor',
-                serverVersionLabel: 'Versió del servidor (opcional)',
-                deploymentTypeLabel: 'Tipus de desplegament',
-                deploymentType: {
-                    cloud: 'Núvol',
-                    selfHosted: 'Autoallotjat',
-                    enterprise: 'Empresarial',
-                },
-            },
-            consent: {
-                title: 'Consentiment',
-                understandTitle: 'Entenc que els diagnòstics poden incloure metadades tècniques',
-                understandSubtitle: 'No incloguis contrasenyes, tokens d’accés o claus privades.',
-            },
-            submit: {
-                requiredFieldsHint: 'Completa els camps obligatoris per habilitar l’enviament.',
-                submitting: 'S’està enviant l’informe…',
-                addToIssue: ({ number }: { number: number }) => `Afegeix a la incidència #${number}`,
-                submitNew: 'Envia un informe d’error',
-            },
-        },
-    },
 
     memorySearchSettings: {
         disabled: {
@@ -1827,7 +1696,6 @@ export const ca: TranslationStructure = {
         connectedAccounts: 'Comptes connectats',
         connectedAccountsDisabled: 'Els serveis connectats estan desactivats.',
         connectAccount: 'Connectar compte',
-        github: 'GitHub',
         machines: 'Màquines',
         features: 'Funcions',
         social: 'Xarxes socials',
@@ -1955,18 +1823,10 @@ export const ca: TranslationStructure = {
         developerTools: 'Eines de desenvolupador',
         about: 'Quant a',
         actionsSettingsAboutSubtitle: 'Activa o desactiva accions globalment, per superfície (UI/veu/MCP) i per ubicació (on apareixen a la interfície). Les accions desactivades queden bloquejades de manera segura en temps d’execució.',
-        aboutFooter: 'Happier Coder és un client mòbil de Codex i Claude Code. Fa servir xifratge d\'extrem a extrem per defecte, amb restauració del compte als teus altres dispositius. No està afiliat amb Anthropic.',
         whatsNew: 'Novetats',
         whatsNewSubtitle: 'Mira les últimes actualitzacions i millores',
-        reportIssue: 'Informa d\'un problema',
-        privacyPolicy: 'Política de privadesa',
-        termsOfService: 'Condicions del servei',
         rateUs: 'Valora Happier',
         rateUsSubtitle: 'Si t\'agrada l\'app, una valoració ràpida ens ajuda molt',
-        eula: 'EULA',
-        supportUs: 'Dona\'ns suport',
-        supportUsSubtitlePro: 'Gràcies pel teu suport!',
-        supportUsSubtitle: 'Dona suport al desenvolupament del projecte',
         scanQrCodeToAuthenticate: 'Escaneja el codi QR per connectar el terminal',
         githubConnected: ({ login }: { login: string }) => `Connectat com a @${login}`,
         connectGithubAccount: 'Connecta el teu compte de GitHub',
@@ -2294,9 +2154,6 @@ export const ca: TranslationStructure = {
             code: ({ code }: { code: string }) => `Codi: ${code}`,
             generic: {
                 subtitle: ({ code }: { code: string }) => `Detalls per a ${code}`,
-                steps: {
-                    reportIssue: 'Envia un informe d\'error i inclou aquest informe de diagnòstic.',
-                },
             },
             serverMismatch: {
                 title: 'Desajust de servidor (UI vs dimoni)',
@@ -3447,8 +3304,6 @@ export const ca: TranslationStructure = {
         builtInTitiSubtitle: 'Triatge de notes de release amb focus de staff sènior.',
         localLibraryTitle: 'Aquest dispositiu',
         localLibraryFooter: 'Les mascotes locals resten en aquest dispositiu tret que les importis al compte.',
-        helpDocsTitle: 'Ajuda de mascotes',
-        helpDocsSubtitle: 'Obre la documentació de Happier per configurar i diagnosticar la companya.',
         detectCodexPetsTitle: 'Detecta mascotes de Codex',
         detectCodexPetsSubtitle: 'Cerca mascotes compatibles als Codex homes locals.',
         detectedCodexPetsTileSubtitle: 'Trobada a Codex i a punt d’unir-se a aquest dispositiu.',
@@ -6432,7 +6287,6 @@ deps: {
         cliVersionOutdated: 'Actualització del CLI requerida',
         cliVersionOutdatedMessage: ({ currentVersion, requiredVersion }: { currentVersion: string; requiredVersion: string }) =>
             `Versió ${currentVersion} instal·lada. Actualitzeu a ${requiredVersion} o posterior`,
-        updateCliInstructions: 'Si us plau executeu happier self update',
         deleteSession: 'Elimina la sessió',
         deleteSessionSubtitle: 'Elimina permanentment aquesta sessió',
         deleteSessionConfirm: 'Eliminar la sessió permanentment?',
@@ -9298,14 +9152,6 @@ settingsSession: {
         secretKeyLabel: 'CLAU SECRETA (TOCA PER COPIAR)',
         secretKeyCopied: 'Clau secreta copiada al porta-retalls. Desa-la en un lloc segur!',
         secretKeyCopyFailed: 'Ha fallat copiar la clau secreta',
-        privacy: 'Privadesa',
-        privacyDescription: 'Ajuda a millorar l\'aplicació compartint dades d\'ús anònimes. No es recopila informació personal.',
-        analytics: 'Analítiques',
-        analyticsDisabled: 'No es comparteixen dades',
-        analyticsEnabled: 'Es comparteixen dades d\'ús anònimes',
-        crashReports: 'Informes de fallades',
-        crashReportsDisabled: 'No es comparteixen informes de fallades',
-        crashReportsEnabled: 'Es comparteixen informes de fallades',
         dangerZone: 'Zona de perill',
         logout: 'Tanca la sessió',
         logoutSubtitle: 'Tanca la sessió i esborra les dades locals',
@@ -9624,7 +9470,6 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: 'Acoblar terminal',
-        attachedSessionOpen: 'Obre la CLI de l’agent',
         attachedSessionTitle: 'CLI de l’agent',
         settings: {
             locationTitle: 'Ubicació del terminal incrustat',
@@ -9793,10 +9638,6 @@ settingsSession: {
         // a tail-ellipsis to avoid colliding with the right-side Docs group.
         welcomeFooterRelayActiveLabel: 'El teu relay:',
         welcomeFooterRelayEditAccessibility: 'Canvia el relay',
-        welcomeFooterDocs: 'Necessites ajuda?',
-        welcomeFooterDocsAction: 'Documentació',
-        welcomeFooterGithubLabel: 'Repositori de GitHub',
-        welcomeFooterDiscordLabel: 'Comunitat de Discord',
 
         // Mobile brand hero CTA
         brandHeroGetStarted: 'Comença',
@@ -9834,11 +9675,6 @@ settingsSession: {
             },
             startDaemonOpenSetup: {
                 description: 'Fes servir el flux de configuració de l’escriptori per reconnectar o reparar el servei en segon pla d’aquest ordinador abans de recórrer a les ordres del terminal.',
-            },
-            installCli: {
-                title: 'Instal·la la CLI',
-                description: 'Executa això un sol cop a la màquina que vols connectar.',
-                copyLabel: 'Ordre d’instal·lació',
             },
             serverSetup: {
                 title: 'Estableix el Relay actiu',

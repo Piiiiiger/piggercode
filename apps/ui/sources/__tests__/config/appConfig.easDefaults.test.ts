@@ -264,7 +264,7 @@ describe('app.config.js', () => {
         });
 
         expect(exp.name).toBe('PiggerCode');
-        expect(exp.version).toBe('0.0.0');
+        expect(exp.version).toBe('0.1.0');
         expect(exp.extra?.app?.productName).toBe('PiggerCode');
         expect(exp.extra?.app?.cliCommandName).toBe('piggercode');
     });

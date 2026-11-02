@@ -133,6 +133,19 @@ describe('Settings → Account (grouping)', () => {
         expect(sessionSettingsEntryState.routerPushSpy).toHaveBeenCalledWith('/settings/add-phone');
     });
 
+    it('offers no analytics or crash report switches: this build sends neither', async () => {
+        windowDimensions = { width: 1200, height: 800 };
+        vi.resetModules();
+        const { default: AccountScreen } = await import('@/app/(app)/settings/account');
+        const screen = await renderScreen(<AccountScreen />);
+
+        const privacyRows = screen.root.findAll((node) => (
+            node.props?.title === 'settingsAccount.analytics' || node.props?.title === 'settingsAccount.crashReports'
+        ));
+        expect(screen.findByTestId('settings-account-add-your-phone')).toBeTruthy();
+        expect(privacyRows.length).toBe(0);
+    });
+
     it('hides "Add your phone" on phone-sized web', async () => {
         windowDimensions = { width: 360, height: 800 };
         vi.stubGlobal('navigator', { maxTouchPoints: 5, userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0)' } as any);

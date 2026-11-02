@@ -1143,37 +1143,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         readFailed: '讀取工作階段日誌失敗',
     },
 
-    bugReports: {
-        composer: {
-            diagnostics: {
-                pasteDoctorJson: {
-                    title: 'CLI doctor JSON（選用）',
-                    subtitle: '若 UI 無法連到你的機器，請在電腦上執行 `happier doctor --json`，並貼到這裡。',
-                    placeholder: '{ "capturedAt": "...", ... }',
-                    invalid: ({ error }: { error: string }) => `doctor JSON 無效：${error}`,
-                    valid: 'doctor JSON 看起來有效，會隨報告一起提交。',
-                },
-                preview: {
-                    title: '診斷預覽',
-                    helper: '這些工件將隨報告一起上傳（已脫敏並限制大小）。點按項目以查看完整內容。',
-                    empty: '不會傳送任何診斷工件。',
-                    openArtifactA11y: ({ filename }: { filename: string }) => `開啟 ${filename}`,
-                },
-            },
-            similarIssues: {
-                title: '可能的重複問題',
-                subtitle: '如果其中一個符合你的情況，你可以把回報以留言方式發佈，而不是開新的 issue。',
-                searching: '正在搜尋 issues…',
-                selectedTitle: ({ number }: { number: number }) => `使用 issue #${number}`,
-                selectedSubtitle: '點一下以切換回建立新 issue。',
-                useIssueA11y: ({ number }: { number: number }) => `使用 issue #${number}`,
-                issueState: {
-                    open: '未關閉',
-                    closed: '已關閉',
-                },
-            },
-        },
-    },
 
     connectedServices: {
         importAccounts: {
@@ -1895,7 +1864,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         subtitle: 'Happier 發生了非預期的錯誤。你可以重新啟動應用程式介面，或複製詳細資訊以便支援排查。',
         detailsTitle: '錯誤詳細資訊',
         restart: '重新啟動應用程式',
-        restartAndReportIssue: '重新啟動並提交問題回報',
         copyDetails: '複製錯誤詳細資訊',
     },
 
@@ -2284,7 +2252,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         connectedAccounts: '已連結帳戶',
         connectedAccountsDisabled: '已停用已連結的服務。',
         connectAccount: '連結帳戶',
-        github: 'GitHub',
         machines: '裝置',
         features: '功能',
         social: '社交',
@@ -2393,18 +2360,10 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         developerTools: '開發者工具',
         about: '關於',
         actionsSettingsAboutSubtitle: '可全域、依介面（UI/語音/MCP）以及依顯示位置（在介面中出現的位置）啟用或停用操作。停用的操作在執行時會以安全方式（fail-closed）被阻擋。',
-        aboutFooter: 'Happier Coder 是一個 Codex 和 Claude Code 行動用戶端。預設採用端對端加密，並可在其他裝置上還原您的帳戶。與 Anthropic 無關聯。',
         whatsNew: '更新日誌',
         whatsNewSubtitle: '查看最新更新和改進',
-        reportIssue: '回報問題',
-        privacyPolicy: '隱私權政策',
-        termsOfService: '服務條款',
         rateUs: '為 Happier 評分',
         rateUsSubtitle: '如果你喜歡這個 app，歡迎給我們一個簡短評分',
-        eula: '終端使用者授權協議',
-        supportUs: '支援我們',
-        supportUsSubtitlePro: '感謝您的支援！',
-        supportUsSubtitle: '支援專案開發',
         scanQrCodeToAuthenticate: '掃描 QR 碼以連接終端機',
         githubConnected: ({ login }: { login: string }) => `已連結為 @${login}`,
         connectGithubAccount: '連結您的 GitHub 帳戶',
@@ -2920,9 +2879,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
             code: ({ code }: { code: string }) => `代碼：${code}`,
             generic: {
                 subtitle: ({ code }: { code: string }) => `關於 ${code} 的詳情`,
-                steps: {
-                    reportIssue: '提交 Bug 回報並附上此診斷報告。',
-                },
             },
             serverMismatch: {
                 title: '伺服器不一致（UI vs 守護程式）',
@@ -3334,8 +3290,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
 		        builtInTitiSubtitle: '以資深 staff 的專注整理發布說明。',
 		        localLibraryTitle: '此裝置',
 		        localLibraryFooter: '本機寵物會留在此裝置，除非你將它們匯入帳戶。',
-		        helpDocsTitle: '寵物說明',
-		        helpDocsSubtitle: '開啟 Happier 文件以查看設定和疑難排解。',
 		        detectCodexPetsTitle: '偵測 Codex 寵物',
 		        detectCodexPetsSubtitle: '在本機 Codex homes 中尋找相容寵物。',
 		        detectedCodexPetsTileSubtitle: '已在 Codex 中找到，準備加入此裝置。',
@@ -5770,7 +5724,6 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         cliVersionOutdated: '需要更新 CLI',
         cliVersionOutdatedMessage: ({ currentVersion, requiredVersion }: { currentVersion: string; requiredVersion: string }) =>
             `已安裝版本 ${currentVersion}。請更新到 ${requiredVersion} 或更高版本`,
-        updateCliInstructions: '請執行 happier self update',
         deleteSession: '刪除工作階段',
         deleteSessionSubtitle: '永久刪除此工作階段',
         deleteSessionConfirm: '永久刪除工作階段？',
@@ -7982,14 +7935,6 @@ settingsSession: {
         secretKeyLabel: '金鑰（點擊複製）',
         secretKeyCopied: '金鑰已複製到剪貼簿。請將其保存在安全的地方！',
         secretKeyCopyFailed: '複製金鑰失敗',
-        privacy: '隱私',
-        privacyDescription: '透過分享匿名使用資料來幫助改進應用程式。不會收集個人資訊。',
-        analytics: '分析',
-        analyticsDisabled: '不分享資料',
-        analyticsEnabled: '分享匿名使用資料',
-        crashReports: '當機回報',
-        crashReportsDisabled: '不分享當機回報',
-        crashReportsEnabled: '分享當機回報',
         dangerZone: '危險區域',
         logout: '登出',
         logoutSubtitle: '登出並清除本機資料',
@@ -8308,7 +8253,6 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: '停靠終端',
-        attachedSessionOpen: '開啟 CLI 介面',
         attachedSessionTitle: 'CLI 介面',
         settings: {
             locationTitle: '嵌入式終端位置',
@@ -8457,10 +8401,6 @@ settingsSession: {
         // a tail-ellipsis to avoid colliding with the right-side Docs group.
         welcomeFooterRelayActiveLabel: '你的 Relay:',
         welcomeFooterRelayEditAccessibility: '變更 Relay',
-        welcomeFooterDocs: '需要協助?',
-        welcomeFooterDocsAction: '文件',
-        welcomeFooterGithubLabel: 'GitHub 儲存庫',
-        welcomeFooterDiscordLabel: 'Discord 社群',
 
         // Mobile brand hero CTA
         brandHeroGetStarted: '開始',
@@ -8523,15 +8463,6 @@ settingsSession: {
 
                 },
 
-                installCli: {
-
-                    title: '安裝 CLI',
-
-                    description: '在你想要連線的機器上執行一次即可。',
-
-                    copyLabel: '安裝命令',
-
-                },
 
                 serverSetup: {
 

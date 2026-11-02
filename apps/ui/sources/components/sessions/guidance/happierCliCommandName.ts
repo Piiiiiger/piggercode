@@ -29,21 +29,3 @@ export function buildHappierCliCommandName(input: Readonly<{
     if (channel === 'dev') return 'hdev';
     return channel === 'preview' ? 'hprev' : 'happier';
 }
-
-export function buildHappierCliInstallCommand(input: Readonly<{
-    appVariant: AppVariant;
-    distTagOverride?: unknown;
-    channelOverride?: HappierCliInstallChannel;
-    suppressAutomaticSetup?: boolean;
-}>): string {
-    const channel = resolveInstallChannel(input);
-    if (channel === 'dev') {
-        return `curl -fsSL https://happier.dev/install | bash -s -- --channel dev${input.suppressAutomaticSetup ? ' --yes' : ''}`;
-    }
-    if (channel === 'preview') {
-        return `curl -fsSL https://happier.dev/install | bash -s -- --channel preview${input.suppressAutomaticSetup ? ' --yes' : ''}`;
-    }
-    return input.suppressAutomaticSetup
-        ? 'curl -fsSL https://happier.dev/install | bash -s -- --yes'
-        : 'curl -fsSL https://happier.dev/install | bash';
-}

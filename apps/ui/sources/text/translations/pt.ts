@@ -1215,7 +1215,6 @@ export const pt: TranslationStructure = {
       "O Happier encontrou um erro inesperado. Pode reiniciar a interface da app ou copiar os detalhes para suporte.",
     detailsTitle: "Detalhes do erro",
     restart: "Reiniciar app",
-    restartAndReportIssue: "Reiniciar e abrir relatório de erro",
     copyDetails: "Copiar detalhes do erro",
   },
 
@@ -1483,167 +1482,6 @@ export const pt: TranslationStructure = {
     },
   },
 
-  bugReports: {
-    composer: {
-      alerts: {
-        previewUnavailableTitle: "Prévia indisponível",
-        previewUnavailableBody:
-          "Não foi possível criar a prévia do diagnóstico.",
-        submittedTitle: "Relatório de bug enviado",
-        submittedExistingIssueBody: ({
-          issueNumber,
-          reportId,
-        }: {
-          issueNumber: number;
-          reportId: string;
-        }) =>
-          `Um comentário foi publicado na issue #${issueNumber}.\n\nID do relatório: ${reportId}`,
-        submittedNewIssueBody: ({
-          issueNumber,
-          reportId,
-        }: {
-          issueNumber: number;
-          reportId: string;
-        }) =>
-          `A issue #${issueNumber} foi criada.\n\nID do relatório: ${reportId}`,
-        submitFailedTitle: "Falha ao enviar",
-        submitFailedFallbackMessage:
-          "Não foi possível enviar este relatório.",
-        submitFailedBody: ({ message }: { message: string }) =>
-          `${message}\n\nDeseja abrir uma issue do GitHub pré-preenchida?`,
-        openFallbackIssueButton: "Abrir issue alternativa",
-      },
-      diagnostics: {
-        title: "Diagnóstico",
-        subtitle: "Escolha o que incluir e faça uma prévia antes de enviar.",
-        includeTitle: "Incluir diagnóstico",
-        includeSubtitle:
-          "Anexe artefatos de depuração sanitizados para acelerar o diagnóstico.",
-        disabledByServerSuffix: " (desativado pelo servidor)",
-        pasteDoctorJson: {
-          title: "CLI doctor JSON (opcional)",
-          subtitle:
-            "Se sua máquina estiver inacessível pela UI, execute `happier doctor --json` no computador e cole aqui.",
-          placeholder: '{ "capturedAt": "...", ... }',
-          invalid: ({ error }: { error: string }) => `Doctor JSON inválido: ${error}`,
-          valid: "O doctor JSON parece válido e será anexado ao relatório.",
-        },
-        previewButton: "Pré-visualizar diagnóstico",
-        preview: {
-          title: "Prévia de diagnósticos",
-          helper:
-            "Esses artefatos serão enviados junto com o seu relatório (sanitizados e com tamanho limitado). Toque em um item para ver o conteúdo completo.",
-          empty: "Nenhum artefato de diagnóstico seria enviado.",
-          openArtifactA11y: ({ filename }: { filename: string }) =>
-            `Abrir ${filename}`,
-        },
-        kinds: {
-          app: {
-            title: "Diagnóstico do app",
-            detail:
-              "Logs do app, ações recentes do usuário e resumo da sessão.",
-          },
-          daemon: {
-            title: "Diagnóstico do daemon",
-            detail:
-              "Resumo do daemon e logs recentes do daemon das máquinas selecionadas.",
-          },
-          stackService: {
-            title: "Diagnóstico do serviço Stack",
-            detail:
-              "Contexto do stack e logs recentes do stack (se disponíveis).",
-          },
-          server: {
-            title: "Diagnóstico do servidor",
-            detail: "Snapshot do servidor atualmente ativo.",
-          },
-        },
-      },
-      issueDetails: {
-        title: "Descreva o problema",
-        subtitle:
-          "Forneça detalhes suficientes para que possamos reproduzir e diagnosticar rapidamente.",
-        titleLabel: "Título (obrigatório)",
-        titlePlaceholder: "Título curto",
-        githubUsernameLabel: "Usuário do GitHub (opcional)",
-        githubUsernamePlaceholder:
-          "Usado como contato no corpo do issue",
-        summaryLabel: "Resumo conciso (obrigatório)",
-        summaryPlaceholder: "Resumo de um parágrafo",
-        currentBehaviorLabel: "Comportamento atual (opcional)",
-        currentBehaviorPlaceholder: "O que acontece de fato?",
-        expectedBehaviorLabel: "Comportamento esperado (opcional)",
-        expectedBehaviorPlaceholder: "O que deveria acontecer em vez disso?",
-        reproductionStepsLabel: "Passos de reprodução (opcional)",
-        reproductionStepsPlaceholder:
-          "1. Abra o Happier\n2. Inicie uma sessão\n3. ...",
-        whatChangedLabel: "O que mudou recentemente (opcional)",
-        whatChangedPlaceholder:
-          "Atualizações, mudanças de configuração, novos passos de configuração...",
-      },
-      similarIssues: {
-        title: "Possíveis duplicatas",
-        subtitle:
-          "Se alguma corresponder, você pode publicar seu relatório como comentário em vez de abrir uma nova issue.",
-        searching: "Pesquisando issues…",
-        selectedTitle: ({ number }: { number: number }) =>
-          `Usando a issue #${number}`,
-        selectedSubtitle: "Toque para voltar a criar uma nova issue.",
-        useIssueA11y: ({ number }: { number: number }) => `Usar issue #${number}`,
-        issueState: {
-          open: "Issue aberta",
-          closed: "Issue fechada",
-        },
-      },
-      frequencySeverity: {
-        title: "Frequência e gravidade",
-        frequencyLabel: "Frequência",
-        severityLabel: "Gravidade",
-        frequency: {
-          always: "Sempre",
-          often: "Frequentemente",
-          sometimes: "Às vezes",
-          once: "Uma vez",
-        },
-        severity: {
-          blocker: "Bloqueante",
-          high: "Alta",
-          medium: "Média",
-          low: "Baixa",
-        },
-      },
-      environment: {
-        title: "Ambiente (editável)",
-        appVersionLabel: "Versão do app",
-        platformLabel: "Plataforma",
-        osVersionLabel: "Versão do SO",
-        deviceModelLabel: "Modelo do dispositivo",
-        serverUrlLabel: "URL do servidor",
-        serverVersionLabel: "Versão do servidor (opcional)",
-        deploymentTypeLabel: "Tipo de implantação",
-        deploymentType: {
-          cloud: "Nuvem",
-          selfHosted: "Auto-hospedado",
-          enterprise: "Empresarial",
-        },
-      },
-      consent: {
-        title: "Consentimento",
-        understandTitle:
-          "Entendo que o diagnóstico pode incluir metadados técnicos",
-        understandSubtitle:
-          "Não inclua senhas, tokens de acesso ou chaves privadas.",
-      },
-      submit: {
-        requiredFieldsHint:
-          "Preencha os campos obrigatórios para habilitar o envio.",
-        submitting: "Enviando relatório…",
-        addToIssue: ({ number }: { number: number }) =>
-          `Adicionar à issue #${number}`,
-        submitNew: "Enviar relatório de bug",
-      },
-    },
-  },
 
   memorySearchSettings: {
     disabled: {
@@ -2054,7 +1892,6 @@ export const pt: TranslationStructure = {
     connectedAccounts: "Contas conectadas",
     connectedAccountsDisabled: "Os serviços conectados estão desativados.",
     connectAccount: "Conectar conta",
-    github: "GitHub",
     machines: "Máquinas",
     features: "Recursos",
     social: "Rede social",
@@ -2183,19 +2020,10 @@ export const pt: TranslationStructure = {
     about: "Sobre",
     actionsSettingsAboutSubtitle:
       "Ative ou desative ações globalmente, por superfície (UI/voz/MCP) e por posicionamento (onde aparecem na interface). Ações desativadas são bloqueadas (fail-closed) em tempo de execução.",
-    aboutFooter:
-      "Happier Coder é um cliente móvel para Codex e Claude Code. Usa criptografia de ponta a ponta por padrão, com restauração da conta nos seus outros dispositivos. Não é afiliado à Anthropic.",
     whatsNew: "Novidades",
     whatsNewSubtitle: "Veja as atualizações e melhorias mais recentes",
-    reportIssue: "Relatar um problema",
-    privacyPolicy: "Política de privacidade",
-    termsOfService: "Termos de serviço",
     rateUs: "Avalie o Happier",
     rateUsSubtitle: "Se você gosta do app, uma avaliação rápida ajuda muito",
-    eula: "EULA",
-    supportUs: "Nos apoie",
-    supportUsSubtitlePro: "Obrigado pelo seu apoio!",
-    supportUsSubtitle: "Apoie o desenvolvimento do projeto",
     scanQrCodeToAuthenticate: "Escaneie o QR para conectar o terminal",
     githubConnected: ({ login }: { login: string }) =>
       `Conectado como @${login}`,
@@ -2546,9 +2374,6 @@ export const pt: TranslationStructure = {
       code: ({ code }: { code: string }) => `Código: ${code}`,
       generic: {
         subtitle: ({ code }: { code: string }) => `Detalhes para ${code}`,
-        steps: {
-          reportIssue: "Envie um bug report e inclua este relatório de diagnóstico.",
-        },
       },
       serverMismatch: {
         title: "Incompatibilidade de servidor (UI vs daemon)",
@@ -3758,8 +3583,6 @@ export const pt: TranslationStructure = {
     builtInTitiSubtitle: 'Organiza notas de release com foco de staff sênior.',
     localLibraryTitle: 'Este dispositivo',
     localLibraryFooter: 'Mascotes locais ficam neste dispositivo, a menos que você as importe para a conta.',
-    helpDocsTitle: 'Ajuda de mascotes',
-    helpDocsSubtitle: 'Abra a documentação do Happier para configuração e solução de problemas.',
     detectCodexPetsTitle: 'Detectar mascotes Codex',
     detectCodexPetsSubtitle: 'Procura mascotes compatíveis em Codex homes locais.',
     detectedCodexPetsTileSubtitle: 'Encontrada no Codex e pronta para entrar neste dispositivo.',
@@ -6930,8 +6753,6 @@ export const pt: TranslationStructure = {
       requiredVersion: string;
     }) =>
       `Versão ${currentVersion} instalada. Atualize para ${requiredVersion} ou posterior`,
-    updateCliInstructions:
-      "Por favor execute happier self update",
     deleteSession: "Excluir sessão",
     deleteSessionSubtitle: "Remover permanentemente esta sessão",
     deleteSessionConfirm: "Excluir sessão permanentemente?",
@@ -10030,15 +9851,6 @@ settingsSession: {
     secretKeyCopied:
       "Chave secreta copiada para a área de transferência. Guarde-a em um local seguro!",
     secretKeyCopyFailed: "Falha ao copiar chave secreta",
-    privacy: "Privacidade",
-    privacyDescription:
-      "Ajude a melhorar o aplicativo compartilhando dados de uso anônimos. Nenhuma informação pessoal é coletada.",
-    analytics: "Análises",
-    analyticsDisabled: "Nenhum dado é compartilhado",
-    analyticsEnabled: "Dados de uso anônimos são compartilhados",
-    crashReports: "Relatórios de falhas",
-    crashReportsDisabled: "Nenhum relatório de falhas é compartilhado",
-    crashReportsEnabled: "Relatórios de falhas são compartilhados",
     dangerZone: "Zona perigosa",
     logout: "Sair",
     logoutSubtitle: "Sair e limpar dados locais",
@@ -10365,7 +10177,6 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Ancorar terminal",
-    attachedSessionOpen: "Abrir a CLI do agente",
     attachedSessionTitle: "CLI do agente",
     settings: {
       locationTitle: "Local do terminal incorporado",
@@ -10543,10 +10354,6 @@ settingsSession: {
     // a tail-ellipsis to avoid colliding with the right-side Docs group.
     welcomeFooterRelayActiveLabel: "Seu relay:",
     welcomeFooterRelayEditAccessibility: "Alterar relay",
-    welcomeFooterDocs: "Precisa de ajuda?",
-    welcomeFooterDocsAction: "Documentação",
-    welcomeFooterGithubLabel: "Repositório do GitHub",
-    welcomeFooterDiscordLabel: "Comunidade do Discord",
 
     // Mobile brand hero CTA
     brandHeroGetStarted: "Começar",
@@ -10609,15 +10416,6 @@ settingsSession: {
 
               },
 
-              installCli: {
-
-                  title: 'Instale a CLI',
-
-                  description: 'Execute isto uma vez na máquina que você quer conectar.',
-
-                  copyLabel: 'Comando de instalação',
-
-              },
 
               serverSetup: {
 

@@ -1035,19 +1035,6 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
                     </View>
                 </View>
 
-                {/* CLI Version Warning */}
-                {isCliOutdated && (
-                    <ItemGroup>
-                        <Item
-                            title={t('sessionInfo.cliVersionOutdated')}
-                            subtitle={t('sessionInfo.updateCliInstructions')}
-                            icon={<Icon name="warning" size={29} color={theme.colors.accent.orange} />}
-                            showChevron={false}
-                            copy="happier self update"
-                        />
-                    </ItemGroup>
-                )}
-
                 <SessionRetentionNotice sessionId={session.id} />
 
                 {/* Session Details */}

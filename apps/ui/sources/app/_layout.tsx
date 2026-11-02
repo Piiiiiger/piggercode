@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Fonts from 'expo-font';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-import { usePathname, useRouter } from 'expo-router';
+import { usePathname } from 'expo-router';
 import {
     PUSH_NOTIFICATION_ACTION_IDS,
     PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS,
@@ -41,8 +41,6 @@ import { UpdatesEntry } from '@/components/updates/UpdatesPopoverButton';
 import { UpdatesSummaryProvider } from '@/updates/useUpdatesSummary';
 import { UpdateFactsBackgroundRuntime } from '@/updates/UpdateFactsBackgroundRuntime';
 import { monkeyPatchConsoleForRemoteLoggingForFasterAiAutoDebuggingOnlyInLocalBuilds } from '@/utils/system/remoteLogger';
-import { installBugReportConsoleCapture } from '@/utils/system/bugReportLogBuffer';
-import { configureBugReportUserActionTrail } from '@/utils/system/bugReportActionTrail';
 import { useUnistyles } from 'react-native-unistyles';
 import { AsyncLock } from '@/utils/system/lock';
 import { useWebUiFontScale } from '@/components/ui/text/useWebUiFontScale';
@@ -52,7 +50,6 @@ import { initializeSentryOnce, wrapWithSentryIfEnabled } from '@/utils/system/se
 import { t } from '@/text';
 import { AppCrashRecoveryBoundary } from '@/components/appShell/AppCrashRecoveryBoundary';
 import { WebCryptoStartupGate } from '@/components/web/WebCryptoStartupGate';
-import { consumeRestartBugReportIntent } from '@/utils/system/restartBugReportIntent';
 import { getCurrentReactOwnerHint, getUnexpectedPrimitiveViewChildInfo } from '@/utils/system/debugUnexpectedTextNodeCapture';
 import { resolveForegroundNotificationBehavior } from '@/activity/notifications/resolveForegroundNotificationBehavior';
 import { resolveBootCredentials } from '@/boot/resolveBootCredentials';
@@ -419,8 +416,6 @@ SplashScreen.preventAutoHideAsync();
 if (!!process.env.PUBLIC_EXPO_DANGEROUSLY_LOG_TO_SERVER_FOR_AI_AUTO_DEBUGGING) {
     monkeyPatchConsoleForRemoteLoggingForFasterAiAutoDebuggingOnlyInLocalBuilds()
 }
-installBugReportConsoleCapture({ maxEntries: 300 });
-configureBugReportUserActionTrail({ maxActions: 300 });
 
 if (shouldCaptureRnwUnexpectedTextNodeStacks()) {
     installRnwUnexpectedTextNodeStackCaptureOnce();
@@ -655,7 +650,6 @@ function AppBoot(props: {
     //
     // Init sequence
     //
-    const router = useRouter();
     const pathname = usePathname();
     const safeArea = useSafeAreaInsets();
     const isTablet = useIsTablet();
@@ -667,7 +661,6 @@ function AppBoot(props: {
     const isTerminalConnectRoute = isTerminalConnectWebPathname(pathname);
     const [initState, setInitState] = React.useState<AppBootReadyState | null>(null);
     const [bootError, setBootError] = React.useState<Error | null>(null);
-    const restartBugReportCheckedRef = React.useRef(false);
 
     React.useEffect(() => {
         clearActiveViewingSessionsForNonSessionRoute(pathname);
@@ -695,28 +688,6 @@ function AppBoot(props: {
             cancelled = true;
         };
     }, [isDesktopPetOverlayWindow]);
-
-    React.useEffect(() => {
-        if (!initState) return;
-        if (restartBugReportCheckedRef.current) return;
-        restartBugReportCheckedRef.current = true;
-
-        let cancelled = false;
-        (async () => {
-            try {
-                const shouldOpenBugReport = await consumeRestartBugReportIntent();
-                if (!shouldOpenBugReport) return;
-                if (cancelled) return;
-                router.push('/settings/report-issue');
-            } catch {
-                // ignore
-            }
-        })();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [initState, router]);
 
     React.useEffect(() => {
         if (initState) {

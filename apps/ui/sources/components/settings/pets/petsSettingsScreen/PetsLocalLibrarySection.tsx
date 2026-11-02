@@ -6,13 +6,10 @@ import type { BuiltInPetPackage } from '@/components/pets/builtIns/builtInPetReg
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { t } from '@/text';
-import { openExternalUrl } from '@/utils/url/openExternalUrl';
 
 import { DevicePetSelector, type DetectedDevicePetSelectorItem, type LocalDevicePetSelectorItem } from '../DevicePetSelector';
 import type { CodexDetectionState, LocalPetImportDiagnostic, LocalPetRemovalDiagnostic } from './types';
 import { Icon } from '@/components/ui/icons/Icon';
-
-const PETS_HELP_URL = 'https://docs.happier.dev';
 
 type PetsLocalLibrarySectionProps = Readonly<{
     builtInPetRows: readonly BuiltInPetPackage[];
@@ -59,15 +56,6 @@ export function PetsLocalLibrarySection(props: PetsLocalLibrarySectionProps): Re
                         </ItemGroup>
                     </View>
                 ) : null}
-                <ItemGroup>
-                    <Item
-                        testID="settings-pets-help-docs"
-                        title={t('settingsPets.helpDocsTitle')}
-                        subtitle={t('settingsPets.helpDocsSubtitle')}
-                        icon={<Icon name="question" size={24} color={theme.colors.text.secondary} />}
-                        onPress={() => void openExternalUrl(PETS_HELP_URL)}
-                    />
-                </ItemGroup>
                 <View testID="settings-pets-codex-library-list">
                     <View testID="settings-pets-codex-detect-group">
                         <ItemGroup>

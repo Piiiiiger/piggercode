@@ -2,9 +2,8 @@ import React from 'react';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { useSegmentsMock, recordActionMock, screenMock } = vi.hoisted(() => ({
+const { useSegmentsMock, screenMock } = vi.hoisted(() => ({
     useSegmentsMock: vi.fn(() => ['(app)', 'settings']),
-    recordActionMock: vi.fn(),
     screenMock: vi.fn(),
 }));
 
@@ -19,10 +18,6 @@ vi.mock('expo-router', async () => {
     });
     return expoRouterMock.module;
 });
-
-vi.mock('@/utils/system/bugReportActionTrail', () => ({
-    recordBugReportUserAction: (...args: unknown[]) => recordActionMock(...args),
-}));
 
 vi.mock('./tracking', () => ({
     get tracking() {
@@ -44,7 +39,6 @@ function HookProbe() {
 describe('useTrackScreens', () => {
     beforeEach(() => {
         useSegmentsMock.mockClear();
-        recordActionMock.mockClear();
         screenMock.mockClear();
         trackingState.value = null;
     });
@@ -53,27 +47,26 @@ describe('useTrackScreens', () => {
         vi.clearAllMocks();
     });
 
-    it('records screen navigation actions even when analytics tracking is unavailable', async () => {
+    it('tracks nothing when analytics tracking is unavailable', async () => {
         await renderScreen(<HookProbe />);
 
-        expect(recordActionMock).toHaveBeenCalledWith('screen.navigate', { route: 'settings' });
         expect(screenMock).not.toHaveBeenCalled();
     });
 
-    it('tracks and records when analytics tracking is available', async () => {
+    it('tracks the screen when analytics tracking is available', async () => {
         trackingState.value = { screen: screenMock };
 
         await renderScreen(<HookProbe />);
 
         expect(screenMock).toHaveBeenCalledWith('settings');
-        expect(recordActionMock).toHaveBeenCalledWith('screen.navigate', { route: 'settings' });
     });
 
-    it('redacts dynamic id-like segments in recorded routes', async () => {
+    it('redacts dynamic id-like segments in tracked routes', async () => {
+        trackingState.value = { screen: screenMock };
         useSegmentsMock.mockReturnValue(['(app)', 'session', '550e8400-e29b-41d4-a716-446655440000', 'file']);
 
         await renderScreen(<HookProbe />);
 
-        expect(recordActionMock).toHaveBeenCalledWith('screen.navigate', { route: 'session/:id/file' });
+        expect(screenMock).toHaveBeenCalledWith('session/:id/file');
     });
 });

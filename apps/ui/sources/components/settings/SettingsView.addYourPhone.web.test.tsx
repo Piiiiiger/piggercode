@@ -176,14 +176,6 @@ vi.mock('@/agents/catalog/catalog', () => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/components/settings/supportUsBehavior', () => ({
-    resolveSupportUsAction: () => 'github',
-}));
-
-vi.mock('@/utils/system/bugReportActionTrail', () => ({
-    recordBugReportUserAction: vi.fn(),
-}));
-
 vi.mock('@/utils/system/fireAndForget', () => ({
     fireAndForget: (promise: Promise<unknown>) => void promise,
 }));

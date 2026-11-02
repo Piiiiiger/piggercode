@@ -18,13 +18,11 @@ appId: ${HAPPIER_E2E_MOBILE_APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: session-getting-started-step-install_cli
+      id: session-getting-started-step-auth_login
     timeout: 60000
 
-- assertVisible:
+- assertNotVisible:
     id: session-getting-started-step-install_cli
-- assertVisible:
-    id: session-getting-started-step-auth_login
 - assertVisible:
     id: session-getting-started-step-daemon_install
 - assertVisible:

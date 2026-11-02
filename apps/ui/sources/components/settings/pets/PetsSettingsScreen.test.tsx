@@ -52,7 +52,6 @@ const applySettingsSpy = vi.hoisted(() => vi.fn());
 const applyLocalSettingsSpy = vi.hoisted(() => vi.fn());
 const machineRpcWithServerScopeMock = vi.hoisted(() => vi.fn());
 const resetDesktopPetOverlayPositionMock = vi.hoisted(() => vi.fn(async () => {}));
-const openExternalUrlMock = vi.hoisted(() => vi.fn(async () => true));
 const accountPetsState = vi.hoisted(() => ({
     current: {} as Record<string, AccountPetLibraryEntryV1>,
 }));
@@ -244,10 +243,6 @@ vi.mock('@/components/pets/desktop/bridge/desktopPetOverlayBridge', () => ({
     resetDesktopPetOverlayPosition: resetDesktopPetOverlayPositionMock,
 }));
 
-vi.mock('@/utils/url/openExternalUrl', () => ({
-    openExternalUrl: openExternalUrlMock,
-}));
-
 vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
     const { createStorageModuleMock, createStorageStoreMock } = await import('@/dev/testkit/mocks/storage');
     const actual = await importOriginal<typeof import('@/sync/domains/state/storage')>();
@@ -375,7 +370,6 @@ describe('PetsSettingsScreen', () => {
         machineRpcWithServerScopeMock.mockReset();
         serverFetchMock.mockClear();
         resetDesktopPetOverlayPositionMock.mockClear();
-        openExternalUrlMock.mockClear();
         upsertAccountPetSpy.mockClear();
         upsertLocalPetSourceSpy.mockClear();
         removeLocalPetSourceSpy.mockClear();
@@ -553,13 +547,12 @@ describe('PetsSettingsScreen', () => {
         expect(resetDesktopPetOverlayPositionMock).toHaveBeenCalledTimes(1);
     });
 
-    it('opens the pets docs help entry from settings', async () => {
+    it('links to no upstream docs from the pets settings', async () => {
         const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
         const screen = await renderScreen(<PetsSettingsScreen />);
 
-        await screen.pressByTestIdAsync('settings-pets-help-docs');
-
-        expect(openExternalUrlMock).toHaveBeenCalledWith('https://docs.happier.dev');
+        expect(screen.findByTestId('settings-pets-source-list')).not.toBeNull();
+        expect(screen.findByTestId('settings-pets-help-docs')).toBeNull();
     });
 
     it('lets desktop users choose attention-or-active overlay visibility for this device', async () => {

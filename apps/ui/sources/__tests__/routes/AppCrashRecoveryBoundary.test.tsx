@@ -20,21 +20,6 @@ vi.mock('expo-clipboard', () => ({
   setStringAsync: vi.fn(async () => true),
 }));
 
-const persistSnapshotMock = vi.fn(async (..._args: unknown[]) => {});
-const persistIntentMock = vi.fn(async (..._args: unknown[]) => {});
-
-vi.mock('@/utils/system/preRestartBugReportSnapshot', () => ({
-  persistPreRestartBugReportSnapshot: persistSnapshotMock,
-}));
-
-vi.mock('@/utils/system/restartBugReportIntent', () => ({
-  persistRestartBugReportIntent: persistIntentMock,
-}));
-
-async function flushPromises(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-}
-
 describe('AppCrashRecoveryBoundary', () => {
   it('renders children when no error is thrown', async () => {
     const { AppCrashRecoveryBoundary } = await import('@/components/appShell/AppCrashRecoveryBoundary');
@@ -59,7 +44,8 @@ describe('AppCrashRecoveryBoundary', () => {
     expect(screen.tree.toJSON()).not.toBeNull();
     expect(screen.findByTestId('app-blocking-logo')).toBeTruthy();
     expect(screen.findByTestId('app-crash-restart')).toBeTruthy();
-    expect(screen.findByTestId('app-crash-report-bug')).toBeTruthy();
+    // No bug report: upstream's report flow ends in Happier's issue tracker.
+    expect(screen.findByTestId('app-crash-report-bug')).toBeNull();
     expect(screen.findByTestId('app-crash-copy-details')).toBeTruthy();
   });
 
@@ -179,35 +165,6 @@ describe('AppCrashRecoveryBoundary', () => {
     await act(async () => {
       restartButton.props.onPress?.();
     });
-    expect(onRestart).toHaveBeenCalledTimes(1);
-  });
-
-  it('persists a pre-restart snapshot and restarts when the report bug button is pressed', async () => {
-    const { AppCrashRecoveryBoundary } = await import('@/components/appShell/AppCrashRecoveryBoundary');
-    const Thrower = () => {
-      throw new Error('boom');
-    };
-
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const onRestart = vi.fn();
-
-    const screen = await renderScreen(<AppCrashRecoveryBoundary onRestart={onRestart}>
-          <Thrower />
-        </AppCrashRecoveryBoundary>);
-    consoleError.mockRestore();
-
-    const reportBugButton = screen.findByTestId('app-crash-report-bug');
-    expect(reportBugButton).not.toBeNull();
-    if (!reportBugButton) {
-      throw new Error('missing report bug button');
-    }
-    await act(async () => {
-      reportBugButton.props.onPress?.();
-      await flushPromises();
-    });
-
-    expect(persistSnapshotMock).toHaveBeenCalledTimes(1);
-    expect(persistIntentMock).toHaveBeenCalledTimes(1);
     expect(onRestart).toHaveBeenCalledTimes(1);
   });
 });

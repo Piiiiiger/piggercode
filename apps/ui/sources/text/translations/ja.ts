@@ -1149,7 +1149,6 @@ export const ja: TranslationStructure = {
       "Happierで予期しないエラーが発生しました。アプリUIを再起動するか、サポート用に詳細をコピーできます。",
     detailsTitle: "エラーの詳細",
     restart: "アプリを再起動",
-    restartAndReportIssue: "再起動して不具合を報告",
     copyDetails: "エラー詳細をコピー",
   },
 
@@ -1752,148 +1751,6 @@ export const ja: TranslationStructure = {
     },
   },
 
-  bugReports: {
-    composer: {
-      alerts: {
-        previewUnavailableTitle: "プレビューできません",
-        previewUnavailableBody: "診断プレビューを作成できませんでした。",
-        submittedTitle: "バグレポートを送信しました",
-        submittedExistingIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-          `Issue #${issueNumber} にコメントを投稿しました。\n\nレポートID: ${reportId}`,
-        submittedNewIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-          `Issue #${issueNumber} を作成しました。\n\nレポートID: ${reportId}`,
-        submitFailedTitle: "送信に失敗しました",
-        submitFailedFallbackMessage: "このレポートを送信できませんでした。",
-        submitFailedBody: ({ message }: { message: string }) =>
-          `${message}\n\n代わりに、事前入力済みの GitHub Issue を開きますか？`,
-        openFallbackIssueButton: "代替Issueを開く",
-      },
-      diagnostics: {
-        title: "診断",
-        subtitle: "含める内容を選択し、送信前にプレビューできます。",
-        includeTitle: "診断を含める",
-        includeSubtitle:
-          "迅速な診断のため、サニタイズ済みのデバッグ資料を添付します。",
-        disabledByServerSuffix: "（サーバーにより無効）",
-        pasteDoctorJson: {
-          title: "CLI doctor JSON（任意）",
-          subtitle:
-            "UIからマシンに接続できない場合、PCで `happier doctor --json` を実行してここに貼り付けてください。",
-          placeholder: '{ "capturedAt": "...", ... }',
-          invalid: ({ error }: { error: string }) => `無効な doctor JSON: ${error}`,
-          valid: "doctor JSON は有効に見えます。レポートに添付されます。",
-        },
-        previewButton: "診断をプレビュー",
-        preview: {
-          title: "診断プレビュー",
-          helper:
-            "これらのアーティファクトはレポートと一緒にアップロードされます（サニタイズ済み・サイズ制限あり）。項目をタップして内容を全文表示します。",
-          empty: "送信される診断アーティファクトはありません。",
-          openArtifactA11y: ({ filename }: { filename: string }) =>
-            `「${filename}」を開く`,
-        },
-        kinds: {
-          app: {
-            title: "アプリ診断",
-            detail:
-              "アプリのコンソールログ、最近の操作、セッション要約。",
-          },
-          daemon: {
-            title: "デーモン診断",
-            detail:
-              "デーモンの要約と、選択したマシンからの最近のデーモンログ。",
-          },
-          stackService: {
-            title: "Stack サービス診断",
-            detail: "Stack のコンテキストと最近の Stack ログ（利用可能な場合）。",
-          },
-          server: {
-            title: "サーバー診断",
-            detail: "現在アクティブなサーバーのスナップショット。",
-          },
-        },
-      },
-      issueDetails: {
-        title: "問題の説明",
-        subtitle:
-          "再現と診断ができるよう、十分な情報を記入してください。",
-        titleLabel: "タイトル（必須）",
-        titlePlaceholder: "短いタイトル",
-        githubUsernameLabel: "GitHub ユーザー名（任意）",
-        githubUsernamePlaceholder: "issue 本文の連絡先として使用されます",
-        summaryLabel: "簡潔な要約（必須）",
-        summaryPlaceholder: "1 段落の要約",
-        currentBehaviorLabel: "現在の挙動（任意）",
-        currentBehaviorPlaceholder: "実際には何が起きますか？",
-        expectedBehaviorLabel: "期待する挙動（任意）",
-        expectedBehaviorPlaceholder: "代わりにどうなるべきですか？",
-        reproductionStepsLabel: "再現手順（任意）",
-        reproductionStepsPlaceholder:
-          "1. Happier を開く\n2. セッションを開始\n3. ...",
-        whatChangedLabel: "最近の変更点（任意）",
-        whatChangedPlaceholder:
-          "アップデート、設定変更、新しいセットアップ手順…",
-      },
-      similarIssues: {
-        title: "重複の可能性",
-        subtitle:
-          "一致するものがあれば、新しい Issue を開く代わりにコメントとして投稿できます。",
-        searching: "Issue を検索中…",
-        selectedTitle: ({ number }: { number: number }) => `Issue #${number} を使用中`,
-        selectedSubtitle: "タップして新しい Issue の作成に戻ります。",
-        useIssueA11y: ({ number }: { number: number }) => `Issue #${number} を使用`,
-        issueState: {
-          open: "オープン中の Issue",
-          closed: "クローズ済みの Issue",
-        },
-      },
-      frequencySeverity: {
-        title: "頻度と重大度",
-        frequencyLabel: "頻度",
-        severityLabel: "重大度",
-        frequency: {
-          always: "常に",
-          often: "よくある",
-          sometimes: "ときどき",
-          once: "一度だけ",
-        },
-        severity: {
-          blocker: "致命的",
-          high: "高",
-          medium: "中",
-          low: "低",
-        },
-      },
-      environment: {
-        title: "環境（編集可）",
-        appVersionLabel: "アプリ版本",
-        platformLabel: "プラットフォーム",
-        osVersionLabel: "OS バージョン",
-        deviceModelLabel: "デバイスモデル",
-        serverUrlLabel: "サーバー URL",
-        serverVersionLabel: "サーバー版本（任意）",
-        deploymentTypeLabel: "デプロイ種別",
-        deploymentType: {
-          cloud: "クラウド",
-          selfHosted: "セルフホスト",
-          enterprise: "エンタープライズ",
-        },
-      },
-      consent: {
-        title: "同意",
-        understandTitle:
-          "診断には技術メタデータが含まれる場合があることを理解しました",
-        understandSubtitle:
-          "パスワード、アクセストークン、秘密鍵は含めないでください。",
-      },
-      submit: {
-        requiredFieldsHint: "必須項目を入力すると送信できるようになります。",
-        submitting: "送信中…",
-        addToIssue: ({ number }: { number: number }) => `Issue #${number} に追加`,
-        submitNew: "バグレポートを送信",
-      },
-    },
-  },
 
   memorySearchSettings: {
     disabled: {
@@ -2238,7 +2095,6 @@ export const ja: TranslationStructure = {
     connectedAccounts: "接続済みアカウント",
     connectedAccountsDisabled: "接続サービスは無効になっています。",
     connectAccount: "アカウントを接続",
-    github: "GitHub",
     machines: "マシン",
     features: "機能",
     social: "ソーシャル",
@@ -2367,19 +2223,10 @@ localTailscale: {
     about: "このアプリについて",
     actionsSettingsAboutSubtitle:
       "アクションをグローバルに、サーフェス（UI/音声/MCP）別、配置（UI 内の表示場所）別に有効/無効にできます。無効化されたアクションは実行時に安全側（フェイルクローズ）でブロックされます。",
-    aboutFooter:
-      "Happier CoderはCodexとClaude Codeのモバイルクライアントです。デフォルトでエンドツーエンド暗号化され、他のデバイスでもアカウントを復元できます。Anthropicとは提携していません。",
     whatsNew: "新機能",
     whatsNewSubtitle: "最新のアップデートと改善を確認",
-    reportIssue: "問題を報告",
-    privacyPolicy: "プライバシーポリシー",
-    termsOfService: "利用規約",
     rateUs: "Happier を評価する",
     rateUsSubtitle: "アプリを気に入っていただけたら、短い評価で応援してください",
-    eula: "使用許諾契約",
-    supportUs: "開発を支援",
-    supportUsSubtitlePro: "ご支援ありがとうございます！",
-    supportUsSubtitle: "プロジェクト開発を支援",
     scanQrCodeToAuthenticate: "QRコードをスキャンしてターミナルを接続",
     githubConnected: ({ login }: { login: string }) => `@${login}として接続中`,
     connectGithubAccount: "GitHubアカウントを接続",
@@ -2728,9 +2575,6 @@ localTailscale: {
       code: ({ code }: { code: string }) => `コード: ${code}`,
       generic: {
         subtitle: ({ code }: { code: string }) => `${code} の詳細`,
-        steps: {
-          reportIssue: "バグ報告を送信し、この診断レポートを含めてください。",
-        },
       },
       serverMismatch: {
         title: "サーバー不一致（UI vs デーモン）",
@@ -3929,8 +3773,6 @@ localTailscale: {
     builtInTitiSubtitle: 'シニアスタッフ並みの集中力でリリースノートを仕分けます。',
     localLibraryTitle: 'このデバイス',
     localLibraryFooter: 'ローカルのペットは、アカウントにインポートしない限りこのデバイスに留まります。',
-    helpDocsTitle: 'ペットのヘルプ',
-    helpDocsSubtitle: 'セットアップとトラブルシューティング用の Happier ドキュメントを開きます。',
     detectCodexPetsTitle: 'Codex ペットを検出',
     detectCodexPetsSubtitle: 'ローカルの Codex homes から互換ペットを探します。',
     detectedCodexPetsTileSubtitle: 'Codex で見つかり、このデバイスに参加する準備ができています。',
@@ -7073,8 +6915,6 @@ localTailscale: {
       requiredVersion: string;
     }) =>
       `バージョン ${currentVersion} がインストールされています。${requiredVersion} 以降に更新してください`,
-    updateCliInstructions:
-      "happier self update を実行してください",
     deleteSession: "セッションを削除",
     deleteSessionSubtitle: "このセッションを完全に削除",
     deleteSessionConfirm: "セッションを完全に削除しますか？",
@@ -10146,15 +9986,6 @@ settingsSession: {
     secretKeyCopied:
       "シークレットキーがクリップボードにコピーされました。安全な場所に保管してください！",
     secretKeyCopyFailed: "シークレットキーのコピーに失敗しました",
-    privacy: "プライバシー",
-    privacyDescription:
-      "匿名の使用データを共有してアプリの改善にご協力ください。個人情報は収集されません。",
-    analytics: "アナリティクス",
-    analyticsDisabled: "データは共有されません",
-    analyticsEnabled: "匿名の使用データが共有されます",
-    crashReports: "クラッシュレポート",
-    crashReportsDisabled: "クラッシュレポートは送信されません",
-    crashReportsEnabled: "クラッシュレポートが共有されます",
     dangerZone: "危険ゾーン",
     logout: "ログアウト",
     logoutSubtitle: "サインアウトしてローカルデータを消去",
@@ -10481,7 +10312,6 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "ターミナルをドック",
-    attachedSessionOpen: "エージェントの CLI を開く",
     attachedSessionTitle: "エージェント CLI",
     settings: {
       locationTitle: "埋め込みターミナルの場所",
@@ -10658,10 +10488,6 @@ settingsSession: {
     // a tail-ellipsis to avoid colliding with the right-side Docs group.
     welcomeFooterRelayActiveLabel: "使用中の Relay:",
     welcomeFooterRelayEditAccessibility: "Relay を変更",
-    welcomeFooterDocs: "ヘルプが必要ですか?",
-    welcomeFooterDocsAction: "ドキュメント",
-    welcomeFooterGithubLabel: "GitHub リポジトリ",
-    welcomeFooterDiscordLabel: "Discord コミュニティ",
 
     // Mobile brand hero CTA
     brandHeroGetStarted: "はじめる",
@@ -10724,15 +10550,6 @@ settingsSession: {
 
               },
 
-              installCli: {
-
-                  title: 'CLI をインストール',
-
-                  description: '接続したいマシンで一度だけ実行してください。',
-
-                  copyLabel: 'インストールコマンド',
-
-              },
 
               serverSetup: {
 

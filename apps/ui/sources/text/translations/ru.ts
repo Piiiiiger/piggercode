@@ -1193,7 +1193,6 @@ export const ru: TranslationStructure = {
       "В Happier произошла непредвиденная ошибка. Можно перезапустить интерфейс приложения или скопировать детали для поддержки.",
     detailsTitle: "Детали ошибки",
     restart: "Перезапустить приложение",
-    restartAndReportIssue: "Перезапустить и отправить отчёт об ошибке",
     copyDetails: "Скопировать детали ошибки",
   },
 
@@ -1388,164 +1387,6 @@ export const ru: TranslationStructure = {
     },
   },
 
-  bugReports: {
-    composer: {
-      alerts: {
-        previewUnavailableTitle: "Предпросмотр недоступен",
-        previewUnavailableBody: "Не удалось собрать предпросмотр диагностики.",
-        submittedTitle: "Отчёт об ошибке отправлен",
-        submittedExistingIssueBody: ({
-          issueNumber,
-          reportId,
-        }: {
-          issueNumber: number;
-          reportId: string;
-        }) =>
-          `Комментарий опубликован в issue #${issueNumber}.\n\nID отчёта: ${reportId}`,
-        submittedNewIssueBody: ({
-          issueNumber,
-          reportId,
-        }: {
-          issueNumber: number;
-          reportId: string;
-        }) => `Issue #${issueNumber} создан.\n\nID отчёта: ${reportId}`,
-        submitFailedTitle: "Отправка не удалась",
-        submitFailedFallbackMessage: "Не удалось отправить этот отчёт.",
-        submitFailedBody: ({ message }: { message: string }) =>
-          `${message}\n\nОткрыть вместо этого предварительно заполненное GitHub issue?`,
-        openFallbackIssueButton: "Открыть fallback issue",
-      },
-      diagnostics: {
-        title: "Диагностика",
-        subtitle:
-          "Выберите, что включить, и предварительно просмотрите перед отправкой.",
-        includeTitle: "Включить диагностику",
-        includeSubtitle:
-          "Приложите обезличенные артефакты отладки для более быстрого разбора.",
-        disabledByServerSuffix: " (отключено сервером)",
-        pasteDoctorJson: {
-          title: "CLI doctor JSON (необязательно)",
-          subtitle:
-            "Если машина недоступна из UI, выполните `happier doctor --json` на компьютере и вставьте сюда.",
-          placeholder: "{ \"capturedAt\": \"...\", ... }",
-          invalid: ({ error }: { error: string }) => `Некорректный doctor JSON: ${error}`,
-          valid: "Doctor JSON выглядит корректным и будет приложен к отчёту.",
-        },
-        previewButton: "Предпросмотр диагностики",
-        preview: {
-          title: "Предпросмотр диагностики",
-          helper:
-            "Эти артефакты будут загружены вместе с отчётом (санитизированы и с ограничением размера). Нажмите на элемент, чтобы посмотреть его содержимое целиком.",
-          empty: "Артефакты диагностики не будут отправлены.",
-          openArtifactA11y: ({ filename }: { filename: string }) =>
-            `Открыть ${filename}`,
-        },
-        kinds: {
-          app: {
-            title: "Диагностика приложения",
-            detail:
-              "Логи приложения, недавние действия пользователя и сводка сессии.",
-          },
-          daemon: {
-            title: "Диагностика демона",
-            detail:
-              "Сводка демона и последние логи демона с выбранных машин.",
-          },
-          stackService: {
-            title: "Диагностика Stack-сервиса",
-            detail: "Контекст стека и последние логи стека (если доступны).",
-          },
-          server: {
-            title: "Диагностика сервера",
-            detail: "Снимок текущего активного сервера.",
-          },
-        },
-      },
-      issueDetails: {
-        title: "Опишите проблему",
-        subtitle:
-          "Добавьте достаточно деталей, чтобы мы могли быстро воспроизвести и диагностировать.",
-        titleLabel: "Заголовок (обязательно)",
-        titlePlaceholder: "Короткий заголовок",
-        githubUsernameLabel: "Имя пользователя GitHub (необязательно)",
-        githubUsernamePlaceholder:
-          "Используется как контактная информация в тексте issue",
-        summaryLabel: "Краткое описание (обязательно)",
-        summaryPlaceholder: "Описание в один абзац",
-        currentBehaviorLabel: "Текущее поведение (необязательно)",
-        currentBehaviorPlaceholder: "Что происходит на самом деле?",
-        expectedBehaviorLabel: "Ожидаемое поведение (необязательно)",
-        expectedBehaviorPlaceholder: "Что должно происходить вместо этого?",
-        reproductionStepsLabel: "Шаги воспроизведения (необязательно)",
-        reproductionStepsPlaceholder:
-          "1. Откройте Happier\n2. Запустите сессию\n3. ...",
-        whatChangedLabel: "Что изменилось недавно (необязательно)",
-        whatChangedPlaceholder:
-          "Обновления, изменения конфигурации, новые шаги настройки...",
-      },
-      similarIssues: {
-        title: "Возможные дубликаты",
-        subtitle:
-          "Если один из этих вариантов подходит, вы можете оставить отчёт в комментарии вместо открытия нового issue.",
-        searching: "Поиск issues…",
-        selectedTitle: ({ number }: { number: number }) =>
-          `Используется issue #${number}`,
-        selectedSubtitle: "Нажмите, чтобы вернуться к созданию нового issue.",
-        useIssueA11y: ({ number }: { number: number }) => `Использовать issue #${number}`,
-        issueState: {
-          open: "Открытое issue",
-          closed: "Закрытое issue",
-        },
-      },
-      frequencySeverity: {
-        title: "Частота и серьёзность",
-        frequencyLabel: "Частота",
-        severityLabel: "Серьёзность",
-        frequency: {
-          always: "Всегда",
-          often: "Часто",
-          sometimes: "Иногда",
-          once: "Один раз",
-        },
-        severity: {
-          blocker: "Блокирует",
-          high: "Высокая",
-          medium: "Средняя",
-          low: "Низкая",
-        },
-      },
-      environment: {
-        title: "Окружение (можно редактировать)",
-        appVersionLabel: "Версия приложения",
-        platformLabel: "Платформа",
-        osVersionLabel: "Версия ОС",
-        deviceModelLabel: "Модель устройства",
-        serverUrlLabel: "URL сервера",
-        serverVersionLabel: "Версия сервера (необязательно)",
-        deploymentTypeLabel: "Тип развертывания",
-        deploymentType: {
-          cloud: "Облако",
-          selfHosted: "Самостоятельный хостинг",
-          enterprise: "Корпоративный",
-        },
-      },
-      consent: {
-        title: "Согласие",
-        understandTitle:
-          "Я понимаю, что диагностика может включать технические метаданные",
-        understandSubtitle:
-          "Не включайте пароли, токены доступа или приватные ключи.",
-      },
-      submit: {
-        requiredFieldsHint:
-          "Заполните обязательные поля, чтобы включить отправку.",
-        submitting: "Отправка отчёта…",
-        addToIssue: ({ number }: { number: number }) =>
-          `Добавить в issue #${number}`,
-        submitNew: "Отправить отчёт об ошибке",
-      },
-    },
-  },
 
   memorySearchSettings: {
     disabled: {
@@ -1894,7 +1735,6 @@ export const ru: TranslationStructure = {
     connectedAccounts: "Подключенные аккаунты",
     connectedAccountsDisabled: "Подключённые сервисы отключены.",
     connectAccount: "Подключить аккаунт",
-    github: "GitHub",
     machines: "Машины",
     features: "Функции",
     social: "Социальное",
@@ -2023,19 +1863,10 @@ export const ru: TranslationStructure = {
     about: "О программе",
     actionsSettingsAboutSubtitle:
       "Включайте или отключайте действия глобально, по поверхности (UI/голос/MCP) и по размещению (где они отображаются в интерфейсе). Отключённые действия блокируются по принципу fail‑closed во время выполнения.",
-    aboutFooter:
-      "Happier Coder — мобильное приложение для работы с Codex и Claude Code. По умолчанию использует сквозное шифрование, с восстановлением аккаунта на других ваших устройствах. Не связано с Anthropic.",
     whatsNew: "Что нового",
     whatsNewSubtitle: "Посмотреть последние обновления и улучшения",
-    reportIssue: "Сообщить о проблеме",
-    privacyPolicy: "Политика конфиденциальности",
-    termsOfService: "Условия использования",
     rateUs: "Оценить Happier",
     rateUsSubtitle: "Если вам нравится приложение, быстрая оценка очень поможет нам",
-    eula: "EULA",
-    supportUs: "Поддержите нас",
-    supportUsSubtitlePro: "Спасибо за вашу поддержку!",
-    supportUsSubtitle: "Поддержать разработку проекта",
     scanQrCodeToAuthenticate: "Отсканируйте QR‑код, чтобы подключить терминал",
     githubConnected: ({ login }: { login: string }) =>
       `Подключен как @${login}`,
@@ -2376,9 +2207,6 @@ export const ru: TranslationStructure = {
       code: ({ code }: { code: string }) => `Код: ${code}`,
       generic: {
         subtitle: ({ code }: { code: string }) => `Детали для ${code}`,
-        steps: {
-          reportIssue: "Отправьте баг‑репорт и приложите этот отчёт диагностики.",
-        },
       },
       serverMismatch: {
         title: "Несоответствие сервера (UI vs демон)",
@@ -3588,8 +3416,6 @@ export const ru: TranslationStructure = {
     builtInTitiSubtitle: 'Разбирает релизные заметки с фокусом senior staff.',
     localLibraryTitle: 'Это устройство',
     localLibraryFooter: 'Локальные питомцы остаются на этом устройстве, пока вы не импортируете их в аккаунт.',
-    helpDocsTitle: 'Справка по питомцам',
-    helpDocsSubtitle: 'Открыть документацию Happier по настройке и устранению неполадок.',
     detectCodexPetsTitle: 'Обнаруживать питомцев Codex',
     detectCodexPetsSubtitle: 'Искать совместимых питомцев в локальных Codex homes.',
     detectedCodexPetsTileSubtitle: 'Найден в Codex и готов присоединиться к этому устройству.',
@@ -5744,8 +5570,6 @@ export const ru: TranslationStructure = {
       requiredVersion: string;
     }) =>
       `Установлена версия ${currentVersion}. Обновите до ${requiredVersion} или новее`,
-    updateCliInstructions:
-      "Пожалуйста, выполните happier self update",
     deleteSession: "Удалить сессию",
     deleteSessionSubtitle: "Удалить эту сессию навсегда",
     deleteSessionConfirm: "Удалить сессию навсегда?",
@@ -9891,15 +9715,6 @@ settingsSession: {
     secretKeyCopied:
       "Секретный ключ скопирован в буфер обмена. Сохраните его в безопасном месте!",
     secretKeyCopyFailed: "Не удалось скопировать секретный ключ",
-    privacy: "Конфиденциальность",
-    privacyDescription:
-      "Помогите улучшить приложение, поделившись анонимными данными об использовании. Никакая личная информация не собирается.",
-    analytics: "Аналитика",
-    analyticsDisabled: "Данные не передаются",
-    analyticsEnabled: "Анонимные данные об использовании передаются",
-    crashReports: "Отчёты о сбоях",
-    crashReportsDisabled: "Отчёты о сбоях не отправляются",
-    crashReportsEnabled: "Отчёты о сбоях отправляются",
     dangerZone: "Опасная зона",
     logout: "Выйти",
     logoutSubtitle: "Выйти из аккаунта и очистить локальные данные",
@@ -10212,7 +10027,6 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "Закрепить терминал",
-    attachedSessionOpen: "Открыть CLI агента",
     attachedSessionTitle: "CLI агента",
     settings: {
       locationTitle: "Расположение встроенного терминала",
@@ -10390,10 +10204,6 @@ settingsSession: {
     // a tail-ellipsis to avoid colliding with the right-side Docs group.
     welcomeFooterRelayActiveLabel: "Ваш relay:",
     welcomeFooterRelayEditAccessibility: "Изменить relay",
-    welcomeFooterDocs: "Нужна помощь?",
-    welcomeFooterDocsAction: "Документация",
-    welcomeFooterGithubLabel: "Репозиторий GitHub",
-    welcomeFooterDiscordLabel: "Сообщество Discord",
 
     // Mobile brand hero CTA
     brandHeroGetStarted: "Начать",
@@ -10430,11 +10240,6 @@ settingsSession: {
       },
       startDaemonOpenSetup: {
         description: "Используйте настольный мастер настройки, чтобы переподключить или восстановить фоновую службу на этом компьютере, прежде чем переходить к терминальным командам.",
-      },
-      installCli: {
-        title: "Установить CLI",
-        description: "Запустите это один раз на машине, которую хотите подключить.",
-        copyLabel: "Команда установки",
       },
       serverSetup: {
         title: "Выбрать активный Relay",

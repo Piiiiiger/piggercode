@@ -224,6 +224,11 @@ describe('UnauthenticatedSplitShell', () => {
         expect(screenWelcome.findByTestId('welcome-footer-links')).toBeTruthy();
         expect(screenWelcome.findByTestId('welcome-footer-retention')).toBeTruthy();
         expect(screenWelcome.getTextContent()).toContain('This relay cleans up subagent transcripts after 7 days.');
+        // The relay choice stays; upstream's docs, GitHub and Discord links are gone.
+        expect(screenWelcome.findByTestId('welcome-footer-relay-action')).toBeTruthy();
+        for (const upstreamLink of ['welcome-footer-docs', 'welcome-footer-github-action', 'welcome-footer-discord-action']) {
+            expect(screenWelcome.findAllByTestId(upstreamLink).length, upstreamLink).toBe(0);
+        }
 
         const screenOther = await renderScreen(
             <UnauthenticatedSplitShell

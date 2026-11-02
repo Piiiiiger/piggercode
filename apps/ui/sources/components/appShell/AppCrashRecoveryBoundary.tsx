@@ -11,10 +11,6 @@ import {
   resolveThemeRuntimeVisualTheme,
 } from '@/theme/profiles/themeProfileRuntime';
 import { Typography } from '@/constants/Typography';
-import { getBugReportUserActionTrail } from '@/utils/system/bugReportActionTrail';
-import { getBugReportLogText } from '@/utils/system/bugReportLogBuffer';
-import { persistPreRestartBugReportSnapshot } from '@/utils/system/preRestartBugReportSnapshot';
-import { persistRestartBugReportIntent } from '@/utils/system/restartBugReportIntent';
 import { requireReactNativeScreens } from '@/utils/web/reactNativeScreensCjs';
 
 type AppCrashRecoveryBoundaryProps = Readonly<{
@@ -59,24 +55,6 @@ function formatErrorDetails(error: Error): string {
   const message = typeof error.message === 'string' ? error.message : String(error);
   const stack = typeof error.stack === 'string' ? error.stack : '';
   return stack ? `${message}\n\n${stack}` : message;
-}
-
-function readOriginForDiagnostics(): string | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    return String(window.location?.href ?? '').trim() || null;
-  } catch {
-    return null;
-  }
-}
-
-function readIsSecureContextForDiagnostics(): boolean | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    return typeof window.isSecureContext === 'boolean' ? window.isSecureContext : null;
-  } catch {
-    return null;
-  }
 }
 
 function NativeCrashRecoveryOverlay(props: Readonly<{ children: React.ReactNode }>): React.ReactElement {
@@ -241,46 +219,6 @@ export class AppCrashRecoveryBoundary extends React.PureComponent<
       .catch(() => {});
   };
 
-  private readonly onReportBug = () => {
-    const error = this.state.error;
-    if (!error) return;
-
-    const createdAtMs = Date.now();
-    const origin = readOriginForDiagnostics();
-    const isSecureContext = readIsSecureContextForDiagnostics();
-    const errorDetails = formatErrorDetails(error);
-
-    void (async () => {
-      try {
-        await persistPreRestartBugReportSnapshot({
-          v: 1,
-          createdAtMs,
-          reason: 'crash',
-          platform: Platform.OS,
-          origin,
-          isSecureContext,
-          errorDetails,
-          appLogs: getBugReportLogText(),
-          userActions: getBugReportUserActionTrail(),
-        });
-
-        await persistRestartBugReportIntent({
-          v: 1,
-          createdAtMs,
-          reason: 'crash',
-        });
-      } catch {
-        // ignore
-      } finally {
-        try {
-          this.props.onRestart();
-        } catch {
-          // ignore
-        }
-      }
-    })();
-  };
-
   override render(): React.ReactNode {
     const error = this.state.error;
 
@@ -301,20 +239,13 @@ export class AppCrashRecoveryBoundary extends React.PureComponent<
       variant: 'secondary',
     };
 
-    const reportBugAction: AppBlockingScreenAction = {
-      testID: 'app-crash-report-bug',
-      label: t('appCrash.restartAndReportIssue'),
-      onPress: this.onReportBug,
-      variant: 'secondary',
-    };
-
     const fallback = (
       <AppBlockingScreen
         title={t('appCrash.title')}
         subtitle={t('appCrash.subtitle')}
         detailsTitle={t('appCrash.detailsTitle')}
         details={formatErrorDetails(error)}
-        actions={[primaryAction, reportBugAction, secondaryAction]}
+        actions={[primaryAction, secondaryAction]}
       />
     );
 

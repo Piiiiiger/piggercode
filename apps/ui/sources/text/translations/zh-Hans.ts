@@ -1150,7 +1150,6 @@ export const zhHans: TranslationStructure = {
     subtitle: "Happier 发生了意外错误。你可以重启应用界面，或复制详细信息以便支持排查。",
     detailsTitle: "错误详情",
     restart: "重启应用",
-    restartAndReportIssue: "重启并提交问题报告",
     copyDetails: "复制错误详情",
   },
 
@@ -1412,140 +1411,6 @@ export const zhHans: TranslationStructure = {
     },
   },
 
-  bugReports: {
-    composer: {
-      alerts: {
-        previewUnavailableTitle: "无法预览",
-        previewUnavailableBody: "无法构建诊断预览。",
-        submittedTitle: "Bug 报告已提交",
-        submittedExistingIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-          `已在 issue #${issueNumber} 发布评论。\n\n报告 ID: ${reportId}`,
-        submittedNewIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-          `已创建 issue #${issueNumber}。\n\n报告 ID: ${reportId}`,
-        submitFailedTitle: "提交失败",
-        submitFailedFallbackMessage: "无法提交此报告。",
-        submitFailedBody: ({ message }: { message: string }) =>
-          `${message}\n\n是否改为打开一个预填的 GitHub issue？`,
-        openFallbackIssueButton: "打开备用 issue",
-      },
-      diagnostics: {
-        title: "诊断",
-        subtitle: "选择要包含的内容，并在提交前预览。",
-        includeTitle: "包含诊断",
-        includeSubtitle: "附加已脱敏的调试资料，以加快定位。",
-        disabledByServerSuffix: "（服务器已禁用）",
-        pasteDoctorJson: {
-          title: "CLI doctor JSON（可选）",
-          subtitle:
-            "如果 UI 无法访问你的机器，请在电脑上运行 `happier doctor --json` 并粘贴到这里。",
-          placeholder: '{ "capturedAt": "...", ... }',
-          invalid: ({ error }: { error: string }) => `doctor JSON 无效：${error}`,
-          valid: "doctor JSON 看起来有效，将随报告一起提交。",
-        },
-        previewButton: "预览诊断",
-        preview: {
-          title: "诊断预览",
-          helper:
-            "这些工件将随报告一起上传（已脱敏并限制大小）。点按项目以查看完整内容。",
-          empty: "不会发送任何诊断工件。",
-          openArtifactA11y: ({ filename }: { filename: string }) =>
-            `打开 ${filename}`,
-        },
-        kinds: {
-          app: {
-            title: "应用诊断",
-            detail: "应用控制台日志、最近的用户操作以及会话摘要。",
-          },
-          daemon: {
-            title: "守护进程诊断",
-            detail: "守护进程摘要以及所选机器上的最近守护进程日志。",
-          },
-          stackService: {
-            title: "Stack 服务诊断",
-            detail: "Stack 上下文与最近的 Stack 日志（如可用）。",
-          },
-          server: {
-            title: "服务器诊断",
-            detail: "当前活动服务器的快照。",
-          },
-        },
-      },
-      issueDetails: {
-        title: "描述问题",
-        subtitle: "请提供足够细节，方便我们快速复现并诊断。",
-        titleLabel: "标题（必填）",
-        titlePlaceholder: "简短的问题标题",
-        githubUsernameLabel: "GitHub 用户名（可选）",
-        githubUsernamePlaceholder: "将在 issue 正文中作为联系方式使用",
-        summaryLabel: "简要概述（必填）",
-        summaryPlaceholder: "一段话概述",
-        currentBehaviorLabel: "当前行为（可选）",
-        currentBehaviorPlaceholder: "实际发生了什么？",
-        expectedBehaviorLabel: "期望行为（可选）",
-        expectedBehaviorPlaceholder: "应该发生什么？",
-        reproductionStepsLabel: "复现步骤（可选）",
-        reproductionStepsPlaceholder: "1. 打开 Happier\n2. 开始一个会话\n3. ...",
-        whatChangedLabel: "最近有什么变化（可选）",
-        whatChangedPlaceholder: "更新、配置变更、新的设置步骤……",
-      },
-      similarIssues: {
-        title: "可能的重复问题",
-        subtitle:
-          "如果其中某个问题与你的情况相符，你可以把报告作为评论发布，而不是新开一个 issue。",
-        searching: "正在搜索 issue…",
-        selectedTitle: ({ number }: { number: number }) => `使用 issue #${number}`,
-        selectedSubtitle: "点击以切换回创建新 issue。",
-        useIssueA11y: ({ number }: { number: number }) => `使用 issue #${number}`,
-        issueState: {
-          open: "未关闭",
-          closed: "已关闭",
-        },
-      },
-      frequencySeverity: {
-        title: "频率与严重程度",
-        frequencyLabel: "频率",
-        severityLabel: "严重程度",
-        frequency: {
-          always: "总是",
-          often: "经常",
-          sometimes: "有时",
-          once: "一次",
-        },
-        severity: {
-          blocker: "阻断",
-          high: "高",
-          medium: "中",
-          low: "低",
-        },
-      },
-      environment: {
-        title: "环境（可编辑）",
-        appVersionLabel: "应用版本",
-        platformLabel: "平台",
-        osVersionLabel: "系统版本",
-        deviceModelLabel: "设备型号",
-        serverUrlLabel: "服务器 URL",
-        serverVersionLabel: "服务器版本（可选）",
-        deploymentTypeLabel: "部署类型",
-        deploymentType: {
-          cloud: "云端",
-          selfHosted: "自托管",
-          enterprise: "企业",
-        },
-      },
-      consent: {
-        title: "确认",
-        understandTitle: "我理解诊断可能包含技术元数据",
-        understandSubtitle: "请勿包含密码、访问令牌或私钥。",
-      },
-      submit: {
-        requiredFieldsHint: "填写必填项后才能提交。",
-        submitting: "正在提交…",
-        addToIssue: ({ number }: { number: number }) => `添加到 issue #${number}`,
-        submitNew: "提交 Bug 报告",
-      },
-    },
-  },
 
   memorySearchSettings: {
     disabled: {
@@ -1875,7 +1740,6 @@ export const zhHans: TranslationStructure = {
     connectedAccounts: "已连接账户",
     connectedAccountsDisabled: "已禁用已连接的服务。",
     connectAccount: "连接账户",
-    github: "GitHub",
     machines: "设备",
     features: "功能",
     social: "社交",
@@ -2004,19 +1868,10 @@ export const zhHans: TranslationStructure = {
     about: "关于",
     actionsSettingsAboutSubtitle:
       "可全局、按界面（UI/语音/MCP）以及按展示位置（在界面中出现的位置）启用或禁用操作。被禁用的操作在运行时会以安全方式（fail-closed）被阻止。",
-    aboutFooter:
-      "Happier Coder 是一个 Codex 和 Claude Code 移动客户端。默认启用端到端加密，并可在其他设备上恢复您的账户。与 Anthropic 无关联。",
     whatsNew: "更新日志",
     whatsNewSubtitle: "查看最新更新和改进",
-    reportIssue: "报告问题",
-    privacyPolicy: "隐私政策",
-    termsOfService: "服务条款",
     rateUs: "给 Happier 评分",
     rateUsSubtitle: "如果你喜欢这款应用，欢迎给我们一个简短评分",
-    eula: "最终用户许可协议",
-    supportUs: "支持我们",
-    supportUsSubtitlePro: "感谢您的支持！",
-    supportUsSubtitle: "支持项目开发",
     scanQrCodeToAuthenticate: "扫描二维码连接终端",
     githubConnected: ({ login }: { login: string }) => `已连接为 @${login}`,
     connectGithubAccount: "连接您的 GitHub 账户",
@@ -2355,9 +2210,6 @@ export const zhHans: TranslationStructure = {
       code: ({ code }: { code: string }) => `代码：${code}`,
       generic: {
         subtitle: ({ code }: { code: string }) => `关于 ${code} 的详情`,
-        steps: {
-          reportIssue: "提交 Bug 报告并附上此诊断报告。",
-        },
       },
       serverMismatch: {
         title: "服务器不匹配（UI vs 守护进程）",
@@ -3535,8 +3387,6 @@ export const zhHans: TranslationStructure = {
     builtInTitiSubtitle: '以资深 staff 的专注分拣发布说明。',
     localLibraryTitle: '此设备',
     localLibraryFooter: '本地宠物会留在此设备上，除非你将它们导入账户。',
-    helpDocsTitle: '宠物帮助',
-    helpDocsSubtitle: '打开 Happier 文档以查看设置和故障排除。',
     detectCodexPetsTitle: '检测 Codex 宠物',
     detectCodexPetsSubtitle: '在本地 Codex homes 中查找兼容宠物。',
     detectedCodexPetsTileSubtitle: '已在 Codex 中找到，准备加入此设备。',
@@ -6596,7 +6446,6 @@ export const zhHans: TranslationStructure = {
       requiredVersion: string;
     }) =>
       `已安装版本 ${currentVersion}。请更新到 ${requiredVersion} 或更高版本`,
-    updateCliInstructions: "请运行 happier self update",
     deleteSession: "删除会话",
     deleteSessionSubtitle: "永久删除此会话",
     deleteSessionConfirm: "永久删除会话？",
@@ -9560,15 +9409,6 @@ settingsSession: {
     secretKeyLabel: "密钥（点击复制）",
     secretKeyCopied: "密钥已复制到剪贴板。请将其保存在安全的地方！",
     secretKeyCopyFailed: "复制密钥失败",
-    privacy: "隐私",
-    privacyDescription:
-      "通过分享匿名使用数据来帮助改进应用。不会收集个人信息。",
-    analytics: "分析",
-    analyticsDisabled: "不分享数据",
-    analyticsEnabled: "分享匿名使用数据",
-    crashReports: "崩溃报告",
-    crashReportsDisabled: "不分享崩溃报告",
-    crashReportsEnabled: "分享崩溃报告",
     dangerZone: "危险区域",
     logout: "登出",
     logoutSubtitle: "登出并清除本地数据",
@@ -9891,7 +9731,6 @@ settingsSession: {
 
   terminalEmbedded: {
     dockMenuA11y: "停靠终端",
-    attachedSessionOpen: "打开 CLI 界面",
     attachedSessionTitle: "CLI 界面",
     settings: {
       locationTitle: "嵌入式终端位置",
@@ -10065,10 +9904,6 @@ settingsSession: {
     // a tail-ellipsis to avoid colliding with the right-side Docs group.
     welcomeFooterRelayActiveLabel: "你的 Relay:",
     welcomeFooterRelayEditAccessibility: "更改 Relay",
-    welcomeFooterDocs: "需要帮助?",
-    welcomeFooterDocsAction: "文档",
-    welcomeFooterGithubLabel: "GitHub 仓库",
-    welcomeFooterDiscordLabel: "Discord 社区",
 
     // Mobile brand hero CTA
     brandHeroGetStarted: "开始",
@@ -10131,15 +9966,6 @@ settingsSession: {
 
               },
 
-              installCli: {
-
-                  title: '安装 CLI',
-
-                  description: '在你要连接的机器上运行一次即可。',
-
-                  copyLabel: '安装命令',
-
-              },
 
               serverSetup: {
 

@@ -1,6 +1,13 @@
 {
   "buildPolicy": {
     "allow": [],
-    "deny": []
+    "deny": [
+      "app.analytics",
+      "app.crashReports",
+      "app.ui.storeReviewPrompts",
+      "app.ui.changelog",
+      "app.ui.releaseNotes",
+      "app.ui.onboardingShowcase"
+    ]
   }
 }

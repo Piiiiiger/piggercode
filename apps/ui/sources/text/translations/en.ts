@@ -1012,7 +1012,6 @@ export const en = {
         subtitle: 'Happier hit an unexpected error. You can restart the app UI or copy details for support.',
         detailsTitle: 'Error details',
         restart: 'Restart app',
-        restartAndReportIssue: 'Restart and open bug report',
         copyDetails: 'Copy error details',
     },
 
@@ -1282,136 +1281,6 @@ export const en = {
         },
     },
 
-    bugReports: {
-        composer: {
-            alerts: {
-                previewUnavailableTitle: 'Preview unavailable',
-                previewUnavailableBody: 'Could not build diagnostics preview.',
-                submittedTitle: 'Bug report submitted',
-                submittedExistingIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-                    `A comment has been posted on issue #${issueNumber}.\n\nReport ID: ${reportId}`,
-                submittedNewIssueBody: ({ issueNumber, reportId }: { issueNumber: number; reportId: string }) =>
-                    `Issue #${issueNumber} has been created.\n\nReport ID: ${reportId}`,
-                submitFailedTitle: 'Submission failed',
-                submitFailedFallbackMessage: 'Could not submit this report.',
-                submitFailedBody: ({ message }: { message: string }) =>
-                    `${message}\n\nDo you want to open a prefilled GitHub issue instead?`,
-                openFallbackIssueButton: 'Open fallback issue',
-            },
-            diagnostics: {
-                title: 'Diagnostics',
-                subtitle: 'Choose what to include and preview before submitting.',
-                includeTitle: 'Include diagnostics',
-                includeSubtitle: 'Attach sanitized debugging artifacts for faster diagnosis.',
-                disabledByServerSuffix: ' (disabled by server)',
-                pasteDoctorJson: {
-                    title: 'CLI doctor JSON (optional)',
-                    subtitle: 'If your machine is unreachable from the UI, run `happier doctor --json` on your computer and paste it here.',
-                    placeholder: '{ "capturedAt": "...", ... }',
-                    invalid: ({ error }: { error: string }) => `Invalid doctor JSON: ${error}`,
-                    valid: 'Doctor JSON looks valid and will be attached to the report.',
-                },
-                previewButton: 'Preview diagnostics',
-                preview: {
-                    title: 'Diagnostics preview',
-                    helper: 'These artifacts will be uploaded with your report (sanitized and size-bounded). Tap an item to view its full contents.',
-                    empty: 'No diagnostics artifacts would be sent.',
-                    openArtifactA11y: ({ filename }: { filename: string }) => `Open ${filename}`,
-                },
-                kinds: {
-                    app: {
-                        title: 'App diagnostics',
-                        detail: 'App console logs, recent user actions, and session summary.',
-                    },
-                    daemon: {
-                        title: 'Daemon diagnostics',
-                        detail: 'Daemon summary and recent daemon logs from selected machines.',
-                    },
-                    stackService: {
-                        title: 'Stack service diagnostics',
-                        detail: 'Stack context and recent stack logs (if available).',
-                    },
-                    server: {
-                        title: 'Server diagnostics',
-                        detail: 'Server snapshot from the currently active server.',
-                    },
-                },
-            },
-            issueDetails: {
-                title: 'Describe the issue',
-                subtitle: 'Provide enough detail so we can reproduce and diagnose quickly.',
-                titleLabel: 'Title (required)',
-                titlePlaceholder: 'Short issue title',
-                githubUsernameLabel: 'GitHub username (optional)',
-                githubUsernamePlaceholder: 'Used as contact info in the issue body',
-                summaryLabel: 'Concise summary (required)',
-                summaryPlaceholder: 'One-paragraph summary',
-                currentBehaviorLabel: 'Current behavior (optional)',
-                currentBehaviorPlaceholder: 'What actually happens?',
-                expectedBehaviorLabel: 'Expected behavior (optional)',
-                expectedBehaviorPlaceholder: 'What should happen instead?',
-                reproductionStepsLabel: 'Reproduction steps (optional)',
-                reproductionStepsPlaceholder: '1. Open Happier\n2. Start a session\n3. ...',
-                whatChangedLabel: 'What changed recently (optional)',
-                whatChangedPlaceholder: 'Updates, config changes, new setup steps...',
-            },
-            similarIssues: {
-                title: 'Possible duplicates',
-                subtitle: 'If one of these matches, you can post your report as a comment instead of opening a new issue.',
-                searching: 'Searching issues…',
-                selectedTitle: ({ number }: { number: number }) => `Using issue #${number}`,
-                selectedSubtitle: 'Tap to switch back to creating a new issue.',
-                useIssueA11y: ({ number }: { number: number }) => `Use issue #${number}`,
-                issueState: {
-                    open: 'Open issue',
-                    closed: 'Closed issue',
-                },
-            },
-            frequencySeverity: {
-                title: 'Frequency and severity',
-                frequencyLabel: 'Frequency',
-                severityLabel: 'Severity',
-                frequency: {
-                    always: 'Always',
-                    often: 'Often',
-                    sometimes: 'Sometimes',
-                    once: 'Once',
-                },
-                severity: {
-                    blocker: 'Blocker',
-                    high: 'High',
-                    medium: 'Medium',
-                    low: 'Low',
-                },
-            },
-            environment: {
-                title: 'Environment (editable)',
-                appVersionLabel: 'App version',
-                platformLabel: 'Platform',
-                osVersionLabel: 'OS version',
-                deviceModelLabel: 'Device model',
-                serverUrlLabel: 'Server URL',
-                serverVersionLabel: 'Server version (optional)',
-                deploymentTypeLabel: 'Deployment type',
-                deploymentType: {
-                    cloud: 'Cloud',
-                    selfHosted: 'Self-hosted',
-                    enterprise: 'Enterprise',
-                },
-            },
-            consent: {
-                title: 'Consent',
-                understandTitle: 'I understand diagnostics may include technical metadata',
-                understandSubtitle: 'Do not include passwords, access tokens, or private keys.',
-            },
-            submit: {
-                requiredFieldsHint: 'Complete the required fields to enable submission.',
-                submitting: 'Submitting report…',
-                addToIssue: ({ number }: { number: number }) => `Add to issue #${number}`,
-                submitNew: 'Submit bug report',
-            },
-        },
-    },
 
     memorySearchSettings: {
         disabled: {
@@ -1742,7 +1611,6 @@ export const en = {
         connectedAccounts: 'Connected Accounts',
         connectedAccountsDisabled: 'Connected services are disabled.',
         connectAccount: 'Connect account',
-        github: 'GitHub',
         machines: 'Machines',
         features: 'Features',
         social: 'Social',
@@ -1870,18 +1738,10 @@ export const en = {
         developerTools: 'Developer Tools',
         about: 'About',
         actionsSettingsAboutSubtitle: 'Enable or disable actions globally, per surface (UI/voice/MCP), and per placement (where they appear in the UI). Disabled actions are fail-closed at runtime.',
-        aboutFooter: 'Happier is a Codex, Claude Code and OpenCode mobile client. It\'s end-to-end encrypted by default, with account restore for your other devices. Not affiliated with Anthropic.',
         whatsNew: 'What\'s New',
         whatsNewSubtitle: 'See the latest updates and improvements',
-        reportIssue: 'Report an Issue',
-        privacyPolicy: 'Privacy Policy',
-        termsOfService: 'Terms of Service',
         rateUs: 'Rate Happier',
         rateUsSubtitle: 'If you enjoy the app, a quick rating helps us a lot',
-        eula: 'EULA',
-        supportUs: 'Support us',
-        supportUsSubtitlePro: 'Thank you for your support!',
-        supportUsSubtitle: 'Support project development',
         scanQrCodeToAuthenticate: 'Scan QR to connect terminal',
         githubConnected: ({ login }: { login: string }) => `Connected as @${login}`,
         connectGithubAccount: 'Connect your GitHub account',
@@ -2209,9 +2069,6 @@ export const en = {
             code: ({ code }: { code: string }) => `Code: ${code}`,
             generic: {
                 subtitle: ({ code }: { code: string }) => `Details for ${code}`,
-                steps: {
-                    reportIssue: 'Submit a bug report and include this diagnosis report.',
-                },
             },
             serverMismatch: {
                 title: 'Server mismatch (UI vs daemon)',
@@ -3362,8 +3219,6 @@ export const en = {
         builtInTitiSubtitle: 'Keeps releases tidy and refuses to ship mystery bugs.',
         localLibraryTitle: 'This device',
         localLibraryFooter: 'Local pets stay on this device unless you import them to your account.',
-        helpDocsTitle: 'Pet help',
-        helpDocsSubtitle: 'Open the Happier docs for companion setup and troubleshooting.',
         detectCodexPetsTitle: 'Detect Codex pets',
         detectCodexPetsSubtitle: 'Look for compatible pets in local Codex homes.',
         detectedCodexPetsTileSubtitle: 'Found in Codex and ready to join this device.',
@@ -6450,7 +6305,6 @@ export const en = {
         cliVersionOutdated: 'CLI Update Required',
         cliVersionOutdatedMessage: ({ currentVersion, requiredVersion }: { currentVersion: string; requiredVersion: string }) =>
             `Version ${currentVersion} installed. Update to ${requiredVersion} or later`,
-        updateCliInstructions: 'Please run happier self update',
         deleteSession: 'Delete Session',
         deleteSessionSubtitle: 'Permanently remove this session',
         deleteSessionConfirm: 'Delete Session Permanently?',
@@ -9394,14 +9248,6 @@ settingsSession: {
         secretKeyLabel: 'SECRET KEY (TAP TO COPY)',
         secretKeyCopied: 'Secret key copied to clipboard. Store it in a safe place!',
         secretKeyCopyFailed: 'Failed to copy secret key',
-        privacy: 'Privacy',
-        privacyDescription: 'Help improve the app by sharing anonymous usage data. No personal information is collected.',
-        analytics: 'Analytics',
-        analyticsDisabled: 'No data is shared',
-        analyticsEnabled: 'Anonymous usage data is shared',
-        crashReports: 'Crash reports',
-        crashReportsDisabled: 'No crash reports are shared',
-        crashReportsEnabled: 'Crash reports are shared',
         dangerZone: 'Danger Zone',
         logout: 'Logout',
         logoutSubtitle: 'Sign out and clear local data',
@@ -9720,7 +9566,6 @@ settingsSession: {
 
     terminalEmbedded: {
         dockMenuA11y: 'Dock terminal',
-        attachedSessionOpen: 'Open agent CLI',
         attachedSessionTitle: 'Agent CLI',
         settings: {
             locationTitle: 'Embedded terminal location',
@@ -9889,10 +9734,6 @@ settingsSession: {
         // a tail-ellipsis to avoid colliding with the right-side Docs group.
         welcomeFooterRelayActiveLabel: 'Your relay:',
         welcomeFooterRelayEditAccessibility: 'Change relay',
-        welcomeFooterDocs: 'Need help?',
-        welcomeFooterDocsAction: 'Docs',
-        welcomeFooterGithubLabel: 'GitHub repository',
-        welcomeFooterDiscordLabel: 'Discord community',
 
         // Mobile brand hero CTA
         brandHeroGetStarted: 'Get started',
@@ -9930,11 +9771,6 @@ settingsSession: {
             },
             startDaemonOpenSetup: {
                 description: 'Use the desktop setup flow to reconnect or repair the background service on this computer before you fall back to terminal commands.',
-            },
-            installCli: {
-                title: 'Install the CLI',
-                description: 'Run this once on the machine you want to connect.',
-                copyLabel: 'Install command',
             },
             serverSetup: {
                 title: 'Set the active Relay',

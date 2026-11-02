@@ -28,7 +28,7 @@ import { buildSessionGettingStartedViewModel, computeMachinesSummaryForServerIds
 import { Text } from '@/components/ui/text/Text';
 import { CopiedPill } from '@/components/ui/copy/CopiedPill';
 import { useTemporaryCopyFeedback } from '@/components/ui/copy/useTemporaryCopyFeedback';
-import { buildHappierCliCommandName, buildHappierCliInstallCommand } from './happierCliInstallCommand';
+import { buildHappierCliCommandName } from './happierCliCommandName';
 import { listSessionGettingStartedCliCommands } from './listSessionGettingStartedCliCommands';
 import { normalizeNodeForView } from '@/components/ui/rendering/normalizeNodeForView';
 import { runAfterInteractionsWithFallback } from '@/utils/timing/runAfterInteractionsWithFallback';
@@ -247,15 +247,6 @@ function subtitleForKind(kind: SessionGettingStartedDecisionKind, targetLabel: s
     }
 }
 
-function buildCliInstallCommand(options?: Readonly<{ suppressAutomaticSetup?: boolean }>): string {
-    return buildHappierCliInstallCommand({
-        appVariant: resolveCurrentAppVariant(),
-        distTagOverride: config.cliNpmDistTag,
-        channelOverride: resolvePreferredPublicReleaseRingLabelForCurrentApp(),
-        suppressAutomaticSetup: options?.suppressAutomaticSetup,
-    });
-}
-
 function buildCliCommandName(): 'happier' | 'hprev' | 'hdev' {
     return buildHappierCliCommandName({
         appVariant: resolveCurrentAppVariant(),
@@ -291,23 +282,9 @@ function buildDeferredCliFollowUpKey(params: Readonly<{
 function buildSteps(model: SessionGettingStartedGuidanceViewModel): SessionGettingStartedGuidanceStep[] {
     switch (model.kind) {
         case 'connect_machine': {
+            // The steps start at setup: PiggerCode does not point people at upstream's installer (happier.dev/install).
             const steps: SessionGettingStartedGuidanceStep[] = [];
             const cliCommandName = buildCliCommandName();
-            // On desktop the app already installed the command line on this computer, so the
-            // terminal path starts at setup rather than re-teaching the install (U13).
-            if (!model.onOpenSetup) {
-                steps.push({
-                    id: 'install_cli',
-                    title: t('sessionGettingStarted.steps.installCli.title'),
-                    description: t('sessionGettingStarted.steps.installCli.description'),
-                    // This card already knows which relay the user is connecting.
-                    // Suppress the installer's generic automatic handoff, then let
-                    // the one target-bound setup command own relay selection,
-                    // authentication, and service reconciliation.
-                    command: buildCliInstallCommand({ suppressAutomaticSetup: true }),
-                    copyLabel: t('sessionGettingStarted.steps.installCli.copyLabel'),
-                });
-            }
             steps.push({
                 id: 'auth_login',
                 title: t('sessionGettingStarted.steps.authLogin.title'),

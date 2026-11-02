@@ -401,7 +401,8 @@ vi.mock('@/utils/sessions/sessionUtils', () => ({
     getSessionAvatarId: () => 'id',
 }));
 vi.mock('expo-clipboard', () => ({ setStringAsync: vi.fn() }));
-vi.mock('@/utils/system/versionUtils', () => ({ isVersionSupported: () => true, MINIMUM_CLI_VERSION: '0.0.0' }));
+const cliVersionState = vi.hoisted(() => ({ supported: true }));
+vi.mock('@/utils/system/versionUtils', () => ({ isVersionSupported: () => cliVersionState.supported, MINIMUM_CLI_VERSION: '0.0.0' }));
 vi.mock('@/utils/sessions/terminalSessionDetails', () => ({ getAttachCommandForSession: () => null, getTmuxFallbackReason: () => null, getTmuxTargetForSession: () => null }));
 vi.mock('@/utils/errors/errors', () => ({ HappyError: class HappyError extends Error {} }));
 vi.mock('@/sync/domains/profiles/profileUtils', () => ({ resolveProfileById: () => null }));
@@ -522,6 +523,7 @@ describe('/session/[id]/info', () => {
     });
 
     afterEach(() => {
+        cliVersionState.supported = true;
         clearTempData();
         standardCleanup();
     });
@@ -582,6 +584,24 @@ describe('/session/[id]/info', () => {
         const screen = await renderInfoScreen();
         expect(screen.getTextContent()).not.toContain('common.loading');
         expect(screen.getTextContent()).toContain('name');
+    });
+
+    it("does not point an outdated session CLI at upstream's `happier self update`", async () => {
+        cliVersionState.supported = false;
+        mockSession = {
+            id: 'session-1234567890abcdef',
+            active: false,
+            accessLevel: null,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            seq: 1,
+            metadata: { version: '0.0.1' },
+        };
+        const screen = await renderInfoScreen();
+
+        expect(screen.getTextContent()).toContain('name');
+        expect(screen.getTextContent()).not.toContain('sessionInfo.updateCliInstructions');
+        expect(screen.root.findAll((node) => node.props?.copy === 'happier self update').length).toBe(0);
     });
 
     it('normalizes the route id before looking up the session', async () => {

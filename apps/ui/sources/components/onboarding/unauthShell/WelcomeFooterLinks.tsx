@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Linking, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui/text/Text';
@@ -11,9 +11,6 @@ import { derivePresentableRelayHost } from '@/sync/domains/server/url/serverUrlD
 import { t } from '@/text';
 import { Icon } from '@/components/ui/icons/Icon';
 
-const DOCS_URL = 'https://docs.happier.dev';
-const GITHUB_URL = 'https://github.com/happier-dev/happier';
-const DISCORD_URL = 'https://discord.gg/W6Pb8KuHfg';
 
 const HAPPIER_CLOUD_COMPARABLE_KEY = createServerUrlComparableKey(HAPPIER_CLOUD_SERVER_URL);
 
@@ -38,9 +35,6 @@ export const WelcomeFooterLinks = React.memo(function WelcomeFooterLinks(props: 
     const { theme } = useUnistyles();
     const styles = stylesheet;
 
-    const openDocs = React.useCallback(() => { void Linking.openURL(DOCS_URL); }, []);
-    const openGithub = React.useCallback(() => { void Linking.openURL(GITHUB_URL); }, []);
-    const openDiscord = React.useCallback(() => { void Linking.openURL(DISCORD_URL); }, []);
 
     const labelColor = { color: theme.colors.text.secondary };
     const actionColor = { color: theme.colors.text.primary };
@@ -120,45 +114,6 @@ export const WelcomeFooterLinks = React.memo(function WelcomeFooterLinks(props: 
                         )}
                     </Pressable>
                 </View>
-
-                <View style={relayGroupStyle} testID="welcome-footer-docs">
-                    <Text style={[styles.label, labelColor]}>
-                        {t('welcome.welcomeFooterDocs')}
-                    </Text>
-                    <View style={isMobile ? styles.actionsRowCenter : styles.actionsRowStart}>
-                        <Pressable
-                            onPress={openGithub}
-                            accessibilityRole="link"
-                            accessibilityLabel={t('welcome.welcomeFooterGithubLabel')}
-                            testID="welcome-footer-github-action"
-                            hitSlop={6}
-                            style={({ pressed }) => [styles.iconButton, pressed ? actionPressedStyle : null]}
-                        >
-                            <Icon name="github-logo" size={16} color={iconColor} />
-                        </Pressable>
-                        <Pressable
-                            onPress={openDiscord}
-                            accessibilityRole="link"
-                            accessibilityLabel={t('welcome.welcomeFooterDiscordLabel')}
-                            testID="welcome-footer-discord-action"
-                            hitSlop={6}
-                            style={({ pressed }) => [styles.iconButton, pressed ? actionPressedStyle : null]}
-                        >
-                            <Icon name="discord-logo" size={16} color={iconColor} />
-                        </Pressable>
-                        <Pressable
-                            onPress={openDocs}
-                            accessibilityRole="link"
-                            testID="welcome-footer-docs-action"
-                        >
-                            {({ pressed }) => (
-                                <Text style={[styles.action, actionColor, pressed ? actionPressedStyle : null]}>
-                                    {t('welcome.welcomeFooterDocsAction')}
-                                </Text>
-                            )}
-                        </Pressable>
-                    </View>
-                </View>
             </View>
         </View>
     );
@@ -216,27 +171,10 @@ const stylesheet = StyleSheet.create(() => ({
         alignItems: 'center',
         gap: 4,
     },
-    actionsRowStart: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    actionsRowCenter: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 10,
-    },
     label: {
         ...Typography.default(),
         fontSize: 13,
         lineHeight: 18,
-    },
-    action: {
-        ...Typography.default(),
-        fontSize: 13,
-        lineHeight: 18,
-        textDecorationLine: 'underline',
     },
     actionBold: {
         ...Typography.default('semiBold'),
@@ -266,9 +204,5 @@ const stylesheet = StyleSheet.create(() => ({
         // for tail-ellipsis-inside-a-row on RN web.
         flexShrink: 1,
         minWidth: 0,
-    },
-    iconButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 }));

@@ -135,7 +135,7 @@ function resolveFindingSteps(finding: DiagnosisFinding): string[] {
                 t('diagnosis.findings.serverUnreachable.steps.tryAgain'),
             ];
         default:
-            return [t('diagnosis.findings.generic.steps.reportIssue')];
+            return [];
     }
 }
 

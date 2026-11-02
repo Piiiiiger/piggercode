@@ -193,16 +193,8 @@ vi.mock('@/agents/catalog/catalog', () => ({
     resolveAgentIdFromConnectedServiceId: () => null,
 }));
 
-vi.mock('@/components/settings/supportUsBehavior', () => ({
-    resolveSupportUsAction: () => 'github',
-}));
-
 vi.mock('@/utils/platform/deferOnWeb', () => ({
     deferOnWeb: (action: () => void) => action(),
-}));
-
-vi.mock('@/utils/system/bugReportActionTrail', () => ({
-    recordBugReportUserAction: vi.fn(),
 }));
 
 vi.mock('@/hooks/server/useAutomationsSupport', () => ({
@@ -336,6 +328,21 @@ describe('SettingsView (runs entry)', () => {
         } finally {
             if (previousDeny === undefined) delete process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY;
             else process.env.EXPO_PUBLIC_HAPPIER_BUILD_FEATURES_DENY = previousDeny;
+        }
+    });
+
+    it('keeps About to the version, without upstream Happier links', async () => {
+        const screen = await renderSettingsViewUnderTest();
+
+        expect(screen.findRowByTitle('common.version')).toBeTruthy();
+        for (const upstreamEntry of [
+            'settings.github',
+            'settings.reportIssue',
+            'settings.privacyPolicy',
+            'settings.termsOfService',
+            'settings.eula',
+        ]) {
+            expect(screen.findRowByTitle(upstreamEntry)).toBeNull();
         }
     });
 
