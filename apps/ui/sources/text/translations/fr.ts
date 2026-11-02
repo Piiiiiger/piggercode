@@ -2919,7 +2919,7 @@ export const fr: TranslationStructure = {
                     title: 'Adresse du serveur',
                     notSet: 'Non définie',
                     promptTitle: 'Adresse du serveur',
-                    promptMessage: 'L’adresse avec laquelle tu te connectes en SSH, par exemple user@203.0.113.10:2222. Pour le port 22, tu peux omettre :port.',
+                    promptMessage: 'L’adresse avec laquelle tu te connectes en SSH, par exemple user@203.0.113.10:2200. Pour le port 22, tu peux omettre :port.',
                     invalidTitle: 'Adresse invalide',
                     invalidMessage: 'Utilise user@host ou user@host:port.',
                     missing: 'Indique l’adresse du serveur ci-dessus pour obtenir des commandes à copier.',

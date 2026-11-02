@@ -2991,7 +2991,7 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
                     title: '伺服器位址',
                     notSet: '未設定',
                     promptTitle: '伺服器位址',
-                    promptMessage: '你用 SSH 登入伺服器時的位址，例如 user@203.0.113.10:2222。連接埠是 22 時可以省略 :連接埠。',
+                    promptMessage: '你用 SSH 登入伺服器時的位址，例如 user@203.0.113.10:2200。連接埠是 22 時可以省略 :連接埠。',
                     invalidTitle: '位址無效',
                     invalidMessage: '請使用 使用者名稱@位址 或 使用者名稱@位址:連接埠 的格式。',
                     missing: '先在上面填好伺服器位址，下面會產生可以直接複製的命令。',

@@ -16,15 +16,6 @@ export type ServerProfileSource = 'manual' | 'url' | 'stack-env' | 'notification
  */
 export const PIGGERCODE_CLOUD_SERVER_URL = 'https://api.happier.dev' as const;
 
-/**
- * The relay this build ships as its built-in server: native builds seed it when nothing else is
- * configured (web uses its own origin). This fork ships its own relay instead of Happier Cloud.
- */
-export const BUILTIN_RELAY = Object.freeze({
-    serverUrl: 'https://relay.example.test',
-    webappUrl: 'https://relay.example.test',
-});
-
 export type ServerProfile = Readonly<{
     id: string;
     name: string;
@@ -256,11 +247,8 @@ function parsePreconfiguredServersFromEnv(): PreconfiguredServer[] {
         }
     }
 
-    // On native builds, never start "serverless": seed the built-in relay when no preconfigured server exists.
-    if (entries.length === 0 && !isWebRuntime()) {
-        append(BUILTIN_RELAY.serverUrl, '', 'preconfigured');
-    }
-
+    // No built-in relay: the source names no server address. Web builds use their own origin, and a native
+    // build names its relay with EXPO_PUBLIC_PIGGERCODE_SERVER_URL; without one the app asks for a server.
     return entries;
 }
 

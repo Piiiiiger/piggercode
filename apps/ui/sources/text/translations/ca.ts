@@ -3005,7 +3005,7 @@ export const ca: TranslationStructure = {
                     title: 'Adreça del servidor',
                     notSet: 'Sense definir',
                     promptTitle: 'Adreça del servidor',
-                    promptMessage: 'L’adreça amb què entres per SSH, per exemple user@203.0.113.10:2222. Per al port 22 pots ometre :port.',
+                    promptMessage: 'L’adreça amb què entres per SSH, per exemple user@203.0.113.10:2200. Per al port 22 pots ometre :port.',
                     invalidTitle: 'Adreça no vàlida',
                     invalidMessage: 'Fes servir user@host o user@host:port.',
                     missing: 'Afegeix l’adreça del servidor a dalt per obtenir ordres llestes per copiar.',

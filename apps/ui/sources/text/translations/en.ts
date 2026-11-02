@@ -2920,7 +2920,7 @@ export const en = {
                     title: 'Server address',
                     notSet: 'Not set',
                     promptTitle: 'Server address',
-                    promptMessage: 'The address you log in to with SSH, like user@203.0.113.10:2222. Leave out :port for port 22.',
+                    promptMessage: 'The address you log in to with SSH, like user@203.0.113.10:2200. Leave out :port for port 22.',
                     invalidTitle: 'Invalid address',
                     invalidMessage: 'Use user@host or user@host:port.',
                     missing: 'Add the server address above to get commands you can copy.',

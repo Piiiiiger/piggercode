@@ -244,20 +244,22 @@ async function askWhereTheRelayLives(): Promise<SetupRelaySelection> {
         subtitle: 'Connect your devices. Your coding agents run here.',
         question: 'How would you like to connect your devices?',
         choices: [
-            { id: 'cloud', key: 'c', label: `${BUILTIN_RELAY.name} (recommended)`, description: BUILTIN_RELAY.serverUrl, isDefault: true },
-            { id: 'existing', key: 'r', label: 'Existing server', description: 'Address from the Happier app or your administrator' },
+            BUILTIN_RELAY.configured
+                ? { id: 'cloud', key: 'c', label: `${BUILTIN_RELAY.name} (recommended)`, description: BUILTIN_RELAY.serverUrl, isDefault: true }
+                : { id: 'cloud', key: 'c', label: BUILTIN_RELAY.name, description: 'Not set on this machine (PIGGERCODE_BUILTIN_RELAY_URL)' },
+            { id: 'existing', key: 'r', label: 'Existing server', description: 'Address from the Happier app or your administrator', isDefault: !BUILTIN_RELAY.configured },
             { id: 'thisComputer', key: 't', label: 'Host on this computer', description: 'Installs an additional server; needs a reachable network route' },
         ],
     });
     const choice = await promptMultipleChoice(
         setupChoicePrompt.message,
         [
-            { id: 'cloud', keys: ['c', 'cloud', ''], short: 'C' },
-            { id: 'existing', keys: ['r', 'relay'], short: 'r' },
+            { id: 'cloud', keys: BUILTIN_RELAY.configured ? ['c', 'cloud', ''] : ['c', 'cloud'], short: BUILTIN_RELAY.configured ? 'C' : 'c' },
+            { id: 'existing', keys: BUILTIN_RELAY.configured ? ['r', 'relay'] : ['r', 'relay', ''], short: BUILTIN_RELAY.configured ? 'r' : 'R' },
             { id: 'thisComputer', keys: ['t', 'this'], short: 't' },
         ] as const,
         {
-            defaultId: 'cloud',
+            defaultId: BUILTIN_RELAY.configured ? 'cloud' : 'existing',
             maxAttempts: 3,
             ...(setupChoicePrompt.renderMessage
                 ? {

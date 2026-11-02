@@ -3444,7 +3444,7 @@ localTailscale: {
           title: "サーバーのアドレス",
           notSet: "未設定",
           promptTitle: "サーバーのアドレス",
-          promptMessage: "SSH でログインするときのアドレスです（例: user@203.0.113.10:2222）。ポートが 22 なら :ポート は省略できます。",
+          promptMessage: "SSH でログインするときのアドレスです（例: user@203.0.113.10:2200）。ポートが 22 なら :ポート は省略できます。",
           invalidTitle: "無効なアドレス",
           invalidMessage: "user@host か user@host:port の形式で入力してください。",
           missing: "上でサーバーのアドレスを入力すると、そのままコピーできるコマンドが表示されます。",

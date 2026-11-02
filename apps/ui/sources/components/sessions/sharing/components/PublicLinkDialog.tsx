@@ -18,7 +18,8 @@ import { Text } from '@/components/ui/text/Text';
 import { useScrollViewWheelScrollTo } from '@/components/ui/scroll/useScrollViewWheelScrollTo';
 import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { Icon } from '@/components/ui/icons/Icon';
-import { BUILTIN_RELAY } from '@/sync/domains/server/serverProfiles';
+import { getActiveServerUrl } from '@/sync/domains/server/serverProfiles';
+import { resolveWebappUrlFromServerUrl } from '@/sync/domains/server/url/resolveWebappUrlFromServerUrl';
 
 
 export interface PublicLinkDialogProps {
@@ -62,7 +63,7 @@ export const PublicLinkDialog = memo(function PublicLinkDialog({
         }
 
         const configuredWebAppUrl = (process.env.EXPO_PUBLIC_HAPPY_WEBAPP_URL || '').trim();
-        const webAppUrl = configuredWebAppUrl || BUILTIN_RELAY.webappUrl;
+        const webAppUrl = configuredWebAppUrl || resolveWebappUrlFromServerUrl(getActiveServerUrl());
         return `${webAppUrl}${path}`;
     }, []);
 

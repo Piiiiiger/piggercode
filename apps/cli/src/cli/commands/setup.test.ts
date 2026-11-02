@@ -191,6 +191,22 @@ describe('happier setup — choosing a relay', () => {
     expect(prompt).toContain('reachable network route');
   });
 
+  it('does not recommend the built-in relay when this machine names none', async () => {
+    vi.stubEnv('PIGGERCODE_BUILTIN_RELAY_URL', '');
+    vi.resetModules();
+    try {
+      const { handleSetupCliCommand: handleSetupWithoutBuiltinRelay } = await import('./setup');
+      await handleSetupWithoutBuiltinRelay(context([]));
+
+      const prompt = multipleChoicePrompts.join('\n');
+      expect(prompt).toContain('Not set on this machine');
+      expect(prompt).not.toContain('(recommended)');
+      expect(prompt).not.toContain('relay.invalid');
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
   it('switches a machine pointed at a custom relay back to Cloud before signing in', async () => {
     activeProfile = { serverUrl: 'https://relay.example.com' };
 

@@ -138,7 +138,7 @@ describe('getServerUrl', () => {
         expect(getServerUrl()).toBe('https://legacy-generic.example.test');
     });
 
-    it('defaults to the built-in Pigger relay on native when no server is configured', async () => {
+    it('has no server on native when none is configured (no address is built in)', async () => {
         delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         delete process.env.EXPO_PUBLIC_SERVER_URL;
@@ -146,7 +146,7 @@ describe('getServerUrl', () => {
 
         const { getServerUrl } = await importFreshServerConfig();
 
-        expect(getServerUrl()).toBe('https://relay.example.test');
+        expect(getServerUrl()).toBe('');
     });
 
     it('trims EXPO_PUBLIC_HAPPY_SERVER_URL to avoid whitespace issues', async () => {

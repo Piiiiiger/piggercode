@@ -3248,7 +3248,7 @@ export const pt: TranslationStructure = {
           title: "Endereço do servidor",
           notSet: "Não definido",
           promptTitle: "Endereço do servidor",
-          promptMessage: "O endereço que você usa para entrar via SSH, por exemplo user@203.0.113.10:2222. Para a porta 22, pode omitir :porta.",
+          promptMessage: "O endereço que você usa para entrar via SSH, por exemplo user@203.0.113.10:2200. Para a porta 22, pode omitir :porta.",
           invalidTitle: "Endereço inválido",
           invalidMessage: "Use user@host ou user@host:port.",
           missing: "Informe acima o endereço do servidor para obter comandos prontos para copiar.",

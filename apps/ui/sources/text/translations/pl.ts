@@ -3158,7 +3158,7 @@ export const pl: TranslationStructure = {
           title: "Adres serwera",
           notSet: "Nie ustawiono",
           promptTitle: "Adres serwera",
-          promptMessage: "Adres, pod którym logujesz się przez SSH, np. user@203.0.113.10:2222. Dla portu 22 możesz pominąć :port.",
+          promptMessage: "Adres, pod którym logujesz się przez SSH, np. user@203.0.113.10:2200. Dla portu 22 możesz pominąć :port.",
           invalidTitle: "Nieprawidłowy adres",
           invalidMessage: "Użyj formatu user@host lub user@host:port.",
           missing: "Wpisz powyżej adres serwera, aby dostać polecenia gotowe do skopiowania.",

@@ -3071,7 +3071,7 @@ export const zhHans: TranslationStructure = {
           title: "服务器地址",
           notSet: "未设置",
           promptTitle: "服务器地址",
-          promptMessage: "你用 SSH 登录服务器时的地址，例如 user@203.0.113.10:2222。端口是 22 时可以省略 :端口。",
+          promptMessage: "你用 SSH 登录服务器时的地址，例如 user@203.0.113.10:2200。端口是 22 时可以省略 :端口。",
           invalidTitle: "地址无效",
           invalidMessage: "请使用 用户名@地址 或 用户名@地址:端口 的格式。",
           missing: "先在上面填好服务器地址，下面会生成可以直接复制的命令。",

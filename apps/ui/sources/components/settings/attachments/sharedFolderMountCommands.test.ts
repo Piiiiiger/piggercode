@@ -4,7 +4,7 @@ import { buildSharedFolderMountCommands, parseSshAddress } from './sharedFolderM
 
 describe('parseSshAddress', () => {
     it('reads the user, host and optional port', () => {
-        expect(parseSshAddress('pigger@203.0.113.10:2222')).toEqual({ user: 'pigger', host: '203.0.113.10', port: 2222 });
+        expect(parseSshAddress('me@203.0.113.10:2200')).toEqual({ user: 'me', host: '203.0.113.10', port: 2200 });
         expect(parseSshAddress(' me@example.com ')).toEqual({ user: 'me', host: 'example.com', port: 22 });
         expect(parseSshAddress('me@[2001:db8::1]:2200')).toEqual({ user: 'me', host: '2001:db8::1', port: 2200 });
     });
@@ -18,13 +18,13 @@ describe('buildSharedFolderMountCommands', () => {
     it('mounts a folder in the remote home on Linux', () => {
         expect(buildSharedFolderMountCommands({
             platform: 'linux',
-            address: { user: 'pigger', host: '203.0.113.10', port: 2222 },
+            address: { user: 'me', host: '203.0.113.10', port: 2200 },
             sharedFolderPath: '~/Downloads',
             mountDirName: 'PiggerShare',
         })).toEqual({
             install: 'sudo pacman -S sshfs',
-            check: 'ssh -p 2222 pigger@203.0.113.10 echo ok',
-            mount: 'mkdir -p ~/PiggerShare && sshfs -p 2222 pigger@203.0.113.10:Downloads ~/PiggerShare -o reconnect,ServerAliveInterval=15',
+            check: 'ssh -p 2200 me@203.0.113.10 echo ok',
+            mount: 'mkdir -p ~/PiggerShare && sshfs -p 2200 me@203.0.113.10:Downloads ~/PiggerShare -o reconnect,ServerAliveInterval=15',
             unmount: 'fusermount3 -u ~/PiggerShare',
         });
     });

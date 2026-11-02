@@ -207,14 +207,13 @@ describe('serverProfiles', () => {
         expect(profiles.getTabActiveServerId()).toBe(tab.id);
     });
 
-    it('seeds the built-in Pigger relay on native when no preconfigured env exists', async () => {
+    it('starts without a server on native when nothing is configured (no address is built in)', async () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
 
         const profiles = await importFresh();
-        expect(profiles.listServerProfiles().some((p) => p.serverUrl === 'https://relay.example.test')).toBe(true);
-        expect(profiles.listServerProfiles().some((p) => p.serverUrl === 'https://api.happier.dev')).toBe(false);
-        expect(profiles.getActiveServerUrl()).toBe('https://relay.example.test');
+        expect(profiles.listServerProfiles()).toEqual([]);
+        expect(profiles.getActiveServerUrl()).toBe('');
     });
 
     it('seeds a same-origin server profile on web when no preconfigured env exists', async () => {
@@ -740,10 +739,11 @@ describe('serverProfiles', () => {
         expect(profiles.getActiveServerUrl()).toBe('http://localhost:3013');
     });
 
-    it('reset-to-default targets the seeded built-in relay outside stack context when no preconfigured env exists', async () => {
+    it('reset-to-default targets the build-configured relay outside stack context', async () => {
         const scope = randomScope();
         process.env.EXPO_PUBLIC_HAPPY_STORAGE_SCOPE = scope;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_CONTEXT;
+        process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL = 'https://relay.example.test';
 
         const profiles = await importFresh();
         const cloud = profiles.listServerProfiles().find((p) => p.serverUrl === 'https://relay.example.test');

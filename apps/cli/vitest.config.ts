@@ -22,6 +22,9 @@ if (mergedTestEnv.PIGGERCODE_SERVER_URL && !mergedTestEnv.PIGGERCODE_WEBAPP_URL)
     mergedTestEnv.PIGGERCODE_WEBAPP_URL = mergedTestEnv.PIGGERCODE_SERVER_URL;
 }
 
+// Tests run as a machine that names its built-in relay (the address is not part of the source).
+mergedTestEnv.PIGGERCODE_BUILTIN_RELAY_URL ??= 'https://relay.example.test';
+
 // CLI tests should not inherit embedded build-policy gating (set in CI).
 // Clear it by default so feature tests can opt-in explicitly per case.
 mergedTestEnv.PIGGERCODE_FEATURE_POLICY_ENV = '';
