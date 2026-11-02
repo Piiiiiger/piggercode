@@ -6,6 +6,8 @@ import type { SessionReminderPresentation } from '@/sync/domains/session/organiz
 export type SessionRowMoreMenuBuildParams = Readonly<{
     target: SessionActionTarget;
     iconColor: string;
+    /** Icon color of actions drawn in red (Delete). */
+    dangerIconColor?: string;
     leadingItems?: readonly DropdownMenuItem[];
     canMoveToFolder?: boolean;
     reminderPresets?: readonly SessionReminderPresetV1[];

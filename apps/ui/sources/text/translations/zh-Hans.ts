@@ -6264,6 +6264,12 @@ export const zhHans: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: '资源管理器',
+    explorerOpenFolder: '打开文件夹…',
+    explorerCloseFolder: '回到主目录',
+    explorerOtherLocations: '其他位置',
+    explorerOpenFolderTitle: '打开文件夹',
+    explorerOpenFolderChooseMachine: '在哪台机器上打开？',
+    explorerOpenFolderNoMachine: '现在没有在线的机器，等机器连上后再打开文件夹。',
     explorerMenu: '资源管理器选项',
     explorerRefresh: '刷新文件夹',
     explorerCollapseAll: '折叠全部文件夹',

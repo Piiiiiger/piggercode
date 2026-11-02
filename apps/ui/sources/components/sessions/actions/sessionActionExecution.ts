@@ -123,6 +123,15 @@ async function runStopArchiveFlow(params: Readonly<{
     });
 }
 
+/** The one confirmation before a session is deleted, wherever Delete is offered. */
+export async function confirmSessionDelete(): Promise<boolean> {
+    return await Modal.confirm(t('sessionInfo.deleteSession'), t('sessionInfo.deleteSessionWarning'), {
+        cancelText: t('common.cancel'),
+        confirmText: t('sessionInfo.deleteSession'),
+        destructive: true,
+    });
+}
+
 export async function confirmSessionStop(): Promise<boolean> {
     return await Modal.confirm(t('sessionInfo.stopSession'), t('sessionInfo.stopSessionConfirm'), {
         cancelText: t('common.cancel'),

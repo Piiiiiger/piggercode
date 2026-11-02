@@ -6584,6 +6584,12 @@ export const pt: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: 'Explorador',
+    explorerOpenFolder: 'Abrir pasta…',
+    explorerCloseFolder: 'Voltar à pasta pessoal',
+    explorerOtherLocations: 'Outros locais',
+    explorerOpenFolderTitle: 'Abrir pasta',
+    explorerOpenFolderChooseMachine: 'Em qual máquina?',
+    explorerOpenFolderNoMachine: 'Nenhuma máquina está online agora. Você poderá abrir pastas quando uma se conectar.',
     explorerMenu: 'Opções do explorador',
     explorerRefresh: 'Atualizar pastas',
     explorerCollapseAll: 'Recolher pastas',

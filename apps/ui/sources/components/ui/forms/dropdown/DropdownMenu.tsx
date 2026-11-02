@@ -31,6 +31,8 @@ export type DropdownMenuItem = Readonly<{
     rightElement?: React.ReactNode;
     rowContainerStyle?: StyleProp<ViewStyle>;
     disabled?: boolean;
+    /** Draws the title in the danger color, for actions whose result cannot be undone. */
+    destructive?: boolean;
     submenu?: DropdownMenuSubmenu;
 }>;
 
@@ -248,6 +250,7 @@ export function DropdownMenu(props: DropdownMenuProps) {
                 subtitle: item.subtitle,
                 category: item.category,
                 disabled: item.disabled,
+                destructive: item.destructive,
                 left: item.icon ?? null,
                 rowContainerStyle: item.rowContainerStyle,
                 right: item.rightElement

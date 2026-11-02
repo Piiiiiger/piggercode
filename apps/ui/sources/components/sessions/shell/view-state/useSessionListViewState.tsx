@@ -84,6 +84,7 @@ import { resolveSessionOrganizationMutationScope, type SessionOrganizationMutati
 
 const EMPTY_SESSION_KEYS: ReadonlyArray<string> = Object.freeze([]);
 const EMPTY_EXPLORER_FOLDERS: ReadonlyArray<SessionExplorerFolderRef> = Object.freeze([]);
+const EMPTY_EXPLORER_ROOT_PATHS: Readonly<Record<string, string>> = Object.freeze({});
 const EMPTY_SESSION_LIST_GROUP_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
 const EMPTY_SESSION_WORKSPACE_ORDER: Readonly<Record<string, ReadonlyArray<string> | undefined>> = Object.freeze({});
 
@@ -183,6 +184,8 @@ export function useSessionListViewState({
     const [collapsedGroupKeysV1, setCollapsedGroupKeysV1] = useCollapsedGroupKeysMutable('collapsedGroupKeysV1');
     const sessionListDensity = useSetting('sessionListDensity');
     const sessionListLayout = useSetting('sessionListLayoutV1');
+    const [explorerRootPathsSetting, setExplorerRootPaths] = useSettingMutable('sessionListExplorerRootsV1');
+    const explorerRootPaths = explorerRootPathsSetting ?? EMPTY_EXPLORER_ROOT_PATHS;
     const sessionListAgentFilter = useLocalSetting('sessionListAgentFilterV1');
     const [explorerShowHidden, setExplorerShowHidden] = useLocalSettingMutable('sessionListExplorerShowHiddenV1');
     const explorerMachineSummaries = useSessionExplorerMachines();
@@ -448,9 +451,11 @@ export function useSessionListViewState({
             // Searching shows only folders with matching sessions, all open.
             sessionFoldersOnly: headerFiltersActive,
             title: t('sessionsList.explorerTitle'),
+            rootPaths: explorerRootPaths,
+            otherLocationsTitle: t('sessionsList.explorerOtherLocations'),
             previousItems: explorerPreviousItemsRef.current,
         });
-    }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
+    }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerRootPaths, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
     explorerPreviousItemsRef.current = explorer?.items ?? null;
     const explorerFoldersToList = explorer?.foldersToList ?? EMPTY_EXPLORER_FOLDERS;
     React.useEffect(() => {
@@ -613,6 +618,9 @@ export function useSessionListViewState({
         explorerOpenFolders: explorer?.openFolders ?? EMPTY_EXPLORER_FOLDERS,
         explorerShowHidden: explorerShowHidden === true,
         setExplorerShowHidden,
+        explorerMachines,
+        explorerRootPaths,
+        setExplorerRootPaths,
         sessionListAgentSelection,
         allKnownTags,
         folderPresentedData,

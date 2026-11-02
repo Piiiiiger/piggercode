@@ -5484,6 +5484,12 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
     },
     sessionsList: {
         explorerTitle: '檔案總管',
+        explorerOpenFolder: '開啟資料夾…',
+        explorerCloseFolder: '回到主目錄',
+        explorerOtherLocations: '其他位置',
+        explorerOpenFolderTitle: '開啟資料夾',
+        explorerOpenFolderChooseMachine: '要在哪台機器上開啟？',
+        explorerOpenFolderNoMachine: '目前沒有在線的機器，等機器連上後再開啟資料夾。',
         explorerMenu: '檔案總管選項',
         explorerRefresh: '重新整理資料夾',
         explorerCollapseAll: '摺疊所有資料夾',

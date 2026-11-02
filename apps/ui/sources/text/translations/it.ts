@@ -6810,6 +6810,12 @@ export const it: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: 'Esplora risorse',
+    explorerOpenFolder: 'Apri cartella…',
+    explorerCloseFolder: 'Torna alla cartella home',
+    explorerOtherLocations: 'Altre posizioni',
+    explorerOpenFolderTitle: 'Apri cartella',
+    explorerOpenFolderChooseMachine: 'Su quale macchina?',
+    explorerOpenFolderNoMachine: 'Al momento nessuna macchina è online. Potrai aprire cartelle quando se ne collega una.',
     explorerMenu: 'Opzioni di Esplora risorse',
     explorerRefresh: 'Aggiorna cartelle',
     explorerCollapseAll: 'Comprimi cartelle',

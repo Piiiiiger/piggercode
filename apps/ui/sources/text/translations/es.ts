@@ -6466,6 +6466,12 @@ export const es: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: 'Explorador',
+    explorerOpenFolder: 'Abrir carpeta…',
+    explorerCloseFolder: 'Volver a la carpeta personal',
+    explorerOtherLocations: 'Otras ubicaciones',
+    explorerOpenFolderTitle: 'Abrir carpeta',
+    explorerOpenFolderChooseMachine: '¿En qué máquina?',
+    explorerOpenFolderNoMachine: 'Ahora no hay ninguna máquina en línea. Podrás abrir carpetas cuando se conecte una.',
     explorerMenu: 'Opciones del explorador',
     explorerRefresh: 'Actualizar carpetas',
     explorerCollapseAll: 'Contraer carpetas',

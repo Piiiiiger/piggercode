@@ -6731,6 +6731,12 @@ localTailscale: {
   },
   sessionsList: {
     explorerTitle: 'エクスプローラー',
+    explorerOpenFolder: 'フォルダーを開く…',
+    explorerCloseFolder: 'ホームフォルダーに戻る',
+    explorerOtherLocations: 'その他の場所',
+    explorerOpenFolderTitle: 'フォルダーを開く',
+    explorerOpenFolderChooseMachine: 'どのマシンで開きますか？',
+    explorerOpenFolderNoMachine: 'オンラインのマシンがありません。マシンが接続されるとフォルダーを開けます。',
     explorerMenu: 'エクスプローラーのオプション',
     explorerRefresh: 'フォルダーを再読み込み',
     explorerCollapseAll: 'すべてのフォルダーを折りたたむ',

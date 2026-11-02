@@ -46,9 +46,11 @@ describe('SessionExplorerMenuButton', () => {
             onCollapseAll: vi.fn(),
             onShowHiddenChange: vi.fn(),
             onHideInactiveSessionsChange: vi.fn(),
+            onOpenFolder: vi.fn(),
+            onCloseFolder: vi.fn(),
         };
         const screen = await renderScreen(
-            <SessionExplorerMenuButton showHidden={false} hideInactiveSessions={false} {...handlers} />,
+            <SessionExplorerMenuButton showHidden={false} hideInactiveSessions={false} folderOpened={false} {...handlers} />,
         );
 
         await screen.pressByTestIdAsync('session-explorer-menu-trigger');
@@ -59,6 +61,10 @@ describe('SessionExplorerMenuButton', () => {
         menu.onSelect('collapse-all');
         menu.onSelect('show-hidden');
         menu.onSelect('hide-inactive');
+        menu.onSelect('open-folder');
+        expect(handlers.onOpenFolder).toHaveBeenCalledTimes(1);
+        // With the home folder at the top there is no folder to close.
+        expect(menu.items.some((item) => item.id === 'close-folder')).toBe(false);
         expect(handlers.onRefresh).toHaveBeenCalledTimes(1);
         expect(handlers.onCollapseAll).toHaveBeenCalledTimes(1);
         expect(handlers.onShowHiddenChange).toHaveBeenCalledWith(true);
@@ -66,17 +72,21 @@ describe('SessionExplorerMenuButton', () => {
         expect(menu.items.find((item) => item.id === 'show-hidden')?.rightElement).toBeFalsy();
     });
 
-    it('marks hidden folders as shown and turns them off again', async () => {
+    it('marks hidden folders as shown, turns them off again and goes back to the home folder', async () => {
         const { SessionExplorerMenuButton } = await import('./SessionExplorerMenuButton');
         const onShowHiddenChange = vi.fn();
+        const onCloseFolder = vi.fn();
         await renderScreen(
             <SessionExplorerMenuButton
                 showHidden
                 hideInactiveSessions
+                folderOpened
                 onRefresh={vi.fn()}
                 onCollapseAll={vi.fn()}
                 onShowHiddenChange={onShowHiddenChange}
                 onHideInactiveSessionsChange={vi.fn()}
+                onOpenFolder={vi.fn()}
+                onCloseFolder={onCloseFolder}
             />,
         );
 
@@ -85,5 +95,7 @@ describe('SessionExplorerMenuButton', () => {
         expect(menu.items.some((item) => item.id === 'show-inactive')).toBe(true);
         menu.onSelect('show-hidden');
         expect(onShowHiddenChange).toHaveBeenCalledWith(false);
+        menu.onSelect('close-folder');
+        expect(onCloseFolder).toHaveBeenCalledTimes(1);
     });
 });

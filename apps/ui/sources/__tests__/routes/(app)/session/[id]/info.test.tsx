@@ -441,7 +441,9 @@ describe('/session/[id]/info', () => {
         sessionArchiveSpy.mockClear();
         sessionDeleteSpy.mockClear();
         modalAlertSpy.mockClear();
-        modalConfirmSpy.mockClear();
+        // Reset, not clear: a queued one-off answer must not leak into the next test.
+        modalConfirmSpy.mockReset();
+        modalConfirmSpy.mockImplementation(async () => true);
         modalPromptSpy.mockClear();
         modalPromptSpy.mockResolvedValue('urgent, review');
         createDefaultActionExecutorSpy.mockClear();
@@ -2025,30 +2027,28 @@ describe('/session/[id]/info', () => {
         };
 
         const screen = await renderInfoScreen();
-        screen.pressByTestId('sessionInfo.deleteSession');
+        modalConfirmSpy.mockResolvedValueOnce(false);
+        await screen.pressByTestIdAsync('sessionInfo.deleteSession');
+        expect(sessionDeleteSpy).not.toHaveBeenCalled();
+        expect(safeRouterBackSpy).not.toHaveBeenCalled();
 
-        expect(modalAlertSpy).toHaveBeenCalledWith(
+        await screen.pressByTestIdAsync('sessionInfo.deleteSession');
+
+        expect(modalConfirmSpy).toHaveBeenLastCalledWith(
             'sessionInfo.deleteSession',
             'sessionInfo.deleteSessionWarning',
-            expect.arrayContaining([
-                expect.objectContaining({ text: 'common.cancel', style: 'cancel' }),
-                expect.objectContaining({ text: 'sessionInfo.deleteSession', style: 'destructive' }),
-            ]),
+            {
+                cancelText: 'common.cancel',
+                confirmText: 'sessionInfo.deleteSession',
+                destructive: true,
+            },
         );
-
-        const alertButtons = modalAlertSpy.mock.calls[0]?.[2];
-        const deleteButton = alertButtons?.find((button: { text?: string }) => button.text === 'sessionInfo.deleteSession');
-        if (!deleteButton?.onPress) {
-            throw new Error('expected delete confirmation button to expose onPress');
-        }
-
-        await act(async () => {
-            await deleteButton.onPress();
+        expect(modalAlertSpy).not.toHaveBeenCalled();
+        await vi.waitFor(() => {
+            expect(sessionDeleteSpy).toHaveBeenCalledWith('session-1', { serverId: 'server-b' });
+            expect(safeRouterBackSpy).toHaveBeenCalledTimes(2);
         });
-
-        expect(sessionDeleteSpy).toHaveBeenCalledWith('session-1', { serverId: 'server-b' });
         expect(routerBackSpy).not.toHaveBeenCalled();
-        expect(safeRouterBackSpy).toHaveBeenCalledTimes(2);
         expect(safeRouterBackSpy).toHaveBeenNthCalledWith(1, {
             router: expect.any(Object),
             fallbackHref: '/session/session-1?serverId=server-b',

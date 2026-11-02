@@ -67,7 +67,7 @@ import { completeSessionForkNavigation } from '@/components/sessions/transcript/
 import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
 import { useSessionAttentionStandingInputs } from '@/hooks/session/useSessionAttentionStandingInputs';
 import { resolveSessionAttentionStanding } from '@/sync/domains/session/organization/attentionStanding';
-import { confirmSessionStop, executeSessionAction } from '@/components/sessions/actions/sessionActionExecution';
+import { confirmSessionDelete, confirmSessionStop, executeSessionAction } from '@/components/sessions/actions/sessionActionExecution';
 import {
     SESSION_ACTION_ARCHIVE_ID,
     SESSION_ACTION_DELETE_ID,
@@ -961,19 +961,9 @@ function SessionInfoContent({ session, sessionServerId, sourceMachineIdForHandof
         handleExitAfterSessionMutation();
     });
 
-    const handleDeleteSession = useCallback(() => {
-        Modal.alert(
-            t('sessionInfo.deleteSession'),
-            t('sessionInfo.deleteSessionWarning'),
-            [
-                { text: t('common.cancel'), style: 'cancel' },
-                {
-                    text: t('sessionInfo.deleteSession'),
-                    style: 'destructive',
-                    onPress: performDelete
-                }
-            ]
-        );
+    const handleDeleteSession = useCallback(async () => {
+        if (!await confirmSessionDelete()) return;
+        performDelete();
     }, [performDelete]);
 
     const handleRenameSession = useCallback(async () => {

@@ -6106,6 +6106,12 @@ deps: {
     },
     sessionsList: {
         explorerTitle: 'Explorador',
+        explorerOpenFolder: 'Obre una carpeta…',
+        explorerCloseFolder: 'Torna a la carpeta personal',
+        explorerOtherLocations: 'Altres ubicacions',
+        explorerOpenFolderTitle: 'Obre una carpeta',
+        explorerOpenFolderChooseMachine: 'A quina màquina?',
+        explorerOpenFolderNoMachine: 'Ara no hi ha cap màquina en línia. Podràs obrir carpetes quan se’n connecti una.',
         explorerMenu: 'Opcions de l’explorador',
         explorerRefresh: 'Actualitza les carpetes',
         explorerCollapseAll: 'Plega les carpetes',

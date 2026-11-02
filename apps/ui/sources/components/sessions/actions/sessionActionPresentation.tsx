@@ -17,14 +17,18 @@ import { Icon } from '@/components/ui/icons/Icon';
 export function createSessionActionDropdownItem(params: Readonly<{
     actionId: SessionActionId;
     iconColor: string;
+    /** Icon color for actions drawn in red (see SessionActionMetadata.danger). */
+    dangerIconColor?: string;
     iconSize?: number;
 }>): DropdownMenuItem | null {
     const metadata = getSessionActionMetadata(params.actionId);
     if (!metadata) return null;
+    const danger = metadata.danger === true;
     return {
         id: params.actionId,
         title: t(metadata.titleKey),
-        icon: <Icon name={metadata.icon} size={params.iconSize ?? 16} color={params.iconColor} />,
+        icon: <Icon name={metadata.icon} size={params.iconSize ?? 16} color={danger ? (params.dangerIconColor ?? params.iconColor) : params.iconColor} />,
+        ...(danger ? { destructive: true } : {}),
     };
 }
 

@@ -4,6 +4,7 @@ import type { SessionListRenderableSession } from '@/sync/domains/session/listin
 import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
 import {
     SESSION_ACTION_ARCHIVE_ID,
+    SESSION_ACTION_DELETE_ID,
     SESSION_ACTION_SET_ATTENTION_STANDING_ID,
     SESSION_ACTION_MARK_UNREAD_ID,
     SESSION_ACTION_MOVE_TO_FOLDER_ID,
@@ -113,6 +114,36 @@ describe('buildSessionRowMoreMenuItems', () => {
             'session.copyDebugInformation',
             SESSION_ACTION_ARCHIVE_ID,
         ]);
+    });
+
+    it('ends with Delete in red once the session is stopped', () => {
+        const session: SessionListRenderableSession = {
+            id: 'session_1', active: false, archivedAt: null, owner: 'user_1', accessLevel: undefined,
+            seq: 4, lastViewedSessionSeq: 4, latestTurnStatus: 'completed', createdAt: 1, updatedAt: 1, activeAt: 1,
+            metadataVersion: 1, agentStateVersion: 1, metadata: null, thinking: false, thinkingAt: 0, presence: 1,
+        };
+        const deleteItem = (overrides: Partial<SessionListRenderableSession>, isConnected: boolean) => buildSessionRowMoreMenuItems({
+            target: createSessionActionTarget({
+                session: { ...session, ...overrides },
+                serverId: 'server_1',
+                currentUserId: 'user_1',
+                isConnected,
+                isPinned: false,
+            }),
+            iconColor: '#999',
+            dangerIconColor: '#c00',
+        }).find((item) => item.id === SESSION_ACTION_DELETE_ID);
+
+        expect(deleteItem({}, false)).toMatchObject({ destructive: true });
+        const stoppedItems = buildSessionRowMoreMenuItems({
+            target: createSessionActionTarget({ session, serverId: 'server_1', currentUserId: 'user_1', isConnected: false, isPinned: false }),
+            iconColor: '#999',
+            canMoveToFolder: true,
+        });
+        expect(stoppedItems.at(-1)?.id).toBe(SESSION_ACTION_DELETE_ID);
+
+        expect(deleteItem({ active: true }, true)).toBeUndefined();
+        expect(deleteItem({ owner: 'user_2', accessLevel: 'edit' }, false)).toBeUndefined();
     });
 
     it('puts frequent session actions first and offers a concise reminder submenu', () => {

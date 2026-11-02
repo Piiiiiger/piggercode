@@ -193,6 +193,7 @@ test.describe('ui e2e: session list folder explorer', () => {
         tagPrefix: 'session-explorer',
         flavor,
       });
+      const scratchSession = await seed('Scratch notes', '', 'claude');
       const gradSession = await seed('Grade the essays', 'code/grad', 'codex');
       const greetingSession = await seed('Respond to greeting', '', 'claude');
       const sidebarSession = await seed('Fix the sidebar layout', 'code/happier', 'claude');
@@ -251,6 +252,44 @@ test.describe('ui e2e: session list folder explorer', () => {
       expect(params.get('agentType')).toBe('codex');
       expect(params.get('directory')).toBe(join(machineHome, 'code/grad'));
       expect(params.get('machineId')).toBe(machineId);
+
+      // A stopped session is deleted from its row menu after the destructive confirmation.
+      await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 300_000);
+      await waitForInitialAppUi({ page, timeoutMs: 180_000 });
+      await page.getByTestId('session-list-agent-picker').click();
+      await page.getByTestId('session-list-agent-picker:claude').click();
+      const scratchRow = page.getByTestId(`session-list-item-${scratchSession}`);
+      await expect(scratchRow).toHaveCount(1, { timeout: 120_000 });
+      await scratchRow.hover();
+      await scratchRow.getByTestId('session-item-more-menu').click();
+      const deleteOption = page.getByTestId('dropdown-option-ui_session_delete');
+      await expect(deleteOption).toBeEnabled({ timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, '5-row-menu-delete.png') });
+      await deleteOption.click();
+      await page.getByTestId('web-modal-confirm').click();
+      await expect(scratchRow).toHaveCount(0, { timeout: 60_000 });
+      await expect(page.getByTestId(`session-list-item-${greetingSession}`)).toHaveCount(1);
+
+      // Open Folder: with ~/code opened, the tree starts there and the rest waits under Other locations.
+      await upsertPlainAccountSettingsV2({
+        baseUrl: server.baseUrl,
+        token,
+        settings: { sessionListExplorerRootsV1: { [`explorer:${serverId}:${machineId}`]: join(machineHome, 'code') } },
+      });
+      await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 300_000);
+      await waitForInitialAppUi({ page, timeoutMs: 180_000 });
+      await expect(code).toHaveCount(1, { timeout: 120_000 });
+      await expect(code).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.getByTestId(`session-list-item-${sidebarSession}`)).toHaveCount(1, { timeout: 60_000 });
+      const other = page.getByTestId(`session-list-header:explorer:${serverId}:${machineId}:other`);
+      await expect(other).toHaveAttribute('aria-expanded', 'false');
+      await expect(home).toHaveCount(0);
+      await expect(page.getByTestId(`session-list-item-${greetingSession}`)).toHaveCount(0);
+      await page.screenshot({ path: join(screenshotDir, '6-opened-folder.png') });
+      await other.click();
+      await expect(home).toHaveCount(1, { timeout: 60_000 });
+      await expect(page.getByTestId(`session-list-item-${greetingSession}`)).toHaveCount(1);
+      await page.screenshot({ path: join(screenshotDir, '7-other-locations.png') });
     } catch (error) {
       throw appendBrowserDiagnostics(error, diagnostics());
     }

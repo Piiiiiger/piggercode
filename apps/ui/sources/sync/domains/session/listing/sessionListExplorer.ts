@@ -40,6 +40,13 @@ export type BuildSessionExplorerInput = Readonly<{
     /** Search and tag filters: only folders with sessions, all open, no listings. */
     sessionFoldersOnly: boolean;
     title: string;
+    /**
+     * The folder each machine's tree starts at, keyed by sessionExplorerMachineKey (Open Folder).
+     * Machines without one start at `~` (and `/` for sessions outside the home folder).
+     */
+    rootPaths: Readonly<Record<string, string | undefined>>;
+    /** Title of the folder that holds the sessions outside an opened folder. */
+    otherLocationsTitle: string;
     /** The previous result, so unchanged folder rows keep their objects. */
     previousItems?: ReadonlyArray<SessionListViewItem> | null;
 }>;
@@ -62,6 +69,8 @@ type Node = {
     path: string | null;
     kind: NodeKind;
     machine: SessionExplorerMachine;
+    /** Open folders list the machine's subfolders; folders under Other locations show only their sessions. */
+    browse: boolean;
     children: Map<string, Node>;
     sessions: Row[];
 };
@@ -70,6 +79,9 @@ type Summary = Readonly<{ sessionCount: number; activeSessionCount: number; newe
 
 const HOME = '~';
 const ROOT = '/';
+// Machine-level children besides `~` and `/`; folder names never reach this level.
+const OPENED = ':opened';
+const OTHER = ':other';
 
 export function sessionExplorerMachineKey(serverId: string, machineId: string): string {
     return `explorer:${serverId}:${machineId}`;
@@ -131,27 +143,70 @@ function childFolder(parent: Node, name: string): Node {
         path,
         kind: 'folder',
         machine: parent.machine,
+        browse: parent.browse,
     });
     parent.children.set(name, node);
     return node;
 }
 
-function rootFolder(machineNode: Node, root: typeof HOME | typeof ROOT): Node {
-    const existing = machineNode.children.get(root);
+/** `~` or `/` of a machine, or of the Other locations folder below an opened folder. */
+function rootFolder(parent: Node, root: typeof HOME | typeof ROOT): Node {
+    const existing = parent.children.get(root);
     if (existing) return existing;
-    const { machine } = machineNode;
+    const { machine } = parent;
     const path = root === HOME ? (machine.homeDir ? trimTrailingSlashes(machine.homeDir) : null) : ROOT;
     const node = createNode({
         name: root,
         key: path === null
-            ? `${machineNode.key}:${root}`
+            ? `${parent.key}:${root}`
             : sessionExplorerFolderKey({ serverId: machine.serverId, machineId: machine.machineId, path }),
         path,
         kind: 'root',
         machine,
+        browse: parent.browse,
     });
-    machineNode.children.set(root, node);
+    parent.children.set(root, node);
     return node;
+}
+
+/** The folder the user opened as the top of this machine's tree. */
+function openedFolder(machineNode: Node, rootPath: string): Node {
+    const existing = machineNode.children.get(OPENED);
+    if (existing) return existing;
+    const { machine } = machineNode;
+    const node = createNode({
+        name: formatPathRelativeToHome(rootPath, machine.homeDir ?? undefined),
+        key: sessionExplorerFolderKey({ serverId: machine.serverId, machineId: machine.machineId, path: rootPath }),
+        path: rootPath,
+        kind: 'root',
+        machine,
+        browse: true,
+    });
+    machineNode.children.set(OPENED, node);
+    return node;
+}
+
+/** Holds the sessions outside the opened folder, in their usual folders, without browsing. */
+function otherLocations(machineNode: Node, title: string): Node {
+    const existing = machineNode.children.get(OTHER);
+    if (existing) return existing;
+    const node = createNode({
+        name: title,
+        key: `${machineNode.key}:other`,
+        path: null,
+        kind: 'other',
+        machine: machineNode.machine,
+        browse: false,
+    });
+    machineNode.children.set(OTHER, node);
+    return node;
+}
+
+/** The segments of `path` below `rootPath`, or null when it lies outside. */
+function segmentsBelow(path: string, rootPath: string): string[] | null {
+    if (path === rootPath) return [];
+    const prefix = rootPath === ROOT ? ROOT : `${rootPath}/`;
+    return path.startsWith(prefix) ? path.slice(prefix.length).split('/').filter(Boolean) : null;
 }
 
 function summarize(node: Node, summaries: Map<Node, Summary>): Summary {
@@ -189,9 +244,16 @@ function sameHeader(a: Header, b: Header): boolean {
         || (key === 'workspaceScopeHint' && sameScopeHint(a.workspaceScopeHint, b.workspaceScopeHint)));
 }
 
+const MACHINE_CHILD_ORDER: Readonly<Record<string, number>> = { [OPENED]: 0, [HOME]: 1, [ROOT]: 2, [OTHER]: 3 };
+
 function sortChildren(node: Node): Node[] {
-    const children = [...node.children.values()];
     if (node.kind === 'machine') {
+        return [...node.children.entries()]
+            .sort(([a], [b]) => (MACHINE_CHILD_ORDER[a] ?? 4) - (MACHINE_CHILD_ORDER[b] ?? 4))
+            .map(([, child]) => child);
+    }
+    const children = [...node.children.values()];
+    if (node.kind === 'other') {
         return children.sort((a, b) => (a.name === HOME ? 0 : 1) - (b.name === HOME ? 0 : 1));
     }
     return children.sort((a, b) => compareNames(a.name, b.name));
@@ -209,15 +271,23 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         const key = sessionExplorerMachineKey(machine.serverId, machine.machineId);
         const existing = machineNodes.get(key);
         if (existing) return existing;
-        const node = createNode({ name: machine.label, key, path: null, kind: 'machine', machine });
+        const node = createNode({ name: machine.label, key, path: null, kind: 'machine', machine, browse: true });
         machineNodes.set(key, node);
         return node;
+    };
+    const openedPathOf = (machine: SessionExplorerMachine): string | null => {
+        const raw = input.rootPaths[sessionExplorerMachineKey(machine.serverId, machine.machineId)];
+        const resolved = typeof raw === 'string' && raw.trim() ? resolveAbsolutePath(raw.trim(), machine.homeDir ?? undefined) : '';
+        return resolved.startsWith(ROOT) ? trimTrailingSlashes(resolved) : null;
     };
     const knownMachines = new Map<string, SessionExplorerMachine>();
     for (const machine of input.machines) {
         knownMachines.set(sessionExplorerMachineKey(machine.serverId, machine.machineId), machine);
-        // An online machine shows its home folder to browse; others show up with their sessions.
-        if (machine.online && machine.homeDir) rootFolder(machineNode(machine), HOME);
+        // An online machine shows its top folder to browse; others show up with their sessions.
+        if (!machine.online) continue;
+        const opened = openedPathOf(machine);
+        if (opened) openedFolder(machineNode(machine), opened);
+        else if (machine.homeDir) rootFolder(machineNode(machine), HOME);
     }
 
     const looseRows: Row[] = [];
@@ -256,12 +326,23 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             };
             knownMachines.set(machineKey, machine);
         }
+        const opened = openedPathOf(machine);
+        if (opened) {
+            const below = segmentsBelow(trimTrailingSlashes(resolveAbsolutePath(path.trim(), machine.homeDir ?? undefined)), opened);
+            if (below) {
+                let node = openedFolder(machineNode(machine), opened);
+                for (const segment of below) node = childFolder(node, segment);
+                node.sessions.push(item);
+                continue;
+            }
+        }
         const location = locate(path, machine.homeDir);
         if (!location) {
             looseRows.push(item);
             continue;
         }
-        let node = rootFolder(machineNode(machine), location.root);
+        const parent = opened ? otherLocations(machineNode(machine), input.otherLocationsTitle) : machineNode(machine);
+        let node = rootFolder(parent, location.root);
         for (const segment of location.segments) node = childFolder(node, segment);
         node.sessions.push(item);
     }
@@ -293,6 +374,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         const stored = input.collapsedKeys[node.key];
         if (stored === true) return false;
         if (stored === false) return true;
+        if (node.kind === 'other') return false;
         return node.kind !== 'folder' || summary.sessionCount > 0;
     };
 
@@ -322,7 +404,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         if (!expanded) return;
 
         let listing: SessionExplorerListing | null = null;
-        if (!input.sessionFoldersOnly && node.path !== null) {
+        if (!input.sessionFoldersOnly && node.browse && node.path !== null) {
             const folder = { serverId: machine.serverId, machineId: machine.machineId, path: node.path };
             listing = input.getListing(folder);
             if (machine.online) {
@@ -338,7 +420,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         for (const child of sortChildren(node)) emit(child, depth + 1, node.key);
         for (const row of node.sessions) out.push(placeRow(row, node.key, depth + 1));
 
-        if (input.sessionFoldersOnly || node.path === null) return;
+        if (input.sessionFoldersOnly || !node.browse || node.path === null) return;
         const shownNothing = node.children.size === 0 && node.sessions.length === 0;
         let status: SessionExplorerStatus | null = null;
         if (listing?.status === 'loaded') {

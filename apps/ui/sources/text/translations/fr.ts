@@ -6092,6 +6092,12 @@ export const fr: TranslationStructure = {
     },
     sessionsList: {
         explorerTitle: 'Explorateur',
+        explorerOpenFolder: 'Ouvrir un dossier…',
+        explorerCloseFolder: 'Revenir au dossier personnel',
+        explorerOtherLocations: 'Autres emplacements',
+        explorerOpenFolderTitle: 'Ouvrir un dossier',
+        explorerOpenFolderChooseMachine: 'Sur quelle machine ?',
+        explorerOpenFolderNoMachine: 'Aucune machine n’est en ligne pour l’instant. Vous pourrez ouvrir un dossier dès qu’une machine sera connectée.',
         explorerMenu: 'Options de l’explorateur',
         explorerRefresh: 'Actualiser les dossiers',
         explorerCollapseAll: 'Replier les dossiers',

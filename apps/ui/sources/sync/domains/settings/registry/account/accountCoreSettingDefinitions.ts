@@ -301,6 +301,14 @@ export const ACCOUNT_CORE_SETTING_DEFINITIONS = defineSettingDefinitions({
         storageScope: 'account',
         analytics: { trackCurrentState: true, trackChanges: true, valueKind: 'enum', privacy: 'safe', identityScope: 'person' },
     },
+    sessionListExplorerRootsV1: {
+        // Keyed by `<serverId>:<machineId>` (sessionExplorerMachineKey); the explorer starts at `~` otherwise.
+        // Paths are user data, so they stay out of analytics.
+        schema: z.record(z.string(), z.string()),
+        default: {},
+        description: 'The folder the session explorer opens at on each machine, like Open Folder in an editor',
+        storageScope: 'account',
+    },
     sessionListActiveGroupingV1: {
         // `directory` (the folder tree of 0.2.19-pigger.10, now the explorer layout) groups like `project`.
         schema: z.enum(['project', 'date', 'directory']),

@@ -29,6 +29,8 @@ export type SessionActionMetadata = Readonly<{
     subtitleKey?: TranslationKeyNoParams;
     icon: SessionActionIconName;
     destructive?: boolean;
+    /** Drawn in red where it is offered: what it removes cannot be restored. */
+    danger?: boolean;
     requiresConfirmation?: boolean;
 }>;
 
@@ -76,6 +78,7 @@ const METADATA_BY_ACTION_ID: Readonly<Record<string, SessionActionMetadata>> = {
         subtitleKey: 'sessionInfo.deleteSessionSubtitle',
         icon: 'trash',
         destructive: true,
+        danger: true,
         requiresConfirmation: true,
     },
     [SESSION_ACTION_PIN_ID]: {

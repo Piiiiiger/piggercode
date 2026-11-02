@@ -59,6 +59,8 @@ import { ProjectGroupHeader } from './ProjectGroupHeader';
 import { SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
 import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
 import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
+import { openMachinePathBrowserModal } from '@/components/ui/pathBrowser/openMachinePathBrowserModal';
+import { sessionExplorerMachineKey, type SessionExplorerMachine } from '@/sync/domains/session/listing/sessionListExplorer';
 import { SessionListHeaderFrame } from './SessionListHeaderFrame';
 import { resolveSessionListRowModelAdjacency } from './row/buildSessionListRowModels';
 import { SessionListRowModelBoundary } from './row/SessionListRowModelBoundary';
@@ -638,6 +640,9 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         explorerOpenFolders,
         explorerShowHidden,
         setExplorerShowHidden,
+        explorerMachines,
+        explorerRootPaths,
+        setExplorerRootPaths,
         sessionListAgentSelection,
         allKnownTags,
         hasMultipleMachines,
@@ -1117,14 +1122,18 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     // folders — from here rather than from their closures.
     const explorerActionStateRef = React.useRef({
         collapsedGroupKeysV1,
+        explorerMachines,
         explorerOpenFolders,
+        explorerRootPaths,
         listItems,
         rememberLastProjectSessionSelections,
         sessionListAgentSelection,
     });
     explorerActionStateRef.current = {
         collapsedGroupKeysV1,
+        explorerMachines,
         explorerOpenFolders,
+        explorerRootPaths,
         listItems,
         rememberLastProjectSessionSelections,
         sessionListAgentSelection,
@@ -1887,6 +1896,38 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     const handleRefreshExplorer = React.useCallback(() => {
         refreshExplorerListings(explorerActionStateRef.current.explorerOpenFolders);
     }, []);
+    // Open Folder: the picked folder becomes the top of that machine's tree.
+    const handleOpenExplorerFolder = React.useCallback(async () => {
+        const current = explorerActionStateRef.current;
+        const online = current.explorerMachines.filter((machine) => machine.online);
+        if (online.length === 0) {
+            Modal.alert(t('sessionsList.explorerOpenFolder'), t('sessionsList.explorerOpenFolderNoMachine'));
+            return;
+        }
+        const machine = online.length === 1
+            ? online[0]!
+            : await new Promise<SessionExplorerMachine | null>((resolve) => {
+                Modal.alert(t('sessionsList.explorerOpenFolderChooseMachine'), undefined, [
+                    ...online.map((candidate) => ({ text: candidate.label, onPress: () => resolve(candidate) })),
+                    { text: t('common.cancel'), style: 'cancel' as const, onPress: () => resolve(null) },
+                ]);
+            });
+        if (!machine) return;
+        const key = sessionExplorerMachineKey(machine.serverId, machine.machineId);
+        const selected = await openMachinePathBrowserModal({
+            machineId: machine.machineId,
+            serverId: machine.serverId || null,
+            initialPath: current.explorerRootPaths[key] ?? machine.homeDir,
+            title: t('sessionsList.explorerOpenFolderTitle'),
+            selectionMode: 'directory',
+        });
+        if (!selected) return;
+        setExplorerRootPaths({ ...explorerActionStateRef.current.explorerRootPaths, [key]: selected });
+    }, [setExplorerRootPaths]);
+    const handleCloseExplorerFolder = React.useCallback(() => {
+        setExplorerRootPaths({});
+    }, [setExplorerRootPaths]);
+    const explorerFolderOpened = Object.keys(explorerRootPaths).length > 0;
     // Closes every open folder the explorer shows; machines and their `~` and `/` folders stay open.
     const handleCollapseAllExplorerFolders = React.useCallback(() => {
         const current = explorerActionStateRef.current;
@@ -1917,6 +1958,9 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 onHideInactiveSessionsChange={setHideInactiveSessions}
                 onRefresh={handleRefreshExplorer}
                 onCollapseAll={handleCollapseAllExplorerFolders}
+                folderOpened={explorerFolderOpened}
+                onOpenFolder={handleOpenExplorerFolder}
+                onCloseFolder={handleCloseExplorerFolder}
             />
         ) : (
             <SessionListViewMenuButton
@@ -1968,6 +2012,9 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         setExplorerShowHidden,
         handleRefreshExplorer,
         handleCollapseAllExplorerFolders,
+        explorerFolderOpened,
+        handleOpenExplorerFolder,
+        handleCloseExplorerFolder,
     ]);
     const renderHeaderItem = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>, index: number) => {
         const headerTestId = item.headerKind === 'project'
@@ -2221,8 +2268,9 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceFaviconsEnabled,
         workspaceLabelsSignature,
         workspaceMachineSubtitlesEnabled,
-        // The explorer header's menu shows whether hidden folders are listed.
+        // The explorer header's menu shows whether hidden folders are listed and a folder is open.
         explorerShowHidden,
+        explorerFolderOpened,
     }), [
         headerControlsAnchorKey,
         activeSearchHeaderControlsAnchorKey,
@@ -2266,6 +2314,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceLabelsSignature,
         workspaceMachineSubtitlesEnabled,
         explorerShowHidden,
+        explorerFolderOpened,
     ]);
     const renderSessionItem = React.useCallback((item: SessionListSessionItem, index: number) => {
         const groupKey = String(item.groupKey ?? '').trim();

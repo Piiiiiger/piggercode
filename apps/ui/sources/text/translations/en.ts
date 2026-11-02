@@ -6131,6 +6131,12 @@ export const en = {
     },
     sessionsList: {
         explorerTitle: 'Explorer',
+        explorerOpenFolder: 'Open folder…',
+        explorerCloseFolder: 'Back to home folder',
+        explorerOtherLocations: 'Other locations',
+        explorerOpenFolderTitle: 'Open folder',
+        explorerOpenFolderChooseMachine: 'Which machine?',
+        explorerOpenFolderNoMachine: 'No machine is online right now. You can open a folder once one connects.',
         explorerMenu: 'Explorer options',
         explorerRefresh: 'Refresh folders',
         explorerCollapseAll: 'Collapse folders',

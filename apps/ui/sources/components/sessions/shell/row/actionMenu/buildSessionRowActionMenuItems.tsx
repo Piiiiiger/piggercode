@@ -4,6 +4,7 @@ import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMe
 import { createSessionActionDropdownItem } from '@/components/sessions/actions/sessionActionPresentation';
 import {
     SESSION_ACTION_CLEAR_ATTENTION_STANDING_ID,
+    SESSION_ACTION_DELETE_ID,
     SESSION_ACTION_MARK_READ_ID,
     SESSION_ACTION_MARK_UNREAD_ID,
     SESSION_ACTION_MOVE_TO_FOLDER_ID,
@@ -104,7 +105,17 @@ export function buildSessionRowMoreMenuItems(params: SessionRowMoreMenuBuildPara
     const primaryItems: DropdownMenuItem[] = [];
     const remainingItems: DropdownMenuItem[] = [];
     let moveToFolderItem: DropdownMenuItem | null = null;
+    let deleteItem: DropdownMenuItem | null = null;
     for (const actionId of listVisibleSessionActionIds({ target: params.target, surface: 'rowMenu' })) {
+        if (actionId === SESSION_ACTION_DELETE_ID) {
+            // Last, in red, apart from the everyday actions.
+            deleteItem = createSessionActionDropdownItem({
+                actionId,
+                iconColor: params.iconColor,
+                dangerIconColor: params.dangerIconColor,
+            });
+            continue;
+        }
         if (actionId === SESSION_ACTION_MOVE_TO_FOLDER_ID) {
             if (params.canMoveToFolder === false) continue;
             moveToFolderItem = {
@@ -144,5 +155,6 @@ export function buildSessionRowMoreMenuItems(params: SessionRowMoreMenuBuildPara
         ...(params.leadingItems ?? []),
         ...remainingItems,
         ...(moveToFolderItem ? [moveToFolderItem] : []),
+        ...(deleteItem ? [deleteItem] : []),
     ];
 }

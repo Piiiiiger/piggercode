@@ -4,6 +4,7 @@ import type { SessionListViewItem } from './sessionListViewData';
 import {
     buildSessionExplorerItems,
     sessionExplorerFolderKey,
+    sessionExplorerMachineKey,
     type BuildSessionExplorerInput,
     type SessionExplorerListing,
     type SessionExplorerMachine,
@@ -47,6 +48,8 @@ function build(overrides: Partial<BuildSessionExplorerInput>) {
         showHidden: false,
         sessionFoldersOnly: false,
         title: 'Explorer',
+        rootPaths: {},
+        otherLocationsTitle: 'Other locations',
         ...overrides,
     });
 }
@@ -201,4 +204,44 @@ describe('buildSessionExplorerItems', () => {
         expect(second.items).toHaveLength(first.items.length);
         second.items.forEach((item, index) => expect(item).toBe(first.items[index]));
     });
+
+    it('starts the tree at an opened folder and keeps the sessions outside it under Other locations', () => {
+        const input: Partial<BuildSessionExplorerInput> = {
+            items: [row('a', '/home/u/code/happier'), row('b', '/home/u'), row('c', '/srv/app')],
+            rootPaths: { [sessionExplorerMachineKey('s1', 'm1')]: '/home/u/code' },
+            getListing: listings({ '/home/u/code': { status: 'loaded', dirs: ['grad', 'happier'] } }),
+        };
+
+        const result = build(input);
+        expect(outline(result.items)).toEqual([
+            '# Explorer',
+            'v ~/code',
+            '  > grad',
+            '  v happier',
+            '    • a',
+            '> Other locations',
+        ]);
+        const rootFolder = folders(result.items).get('~/code')!;
+        expect(rootFolder.workspaceScopeHint?.rootPath).toBe('/home/u/code');
+
+        // Other locations opens to the usual folders of those sessions, and lists nothing there.
+        const otherKey = folders(result.items).get('Other locations')!.groupKey!;
+        const opened = build({ ...input, collapsedKeys: { [otherKey]: false } });
+        expect(outline(opened.items)).toEqual([
+            '# Explorer',
+            'v ~/code',
+            '  > grad',
+            '  v happier',
+            '    • a',
+            'v Other locations',
+            '  v ~',
+            '    • b',
+            '  v /',
+            '    v srv',
+            '      v app',
+            '        • c',
+        ]);
+        expect(opened.openFolders.map((target) => target.path)).toEqual(['/home/u/code', '/home/u/code/happier']);
+    });
 });
+

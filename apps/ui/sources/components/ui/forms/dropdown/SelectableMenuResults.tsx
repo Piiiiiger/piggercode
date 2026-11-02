@@ -209,6 +209,7 @@ export function SelectableMenuResults(props: {
                             rightElement={item.right}
                             selected={isSelected}
                             disabled={item.disabled}
+                            destructive={item.destructive}
                             showChevron={false}
                             showDivider={false}
                             onMouseDownCapture={handleOptionMouseDownCapture}
@@ -223,6 +224,7 @@ export function SelectableMenuResults(props: {
                             variant={props.rowVariant}
                             selected={isSelected}
                             disabled={item.disabled}
+                            destructive={item.destructive}
                             left={item.left}
                             leftGap={item.leftGap}
                             right={item.right}

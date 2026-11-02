@@ -13,6 +13,12 @@ export type SessionExplorerMenuButtonProps = Readonly<{
     onHideInactiveSessionsChange: (next: boolean) => void;
     onRefresh: () => void;
     onCollapseAll: () => void;
+    /** Whether a folder other than `~` is open at the top of the tree. */
+    folderOpened: boolean;
+    /** Picks a folder to show at the top of the tree, like Open Folder in an editor. */
+    onOpenFolder: () => void;
+    /** Goes back to the home folder at the top. */
+    onCloseFolder: () => void;
 }>;
 
 /** The explorer header's options, where the grouped list keeps its view menu. */
@@ -23,6 +29,18 @@ export function SessionExplorerMenuButton(props: SessionExplorerMenuButtonProps)
     const checkColor = theme.colors.accent.blue;
 
     const items = React.useMemo((): DropdownMenuItem[] => [
+        {
+            id: 'open-folder',
+            testID: 'session-explorer-open-folder',
+            title: t('sessionsList.explorerOpenFolder'),
+            icon: <Icon name="folder-open" size={ICON_SIZE.sm} color={iconColor} />,
+        },
+        ...(props.folderOpened ? [{
+            id: 'close-folder',
+            testID: 'session-explorer-close-folder',
+            title: t('sessionsList.explorerCloseFolder'),
+            icon: <Icon name="house" size={ICON_SIZE.sm} color={iconColor} />,
+        }] : []),
         {
             id: 'refresh',
             testID: 'session-explorer-refresh',
@@ -50,16 +68,18 @@ export function SessionExplorerMenuButton(props: SessionExplorerMenuButtonProps)
                 : t('sessionsList.hideInactiveSessions'),
             icon: <Icon name="funnel-simple" size={ICON_SIZE.sm} color={iconColor} />,
         },
-    ], [checkColor, iconColor, props.hideInactiveSessions, props.showHidden]);
+    ], [checkColor, iconColor, props.folderOpened, props.hideInactiveSessions, props.showHidden]);
 
-    const { onCollapseAll, onHideInactiveSessionsChange, onRefresh, onShowHiddenChange, showHidden } = props;
+    const { onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onShowHiddenChange, showHidden } = props;
     const handleSelect = React.useCallback((itemId: string) => {
-        if (itemId === 'refresh') onRefresh();
+        if (itemId === 'open-folder') onOpenFolder();
+        else if (itemId === 'close-folder') onCloseFolder();
+        else if (itemId === 'refresh') onRefresh();
         else if (itemId === 'collapse-all') onCollapseAll();
         else if (itemId === 'show-hidden') onShowHiddenChange(!showHidden);
         else if (itemId === 'hide-inactive') onHideInactiveSessionsChange(true);
         else if (itemId === 'show-inactive') onHideInactiveSessionsChange(false);
-    }, [onCollapseAll, onHideInactiveSessionsChange, onRefresh, onShowHiddenChange, showHidden]);
+    }, [onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onShowHiddenChange, showHidden]);
 
     return (
         <DropdownMenu

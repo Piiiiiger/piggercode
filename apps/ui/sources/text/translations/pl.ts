@@ -6484,6 +6484,12 @@ export const pl: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: 'Eksplorator',
+    explorerOpenFolder: 'Otwórz folder…',
+    explorerCloseFolder: 'Wróć do folderu domowego',
+    explorerOtherLocations: 'Inne lokalizacje',
+    explorerOpenFolderTitle: 'Otwórz folder',
+    explorerOpenFolderChooseMachine: 'Na której maszynie?',
+    explorerOpenFolderNoMachine: 'Żadna maszyna nie jest teraz online. Foldery można otworzyć po połączeniu którejś z nich.',
     explorerMenu: 'Opcje eksploratora',
     explorerRefresh: 'Odśwież foldery',
     explorerCollapseAll: 'Zwiń foldery',

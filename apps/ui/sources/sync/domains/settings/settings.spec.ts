@@ -832,6 +832,10 @@ describe('settings', () => {
             const parsed = settingsParse({});
 
             expect(parsed.sessionListLayoutV1).toBe('explorer');
+            // Each machine's explorer starts at its home folder until the user opens another folder.
+            expect(parsed.sessionListExplorerRootsV1).toEqual({});
+            expect(settingsParse({ sessionListExplorerRootsV1: { 's1:m1': '/home/u/code' } } as any).sessionListExplorerRootsV1)
+                .toEqual({ 's1:m1': '/home/u/code' });
             expect(settingsParse({ sessionListActiveGroupingV1: 'project' } as any).sessionListLayoutV1).toBe('explorer');
             expect(settingsParse({ sessionListLayoutV1: 'list' } as any).sessionListLayoutV1).toBe('list');
             // The list layout keeps one section with attention at the top; `directory`, saved by

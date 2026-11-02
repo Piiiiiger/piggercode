@@ -5409,6 +5409,12 @@ export const ru: TranslationStructure = {
   },
   sessionsList: {
     explorerTitle: 'Проводник',
+    explorerOpenFolder: 'Открыть папку…',
+    explorerCloseFolder: 'Вернуться в домашнюю папку',
+    explorerOtherLocations: 'Другие места',
+    explorerOpenFolderTitle: 'Открыть папку',
+    explorerOpenFolderChooseMachine: 'На какой машине?',
+    explorerOpenFolderNoMachine: 'Сейчас нет машин в сети. Папку можно будет открыть, когда машина подключится.',
     explorerMenu: 'Параметры проводника',
     explorerRefresh: 'Обновить папки',
     explorerCollapseAll: 'Свернуть папки',

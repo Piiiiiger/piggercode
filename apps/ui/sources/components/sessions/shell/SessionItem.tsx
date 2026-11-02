@@ -1127,6 +1127,7 @@ const SessionItemContent = React.memo(
             sessionName: sessionNameResolved,
             hideInactiveSessions: Boolean(hideInactiveSessions),
             iconColor: rowActionIconColor,
+            dangerIconColor: theme.colors.state.danger.foreground,
             activeTags,
             knownTags,
             tagsEnabled: tagsEnabled === true,

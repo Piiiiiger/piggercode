@@ -5,10 +5,11 @@ import { t } from '@/text';
 import { useHappyAction } from '@/hooks/ui/useHappyAction';
 import { HappyError } from '@/utils/errors/errors';
 import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
-import { confirmSessionStop, executeSessionAction } from '@/components/sessions/actions/sessionActionExecution';
+import { confirmSessionDelete, confirmSessionStop, executeSessionAction } from '@/components/sessions/actions/sessionActionExecution';
 import {
     SESSION_ACTION_ARCHIVE_ID,
     SESSION_ACTION_CLEAR_ATTENTION_STANDING_ID,
+    SESSION_ACTION_DELETE_ID,
     SESSION_ACTION_EDIT_TAGS_ID,
     SESSION_ACTION_MARK_READ_ID,
     SESSION_ACTION_MARK_UNREAD_ID,
@@ -90,6 +91,8 @@ export function useSessionRowActionMenu(params: Readonly<{
     sessionName: string;
     hideInactiveSessions: boolean;
     iconColor: string;
+    /** Icon color of actions drawn in red (Delete). */
+    dangerIconColor?: string;
     activeTags: readonly string[];
     knownTags: readonly string[];
     tagsEnabled: boolean;
@@ -174,6 +177,22 @@ export function useSessionRowActionMenu(params: Readonly<{
         performArchiveMutation();
     }, [performArchiveMutation]);
 
+    const [deletingSession, performDeleteMutation] = useHappyAction(async () => {
+        await executeSessionAction({
+            actionId: SESSION_ACTION_DELETE_ID,
+            target,
+            context: {
+                hideInactiveSessions: params.hideInactiveSessions,
+            },
+        });
+    });
+
+    const confirmDeleteSession = React.useCallback(async () => {
+        if (!target.canDelete) return;
+        if (!await confirmSessionDelete()) return;
+        performDeleteMutation();
+    }, [performDeleteMutation, target.canDelete]);
+
     const handleRenameSession = React.useCallback(async () => {
         const newName = await Modal.prompt(
             t('sessionInfo.renameSession'),
@@ -225,6 +244,7 @@ export function useSessionRowActionMenu(params: Readonly<{
         const items = buildSessionRowMoreMenuItems({
             target,
             iconColor: params.iconColor,
+            dangerIconColor: params.dangerIconColor,
             leadingItems: params.leadingMenuItems,
             canMoveToFolder: typeof params.onMoveToFolder === 'function',
             reminderPresets,
@@ -249,6 +269,7 @@ export function useSessionRowActionMenu(params: Readonly<{
         return items;
     }, [
         params.iconColor,
+        params.dangerIconColor,
         params.isNativeMobile,
         params.leadingMenuItems,
         params.onEnterSelectionMode,
@@ -332,9 +353,13 @@ export function useSessionRowActionMenu(params: Readonly<{
             case SESSION_ACTION_ARCHIVE_ID:
                 await confirmArchiveSession();
                 break;
+            case SESSION_ACTION_DELETE_ID:
+                await confirmDeleteSession();
+                break;
         }
     }, [
         confirmArchiveSession,
+        confirmDeleteSession,
         confirmStopSession,
         handleAttentionStandingAction,
         handleReadStateAction,
@@ -420,6 +445,6 @@ export function useSessionRowActionMenu(params: Readonly<{
         handleMoreMenuSelect,
         contextMenuItems,
         handleContextMenuSelect,
-        mutatingSession: stoppingSession || archivingSession || params.archiving === true,
+        mutatingSession: stoppingSession || archivingSession || deletingSession || params.archiving === true,
     };
 }

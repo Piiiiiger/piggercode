@@ -6105,6 +6105,12 @@ export const de: TranslationStructure = {
     },
     sessionsList: {
         explorerTitle: 'Ordneransicht',
+        explorerOpenFolder: 'Ordner öffnen…',
+        explorerCloseFolder: 'Zurück zum Home-Ordner',
+        explorerOtherLocations: 'Andere Orte',
+        explorerOpenFolderTitle: 'Ordner öffnen',
+        explorerOpenFolderChooseMachine: 'Auf welchem Rechner?',
+        explorerOpenFolderNoMachine: 'Gerade ist kein Rechner online. Ordner lassen sich öffnen, sobald einer verbunden ist.',
         explorerMenu: 'Optionen der Ordneransicht',
         explorerRefresh: 'Ordner aktualisieren',
         explorerCollapseAll: 'Alle Ordner einklappen',

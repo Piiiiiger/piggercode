@@ -122,6 +122,7 @@ describe('session action availability', () => {
             SESSION_ACTION_SET_ATTENTION_STANDING_ID,
             SESSION_ACTION_RENAME_ID,
             SESSION_ACTION_ARCHIVE_ID,
+            SESSION_ACTION_DELETE_ID,
         ]);
         expect(listVisibleSessionActionIds({ target: clearStandingTarget, surface: 'sessionInfo' }))
             .toContain(SESSION_ACTION_CLEAR_ATTENTION_STANDING_ID);
@@ -269,6 +270,34 @@ describe('session action availability', () => {
         expect(listVisibleSessionActionIds({ target: adminTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
         expect(listVisibleSessionActionIds({ target: activeTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
         expect(listVisibleSessionActionIds({ target: connectedTarget, surface: 'sessionInfo' })).not.toContain(SESSION_ACTION_DELETE_ID);
+    });
+
+    it('lists Delete in the row menus exactly where session info offers it', () => {
+        const ownedSession = createOwnedRawSession();
+        const owned = (overrides: Partial<Session>, isConnected: boolean) => createSessionActionTarget({
+            session: { ...ownedSession, ...overrides },
+            currentUserId: 'current_user',
+            isConnected,
+            isPinned: false,
+        });
+        const stopped = owned({}, false);
+        const running = owned({ active: true }, true);
+        const shared = createSessionActionTarget({
+            session: { ...ownedSession, owner: 'owner_user', accessLevel: 'edit' },
+            currentUserId: 'current_user',
+            isConnected: false,
+            isPinned: false,
+        });
+
+        expect(stopped.canDelete).toBe(true);
+        expect(running.canDelete).toBe(false);
+        for (const surface of ['rowMenu', 'nativeContextMenu'] as const) {
+            expect(listVisibleSessionActionIds({ target: stopped, surface })).toContain(SESSION_ACTION_DELETE_ID);
+            // A running session is stopped first (Stop is in the same menu); then Delete appears.
+            expect(listVisibleSessionActionIds({ target: running, surface })).not.toContain(SESSION_ACTION_DELETE_ID);
+            expect(listVisibleSessionActionIds({ target: shared, surface })).not.toContain(SESSION_ACTION_DELETE_ID);
+        }
+        expect(listVisibleSessionActionIds({ target: stopped, surface: 'sessionHeader' })).not.toContain(SESSION_ACTION_DELETE_ID);
     });
 
     it('keeps missing Activity quiet while offering Stop for an exact control-serviceable host', () => {

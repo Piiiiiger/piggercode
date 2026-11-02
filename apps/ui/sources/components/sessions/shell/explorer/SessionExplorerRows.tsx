@@ -108,6 +108,7 @@ const stylesheet = StyleSheet.create((theme) => ({
 
 function folderIcon(kind: SessionExplorerNodeKind, expanded: boolean): IconName {
     if (kind === 'machine') return 'desktop';
+    if (kind === 'other') return 'stack';
     return expanded ? 'folder-open' : 'folder';
 }
 
