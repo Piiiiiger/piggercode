@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import type { SessionListViewItem } from './sessionListViewData';
 import {
     buildSessionExplorerItems,
+    countSessionsInExplorerFolder,
+    explorerChildFolderPath,
     sessionExplorerFolderKey,
     sessionExplorerMachineKey,
     type BuildSessionExplorerInput,
@@ -243,5 +245,64 @@ describe('buildSessionExplorerItems', () => {
         ]);
         expect(opened.openFolders.map((target) => target.path)).toEqual(['/home/u/code', '/home/u/code/happier']);
     });
+
+    it('lets folders be made where the tree lists an online machine and deleted only below the home folder', () => {
+        const flags = (header: Header | undefined) => [header?.explorerCanCreateFolder, header?.explorerCanDeleteFolder];
+        const input: Partial<BuildSessionExplorerInput> = {
+            items: [row('a', '/home/u/code/happier'), row('o', '/srv/app')],
+            getListing: listings({
+                '/home/u': { status: 'loaded', dirs: ['code'] },
+                '/': { status: 'loaded', dirs: ['home', 'srv'] },
+            }),
+        };
+
+        const online = folders(build(input).items);
+        expect(flags(online.get('~'))).toEqual([true, false]);
+        expect(flags(online.get('code'))).toEqual([true, true]);
+        expect(flags(online.get('/'))).toEqual([true, false]);
+        // Deleting /home would take the home folder with it.
+        expect(flags(online.get('home'))).toEqual([true, false]);
+        expect(flags(online.get('srv'))).toEqual([true, true]);
+
+        expect(flags(folders(build({ ...input, machines: [{ ...vm, online: false }] }).items).get('code'))).toEqual([false, false]);
+        expect(flags(folders(build({ ...input, sessionFoldersOnly: true }).items).get('code'))).toEqual([false, false]);
+
+        const machineKey = sessionExplorerMachineKey('s1', 'm1');
+        const opened = folders(build({
+            ...input,
+            rootPaths: { [machineKey]: '/home/u/code' },
+            collapsedKeys: { [`${machineKey}:other`]: false },
+        }).items);
+        expect(flags(opened.get('~/code'))).toEqual([true, false]);
+        expect(flags(opened.get('happier'))).toEqual([true, true]);
+        // Other locations gathers sessions; its folders are not listed, so they are not changed there either.
+        expect(flags(opened.get('srv'))).toEqual([false, false]);
+    });
 });
 
+describe('countSessionsInExplorerFolder', () => {
+    it('counts the sessions that started in a folder or below it on that machine, and the ones still running', () => {
+        const sessions = [
+            { active: true, metadata: { machineId: 'm1', path: '/home/u/code/happier' } },
+            { active: false, metadata: { machineId: 'm1', path: '~/code' } },
+            { active: true, metadata: { machineId: 'm1', path: '/home/u/code2' } },
+            { active: true, metadata: { machineId: 'm2', path: '/home/u/code' } },
+            { active: false, metadata: null },
+        ];
+        const code = { machineId: 'm1', path: '/home/u/code', homeDir: '/home/u' };
+
+        expect(countSessionsInExplorerFolder(sessions, code)).toEqual({ total: 2, running: 1 });
+        expect(countSessionsInExplorerFolder(sessions, { ...code, path: '/' })).toEqual({ total: 3, running: 2 });
+    });
+});
+
+describe('explorerChildFolderPath', () => {
+    it('makes a typed name a folder inside the parent and refuses names that lead elsewhere', () => {
+        expect(explorerChildFolderPath('/home/u/code', ' notes ')).toBe('/home/u/code/notes');
+        expect(explorerChildFolderPath('/home/u/code', 'notes/2026/')).toBe('/home/u/code/notes/2026');
+        expect(explorerChildFolderPath('/', 'srv')).toBe('/srv');
+        for (const name of ['', '/etc', '~/x', '..', 'a/../b', './a']) {
+            expect(explorerChildFolderPath('/home/u/code', name)).toBeNull();
+        }
+    });
+});

@@ -59,6 +59,8 @@ import { ProjectGroupHeader } from './ProjectGroupHeader';
 import { SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
 import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
 import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
+import { createExplorerFolder, deleteExplorerFolder, explorerFolderTarget } from './explorer/explorerFolderActions';
+import { clearCachedMachineFileBrowserEntries } from '@/sync/domains/input/machineFileBrowser';
 import { openMachinePathBrowserModal } from '@/components/ui/pathBrowser/openMachinePathBrowserModal';
 import { sessionExplorerMachineKey, type SessionExplorerMachine } from '@/sync/domains/session/listing/sessionListExplorer';
 import { SessionListHeaderFrame } from './SessionListHeaderFrame';
@@ -1287,6 +1289,26 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         if (open) refreshExplorerFolder(item.workspaceScopeHint);
     }, [setCollapsedGroupKeysV1]);
 
+    // New folder: the folder that gets it opens and lists again, so the new one shows.
+    const handleCreateExplorerSubfolder = React.useCallback(async (item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const target = explorerFolderTarget(item.workspaceScopeHint, explorerActionStateRef.current.explorerMachines);
+        if (!target || !await createExplorerFolder(target)) return;
+        const key = item.groupKey ?? '';
+        if (key && item.explorerExpanded !== true) {
+            setCollapsedGroupKeysV1({ ...(explorerActionStateRef.current.collapsedGroupKeysV1 ?? {}), [key]: false });
+        }
+        refreshExplorerFolder(item.workspaceScopeHint);
+    }, [setCollapsedGroupKeysV1]);
+
+    // Delete folder: the folder that held it lists again; its own listing is gone with it.
+    const handleDeleteExplorerFolder = React.useCallback(async (item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const target = explorerFolderTarget(item.workspaceScopeHint, explorerActionStateRef.current.explorerMachines);
+        if (!target || !await deleteExplorerFolder(target, Object.values(storage.getState().sessions))) return;
+        clearCachedMachineFileBrowserEntries({ machineId: target.machineId, serverId: target.serverId, directoryPath: target.path });
+        const parentPath = target.path.slice(0, target.path.lastIndexOf('/')) || '/';
+        refreshExplorerFolder({ serverId: target.serverId, machineId: target.machineId, rootPath: parentPath });
+    }, []);
+
     const resolveSessionMoveTargets = React.useCallback((sessionKeys: ReadonlySet<string>) => (
         resolveSessionListFolderMoveTargets({
             items: data ?? EMPTY_SESSION_LIST_VIEW_ITEMS,
@@ -2038,6 +2060,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         activeSessionCount={item.activeSessionCount ?? 0}
                         onToggle={() => handleToggleExplorerFolder(item)}
                         onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
+                        onNewFolder={item.explorerCanCreateFolder ? () => { void handleCreateExplorerSubfolder(item); } : null}
+                        onDeleteFolder={item.explorerCanDeleteFolder ? () => { void handleDeleteExplorerFolder(item); } : null}
                     />
                 </SessionListHeaderFrame>
             );
@@ -2174,6 +2198,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleCreateSessionFromProject,
         handleCreateSessionInExplorerFolder,
         handleToggleExplorerFolder,
+        handleCreateExplorerSubfolder,
+        handleDeleteExplorerFolder,
         handleCreateSessionFromFolder,
         handleDeleteSessionFolder,
         handleA11yDragStart,

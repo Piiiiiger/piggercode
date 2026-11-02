@@ -202,11 +202,59 @@ function otherLocations(machineNode: Node, title: string): Node {
     return node;
 }
 
+/**
+ * Whether deleting `path` would delete the machine's home folder: it is that folder or one holding it.
+ * Without a known home folder every path counts as holding it.
+ */
+export function explorerPathHoldsHomeFolder(path: string, homeDir: string | null | undefined): boolean {
+    if (!homeDir) return true;
+    const home = trimTrailingSlashes(homeDir);
+    const folder = trimTrailingSlashes(path);
+    return home === folder || home.startsWith(folder === ROOT ? ROOT : `${folder}/`);
+}
+
 /** The segments of `path` below `rootPath`, or null when it lies outside. */
 function segmentsBelow(path: string, rootPath: string): string[] | null {
     if (path === rootPath) return [];
     const prefix = rootPath === ROOT ? ROOT : `${rootPath}/`;
     return path.startsWith(prefix) ? path.slice(prefix.length).split('/').filter(Boolean) : null;
+}
+
+/**
+ * The folder a typed name makes inside `parent`: a name, or a path inside it such as `notes/2026`.
+ * Null when it would land elsewhere (it starts at `/` or `~`, or has a `.` or `..` part) or is empty.
+ */
+export function explorerChildFolderPath(parent: string, typedName: string): string | null {
+    const name = typedName.trim();
+    if (name.startsWith(ROOT) || name.startsWith(HOME)) return null;
+    const segments = name.split('/').map((segment) => segment.trim()).filter((segment) => segment.length > 0);
+    if (segments.length === 0 || segments.some((segment) => segment === '.' || segment === '..')) return null;
+    return joinPath(trimTrailingSlashes(parent), segments.join('/'));
+}
+
+/** Where a session started, as the explorer reads it; the store's sessions fit. */
+export type SessionExplorerPlacement = Readonly<{
+    active?: boolean | null;
+    metadata?: Readonly<{ machineId?: string | null; path?: string | null }> | null;
+}>;
+
+/** The sessions that started in `folder.path` or a folder inside it on that machine, and how many still run. */
+export function countSessionsInExplorerFolder(
+    sessions: Iterable<SessionExplorerPlacement>,
+    folder: Readonly<{ machineId: string; path: string; homeDir: string | null }>,
+): { total: number; running: number } {
+    const folderPath = trimTrailingSlashes(folder.path);
+    let total = 0;
+    let running = 0;
+    for (const session of sessions) {
+        const path = session.metadata?.path?.trim();
+        if (!path || session.metadata?.machineId !== folder.machineId) continue;
+        const absolute = trimTrailingSlashes(resolveAbsolutePath(path, folder.homeDir ?? undefined));
+        if (segmentsBelow(absolute, folderPath) === null) continue;
+        total += 1;
+        if (session.active === true) running += 1;
+    }
+    return { total, running };
 }
 
 function summarize(node: Node, summaries: Map<Node, Summary>): Summary {
@@ -383,6 +431,8 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         if (input.sessionFoldersOnly && summary.sessionCount === 0) return;
         const expanded = isExpanded(node, summary);
         const { machine } = node;
+        // Folders are made and deleted where the tree lists an online machine's own folders.
+        const managesFolders = !input.sessionFoldersOnly && node.browse && node.path !== null && machine.online;
         pushHeader({
             type: 'header',
             headerKind: 'pathFolder',
@@ -399,6 +449,11 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
                 : { serverId: machine.serverId, machineId: machine.machineId, rootPath: node.path },
             explorerNodeKind: node.kind,
             explorerExpanded: expanded,
+            explorerCanCreateFolder: managesFolders,
+            explorerCanDeleteFolder: managesFolders
+                && node.kind === 'folder'
+                && node.path !== null
+                && !explorerPathHoldsHomeFolder(node.path, machine.homeDir),
             serverId: machine.serverId,
         });
         if (!expanded) return;

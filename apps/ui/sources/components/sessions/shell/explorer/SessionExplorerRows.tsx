@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { Icon, type IconName } from '@/components/ui/icons/Icon';
+import { ContextMenu } from '@/components/ui/forms/dropdown/ContextMenu';
+import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
+import { Icon, ICON_SIZE, type IconName } from '@/components/ui/icons/Icon';
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import type { SessionListViewItem } from '@/sync/domains/state/storage';
@@ -122,23 +124,54 @@ export type SessionExplorerFolderRowProps = Readonly<{
     onToggle: () => void;
     /** Starts a session in this folder; null where no session can start (a machine row). */
     onCreateSession: (() => void) | null;
+    /** Makes a folder inside this one; null where the row does not list a machine's folders. */
+    onNewFolder?: (() => void) | null;
+    /** Deletes this folder and what it holds; null for top folders and folders that cannot change. */
+    onDeleteFolder?: (() => void) | null;
     testID?: string;
 }>;
 
 /**
  * One folder of the session explorer, VS Code style: chevron, folder, name, then how many sessions
  * sit below it and a dot while one runs. Pressing the row opens or closes it; + starts a session
- * in the folder. On a pointer that hovers, + shows on hover, focus and open folders; elsewhere always.
+ * in the folder and ⋯ makes or deletes folders. On a pointer that hovers, both show on hover, focus,
+ * open folders and while the menu is open; elsewhere always. The menu itself mounts only while open.
  */
 export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolderRow(props: SessionExplorerFolderRowProps) {
     const styles = stylesheet;
     const { theme } = useUnistyles();
     const [hovered, setHovered] = React.useState(false);
     const [focused, setFocused] = React.useState(false);
+    const [menuOpen, setMenuOpen] = React.useState(false);
+    const menuAnchorRef = React.useRef<View>(null);
     const hoverReveal = React.useMemo(() => isHoverCapablePrimaryPointer(), []);
     const isWeb = Platform.OS === 'web';
     const iconColor = theme.colors.text.secondary;
-    const showCreate = !hoverReveal || hovered || focused || props.expanded;
+    const dangerColor = theme.colors.state.danger.foreground;
+    const showCreate = !hoverReveal || hovered || focused || props.expanded || menuOpen;
+
+    const canMakeFolder = Boolean(props.onNewFolder);
+    const canDeleteFolder = Boolean(props.onDeleteFolder);
+    const menuItems = React.useMemo((): DropdownMenuItem[] => [
+        ...(canMakeFolder ? [{
+            id: 'new-folder',
+            testID: 'session-explorer-folder-new-folder',
+            title: t('files.createFolderPromptTitle'),
+            icon: <Icon name="folder" size={ICON_SIZE.sm} color={iconColor} />,
+        }] : []),
+        ...(canDeleteFolder ? [{
+            id: 'delete-folder',
+            testID: 'session-explorer-folder-delete',
+            title: t('files.repositoryTree.deleteFolder.confirm'),
+            icon: <Icon name="trash" size={ICON_SIZE.sm} color={dangerColor} />,
+            destructive: true,
+        }] : []),
+    ], [canDeleteFolder, canMakeFolder, dangerColor, iconColor]);
+    const { onDeleteFolder, onNewFolder } = props;
+    const handleMenuSelect = React.useCallback((itemId: string) => {
+        if (itemId === 'new-folder') onNewFolder?.();
+        else if (itemId === 'delete-folder') onDeleteFolder?.();
+    }, [onDeleteFolder, onNewFolder]);
     const a11yLabel = props.kind === 'machine'
         ? t('sessionsList.explorerMachineA11y', { name: props.title, count: props.sessionCount })
         : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
@@ -204,6 +237,39 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                     <Icon name="plus" size={14} color={iconColor} />
                 </Pressable>
             ) : null}
+            {menuItems.length > 0 ? (
+                <Pressable
+                    ref={menuAnchorRef}
+                    testID={props.testID ? `${props.testID}:menu` : undefined}
+                    onPress={(event) => {
+                        event?.stopPropagation?.();
+                        setMenuOpen((open) => !open);
+                    }}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    style={({ pressed }) => [
+                        styles.newSessionButton,
+                        showCreate ? null : styles.newSessionButtonHidden,
+                        pressed ? styles.pressed : null,
+                    ]}
+                    hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.moreActions')}
+                >
+                    <Icon name="dots-three" size={14} color={iconColor} />
+                </Pressable>
+            ) : null}
+            <ContextMenu
+                open={menuOpen && menuItems.length > 0}
+                onOpenChange={setMenuOpen}
+                anchorRef={menuAnchorRef}
+                items={menuItems}
+                onSelect={handleMenuSelect}
+                placement="left"
+                variant="slim"
+                maxWidthCap={220}
+                popoverPortalWebTarget="body"
+            />
         </View>
     );
 });

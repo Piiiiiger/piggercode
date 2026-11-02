@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
@@ -290,6 +291,30 @@ test.describe('ui e2e: session list folder explorer', () => {
       await expect(home).toHaveCount(1, { timeout: 60_000 });
       await expect(page.getByTestId(`session-list-item-${greetingSession}`)).toHaveCount(1);
       await page.screenshot({ path: join(screenshotDir, '7-other-locations.png') });
+
+      // A folder's ⋯ makes a folder on the machine; the top folder offers no delete.
+      const codeTestId = `session-list-header:explorer:${serverId}:${machineId}:${join(machineHome, 'code')}`;
+      await page.getByTestId(`${codeTestId}:menu`).click();
+      await expect(page.getByTestId('session-explorer-folder-new-folder')).toHaveCount(1, { timeout: 60_000 });
+      await expect(page.getByTestId('session-explorer-folder-delete')).toHaveCount(0);
+      await page.screenshot({ path: join(screenshotDir, '8-folder-menu.png') });
+      await page.getByTestId('session-explorer-folder-new-folder').click();
+      await page.getByTestId('web-prompt-input').fill('scratch-dir');
+      await page.getByTestId('web-prompt-confirm').click();
+      const scratchDirPath = join(machineHome, 'code', 'scratch-dir');
+      const scratchDir = folder(scratchDirPath);
+      await expect(scratchDir).toHaveCount(1, { timeout: 60_000 });
+      await expect.poll(() => existsSync(scratchDirPath), { timeout: 30_000 }).toBe(true);
+      await page.screenshot({ path: join(screenshotDir, '9-folder-created.png') });
+
+      // Deleting it asks first, then removes it from the machine and the tree.
+      await scratchDir.hover();
+      await page.getByTestId(`session-list-header:explorer:${serverId}:${machineId}:${scratchDirPath}:menu`).click();
+      await page.getByTestId('session-explorer-folder-delete').click();
+      await page.getByTestId('web-modal-confirm').click();
+      await expect(scratchDir).toHaveCount(0, { timeout: 60_000 });
+      await expect.poll(() => existsSync(scratchDirPath), { timeout: 30_000 }).toBe(false);
+      await expect(happier).toHaveCount(1);
     } catch (error) {
       throw appendBrowserDiagnostics(error, diagnostics());
     }

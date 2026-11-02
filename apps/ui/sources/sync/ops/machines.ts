@@ -930,6 +930,31 @@ export async function machineCreateDirectory(
     }
 }
 
+/** Deletes a file, or a folder with everything in it when `recursive` is set. */
+export async function machineDeletePath(
+    machineId: string,
+    path: string,
+    options?: { serverId?: string | null; recursive?: boolean },
+): Promise<
+    | { success: true }
+    | { success: false; error: string; errorCode?: string }
+> {
+    try {
+        return await machineRpcWithServerScope<{ success: true } | { success: false; error: string }, { path: string; recursive: boolean }>({
+            machineId,
+            method: RPC_METHODS.DELETE_PATH,
+            payload: { path, recursive: options?.recursive === true },
+            serverId: options?.serverId,
+        });
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            errorCode: readRpcErrorCode(error),
+        };
+    }
+}
+
 export type EnvPreviewSecretsPolicy = 'none' | 'redacted' | 'full';
 
 export type PreviewEnvSensitivitySource = 'forced' | 'hinted' | 'none';

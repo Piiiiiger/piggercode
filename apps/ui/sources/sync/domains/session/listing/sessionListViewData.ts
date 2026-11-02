@@ -37,6 +37,10 @@ export type SessionListViewItem =
         explorerNodeKind?: 'machine' | 'root' | 'folder' | 'other';
         /** Explorer: whether the folder shows what is inside it. */
         explorerExpanded?: boolean;
+        /** Explorer: folders can be made in this one (it lists an online machine's folders). */
+        explorerCanCreateFolder?: boolean;
+        /** Explorer: this folder can be deleted (never a top folder, the home folder or a folder holding it). */
+        explorerCanDeleteFolder?: boolean;
         /** Explorer: why an open folder shows nothing yet, or that its listing was cut short. */
         explorerStatus?: 'loading' | 'error' | 'empty' | 'truncated' | 'offline';
         renderWorkspaceKey?: string;
