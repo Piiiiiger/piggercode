@@ -178,13 +178,43 @@ export function setPreferredLanguageFromSettings(value: unknown): void {
     preferredLanguageOverride = null;
 }
 
+const HELD_VALUE = /\u0000(\d+)\u0000/g;
+
+/**
+ * The product name replaces the translation's own words only. Names passed in (a folder, a session,
+ * a machine) can contain `happier` too, so the translation runs again with each text value held out
+ * as a placeholder. A translation that branches on or reshapes a value gives a different text that
+ * way, and keeps the plain replacement.
+ */
+function applyProductNameToTranslation(callable: TranslationFunction, params: unknown, text: string): string {
+    const productName = resolveConfiguredProductName();
+    const cliCommandName = resolveConfiguredCliCommandName();
+    const branded = applyProductName(text, productName, cliCommandName);
+    if (branded === text || !params || typeof params !== 'object') return branded;
+    const values: string[] = [];
+    const held: Record<string, unknown> = {};
+    for (const [name, value] of Object.entries(params)) {
+        if (typeof value === 'string' && value.length > 0) {
+            held[name] = `\u0000${values.length}\u0000`;
+            values.push(value);
+        } else {
+            held[name] = value;
+        }
+    }
+    if (values.length === 0) return branded;
+    const restore = (template: string) => template.replace(HELD_VALUE, (_match, index: string) => values[Number(index)] ?? '');
+    const template = callable(held as never);
+    if (restore(template) !== text) return branded;
+    return restore(applyProductName(template, productName, cliCommandName));
+}
+
 export function t<K extends TranslationKey>(
     key: K,
     ...params: TranslationParams<K> extends never ? [] : [params: TranslationParams<K>]
 ): string {
     const callable = resolveCallableTranslation(key);
-    const text = callable ? callable(params[0] as never) : resolveStringValue(key);
-    return applyProductName(text, resolveConfiguredProductName(), resolveConfiguredCliCommandName());
+    if (!callable) return applyProductName(resolveStringValue(key), resolveConfiguredProductName(), resolveConfiguredCliCommandName());
+    return applyProductNameToTranslation(callable, params[0], callable(params[0] as never));
 }
 
 export function tLoose(key: string): string {

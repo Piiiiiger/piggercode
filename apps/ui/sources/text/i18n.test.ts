@@ -61,6 +61,19 @@ describe('text/i18n', () => {
         expect(t('settings.aboutFooter')).toBe(en.settings.aboutFooter);
     });
 
+    it('keeps names passed into translated text as they are', () => {
+        const extra = Constants.expoConfig!.extra as Record<string, unknown>;
+        extra.app = { productName: 'Pigger', cliCommandName: 'piggercode' };
+        try {
+            // A folder or session named after the upstream project keeps its name; the template's own words change.
+            expect(t('sessionsList.explorerFolderA11y', { name: 'happier', count: 2 })).toBe('Folder happier, 2 sessions');
+            expect(t('sessionInfo.resumeCommand', { sessionId: 'happier' })).toBe('piggercode resume happier');
+            expect(t('sessionsList.explorerNewSessionA11y', { name: 'Happier docs' })).toBe('New session in Happier docs');
+        } finally {
+            delete extra.app;
+        }
+    });
+
     it('ignores an unsupported preferred language instead of losing translations', () => {
         setPreferredLanguageFromSettings('kl');
         expect(t('tabs.inbox')).toBe(en.tabs.inbox);
