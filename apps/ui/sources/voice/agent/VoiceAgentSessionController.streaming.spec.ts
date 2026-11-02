@@ -440,10 +440,10 @@ describe('VoiceAgentSessionController (streaming)', () => {
     expect(start).not.toHaveBeenCalled();
   });
 
-  it('surfaces a clear error when starting local voice on a target flavor without local control support', async () => {
+  it('surfaces a clear error when starting local voice on a target runtime without local control support', async () => {
     setVoiceControllerState({
       sessions: {
-        s1: { id: 's1', active: true, presence: 'online', modelMode: 'default', metadata: { flavor: 'gemini' } },
+        s1: { id: 's1', active: true, presence: 'online', modelMode: 'default', metadata: { flavor: 'codex', codexBackendMode: 'mcp' } },
       },
     });
 
@@ -456,10 +456,10 @@ describe('VoiceAgentSessionController (streaming)', () => {
     expect(start).not.toHaveBeenCalled();
   });
 
-  it('surfaces a clear error when starting local voice on an OpenCode ACP session without effective local control support', async () => {
+  it('surfaces a clear error when starting local voice on a Codex MCP session even when the account default supports local control', async () => {
     setVoiceControllerState({
       settings: {
-        opencodeBackendMode: 'server',
+        codexBackendMode: 'appServer',
       },
       sessions: {
         s1: {
@@ -467,7 +467,7 @@ describe('VoiceAgentSessionController (streaming)', () => {
           active: true,
           presence: 'online',
           modelMode: 'default',
-          metadata: { flavor: 'opencode', opencodeBackendMode: 'acp' },
+          metadata: { flavor: 'codex', codexBackendMode: 'mcp' },
         },
       },
     });
