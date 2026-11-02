@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/icons/Icon';
 import {
     useLocalSettingMutable,
     useSessionExplorerMachines,
+    useSetting,
     type SessionListViewItem,
 } from '@/sync/domains/state/storage';
 import {
@@ -18,6 +19,7 @@ import {
 } from '@/sync/domains/session/listing/sessionListAgentFilter';
 
 import { SessionListAgentPicker } from './explorer/SessionListAgentPicker';
+import { SessionExplorerModeSwitch } from './explorer/SessionExplorerModeSwitch';
 import { useInstalledAgentClis } from './explorer/useInstalledAgentClis';
 
 const stylesheet = StyleSheet.create(() => ({
@@ -65,23 +67,37 @@ export const SessionsListStorageChrome = React.memo((props: SessionsListStorageC
     const openBrowse = React.useCallback(() => {
         router.push('/direct/browse');
     }, [router]);
+    // The explorer switches between its Sessions and Files views; the Files view needs no agent picker.
+    const explorerLayout = useSetting('sessionListLayoutV1') !== 'list';
+    const [explorerModeSetting, setExplorerMode] = useLocalSettingMutable('sessionListExplorerModeV1');
+    const filesView = explorerLayout && explorerModeSetting === 'files';
+    const modeSwitch = explorerLayout
+        ? <SessionExplorerModeSwitch mode={filesView ? 'files' : 'sessions'} onChange={setExplorerMode} />
+        : null;
+
+    if (filesView) return modeSwitch;
 
     if (options.length > 0 || anyMachineOnline) {
         return (
-            <SessionListAgentPicker
-                options={options}
-                selected={selected}
-                counts={counts}
-                onSelect={setPicked}
-                onOpen={detect}
-                onBrowse={props.directSessionsEnabled ? openBrowse : null}
-            />
+            <>
+                {modeSwitch}
+                <SessionListAgentPicker
+                    options={options}
+                    selected={selected}
+                    counts={counts}
+                    onSelect={setPicked}
+                    onOpen={detect}
+                    onBrowse={props.directSessionsEnabled ? openBrowse : null}
+                />
+            </>
         );
     }
 
-    if (!props.directSessionsEnabled) return null;
+    if (!props.directSessionsEnabled) return modeSwitch;
 
     return (
+        <>
+        {modeSwitch}
         <ItemGroup
             style={styles.browseActionContainer}
             containerStyle={styles.browseActionGroupSurface}
@@ -95,5 +111,6 @@ export const SessionsListStorageChrome = React.memo((props: SessionsListStorageC
                 onPress={openBrowse}
             />
         </ItemGroup>
+        </>
     );
 });

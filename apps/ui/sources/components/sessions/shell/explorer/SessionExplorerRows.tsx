@@ -7,6 +7,7 @@ import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import type { SessionListViewItem } from '@/sync/domains/state/storage';
 import { t } from '@/text';
+import { getFileLanguageFromPath } from '@/utils/code/fileLanguage';
 import { isHoverCapablePrimaryPointer } from '@/utils/platform/webMobileHeuristics';
 
 import {
@@ -256,6 +257,112 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
             {menuAnchor && props.folderActions ? (
                 <SessionExplorerFolderMenu
                     actions={props.folderActions}
+                    anchorRef={menuAnchor === 'row' ? rowRef : menuButtonRef}
+                    placement={menuAnchor === 'row' ? 'bottom' : 'left'}
+                    onClose={closeMenu}
+                />
+            ) : null}
+        </View>
+    );
+});
+
+const IMAGE_FILE = /\.(png|jpe?g|gif|webp|bmp|ico|avif|heic|svg)$/i;
+const TEXT_FILE = /\.(md|mdx|txt|rst|log|csv)$/i;
+
+function fileIcon(name: string): IconName {
+    if (IMAGE_FILE.test(name)) return 'image';
+    if (TEXT_FILE.test(name)) return 'file-text';
+    return getFileLanguageFromPath(name) ? 'file-code' : 'file';
+}
+
+export type SessionExplorerFileRowProps = Readonly<{
+    title: string;
+    depth: number;
+    /** Opens the file's preview. */
+    onOpen: () => void;
+    /** What the file's ⋯ and right-click (long-press on phones) menu offers; null for no menu. */
+    fileActions?: SessionExplorerFolderActions | null;
+    testID?: string;
+}>;
+
+/**
+ * One file of the explorer's Files view: its icon lines up with a folder's at the same depth. Pressing
+ * it opens a preview; ⋯, a right-click or a long press opens the file's menu (shown like a folder's ⋯).
+ */
+export const SessionExplorerFileRow = React.memo(function SessionExplorerFileRow(props: SessionExplorerFileRowProps) {
+    const styles = stylesheet;
+    const { theme } = useUnistyles();
+    const [hovered, setHovered] = React.useState(false);
+    const [focused, setFocused] = React.useState(false);
+    const [menuAnchor, setMenuAnchor] = React.useState<'button' | 'row' | null>(null);
+    const rowRef = React.useRef<View>(null);
+    const menuButtonRef = React.useRef<View>(null);
+    const hoverReveal = React.useMemo(() => isHoverCapablePrimaryPointer(), []);
+    const isWeb = Platform.OS === 'web';
+    const iconColor = theme.colors.text.secondary;
+    const showActions = !hoverReveal || hovered || focused || menuAnchor !== null;
+    const hasMenu = hasSessionExplorerFolderActions(props.fileActions);
+    const closeMenu = React.useCallback(() => setMenuAnchor(null), []);
+    // Web only: a right-click opens the file's menu instead of the browser's.
+    const rowContextMenuProps = isWeb && hasMenu ? {
+        onContextMenu: (event: { preventDefault?: () => void; stopPropagation?: () => void }) => {
+            event.preventDefault?.();
+            event.stopPropagation?.();
+            setMenuAnchor('row');
+        },
+    } : {};
+
+    return (
+        <View
+            ref={rowRef}
+            collapsable={false}
+            testID={props.testID ? `${props.testID}:row` : undefined}
+            style={[styles.row, hovered ? styles.rowHovered : null, { paddingLeft: sessionExplorerIconInset(props.depth) - 4 }]}
+            onPointerEnter={isWeb ? () => setHovered(true) : undefined}
+            onPointerLeave={isWeb ? () => setHovered(false) : undefined}
+            {...rowContextMenuProps}
+        >
+            <Pressable
+                testID={props.testID}
+                onPress={props.onOpen}
+                onLongPress={!isWeb && hasMenu ? () => setMenuAnchor('row') : undefined}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                style={({ pressed }) => [styles.toggle, pressed ? styles.pressed : null]}
+                accessibilityRole="button"
+                accessibilityLabel={props.title}
+            >
+                <Icon name={fileIcon(props.title)} size={16} color={iconColor} />
+                <Text style={styles.title} numberOfLines={1} ellipsizeMode="middle">
+                    {props.title}
+                </Text>
+            </Pressable>
+            {hasMenu ? (
+                <Pressable
+                    ref={menuButtonRef}
+                    testID={props.testID ? `${props.testID}:menu` : undefined}
+                    onPress={(event) => {
+                        event?.stopPropagation?.();
+                        setMenuAnchor((anchor) => (anchor ? null : 'button'));
+                    }}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    style={({ pressed }) => [
+                        styles.newSessionButton,
+                        showActions ? null : styles.newSessionButtonHidden,
+                        pressed ? styles.pressed : null,
+                    ]}
+                    hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.moreActions')}
+                >
+                    <Icon name="dots-three" size={14} color={iconColor} />
+                </Pressable>
+            ) : null}
+            {menuAnchor && props.fileActions ? (
+                <SessionExplorerFolderMenu
+                    kind="file"
+                    actions={props.fileActions}
                     anchorRef={menuAnchor === 'row' ? rowRef : menuButtonRef}
                     placement={menuAnchor === 'row' ? 'bottom' : 'left'}
                     onClose={closeMenu}

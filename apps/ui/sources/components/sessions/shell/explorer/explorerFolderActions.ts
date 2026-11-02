@@ -6,13 +6,15 @@ import {
     type SessionExplorerMachine,
     type SessionExplorerPlacement,
 } from '@/sync/domains/session/listing/sessionListExplorer';
-import { machineCreateDirectory, machineDeletePath, machineRenamePath } from '@/sync/ops/machines';
+import { decodeBase64 } from '@/encryption/base64';
+import { machineCreateDirectory, machineDeletePath, machineReadFile, machineRenamePath } from '@/sync/ops/machines';
+import { saveFileBytes } from '@/sync/runtime/files/saveFileBytes';
 import { t } from '@/text';
 import { formatPathRelativeToHome } from '@/utils/sessions/formatPathRelativeToHome';
 
 import { readExplorerListing } from './explorerDirectoryListings';
 
-/** An explorer folder on its machine; `path` is absolute. */
+/** An explorer folder (or file) on its machine; `path` is absolute. */
 export type ExplorerFolderTarget = Readonly<{
     serverId: string;
     machineId: string;
@@ -52,14 +54,52 @@ export async function createExplorerFolder(parent: ExplorerFolderTarget): Promis
     const slash = path.lastIndexOf('/');
     const name = path.slice(slash + 1);
     const directChild = (path.slice(0, slash) || '/') === parent.path;
-    const listing = readExplorerListing({ serverId: parent.serverId, machineId: parent.machineId, path: parent.path });
-    if (directChild && listing?.dirs?.includes(name)) {
+    const listedDirs = [false, true].flatMap((includeFiles) => (
+        readExplorerListing({ serverId: parent.serverId, machineId: parent.machineId, path: parent.path, includeFiles })?.dirs ?? []
+    ));
+    if (directChild && listedDirs.includes(name)) {
         Modal.alert(title, t('sessionsList.explorerFolderExists', { name }));
         return null;
     }
     const result = await machineCreateDirectory(parent.machineId, path, { serverId: parent.serverId });
     if (!result.success) {
         Modal.alert(t('common.error'), result.error || t('files.createFolderFailed'));
+        return null;
+    }
+    return path;
+}
+
+/** Asks for a new name and renames the entry where it is. Resolves to the new path, or null. */
+async function promptRenameInPlace(entry: ExplorerFolderTarget, title: string): Promise<string | null> {
+    const slash = entry.path.lastIndexOf('/');
+    const parentPath = entry.path.slice(0, slash) || '/';
+    const currentName = entry.path.slice(slash + 1);
+    const typed = await Modal.prompt(title, shownPath(entry), {
+        defaultValue: currentName,
+        placeholder: t('promptLibrary.folderPlaceholder'),
+        confirmText: t('common.rename'),
+        cancelText: t('common.cancel'),
+    });
+    if (typeof typed !== 'string' || typed.trim().length === 0 || typed.trim() === currentName) return null;
+    // A new name keeps the entry where it is: one name, no path.
+    const path = explorerChildFolderPath(parentPath, typed);
+    if (!path || (path.slice(0, path.lastIndexOf('/')) || '/') !== parentPath) {
+        Modal.alert(title, t('sessionsList.explorerRenameFolderInvalid'));
+        return null;
+    }
+    const name = path.slice(path.lastIndexOf('/') + 1);
+    // Names already taken in the folder, from whichever listings the explorer holds (folders, files).
+    const taken = [false, true].flatMap((includeFiles) => {
+        const listing = readExplorerListing({ serverId: entry.serverId, machineId: entry.machineId, path: parentPath, includeFiles });
+        return [...(listing?.dirs ?? []), ...(listing?.files ?? [])];
+    });
+    if (taken.includes(name)) {
+        Modal.alert(title, t('sessionsList.explorerFolderExists', { name }));
+        return null;
+    }
+    const result = await machineRenamePath(entry.machineId, entry.path, path, { serverId: entry.serverId });
+    if (!result.success) {
+        Modal.alert(t('common.error'), result.error || t('files.repositoryTree.rename.failed'));
         return null;
     }
     return path;
@@ -80,34 +120,50 @@ export async function renameExplorerFolder(
         Modal.alert(title, t('sessionsList.explorerRenameFolderHasSessions', { count: inside.total }));
         return null;
     }
-    const slash = folder.path.lastIndexOf('/');
-    const parentPath = folder.path.slice(0, slash) || '/';
-    const currentName = folder.path.slice(slash + 1);
-    const typed = await Modal.prompt(title, shownPath(folder), {
-        defaultValue: currentName,
-        placeholder: t('promptLibrary.folderPlaceholder'),
-        confirmText: t('common.rename'),
-        cancelText: t('common.cancel'),
-    });
-    if (typeof typed !== 'string' || typed.trim().length === 0 || typed.trim() === currentName) return null;
-    // A new name keeps the folder where it is: one name, no path.
-    const path = explorerChildFolderPath(parentPath, typed);
-    if (!path || (path.slice(0, path.lastIndexOf('/')) || '/') !== parentPath) {
-        Modal.alert(title, t('sessionsList.explorerRenameFolderInvalid'));
-        return null;
-    }
-    const name = path.slice(path.lastIndexOf('/') + 1);
-    const listing = readExplorerListing({ serverId: folder.serverId, machineId: folder.machineId, path: parentPath });
-    if (listing?.dirs?.includes(name)) {
-        Modal.alert(title, t('sessionsList.explorerFolderExists', { name }));
-        return null;
-    }
-    const result = await machineRenamePath(folder.machineId, folder.path, path, { serverId: folder.serverId });
+    return await promptRenameInPlace(folder, title);
+}
+
+/** Asks for a new name and renames the file where it is. Resolves to the new path, or null. */
+export async function renameExplorerFile(file: ExplorerFolderTarget): Promise<string | null> {
+    return await promptRenameInPlace(file, t('files.repositoryTree.rename.title'));
+}
+
+/** Confirms, then deletes the file. Resolves to true once it is gone. */
+export async function deleteExplorerFile(file: ExplorerFolderTarget): Promise<boolean> {
+    const confirmed = await Modal.confirm(
+        t('files.repositoryTree.deleteFile.title'),
+        t('files.repositoryTree.deleteFile.body', { path: shownPath(file) }),
+        { cancelText: t('common.cancel'), confirmText: t('common.delete'), destructive: true },
+    );
+    if (!confirmed) return false;
+    const result = await machineDeletePath(file.machineId, file.path, { serverId: file.serverId, recursive: false });
     if (!result.success) {
-        Modal.alert(t('common.error'), result.error || t('files.repositoryTree.rename.failed'));
-        return null;
+        Modal.alert(t('common.error'), result.error || t('files.repositoryTree.delete.failed'));
+        return false;
     }
-    return path;
+    return true;
+}
+
+/** Reads the file from its machine and hands it over as a download (the share sheet on phones). */
+export async function downloadExplorerFile(file: ExplorerFolderTarget): Promise<boolean> {
+    const name = file.path.slice(file.path.lastIndexOf('/') + 1);
+    const read = await machineReadFile(file.machineId, file.path, { serverId: file.serverId });
+    if (!read.success) {
+        Modal.alert(t('common.error'), read.error);
+        return false;
+    }
+    try {
+        await saveFileBytes({
+            name,
+            bytes: decodeBase64(read.contentBase64),
+            mimeType: 'application/octet-stream',
+            dialogTitle: t('files.repositoryTree.actions.download'),
+        });
+        return true;
+    } catch (error) {
+        Modal.alert(t('common.error'), error instanceof Error ? error.message : t('files.repositoryTree.actions.download'));
+        return false;
+    }
 }
 
 /**

@@ -66,6 +66,7 @@ test.describe('ui e2e: session list folder explorer', () => {
       await mkdir(join(machineHome, folder), { recursive: true });
     }
     await writeFile(join(machineHome, 'notes.txt'), 'files are not folders\n', 'utf8');
+    await writeFile(join(machineHome, 'code', 'happier', 'README.md'), '# Hello from the Files view\n', 'utf8');
 
     server = await startServerLight({
       testDir: suiteDir,
@@ -337,6 +338,37 @@ test.describe('ui e2e: session list folder explorer', () => {
       await expect(page.getByTestId('dropdown-option-ui_session_rename')).toBeVisible({ timeout: 60_000 });
       await page.screenshot({ path: join(screenshotDir, '11-session-right-click.png') });
       await page.keyboard.press('Escape');
+
+      // The Files view turns the explorer into a file manager: folders and files, no sessions.
+      await page.getByTestId('session-explorer-mode:files').click();
+      await expect(page.getByTestId(`session-list-item-${sidebarSession}`)).toHaveCount(0, { timeout: 60_000 });
+      await expect(page.getByTestId('session-list-agent-picker')).toHaveCount(0);
+      await expect(happier).toHaveCount(1, { timeout: 60_000 });
+      if ((await happier.getAttribute('aria-expanded')) !== 'true') await happier.click();
+      const readmePath = join(machineHome, 'code', 'happier', 'README.md');
+      const readme = page.getByTestId(`session-list-header:explorer:${serverId}:${machineId}:${join(machineHome, 'code/happier')}#file:README.md`);
+      await expect(readme).toHaveCount(1, { timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, '12-files-view.png') });
+
+      // A file opens in a read-only preview beside the tree.
+      await readme.click();
+      await expect(page.getByTestId('machine-file-preview-code')).toContainText('Hello from the Files view', { timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, '13-file-preview.png') });
+
+      // Its right-click menu downloads it and deletes it on the machine.
+      await readme.click({ button: 'right' });
+      const download = page.waitForEvent('download');
+      await page.getByTestId('session-explorer-file-download').click();
+      expect((await download).suggestedFilename()).toBe('README.md');
+      await readme.click({ button: 'right' });
+      await page.getByTestId('session-explorer-file-delete').click();
+      await page.getByTestId('web-modal-confirm').click();
+      await expect(readme).toHaveCount(0, { timeout: 60_000 });
+      await expect.poll(() => existsSync(readmePath), { timeout: 30_000 }).toBe(false);
+
+      // Back in the Sessions view the sessions return.
+      await page.getByTestId('session-explorer-mode:sessions').click();
+      await expect(page.getByTestId(`session-list-item-${sidebarSession}`)).toHaveCount(1, { timeout: 60_000 });
     } catch (error) {
       throw appendBrowserDiagnostics(error, diagnostics());
     }

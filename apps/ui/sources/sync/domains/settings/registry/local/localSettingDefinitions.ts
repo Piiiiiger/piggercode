@@ -131,6 +131,12 @@ export const LOCAL_SETTING_DEFINITIONS = defineSettingDefinitions({
         description: 'Whether the session explorer lists hidden folders (names starting with a dot) on this device',
         storageScope: 'local',
     },
+    sessionListExplorerModeV1: {
+        schema: z.enum(['sessions', 'files']),
+        default: 'sessions',
+        description: 'What the session explorer shows on this device: folders with their sessions, or folders with their files',
+        storageScope: 'local',
+    },
     collapsedGroupKeysV1: {
         schema: z.record(z.string(), z.boolean()).default({}),
         default: {},

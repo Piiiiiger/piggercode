@@ -24,7 +24,7 @@ export type SessionListViewItem =
     | {
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus';
+        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus' | 'explorerFile';
         groupKey?: string;
         workspaceKey?: string;
         workspace?: SessionFolderWorkspaceRefV1;
@@ -39,8 +39,8 @@ export type SessionListViewItem =
         explorerExpanded?: boolean;
         /** Explorer: folders can be made in this one (it lists an online machine's folders). */
         explorerCanCreateFolder?: boolean;
-        /** Explorer: this folder can be renamed or deleted (never a top folder, the home folder or a folder holding it). */
-        explorerCanChangeFolder?: boolean;
+        /** Explorer: this folder or file can be renamed or deleted (never a top folder, the home folder or a folder holding it). */
+        explorerCanChange?: boolean;
         /** Explorer: why an open folder shows nothing yet, or that its listing was cut short. */
         explorerStatus?: 'loading' | 'error' | 'empty' | 'truncated' | 'offline';
         renderWorkspaceKey?: string;

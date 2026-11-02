@@ -930,6 +930,38 @@ export async function machineCreateDirectory(
     }
 }
 
+/**
+ * Reads a file in one piece, base64 encoded. The machine refuses folders and files above its own read
+ * limit (`HAPPIER_FILES_READ_MAX_BYTES`, 2.5 MB unless set), so this is for previews, not bulk transfers.
+ */
+export async function machineReadFile(
+    machineId: string,
+    path: string,
+    options?: { serverId?: string | null },
+): Promise<
+    | { success: true; contentBase64: string }
+    | { success: false; error: string; errorCode?: string }
+> {
+    try {
+        const result = await machineRpcWithServerScope<{ success: true; content: string } | { success: false; error: string }, { path: string }>({
+            machineId,
+            method: RPC_METHODS.READ_FILE,
+            payload: { path },
+            serverId: options?.serverId,
+        });
+        if (!result.success) return result;
+        return typeof result.content === 'string'
+            ? { success: true, contentBase64: result.content }
+            : { success: false, error: 'Unexpected readFile response' };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            errorCode: readRpcErrorCode(error),
+        };
+    }
+}
+
 /** Renames or moves a file or folder; refuses when something is already at `to`. */
 export async function machineRenamePath(
     machineId: string,

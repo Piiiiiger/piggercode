@@ -6739,6 +6739,8 @@ localTailscale: {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => `このフォルダーで ${count} 件のセッションが実行中です。先に停止してから、フォルダーを削除してください。`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => `${count} 件のセッションがこのフォルダーで開始されました。セッションは一覧に残りますが、ここにあるファイルは削除されます。`,
     explorerOpenAsTop: '最上位フォルダーとして開く',
+    explorerModeSessions: 'セッション',
+    explorerModeFiles: 'ファイル',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => `このフォルダーで ${count} 件のセッションが開始されています。名前を変えるとセッションがフォルダーを見失うため、変更できません。`,
     explorerRenameFolderInvalid: '「/」を含まない名前にしてください。「.」と「..」は使えません。',
     explorerOpenFolderTitle: 'フォルダーを開く',

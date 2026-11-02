@@ -6272,6 +6272,8 @@ export const zhHans: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => `这个文件夹里还有 ${count} 个会话在运行。先停止它们，再删除文件夹。`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => `有 ${count} 个会话是在这个文件夹里开始的。会话会留在列表里，但这里的文件会被删除。`,
     explorerOpenAsTop: '设为顶层文件夹',
+    explorerModeSessions: '会话',
+    explorerModeFiles: '文件',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => `有 ${count} 个会话是在这个文件夹里开始的，改名后它们会找不到原来的文件夹，所以不能改名。`,
     explorerRenameFolderInvalid: '名称不能包含「/」，也不能是「.」或「..」。',
     explorerOpenFolderTitle: '打开文件夹',

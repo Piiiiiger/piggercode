@@ -6100,6 +6100,8 @@ export const fr: TranslationStructure = {
         explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'Une session tourne encore dans ce dossier. Arrête-la d’abord, puis supprime le dossier.' : `${count} sessions tournent encore dans ce dossier. Arrête-les d’abord, puis supprime le dossier.`,
         explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Une session a été lancée dans ce dossier. Elle reste dans ta liste, mais ses fichiers ici sont supprimés.' : `${count} sessions ont été lancées dans ce dossier. Elles restent dans ta liste, mais leurs fichiers ici sont supprimés.`,
         explorerOpenAsTop: 'Ouvrir comme dossier principal',
+        explorerModeSessions: 'Sessions',
+        explorerModeFiles: 'Fichiers',
         explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'Une session a été lancée dans ce dossier. Si tu le renommes, elle ne le retrouvera plus : il garde donc son nom.' : `${count} sessions ont été lancées dans ce dossier. Si tu le renommes, elles ne le retrouveront plus : il garde donc son nom.`,
         explorerRenameFolderInvalid: 'Utilise un nom sans « / », autre que « . » et « .. ».',
         explorerOpenFolderTitle: 'Ouvrir un dossier',

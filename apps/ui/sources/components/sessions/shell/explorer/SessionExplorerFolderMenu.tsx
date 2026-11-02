@@ -14,7 +14,7 @@ import { t } from '@/text';
 
 import { useInstalledAgentClis } from './useInstalledAgentClis';
 
-/** What an explorer folder's ⋯ and right-click menu offer; a null entry is left out. */
+/** What an explorer folder's (or file's) ⋯ and right-click menu offer; a null entry is left out. */
 export type SessionExplorerFolderActions = Readonly<{
     /** Starts a session in the folder with the chosen agent (CLI). */
     newSession: Readonly<{
@@ -29,12 +29,14 @@ export type SessionExplorerFolderActions = Readonly<{
     onRefresh: (() => void) | null;
     onRename: (() => void) | null;
     onDelete: (() => void) | null;
+    /** Files only: saves the file on this device. */
+    onDownload?: (() => void) | null;
 }>;
 
 export function hasSessionExplorerFolderActions(actions: SessionExplorerFolderActions | null | undefined): boolean {
     if (!actions) return false;
     return Boolean(actions.newSession || actions.onNewFolder || actions.onCopyPath || actions.onOpenAsTop
-        || actions.onRefresh || actions.onRename || actions.onDelete);
+        || actions.onRefresh || actions.onRename || actions.onDelete || actions.onDownload);
 }
 
 const NEW_SESSION_PREFIX = 'new-session:';
@@ -57,6 +59,8 @@ function useNewSessionAgents(newSession: SessionExplorerFolderActions['newSessio
 }
 
 export type SessionExplorerFolderMenuProps = Readonly<{
+    /** A folder (the default) or a file of the Files view. */
+    kind?: 'folder' | 'file';
     actions: SessionExplorerFolderActions;
     anchorRef: React.RefObject<View | null>;
     placement: 'left' | 'bottom';
@@ -72,6 +76,8 @@ export function SessionExplorerFolderMenu(props: SessionExplorerFolderMenuProps)
     const iconColor = theme.colors.text.secondary;
     const dangerColor = theme.colors.state.danger.foreground;
     const { actions, onClose } = props;
+    const isFile = props.kind === 'file';
+    const testIdPrefix = isFile ? 'session-explorer-file' : 'session-explorer-folder';
     const agents = useNewSessionAgents(actions.newSession);
 
     const items = React.useMemo((): DropdownMenuItem[] => {
@@ -104,9 +110,17 @@ export function SessionExplorerFolderMenu(props: SessionExplorerFolderMenuProps)
         if (actions.onCopyPath) {
             list.push({
                 id: 'copy-path',
-                testID: 'session-explorer-folder-copy-path',
+                testID: `${testIdPrefix}-copy-path`,
                 title: t('files.repositoryTree.actions.copyPath'),
                 icon: <Icon name="copy" size={ICON_SIZE.sm} color={iconColor} />,
+            });
+        }
+        if (actions.onDownload) {
+            list.push({
+                id: 'download',
+                testID: `${testIdPrefix}-download`,
+                title: t('files.repositoryTree.actions.download'),
+                icon: <Icon name="download" size={ICON_SIZE.sm} color={iconColor} />,
             });
         }
         if (actions.onOpenAsTop) {
@@ -128,7 +142,7 @@ export function SessionExplorerFolderMenu(props: SessionExplorerFolderMenuProps)
         if (actions.onRename) {
             list.push({
                 id: 'rename-folder',
-                testID: 'session-explorer-folder-rename',
+                testID: `${testIdPrefix}-rename`,
                 title: t('common.rename'),
                 icon: <Icon name="pencil-simple" size={ICON_SIZE.sm} color={iconColor} />,
             });
@@ -136,14 +150,14 @@ export function SessionExplorerFolderMenu(props: SessionExplorerFolderMenuProps)
         if (actions.onDelete) {
             list.push({
                 id: 'delete-folder',
-                testID: 'session-explorer-folder-delete',
-                title: t('files.repositoryTree.deleteFolder.confirm'),
+                testID: `${testIdPrefix}-delete`,
+                title: isFile ? t('common.delete') : t('files.repositoryTree.deleteFolder.confirm'),
                 icon: <Icon name="trash" size={ICON_SIZE.sm} color={dangerColor} />,
                 destructive: true,
             });
         }
         return list;
-    }, [actions, agents, dangerColor, iconColor]);
+    }, [actions, agents, dangerColor, iconColor, isFile, testIdPrefix]);
 
     const handleSelect = React.useCallback((itemId: string) => {
         if (itemId.startsWith(NEW_SESSION_PREFIX)) {
@@ -151,6 +165,7 @@ export function SessionExplorerFolderMenu(props: SessionExplorerFolderMenuProps)
             if (isAgentId(agentId)) actions.newSession?.start(agentId);
         } else if (itemId === 'new-folder') actions.onNewFolder?.();
         else if (itemId === 'copy-path') actions.onCopyPath?.();
+        else if (itemId === 'download') actions.onDownload?.();
         else if (itemId === 'open-as-top') actions.onOpenAsTop?.();
         else if (itemId === 'refresh') actions.onRefresh?.();
         else if (itemId === 'rename-folder') actions.onRename?.();

@@ -63,6 +63,7 @@ function outline(items: ReadonlyArray<SessionListViewItem>): string[] {
         const indent = '  '.repeat(item.depth ?? 0);
         if (item.headerKind === 'pathFolder') return `${indent}${item.explorerExpanded ? 'v' : '>'} ${item.title}`;
         if (item.headerKind === 'explorerStatus') return `${indent}(${item.explorerStatus})`;
+        if (item.headerKind === 'explorerFile') return `${indent}- ${item.title}`;
         return `# ${item.title}`;
     });
 }
@@ -247,7 +248,7 @@ describe('buildSessionExplorerItems', () => {
     });
 
     it('lets folders be made where the tree lists an online machine, and renamed or deleted only below the home folder', () => {
-        const flags = (header: Header | undefined) => [header?.explorerCanCreateFolder, header?.explorerCanChangeFolder];
+        const flags = (header: Header | undefined) => [header?.explorerCanCreateFolder, header?.explorerCanChange];
         const input: Partial<BuildSessionExplorerInput> = {
             items: [row('a', '/home/u/code/happier'), row('o', '/srv/app')],
             getListing: listings({
@@ -277,6 +278,35 @@ describe('buildSessionExplorerItems', () => {
         expect(flags(opened.get('happier'))).toEqual([true, true]);
         // Other locations gathers sessions; its folders are not listed, so they are not changed there either.
         expect(flags(opened.get('srv'))).toEqual([false, false]);
+    });
+});
+
+describe('buildSessionExplorerItems in the Files view', () => {
+    it('shows the folders and their files without sessions, asking for listings that include files', () => {
+        const byPath: Record<string, SessionExplorerListing> = {
+            '/home/u': { status: 'loaded', dirs: ['code'], files: ['notes.txt', '.bashrc'] },
+            '/home/u/code': { status: 'loaded', dirs: ['happier'], files: [] },
+        };
+        const result = build({
+            mode: 'files',
+            items: [row('a', '/home/u/code/happier', { active: true })],
+            getListing: (target) => (target.includeFiles ? byPath[target.path] ?? null : null),
+            collapsedKeys: { [folder('/home/u/code')]: false, [folder('/home/u/code/happier')]: false },
+        });
+
+        expect(outline(result.items)).toEqual([
+            '# Explorer',
+            'v ~',
+            '  v code',
+            '    v happier',
+            '      (loading)',
+            '  - notes.txt',
+        ]);
+        expect(result.foldersToList).toEqual([{ serverId: 's1', machineId: 'm1', path: '/home/u/code/happier', includeFiles: true }]);
+        const file = result.items.find((item) => item.type === 'header' && item.headerKind === 'explorerFile') as Header;
+        expect(file.workspaceScopeHint).toEqual({ serverId: 's1', machineId: 'm1', rootPath: '/home/u/notes.txt' });
+        expect(file.explorerCanChange).toBe(true);
+        expect(folders(result.items).get('code')?.sessionCount).toBe(0);
     });
 });
 

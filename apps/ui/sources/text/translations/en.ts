@@ -6139,6 +6139,8 @@ export const en = {
         explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'A session is still running in this folder. Stop it first, then delete the folder.' : `${count} sessions are still running in this folder. Stop them first, then delete the folder.`,
         explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'A session was started in this folder. It stays in your list, but its files here are deleted.' : `${count} sessions were started in this folder. They stay in your list, but their files here are deleted.`,
         explorerOpenAsTop: 'Open as top folder',
+        explorerModeSessions: 'Sessions',
+        explorerModeFiles: 'Files',
         explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'A session was started in this folder. Renamed, the session would lose its folder, so the name stays.' : `${count} sessions were started in this folder. Renamed, they would lose their folder, so the name stays.`,
         explorerRenameFolderInvalid: 'Use a name without “/”, other than “.” and “..”.',
         explorerOpenFolderTitle: 'Open folder',

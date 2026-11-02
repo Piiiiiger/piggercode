@@ -95,6 +95,8 @@ const IGNORED_UNTRANSLATED_KEYS_BY_LOCALE: Readonly<Record<string, ReadonlySet<s
     //   and true cognates that are simply the same word (Actions, Options, Description, Sources).
     // A key here is a decision, not a gap; translating one of them would make the UI read worse.
     fr: new Set([
+        // The explorer's Sessions view: the locale's own word for sessions.
+        'sessionsList.explorerModeSessions',
         'machine.thisComputer.cliChannelStable',
         // "Machine" is the French word for a computer here, not an untranslated fallback.
         'updates.sections.machine',
@@ -490,6 +492,8 @@ const IGNORED_UNTRANSLATED_KEYS_BY_LOCALE: Readonly<Record<string, ReadonlySet<s
     ]),
     // These locales use the same spelling for this label.
     ca: new Set([
+        // The explorer's Sessions view: the locale's own word for sessions.
+        'sessionsList.explorerModeSessions',
         // "Context" is the Catalan word.
         'agentInput.context.badgeLabel',
         'agentInput.suggestionGroups.sessions',
@@ -514,6 +518,8 @@ const IGNORED_UNTRANSLATED_KEYS_BY_LOCALE: Readonly<Record<string, ReadonlySet<s
     // German noun is spelled. A key here is a decision, not a gap — translating one would make
     // the UI read worse, not better.
     de: new Set([
+        // The explorer's Sessions view: the locale's own word for sessions.
+        'sessionsList.explorerModeSessions',
         'machine.thisComputer.cliChannelStable',
         // "Updates" and "Offline" are the German words for these, not untranslated fallbacks.
         'updates.title',
@@ -790,7 +796,7 @@ const UNTRANSLATED_PREFIX_BASELINE_COUNTS: Record<string, Record<string, number>
         'settingsSession.promptPersonalization.': 0,
         'commandPalette.commands.': 3,
         'releaseNotes.onboardingShowcase.': 0,
-        'sessionsList.': 6,
+        'sessionsList.': 7,
     },
     ru: {
         'settingsAppearance.themeProfiles.': 106,
@@ -844,7 +850,7 @@ const UNTRANSLATED_PREFIX_BASELINE_COUNTS: Record<string, Record<string, number>
         'settingsSession.promptPersonalization.': 15,
         'commandPalette.commands.': 35,
         'releaseNotes.onboardingShowcase.': 0,
-        'sessionsList.': 22,
+        'sessionsList.': 23,
     },
     'zh-Hans': {
         'settingsAppearance.themeProfiles.': 106,
@@ -880,7 +886,7 @@ const UNTRANSLATED_PREFIX_BASELINE_COUNTS: Record<string, Record<string, number>
         'settingsSession.promptPersonalization.': 0,
         'commandPalette.commands.': 6,
         'releaseNotes.onboardingShowcase.': 0,
-        'sessionsList.': 1,
+        'sessionsList.': 2,
     },
 };
 

@@ -56,10 +56,18 @@ import {
 import { SessionFolderScopeBreadcrumb } from './sessionFolderScopeBreadcrumb';
 import { DraggableSessionFolderHeaderFrame } from './DraggableSessionFolderHeaderFrame';
 import { ProjectGroupHeader } from './ProjectGroupHeader';
-import { SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
+import { SessionExplorerFileRow, SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
 import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
 import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
-import { createExplorerFolder, deleteExplorerFolder, explorerFolderTarget, renameExplorerFolder } from './explorer/explorerFolderActions';
+import {
+    createExplorerFolder,
+    deleteExplorerFile,
+    deleteExplorerFolder,
+    downloadExplorerFile,
+    explorerFolderTarget,
+    renameExplorerFile,
+    renameExplorerFolder,
+} from './explorer/explorerFolderActions';
 import type { SessionExplorerFolderActions } from './explorer/SessionExplorerFolderMenu';
 import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { clearCachedMachineFileBrowserEntries } from '@/sync/domains/input/machineFileBrowser';
@@ -644,6 +652,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         explorerOpenFolders,
         explorerShowHidden,
         setExplorerShowHidden,
+        explorerMode,
         explorerMachines,
         explorerRootPaths,
         setExplorerRootPaths,
@@ -1988,8 +1997,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
             onCopyPath: () => { void handleCopyExplorerPath(hint.rootPath); },
             onOpenAsTop: item.explorerNodeKind === 'folder' ? () => handleOpenExplorerFolderAsTop(hint) : null,
             onRefresh: item.explorerCanCreateFolder ? () => refreshExplorerFolder(hint) : null,
-            onRename: item.explorerCanChangeFolder ? () => { void handleRenameExplorerFolder(item); } : null,
-            onDelete: item.explorerCanChangeFolder ? () => { void handleDeleteExplorerFolder(item); } : null,
+            onRename: item.explorerCanChange ? () => { void handleRenameExplorerFolder(item); } : null,
+            onDelete: item.explorerCanChange ? () => { void handleDeleteExplorerFolder(item); } : null,
         };
     }, [
         handleCopyExplorerPath,
@@ -1999,6 +2008,36 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleOpenExplorerFolderAsTop,
         handleRenameExplorerFolder,
     ]);
+
+    // Files view: a file opens in a read-only preview (beside the list on wide screens).
+    const handleOpenExplorerFile = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const hint = item.workspaceScopeHint;
+        if (!hint) return;
+        router.push(`/machine/${encodeURIComponent(hint.machineId)}/file?path=${encodeURIComponent(hint.rootPath)}&serverId=${encodeURIComponent(hint.serverId)}`);
+    }, [router]);
+    // After a file changes, the folder that holds it lists again.
+    const refreshExplorerParentOf = React.useCallback((target: Readonly<{ serverId: string; machineId: string; path: string }>) => {
+        const parentPath = target.path.slice(0, target.path.lastIndexOf('/')) || '/';
+        refreshExplorerFolder({ serverId: target.serverId, machineId: target.machineId, rootPath: parentPath });
+    }, []);
+    const explorerFileActionsFor = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>): SessionExplorerFolderActions | null => {
+        const target = explorerFolderTarget(item.workspaceScopeHint, explorerActionStateRef.current.explorerMachines);
+        if (!target) return null;
+        return {
+            newSession: null,
+            onNewFolder: null,
+            onOpenAsTop: null,
+            onRefresh: null,
+            onCopyPath: () => { void handleCopyExplorerPath(target.path); },
+            onDownload: item.explorerCanChange ? () => { void downloadExplorerFile(target); } : null,
+            onRename: item.explorerCanChange ? () => {
+                void renameExplorerFile(target).then((renamed) => { if (renamed) refreshExplorerParentOf(target); });
+            } : null,
+            onDelete: item.explorerCanChange ? () => {
+                void deleteExplorerFile(target).then((deleted) => { if (deleted) refreshExplorerParentOf(target); });
+            } : null,
+        };
+    }, [handleCopyExplorerPath, refreshExplorerParentOf]);
     const explorerFolderOpened = Object.keys(explorerRootPaths).length > 0;
     // Closes every open folder the explorer shows; machines and their `~` and `/` folders stay open.
     const handleCollapseAllExplorerFolders = React.useCallback(() => {
@@ -2033,6 +2072,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 folderOpened={explorerFolderOpened}
                 onOpenFolder={handleOpenExplorerFolder}
                 onCloseFolder={handleCloseExplorerFolder}
+                showsSessions={explorerMode !== 'files'}
             />
         ) : (
             <SessionListViewMenuButton
@@ -2047,6 +2087,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 disabled={!folderActionsEnabled}
             />
         );
+        // The Files view has no sessions to search or filter by tag.
+        if (explorerEnabled && explorerMode === 'files') return menu;
         return (
             <SessionListHeaderControls
                 allKnownTags={sessionTagsEnabled === true ? allKnownTags : EMPTY_SESSION_KEYS}
@@ -2087,6 +2129,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         explorerFolderOpened,
         handleOpenExplorerFolder,
         handleCloseExplorerFolder,
+        explorerMode,
     ]);
     const renderHeaderItem = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>, index: number) => {
         const headerTestId = item.headerKind === 'project'
@@ -2113,6 +2156,17 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         folderActions={explorerFolderActionsFor(item)}
                     />
                 </SessionListHeaderFrame>
+            );
+        }
+        if (item.headerKind === 'explorerFile') {
+            return (
+                <SessionExplorerFileRow
+                    testID={headerTestId}
+                    title={item.title}
+                    depth={item.depth ?? 0}
+                    onOpen={() => handleOpenExplorerFile(item)}
+                    fileActions={explorerFileActionsFor(item)}
+                />
             );
         }
         if (item.headerKind === 'explorerStatus') {
@@ -2248,6 +2302,8 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleCreateSessionInExplorerFolder,
         handleToggleExplorerFolder,
         explorerFolderActionsFor,
+        explorerFileActionsFor,
+        handleOpenExplorerFile,
         handleCreateSessionFromFolder,
         handleDeleteSessionFolder,
         handleA11yDragStart,
@@ -2342,9 +2398,11 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceFaviconsEnabled,
         workspaceLabelsSignature,
         workspaceMachineSubtitlesEnabled,
-        // The explorer header's menu shows whether hidden folders are listed and a folder is open.
+        // The explorer header's menu shows whether hidden folders are listed and a folder is open, and the
+        // Files view drops the search controls.
         explorerShowHidden,
         explorerFolderOpened,
+        explorerMode,
     }), [
         headerControlsAnchorKey,
         activeSearchHeaderControlsAnchorKey,
@@ -2389,6 +2447,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         workspaceMachineSubtitlesEnabled,
         explorerShowHidden,
         explorerFolderOpened,
+        explorerMode,
     ]);
     const renderSessionItem = React.useCallback((item: SessionListSessionItem, index: number) => {
         const groupKey = String(item.groupKey ?? '').trim();

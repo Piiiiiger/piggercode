@@ -6114,6 +6114,8 @@ deps: {
         explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'Encara hi ha una sessió en marxa en aquesta carpeta. Atura-la primer i després elimina la carpeta.' : `Encara hi ha ${count} sessions en marxa en aquesta carpeta. Atura-les primer i després elimina la carpeta.`,
         explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Una sessió es va iniciar en aquesta carpeta. Es quedarà a la teva llista, però els seus fitxers d’aquí s’eliminaran.' : `${count} sessions es van iniciar en aquesta carpeta. Es quedaran a la teva llista, però els seus fitxers d’aquí s’eliminaran.`,
         explorerOpenAsTop: 'Obre com a carpeta principal',
+        explorerModeSessions: 'Sessions',
+        explorerModeFiles: 'Fitxers',
         explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'Es va iniciar una sessió en aquesta carpeta. Si li canvies el nom, la sessió ja no la trobarà, així que conserva el nom.' : `Es van iniciar ${count} sessions en aquesta carpeta. Si li canvies el nom, ja no la trobaran, així que conserva el nom.`,
         explorerRenameFolderInvalid: 'Fes servir un nom sense «/», que no sigui «.» ni «..».',
         explorerOpenFolderTitle: 'Obre una carpeta',

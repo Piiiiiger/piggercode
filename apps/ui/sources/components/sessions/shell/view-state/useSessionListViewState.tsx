@@ -188,6 +188,8 @@ export function useSessionListViewState({
     const explorerRootPaths = explorerRootPathsSetting ?? EMPTY_EXPLORER_ROOT_PATHS;
     const sessionListAgentFilter = useLocalSetting('sessionListAgentFilterV1');
     const [explorerShowHidden, setExplorerShowHidden] = useLocalSettingMutable('sessionListExplorerShowHiddenV1');
+    const [explorerModeSetting, setExplorerMode] = useLocalSettingMutable('sessionListExplorerModeV1');
+    const explorerMode = explorerModeSetting === 'files' ? 'files' : 'sessions';
     const explorerMachineSummaries = useSessionExplorerMachines();
     const readExplorerListing = useExplorerListingReader();
     const profile = useProfile();
@@ -449,13 +451,15 @@ export function useSessionListViewState({
             collapsedKeys: collapsedGroupKeysV1 ?? {},
             showHidden: explorerShowHidden === true,
             // Searching shows only folders with matching sessions, all open.
-            sessionFoldersOnly: headerFiltersActive,
+            // Search and tag filters narrow sessions; the Files view has none to narrow.
+            sessionFoldersOnly: headerFiltersActive && explorerMode === 'sessions',
             title: t('sessionsList.explorerTitle'),
             rootPaths: explorerRootPaths,
             otherLocationsTitle: t('sessionsList.explorerOtherLocations'),
+            mode: explorerMode,
             previousItems: explorerPreviousItemsRef.current,
         });
-    }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerRootPaths, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
+    }, [agentFilteredData, collapsedGroupKeysV1, explorerEnabled, explorerMachines, explorerMode, explorerRootPaths, explorerServerId, explorerShowHidden, headerFiltersActive, readExplorerListing]);
     explorerPreviousItemsRef.current = explorer?.items ?? null;
     const explorerFoldersToList = explorer?.foldersToList ?? EMPTY_EXPLORER_FOLDERS;
     React.useEffect(() => {
@@ -618,6 +622,8 @@ export function useSessionListViewState({
         explorerOpenFolders: explorer?.openFolders ?? EMPTY_EXPLORER_FOLDERS,
         explorerShowHidden: explorerShowHidden === true,
         setExplorerShowHidden,
+        explorerMode,
+        setExplorerMode,
         explorerMachines,
         explorerRootPaths,
         setExplorerRootPaths,

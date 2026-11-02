@@ -15,14 +15,25 @@ export type SessionExplorerMachine = Readonly<{
     online: boolean;
 }>;
 
-export type SessionExplorerFolderRef = Readonly<{ serverId: string; machineId: string; path: string }>;
+export type SessionExplorerFolderRef = Readonly<{
+    serverId: string;
+    machineId: string;
+    path: string;
+    /** The Files view lists files too; that listing is cached apart from the folders-only one. */
+    includeFiles?: boolean;
+}>;
 
 export type SessionExplorerListing = Readonly<{
     status: 'loading' | 'loaded' | 'error';
     /** Subfolder names; null until the first listing arrives. */
     dirs: ReadonlyArray<string> | null;
+    /** File names, for a listing that includes files. */
+    files?: ReadonlyArray<string> | null;
     truncated?: boolean;
 }>;
+
+/** Sessions: folders with the sessions that started in them. Files: folders and their files, without sessions. */
+export type SessionExplorerMode = 'sessions' | 'files';
 
 export type SessionExplorerStatus = NonNullable<Header['explorerStatus']>;
 
@@ -47,6 +58,8 @@ export type BuildSessionExplorerInput = Readonly<{
     rootPaths: Readonly<Record<string, string | undefined>>;
     /** Title of the folder that holds the sessions outside an opened folder. */
     otherLocationsTitle: string;
+    /** Sessions (the default) or Files. */
+    mode?: SessionExplorerMode;
     /** The previous result, so unchanged folder rows keep their objects. */
     previousItems?: ReadonlyArray<SessionListViewItem> | null;
 }>;
@@ -338,10 +351,12 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
         else if (machine.homeDir) rootFolder(machineNode(machine), HOME);
     }
 
+    const filesMode = input.mode === 'files';
     const looseRows: Row[] = [];
     const seen = new Set<string>();
     let groupHeader: Header | null = null;
-    for (const item of input.items) {
+    // The Files view places no sessions: its tree is the machine's folders and files.
+    for (const item of filesMode ? [] : input.items) {
         if (item.type === 'header') {
             groupHeader = item;
             continue;
@@ -450,7 +465,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             explorerNodeKind: node.kind,
             explorerExpanded: expanded,
             explorerCanCreateFolder: managesFolders,
-            explorerCanChangeFolder: managesFolders
+            explorerCanChange: managesFolders
                 && node.kind === 'folder'
                 && node.path !== null
                 && !explorerPathHoldsHomeFolder(node.path, machine.homeDir),
@@ -460,7 +475,9 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
 
         let listing: SessionExplorerListing | null = null;
         if (!input.sessionFoldersOnly && node.browse && node.path !== null) {
-            const folder = { serverId: machine.serverId, machineId: machine.machineId, path: node.path };
+            const folder: SessionExplorerFolderRef = filesMode
+                ? { serverId: machine.serverId, machineId: machine.machineId, path: node.path, includeFiles: true }
+                : { serverId: machine.serverId, machineId: machine.machineId, path: node.path };
             listing = input.getListing(folder);
             if (machine.online) {
                 openFolders.push(folder);
@@ -474,9 +491,27 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
 
         for (const child of sortChildren(node)) emit(child, depth + 1, node.key);
         for (const row of node.sessions) out.push(placeRow(row, node.key, depth + 1));
+        // Files view: the folder's files come after its subfolders.
+        const files = filesMode && node.path !== null
+            ? (listing?.files ?? []).filter((name) => input.showHidden || !name.startsWith('.')).slice().sort(compareNames)
+            : [];
+        for (const name of files) {
+            pushHeader({
+                type: 'header',
+                headerKind: 'explorerFile',
+                title: name,
+                groupKey: `${node.key}#file:${name}`,
+                treeParentKey: node.key,
+                depth: depth + 1,
+                // The file's own path; its row opens, renames or deletes it.
+                workspaceScopeHint: { serverId: machine.serverId, machineId: machine.machineId, rootPath: joinPath(node.path!, name) },
+                explorerCanChange: managesFolders,
+                serverId: machine.serverId,
+            });
+        }
 
         if (input.sessionFoldersOnly || !node.browse || node.path === null) return;
-        const shownNothing = node.children.size === 0 && node.sessions.length === 0;
+        const shownNothing = node.children.size === 0 && node.sessions.length === 0 && files.length === 0;
         let status: SessionExplorerStatus | null = null;
         if (listing?.status === 'loaded') {
             if (listing.truncated) status = 'truncated';

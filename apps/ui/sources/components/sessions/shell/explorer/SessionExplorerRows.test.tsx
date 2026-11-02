@@ -23,7 +23,7 @@ vi.mock('@/agents/registry/AgentIcon', () => ({
 type CapturedMenu = Readonly<{
     open: boolean;
     placement?: string;
-    items: ReadonlyArray<{ id: string; destructive?: boolean }>;
+    items: ReadonlyArray<{ id: string; destructive?: boolean; testID?: string }>;
     onSelect: (id: string) => void;
 }>;
 const menuState = vi.hoisted(() => ({ current: null as CapturedMenu | null }));
@@ -179,6 +179,39 @@ describe('SessionExplorerFolderRow', () => {
         );
         expect(other.findByTestId('other:menu')).toBeNull();
         expect(other.findByTestId('other')?.props.onLongPress).toBeUndefined();
+    });
+});
+
+describe('SessionExplorerFileRow', () => {
+    it('opens the file on press and offers copy path, download, rename and a red delete', async () => {
+        const { SessionExplorerFileRow } = await import('./SessionExplorerRows');
+        const onOpen = vi.fn();
+        const actions = {
+            newSession: null,
+            onNewFolder: null,
+            onOpenAsTop: null,
+            onRefresh: null,
+            onCopyPath: vi.fn(),
+            onDownload: vi.fn(),
+            onRename: vi.fn(),
+            onDelete: vi.fn(),
+        };
+        const screen = await renderScreen(
+            <SessionExplorerFileRow testID="file" title="README.md" depth={2} onOpen={onOpen} fileActions={actions} />,
+        );
+
+        await screen.pressByTestIdAsync('file');
+        expect(onOpen).toHaveBeenCalledTimes(1);
+        await screen.pressByTestIdAsync('file:menu');
+        expect(menuState.current?.items.map((item) => [item.id, item.destructive === true])).toEqual([
+            ['copy-path', false],
+            ['download', false],
+            ['rename-folder', false],
+            ['delete-folder', true],
+        ]);
+        expect(menuState.current?.items.find((item) => item.id === 'download')?.testID).toBe('session-explorer-file-download');
+        menuState.current?.onSelect('download');
+        expect(actions.onDownload).toHaveBeenCalledTimes(1);
     });
 });
 

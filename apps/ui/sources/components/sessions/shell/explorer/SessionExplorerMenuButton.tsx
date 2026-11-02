@@ -19,6 +19,8 @@ export type SessionExplorerMenuButtonProps = Readonly<{
     onOpenFolder: () => void;
     /** Goes back to the home folder at the top. */
     onCloseFolder: () => void;
+    /** False in the Files view, which shows no sessions to hide. */
+    showsSessions?: boolean;
 }>;
 
 /** The explorer header's options, where the grouped list keeps its view menu. */
@@ -60,15 +62,15 @@ export function SessionExplorerMenuButton(props: SessionExplorerMenuButtonProps)
             icon: <Icon name="eye" size={ICON_SIZE.sm} color={iconColor} />,
             rightElement: props.showHidden ? <Icon name="check" size={ICON_SIZE.sm} color={checkColor} /> : undefined,
         },
-        {
+        ...(props.showsSessions === false ? [] : [{
             id: props.hideInactiveSessions ? 'show-inactive' : 'hide-inactive',
             testID: 'session-explorer-toggle-inactive',
             title: props.hideInactiveSessions
                 ? t('sessionsList.showInactiveSessions')
                 : t('sessionsList.hideInactiveSessions'),
             icon: <Icon name="funnel-simple" size={ICON_SIZE.sm} color={iconColor} />,
-        },
-    ], [checkColor, iconColor, props.folderOpened, props.hideInactiveSessions, props.showHidden]);
+        }]),
+    ], [checkColor, iconColor, props.folderOpened, props.hideInactiveSessions, props.showHidden, props.showsSessions]);
 
     const { onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onShowHiddenChange, showHidden } = props;
     const handleSelect = React.useCallback((itemId: string) => {

@@ -6818,6 +6818,8 @@ export const it: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'In questa cartella c’è ancora una sessione in esecuzione. Interrompila prima, poi elimina la cartella.' : `In questa cartella ci sono ancora ${count} sessioni in esecuzione. Interrompile prima, poi elimina la cartella.`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Una sessione è stata avviata in questa cartella. Resta nel tuo elenco, ma i suoi file qui vengono eliminati.' : `${count} sessioni sono state avviate in questa cartella. Restano nel tuo elenco, ma i loro file qui vengono eliminati.`,
     explorerOpenAsTop: 'Apri come cartella principale',
+    explorerModeSessions: 'Sessioni',
+    explorerModeFiles: 'File',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'In questa cartella è stata avviata una sessione. Rinominandola, la sessione non la troverebbe più, quindi il nome resta.' : `In questa cartella sono state avviate ${count} sessioni. Rinominandola, non la troverebbero più, quindi il nome resta.`,
     explorerRenameFolderInvalid: 'Usa un nome senza «/», diverso da «.» e «..».',
     explorerOpenFolderTitle: 'Apri cartella',

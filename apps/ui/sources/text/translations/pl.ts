@@ -6492,6 +6492,8 @@ export const pl: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => `W tym folderze nadal działają sesje (${count}). Najpierw je zatrzymaj, a potem usuń folder.`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => `W tym folderze rozpoczęto sesje (${count}). Zostaną na liście, ale ich pliki z tego folderu zostaną usunięte.`,
     explorerOpenAsTop: 'Otwórz jako folder główny',
+    explorerModeSessions: 'Sesje',
+    explorerModeFiles: 'Pliki',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => `W tym folderze rozpoczęto sesje (${count}). Po zmianie nazwy nie znajdą swojego folderu, więc nazwa zostaje.`,
     explorerRenameFolderInvalid: 'Użyj nazwy bez „/”, innej niż „.” i „..”.',
     explorerOpenFolderTitle: 'Otwórz folder',

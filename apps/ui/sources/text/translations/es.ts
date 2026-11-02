@@ -6474,6 +6474,8 @@ export const es: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'Todavía hay una sesión en ejecución en esta carpeta. Detenla primero y después elimina la carpeta.' : `Todavía hay ${count} sesiones en ejecución en esta carpeta. Detenlas primero y después elimina la carpeta.`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Una sesión se inició en esta carpeta. Seguirá en tu lista, pero sus archivos de aquí se eliminarán.' : `${count} sesiones se iniciaron en esta carpeta. Seguirán en tu lista, pero sus archivos de aquí se eliminarán.`,
     explorerOpenAsTop: 'Abrir como carpeta principal',
+    explorerModeSessions: 'Sesiones',
+    explorerModeFiles: 'Archivos',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'Se inició una sesión en esta carpeta. Si le cambias el nombre, la sesión ya no la encontrará, así que conserva su nombre.' : `Se iniciaron ${count} sesiones en esta carpeta. Si le cambias el nombre, ya no la encontrarán, así que conserva su nombre.`,
     explorerRenameFolderInvalid: 'Usa un nombre sin «/», distinto de «.» y «..».',
     explorerOpenFolderTitle: 'Abrir carpeta',

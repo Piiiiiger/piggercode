@@ -5417,6 +5417,8 @@ export const ru: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => `В этой папке ещё работают сессии (${count}). Сначала остановите их, затем удалите папку.`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => `В этой папке были начаты сессии (${count}). Они останутся в списке, но их файлы здесь будут удалены.`,
     explorerOpenAsTop: 'Открыть как корневую папку',
+    explorerModeSessions: 'Сессии',
+    explorerModeFiles: 'Файлы',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => `В этой папке были начаты сессии (${count}). После переименования они не найдут свою папку, поэтому имя останется прежним.`,
     explorerRenameFolderInvalid: 'Используйте имя без «/», кроме «.» и «..».',
     explorerOpenFolderTitle: 'Открыть папку',

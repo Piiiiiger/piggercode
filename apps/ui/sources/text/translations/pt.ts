@@ -6592,6 +6592,8 @@ export const pt: TranslationStructure = {
     explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'Ainda há uma sessão em execução nesta pasta. Pare-a primeiro e depois exclua a pasta.' : `Ainda há ${count} sessões em execução nesta pasta. Pare-as primeiro e depois exclua a pasta.`,
     explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Uma sessão foi iniciada nesta pasta. Ela continua na sua lista, mas os arquivos dela aqui são excluídos.' : `${count} sessões foram iniciadas nesta pasta. Elas continuam na sua lista, mas os arquivos delas aqui são excluídos.`,
     explorerOpenAsTop: 'Abrir como pasta principal',
+    explorerModeSessions: 'Sessões',
+    explorerModeFiles: 'Arquivos',
     explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'Uma sessão foi iniciada nesta pasta. Se você renomeá-la, a sessão não vai mais encontrá-la, então o nome fica.' : `${count} sessões foram iniciadas nesta pasta. Se você renomeá-la, elas não vão mais encontrá-la, então o nome fica.`,
     explorerRenameFolderInvalid: 'Use um nome sem “/”, diferente de “.” e “..”.',
     explorerOpenFolderTitle: 'Abrir pasta',

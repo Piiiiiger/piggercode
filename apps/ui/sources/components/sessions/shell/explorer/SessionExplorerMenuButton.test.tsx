@@ -98,4 +98,24 @@ describe('SessionExplorerMenuButton', () => {
         menu.onSelect('close-folder');
         expect(onCloseFolder).toHaveBeenCalledTimes(1);
     });
+
+    it('leaves out the stopped-sessions toggle in the Files view', async () => {
+        const { SessionExplorerMenuButton } = await import('./SessionExplorerMenuButton');
+        await renderScreen(
+            <SessionExplorerMenuButton
+                showHidden={false}
+                hideInactiveSessions={false}
+                folderOpened={false}
+                onRefresh={vi.fn()}
+                onCollapseAll={vi.fn()}
+                onShowHiddenChange={vi.fn()}
+                onHideInactiveSessionsChange={vi.fn()}
+                onOpenFolder={vi.fn()}
+                onCloseFolder={vi.fn()}
+                showsSessions={false}
+            />,
+        );
+
+        expect(menuState.current!.items.map((item) => item.id)).toEqual(['open-folder', 'refresh', 'collapse-all', 'show-hidden']);
+    });
 });

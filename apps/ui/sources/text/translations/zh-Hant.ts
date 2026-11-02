@@ -5492,6 +5492,8 @@ const zhHantOverrides: DeepPartial<TranslationStructure> = {
         explorerDeleteFolderRunning: ({ count }: { count: number }) => `這個資料夾裡還有 ${count} 個工作階段在執行。請先停止它們，再刪除資料夾。`,
         explorerDeleteFolderSessions: ({ count }: { count: number }) => `有 ${count} 個工作階段是在這個資料夾裡開始的。工作階段會留在清單中，但這裡的檔案會被刪除。`,
         explorerOpenAsTop: '設為頂層資料夾',
+        explorerModeSessions: '工作階段',
+        explorerModeFiles: '檔案',
         explorerRenameFolderHasSessions: ({ count }: { count: number }) => `有 ${count} 個工作階段是在這個資料夾裡開始的，改名後它們會找不到原來的資料夾，所以不能改名。`,
         explorerRenameFolderInvalid: '名稱不能包含「/」，也不能是「.」或「..」。',
         explorerOpenFolderTitle: '開啟資料夾',

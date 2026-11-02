@@ -10,7 +10,8 @@ export type SessionListIndexItem =
     | Readonly<{
         type: 'header';
         title: string;
-        headerKind?: 'date' | 'server' | 'active' | 'inactive' | 'sessions' | 'project' | 'pinned' | 'attention' | 'working' | 'shared' | 'folder' | 'pathFolder' | 'explorer' | 'explorerStatus';
+        // The view data owns the list of header kinds; the index keeps whichever it carries.
+        headerKind?: Extract<SessionListViewItem, { type: 'header' }>['headerKind'];
         groupKey?: string;
         workspaceKey?: string;
         seedSessionId?: string | null;

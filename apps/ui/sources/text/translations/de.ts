@@ -6113,6 +6113,8 @@ export const de: TranslationStructure = {
         explorerDeleteFolderRunning: ({ count }: { count: number }) => count === 1 ? 'In diesem Ordner läuft noch eine Session. Beende sie zuerst und lösche dann den Ordner.' : `In diesem Ordner laufen noch ${count} Sessions. Beende sie zuerst und lösche dann den Ordner.`,
         explorerDeleteFolderSessions: ({ count }: { count: number }) => count === 1 ? 'Eine Session wurde in diesem Ordner gestartet. Sie bleibt in deiner Liste, aber ihre Dateien hier werden gelöscht.' : `${count} Sessions wurden in diesem Ordner gestartet. Sie bleiben in deiner Liste, aber ihre Dateien hier werden gelöscht.`,
         explorerOpenAsTop: 'Als obersten Ordner öffnen',
+        explorerModeSessions: 'Sessions',
+        explorerModeFiles: 'Dateien',
         explorerRenameFolderHasSessions: ({ count }: { count: number }) => count === 1 ? 'In diesem Ordner wurde eine Session gestartet. Nach dem Umbenennen fände sie ihren Ordner nicht mehr, deshalb bleibt der Name.' : `In diesem Ordner wurden ${count} Sessions gestartet. Nach dem Umbenennen fänden sie ihren Ordner nicht mehr, deshalb bleibt der Name.`,
         explorerRenameFolderInvalid: 'Verwende einen Namen ohne „/“, außer „.“ und „..“.',
         explorerOpenFolderTitle: 'Ordner öffnen',

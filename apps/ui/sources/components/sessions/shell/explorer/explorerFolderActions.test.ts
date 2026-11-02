@@ -151,3 +151,37 @@ describe('renameExplorerFolder', () => {
         expect(machineRpc).not.toHaveBeenCalled();
     });
 });
+
+describe('file actions', () => {
+    const readme = { ...code, path: '/home/u/code/README.md' };
+
+    it('renames a file where it is, and deletes it after a confirmation without touching folders', async () => {
+        const { Modal, deleteExplorerFile, renameExplorerFile } = await load();
+        Modal.prompt.mockResolvedValueOnce('NOTES.md');
+        machineRpc.mockResolvedValueOnce({ success: true });
+        await expect(renameExplorerFile(readme)).resolves.toBe('/home/u/code/NOTES.md');
+        expect(rpcCalls(RPC_METHODS.RENAME_PATH)).toEqual([
+            expect.objectContaining({ payload: { from: '/home/u/code/README.md', to: '/home/u/code/NOTES.md', overwrite: false } }),
+        ]);
+
+        Modal.confirm.mockResolvedValueOnce(true);
+        machineRpc.mockResolvedValueOnce({ success: true });
+        await expect(deleteExplorerFile(readme)).resolves.toBe(true);
+        expect(Modal.confirm).toHaveBeenLastCalledWith(
+            'files.repositoryTree.deleteFile.title',
+            'files.repositoryTree.deleteFile.body',
+            expect.objectContaining({ destructive: true }),
+        );
+        expect(rpcCalls(RPC_METHODS.DELETE_PATH)).toEqual([
+            expect.objectContaining({ payload: { path: '/home/u/code/README.md', recursive: false } }),
+        ]);
+    });
+
+    it('says why a download failed instead of saving anything', async () => {
+        const { Modal, downloadExplorerFile } = await load();
+        machineRpc.mockResolvedValueOnce({ success: false, error: 'File is too large to read' });
+        await expect(downloadExplorerFile(readme)).resolves.toBe(false);
+        expect(Modal.alert).toHaveBeenLastCalledWith('common.error', 'File is too large to read');
+        expect(rpcCalls(RPC_METHODS.READ_FILE)).toEqual([expect.objectContaining({ payload: { path: '/home/u/code/README.md' } })]);
+    });
+});
