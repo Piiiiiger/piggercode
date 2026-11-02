@@ -1,38 +1,29 @@
 <div align="center">
   <img src="apps/ui/sources/assets/images/logotype-dark@2x.png" alt="PiggerCode" width="360" />
-  <p><b>在浏览器和手机上管理自己服务器上的 Codex / Claude Code 会话</b></p>
-  <p>A personal fork of <a href="https://github.com/happier-dev/happier">Happier</a>, run on its own server.</p>
+  <p><b>在浏览器里管理自己服务器上的 Claude Code 和 Codex 会话</b></p>
 </div>
 
-PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支。Codex 和 Claude Code 跑在自己的服务器上，网页端（和 Happier 官方手机 App）通过自建的中继连接它们，随时查看、发消息、审批和接着干活。会话内容端到端加密，中继只负责转发。
+PiggerCode 是一个自托管、自用的工具。Claude Code 和 Codex 跑在你自己的服务器上，网页端通过你自己的中继连上它们：看会话、发消息、审批权限、接着干活，在电脑和手机浏览器上都能用。会话内容端到端加密，中继只负责转发。
 
-## 和上游 Happier 的区别
+它基于开源项目 [Happier](https://github.com/happier-dev/happier)，去掉了官方云、使用统计、反馈渠道和用不到的代理，只留下自己需要的部分。
 
-- **自己的中继**：内置服务器换成自建中继，不依赖 Happier 官方云，也没有官方云登录。
-- **一个会话列表**：不再分 Happier / 直连两个标签；需要时可以从「浏览提供方会话」打开服务器上已有的 Codex 会话。
-- **直接接管**：给直连会话发消息时直接在原会话里接管，只有需要停掉本地正在用的会话时才会问。
-- **删除同步**：在网页端删除直连会话，会同时删除服务器上对应的 Codex 会话。
-- **只有 Claude Code 和 Codex**：新建会话、设置里的服务商、欢迎页等只列这两个代理。其它代理的代码还在，在 `apps/ui/appVariantConfig.cjs` 的 `APP_BRAND.agentIds` 里加上就会出现。
-- **没有原版残留**：设置的「关于」只有版本号和本仓库的 GitHub 链接；不收集使用统计和崩溃报告；没有反馈问题、更新日志、评分、原版文档链接和 Happier Voice 订阅；不会提示从 happier.dev 安装或更新原版 CLI，也不从原版仓库下载语音模型。
-- **精简的仓库**：去掉了上游的文档站、官网、发布和 CI 自动化（GitHub 工作流、发布脚本、Docker 镜像）、赞助按钮和议题模板。
-- **共享文件夹**：
-  - 发送的附件按原文件名存到服务器上的一个文件夹（默认 `~/Downloads`），同名文件编号为 `名字 (1).扩展名`，不会覆盖；
-  - 文件面板里的「共享文件夹」窗口：点文件下载，拖文件或文件夹进去上传；
-  - 设置 → 附件 →「在电脑上打开」：按你的 SSH 地址生成 Linux / macOS 上用 SSHFS 挂载这个文件夹的命令。
-- **命令和目录**：命令 `piggercode`（与 `happier` 等价），服务器上的主目录 `~/.piggercode`。
-- **其它**：Codex 守护进程和空会话的修复、空闲会话不再显示接管横幅。
+## 功能
 
-为了继续兼容官方手机 App 和上游更新，内部名称保持不变：npm 包 `@piggercode/*`、环境变量 `PIGGERCODE_*`、链接协议 `happier://`、项目内的 `.happier/uploads` 等。
-
-只维护 Linux 和 macOS。
+- **文件夹视图**：侧栏像 VS Code 的资源管理器，按服务器上的文件夹列出会话，在哪个文件夹里开的会话就在哪里。可以在任意文件夹新建会话，右键新建、重命名、删除文件夹，也可以把某个文件夹设为顶层。
+- **文件管理**：在「会话 | 文件」之间切换。文件视图里可以浏览服务器上的文件，预览文本（带语法高亮）和图片，复制路径、下载、重命名、删除。
+- **只有 Claude Code 和 Codex**：新建会话、代理选择和设置里只列这两个。
+- **直连会话**：可以打开服务器上已有的 Codex 会话；发消息时直接在原会话里接管，删除时同步删掉服务器上的会话。
+- **共享文件夹**：发送的附件按原文件名存到服务器上的一个文件夹（默认 `~/Downloads`），同名文件自动编号，不会覆盖。网页里可以上传下载，也能按设置里给出的命令用 SSHFS 挂载到自己的电脑。
+- **干净**：没有使用统计、崩溃上报、应用评分、更新日志、反馈和原版文档链接，也不会从原版的服务器或仓库下载任何东西。
 
 ## 组成
 
 | 目录 | 作用 |
 | --- | --- |
-| `apps/ui` | 网页端（Expo / React Native Web），也是手机和桌面端的代码 |
+| `apps/ui` | 网页端（Expo / React Native Web），也包含手机和桌面端的代码 |
 | `apps/cli` | CLI 和守护进程：在服务器上启动、托管代理会话，处理文件传输 |
 | `apps/server` | 中继服务器 |
+| `apps/stack` | 本地开发和测试用的工具 |
 | `packages/*` | 共享的协议、传输和工具代码 |
 
 ## 构建
@@ -56,20 +47,24 @@ yarn workspace @piggercode/cli build
 
 ```bash
 cd apps/ui  && ../../apps/stack/bin/hstack-exec -- node ../../node_modules/vitest/vitest.mjs run --config vitest.config.ts
-cd apps/cli && ../../apps/stack/bin/hstack-exec -- node ../../node_modules/vitest/vitest.mjs run --config vitest.config.ts
-yarn -s typecheck   # 分别在 apps/ui、apps/cli 里运行
+cd apps/cli && ../../apps/stack/bin/hstack-exec -- node ../../node_modules/vitest/vitest.mjs run
+yarn -s typecheck
 ```
+
+## 配置
+
+- 应用名、版本号、提供哪些代理和仓库链接都在 `apps/ui/appVariantConfig.cjs` 的 `APP_BRAND` 里。
+- 中继的地址不写在代码里。网页端直接使用自己所在的网址；CLI 用 `setup --relay <中继地址>` 连接，或者在环境变量 `PIGGERCODE_BUILTIN_RELAY_URL` 里给出默认中继；手机端在构建时用 `EXPO_PUBLIC_PIGGERCODE_SERVER_URL` 指定。
+- 生产构建默认关闭的功能列在 `.github/feature-policy/production.json`。
 
 ## 部署（概要）
 
-1. 在服务器上安装 Happier CLI 和自托管中继，用 systemd 用户服务运行守护进程和中继。
-2. 把构建出的 CLI 文件覆盖到 CLI 的 `package-dist`，重启守护进程；正在运行的会话会自动重新接上。
-3. 把网页端的构建结果交给中继（`PIGGERCODE_SERVER_UI_DIR`）或前面的反向代理提供静态文件。
+1. 在服务器上用 systemd 用户服务运行中继和守护进程。
+2. 把网页端的构建结果交给中继（`PIGGERCODE_SERVER_UI_DIR`）或前面的反向代理提供静态文件。
+3. 用反向代理加上 HTTPS 对外访问；中继只需要监听本机。
 
-## 分支
-
-开发都在 `pigger` 分支上；`dev` 跟随上游。
+只维护 Linux 和 macOS。
 
 ## 许可
 
-MIT，见 [LICENCE](LICENCE)。PiggerCode 基于 Happier，版权声明保留原样。
+MIT，见 [LICENCE](LICENCE)。PiggerCode 基于 Happier，保留原项目的版权声明。
