@@ -1,8 +1,7 @@
 import { execFile } from 'node:child_process';
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -47,25 +46,15 @@ afterEach(async () => {
     }));
 });
 
-async function readInstallerExportLineTemplate(): Promise<string> {
-    const testDir = dirname(fileURLToPath(import.meta.url));
-    const installScriptPath = resolve(testDir, '..', '..', '..', '..', 'apps', 'website', 'public', 'install.sh');
-    const installScript = await readFile(installScriptPath, 'utf8');
-    const match = /^\s*local export_line="(?<template>export PATH=.*)"$/mu.exec(installScript);
-    if (!match?.groups?.template) {
-        throw new Error(`install.sh export_line template not found in ${installScriptPath}`);
-    }
-    // Undo bash double-quote escaping: \" -> " and \$ -> $.
-    return match.groups.template.replace(/\\(["$])/gu, '$1');
-}
+// The shell installer (no longer shipped) wrote exactly this line, with bash escaping undone. Machines set up
+// with it may still carry the line, so the desktop keeps it byte-identical to deduplicate against it.
+const SHELL_INSTALLER_EXPORT_LINE_TEMPLATE = 'export PATH="${BIN_DIR}:$PATH"';
 
 posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
-    it('emits the byte-identical export line the shell installer writes', async () => {
-        const template = await readInstallerExportLineTemplate();
+    it('emits the byte-identical export line the shell installer wrote', () => {
         const binDir = '/Users/example/.happier/bin';
 
-        expect(template).toContain('${BIN_DIR}');
-        expect(renderHappierCliPathExportLine(binDir)).toBe(template.replace('${BIN_DIR}', binDir));
+        expect(renderHappierCliPathExportLine(binDir)).toBe(SHELL_INSTALLER_EXPORT_LINE_TEMPLATE.replace('${BIN_DIR}', binDir));
     });
 
     it('appends the marked export line once and treats a second call as a no-op', async () => {
