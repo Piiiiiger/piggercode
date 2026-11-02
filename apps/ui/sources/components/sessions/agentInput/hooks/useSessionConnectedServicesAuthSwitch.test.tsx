@@ -1,8 +1,8 @@
 import { renderHook } from '@/dev/testkit/hooks/renderHook';
 import * as React from 'react';
 import { act } from 'react-test-renderer';
-import { AGENTS_CORE } from '@happier-dev/agents';
-import { CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS, CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import { CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS, CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AgentInputContentPopoverRenderArgs } from '@/components/sessions/agentInput/components/AgentInputContentPopover';

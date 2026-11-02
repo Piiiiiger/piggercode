@@ -3,8 +3,8 @@ import {
     type ActionOperationSnapshotV1,
     type SessionHandoffStorageMode,
     type SessionHandoffWorkspaceTransfer,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { observeActionOperationTerminal } from '@/sync/domains/actionOperations/observeActionOperationTerminal';
 import { resolveSessionHandoffRuntimeConfig } from '@/sync/domains/sessionHandoff/sessionHandoffRuntimeConfig';

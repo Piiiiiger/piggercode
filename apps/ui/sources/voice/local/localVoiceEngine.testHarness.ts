@@ -432,7 +432,7 @@ vi.mock('expo-file-system', () => ({
 }));
 
 vi.mock(
-    '@happier-dev/audio-stream-native',
+    '@piggercode/audio-stream-native',
     () => {
         const listeners = new Map<string, Set<(event: any) => void>>();
         (globalThis as any)[AUDIO_STREAM_STATE_KEY] = { listeners };
@@ -454,7 +454,7 @@ vi.mock(
     },
 );
 
-vi.mock('@happier-dev/sherpa-native', () => ({
+vi.mock('@piggercode/sherpa-native', () => ({
     getOptionalHappierSherpaNativeModule: () => ({
         createStreamingRecognizer: (...args: any[]) => (sherpaStreamingCreate as any)(...args),
         pushAudioFrame: (...args: any[]) => (sherpaStreamingPushFrame as any)(...args),

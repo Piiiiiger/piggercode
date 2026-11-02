@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { renderPromptPlanV1 } from '@happier-dev/protocol';
+import { renderPromptPlanV1 } from '@piggercode/protocol';
 
 import { resolveCodingProviderBehaviorBlocks } from './providerPromptBehaviorRegistry';
 

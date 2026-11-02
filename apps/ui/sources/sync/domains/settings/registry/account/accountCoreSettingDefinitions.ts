@@ -8,7 +8,7 @@ import {
     UsageLimitRecoverySettingsV1Schema as ProtocolUsageLimitRecoverySettingsV1Schema,
     buildSettingArtifacts,
     defineSettingDefinitions,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 import { QUOTA_GAUGE_WINDOW_MODES } from '@/sync/domains/connectedServices/quotaGaugeWindows';
 import { AvatarStyleIdSchema, DEFAULT_AVATAR_STYLE_ID } from './avatarStyleSetting';

@@ -1,6 +1,6 @@
 import {
   SystemTaskSpecSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { type Capability } from '../service';
 import { readCliUpdateFactsForThisCli } from '@/cli/runtime/update/cliUpdateFacts';

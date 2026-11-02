@@ -8,9 +8,9 @@ import {
   listInstalledVersionIdsNewestFirst,
   resolveFirstPartyVersionInstallPath,
   resolveInstalledFirstPartyComponentPaths,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
-import type { DoctorSnapshot } from '@happier-dev/protocol';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import type { DoctorSnapshot } from '@piggercode/protocol';
 
 type HappierInstallations = NonNullable<NonNullable<DoctorSnapshot['installations']>['happier']>;
 type HappierInstallation = HappierInstallations['installations'][number];

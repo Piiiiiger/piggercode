@@ -1,7 +1,7 @@
 import type {
     SessionWorkStateStatusV1,
     SessionWorkStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type CodexAppServerGoalControlErrorCode =
     | 'goal_not_found'

@@ -6,7 +6,7 @@ import { findConnectedServiceChildSelection } from '@/daemon/connectedServices/c
 import {
   ConnectedServiceCredentialRevisionV1Schema,
   type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createConnectedServiceAuthGenerationApplyFailureError } from '../runtimeAuth/connectedServiceAuthGenerationApplyFailure';
 import type { SessionConnectedServiceRuntimeAuthSelectionMaterializerInput } from './switchSessionConnectedServiceAuth';

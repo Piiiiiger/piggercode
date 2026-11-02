@@ -9,7 +9,7 @@ import {
   buildConnectedServiceCredentialRecord,
   ConnectedServiceAuthGroupPolicyV1Schema,
   type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import type { TrackedSession } from '@/daemon/types';

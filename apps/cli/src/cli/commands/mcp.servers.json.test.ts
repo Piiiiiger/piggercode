@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { Credentials } from '@/persistence';
 import type { AccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
-import { accountSettingsParse, McpServersSettingsV1Schema, type AccountSettings } from '@happier-dev/protocol';
+import { accountSettingsParse, McpServersSettingsV1Schema, type AccountSettings } from '@piggercode/protocol';
 
 import { handleMcpCommand } from './mcp';
 import type { McpCommandDeps } from './mcp/deps';

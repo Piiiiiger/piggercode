@@ -4,7 +4,7 @@ import {
   PromptStacksV1Schema,
   openEncryptedDataKeyEnvelopeV1,
   resolvePromptStackSystemAppendBlocksV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
 import { decodeBase64, decryptWithDataKey } from '@/api/encryption';

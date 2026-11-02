@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, it } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol';
 
 async function listFilesRecursively(directory: string): Promise<string[]> {
     const entries = await readdir(directory, { withFileTypes: true });

@@ -13,7 +13,7 @@ import {
   resolveApiSessionSocketDefaultAck,
 } from '@/testkit/backends/apiSessionSocketHarness';
 import { encodeBase64, encrypt } from '../encryption';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 import {
   getActiveAccountSettingsSnapshot,
   setActiveAccountSettingsSnapshot,
@@ -130,7 +130,7 @@ let supervisorOnConnected: (() => Promise<void> | void) | null = null;
 let supervisorConnectedPromise: Promise<void> | null = null;
 const supervisorReportProbeResultMock = vi.fn();
 
-vi.mock('@happier-dev/connection-supervisor', () => ({
+vi.mock('@piggercode/connection-supervisor', () => ({
   DEFAULT_MANAGED_CONNECTION_POLICY: {},
   createManagedConnectionSupervisor: (params: { createTransport: () => unknown; onConnected?: () => Promise<void> | void }) => ({
     start: async () => {

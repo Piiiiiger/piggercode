@@ -6,7 +6,7 @@
  * - Validates the TeamDelete tool_use input and tool_result acknowledgement shape so Happier stays aligned.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @happier-dev/tests test:providers claude.agentTeams.teamDelete.resultShape.realProbe.test.ts
+ *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.teamDelete.resultShape.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';

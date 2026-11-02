@@ -1,4 +1,4 @@
-import { parseOauthAuthorizationResponse } from '@happier-dev/protocol';
+import { parseOauthAuthorizationResponse } from '@piggercode/protocol';
 
 export type ParseOauthRedirectPasteResult =
   | Readonly<{ ok: true; code: string; state: string; rawAuthorizationCode?: false }>

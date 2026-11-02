@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   HAPPIER_REPLAY_RECENT_MESSAGES_MAX_COUNT,
   HAPPIER_REPLAY_SEED_MIN_CHARS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { settingsDefaults } from '@/sync/domains/settings/settings';
 

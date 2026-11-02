@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FeaturesResponseSchema, type FeaturesResponse } from '@happier-dev/protocol';
+import { FeaturesResponseSchema, type FeaturesResponse } from '@piggercode/protocol';
 
 import {
   resolveCliFeatureDecision,

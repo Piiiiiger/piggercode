@@ -1,4 +1,4 @@
-import type { TailscaleStatusSnapshot } from '@happier-dev/cli-common/tailscale';
+import type { TailscaleStatusSnapshot } from '@piggercode/cli-common/tailscale';
 import { describe, expect, it } from 'vitest';
 
 import { buildSetupPlan, parseSetupArgs, type SetupAuthReadiness, type SetupAutonomy } from './setupPlan';

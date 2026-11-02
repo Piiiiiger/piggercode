@@ -1,5 +1,5 @@
-import type { ConnectedServiceCredentialRecordV1, ConnectedServiceId, ConnectedServiceQuotaMeterV1, ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
-import { isConnectedServiceQuotaObservationFresh, readConnectedServiceLimitCategoryV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1, ConnectedServiceId, ConnectedServiceQuotaMeterV1, ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
+import { isConnectedServiceQuotaObservationFresh, readConnectedServiceLimitCategoryV1 } from '@piggercode/protocol';
 
 import { normalizeQuotaMeter, selectEffectiveQuotaMeter } from '../normalization';
 import type { ProviderOutcomeProofKind } from '../../recovery/providerOutcomeProof';

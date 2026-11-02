@@ -2,7 +2,7 @@ import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 import type { ScmUiBackendPlugin } from './scmUiBackendPlugin';
 import { gitScmUiPlugin } from '@/scm/backends/git/plugin';
 import { saplingScmUiPlugin } from '@/scm/backends/sapling/plugin';
-import { inferScmRemoteTarget } from '@happier-dev/protocol';
+import { inferScmRemoteTarget } from '@piggercode/protocol';
 
 const fallbackPlugin: ScmUiBackendPlugin = {
     id: 'git',

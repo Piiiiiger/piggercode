@@ -1,11 +1,11 @@
 import {
   AGENT_IDS,
   resolveSessionMetadataAgentIdentity,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   AgentRuntimeDescriptorV1Schema,
   readAcpConfiguredBackendV1FromMetadata,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import type { RawSessionRecord } from '@/session/transport/http/sessionsHttp';
@@ -19,7 +19,7 @@ export type BuildInactiveSessionResumeSpawnOptionsParams = Readonly<{
   rawSession: RawSessionRecord;
   metadata: Record<string, unknown>;
   initialTranscriptAfterSeq?: number;
-  executionAuthorization?: import('@happier-dev/protocol').SpawnSessionExecutionAuthorization;
+  executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
 }>;
 
 function readNonEmptyString(value: unknown): string | null {

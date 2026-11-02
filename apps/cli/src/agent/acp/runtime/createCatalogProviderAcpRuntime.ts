@@ -14,7 +14,7 @@ import {
 } from '@/settings/notifications/permissionRequestPush';
 import { createAgentSessionMediaPersister } from '@/session/sessionMedia/createAgentSessionMediaPersister';
 import { createSessionMediaAccessPolicy } from '@/session/sessionMedia/createSessionMediaAccessPolicy';
-import { AGENTS_CORE, getProviderCliRuntimeSpec, isAgentMediaCapabilitySupported, supportsAgentInFlightSteer } from '@happier-dev/agents';
+import { AGENTS_CORE, getProviderCliRuntimeSpec, isAgentMediaCapabilitySupported, supportsAgentInFlightSteer } from '@piggercode/agents';
 import { getSessionNotificationTitle } from '@/agent/runtime/readyNotificationContext';
 import type { SessionProviderInputConsumer } from '@/agent/runtime/sessionInput/types';
 import { createVendorResumeIdMetadataPublisher } from '@/session/metadata/createVendorResumeIdMetadataPublisher';

@@ -2,8 +2,8 @@ import { existsSync } from 'node:fs';
 
 import spawn from 'cross-spawn';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
-import { resolveInstalledFirstPartyComponentPaths } from '@happier-dev/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import { resolveInstalledFirstPartyComponentPaths } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { findAllHappyProcesses, type HappyProcessInfo } from '@/daemon/doctor';
 

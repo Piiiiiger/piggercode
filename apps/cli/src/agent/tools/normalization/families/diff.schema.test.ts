@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getToolInputSchemaV2 } from '@happier-dev/protocol/tools/v2';
+import { getToolInputSchemaV2 } from '@piggercode/protocol/tools/v2';
 
 describe('DiffInputV2Schema', () => {
   it('accepts per-file old/new text pairs when unified diffs are unavailable', () => {

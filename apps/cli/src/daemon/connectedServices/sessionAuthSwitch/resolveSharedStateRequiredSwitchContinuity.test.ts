@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';
 import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';

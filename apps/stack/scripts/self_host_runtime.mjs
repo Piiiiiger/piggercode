@@ -38,32 +38,32 @@ import {
   renderSystemdServiceUnit,
   renderWindowsScheduledTaskWrapperPs1,
   resolveServiceBackend,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 import {
   resolveConfiguredRelayRuntimeBinaryOverride,
   resolveConfiguredRelayRuntimePaths,
-} from '@happier-dev/cli-common/firstPartyRuntime/relayRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime/relayRuntime';
 import {
   mergeSelfHostServerEnvText,
   parseEnvText as parseEnvTextShared,
   renderSelfHostServerEnvText as renderSelfHostServerEnvTextShared,
   resolveSelfHostServerMigrationPlan,
-} from '@happier-dev/cli-common/firstPartyRuntime/selfHostServerEnv';
+} from '@piggercode/cli-common/firstPartyRuntime/selfHostServerEnv';
 import {
   assertPackagedServerRuntimeClosure,
   relocateServerRuntimeArtifactClosure,
-} from '@happier-dev/cli-common/firstPartyRuntime/serverRuntimeArtifactLayout';
-import { commandExistsOnPath } from '@happier-dev/cli-common/process';
-import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@happier-dev/release-runtime/minisign';
+} from '@piggercode/cli-common/firstPartyRuntime/serverRuntimeArtifactLayout';
+import { commandExistsOnPath } from '@piggercode/cli-common/process';
+import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@piggercode/release-runtime/minisign';
 import {
   PUBLIC_RELEASE_RING_IDS,
   getReleaseRingCatalogEntry,
   normalizePublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
-import { resolveReleaseAssetBundle } from '@happier-dev/release-runtime/assets';
-import { downloadVerifiedReleaseAssetBundle } from '@happier-dev/release-runtime/verifiedDownload';
-import { extractFirstPartyReleaseArchiveToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
-import { fetchFirstGitHubReleaseByTags, fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
+} from '@piggercode/release-runtime/releaseRings';
+import { resolveReleaseAssetBundle } from '@piggercode/release-runtime/assets';
+import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
+import { extractFirstPartyReleaseArchiveToDirectory } from '@piggercode/release-runtime/archiveExtraction';
+import { fetchFirstGitHubReleaseByTags, fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
 import { findExtractedExecutableByName } from './self_host/findExtractedExecutableByName.mjs';
 import { maybeInstallCompanionCli } from './self_host/install_companion_cli.mjs';
 import { listVersionedDirectoryIdsNewestFirst, pruneVersionedDirectories } from './self_host/version_retention.mjs';

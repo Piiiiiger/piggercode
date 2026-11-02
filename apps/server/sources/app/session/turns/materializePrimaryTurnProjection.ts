@@ -1,4 +1,4 @@
-import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1, SessionTurnV1 } from "@happier-dev/protocol";
+import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1, SessionTurnV1 } from "@piggercode/protocol";
 
 export type PrimaryTurnMaterializedProjection = Readonly<{
     latestTurnId: string | null;

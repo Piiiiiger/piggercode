@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { SessionHandoffCodexAffinitySchema } from '@happier-dev/protocol';
+import { SessionHandoffCodexAffinitySchema } from '@piggercode/protocol';
 
 const SessionHandoffFileSliceSchema = z.object({
   t: z.literal('happier.handoff.file.v1').optional(),

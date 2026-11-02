@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1, type SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1, type SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 
 import {
     buildSessionUsageLimitRecoveryPresentation,

@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { installVersionedPayload, resolveInstalledFirstPartyComponentPaths } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { installVersionedPayload, resolveInstalledFirstPartyComponentPaths } from '@piggercode/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 /** Real install records for resolver tests; execution is replaced at the OS process boundary. */
 export async function installManagedCliFixture(params: Readonly<{

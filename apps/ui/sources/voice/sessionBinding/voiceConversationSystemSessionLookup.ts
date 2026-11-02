@@ -1,4 +1,4 @@
-import { readSystemSessionMetadataFromMetadata } from '@happier-dev/protocol';
+import { readSystemSessionMetadataFromMetadata } from '@piggercode/protocol';
 
 import { readDirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';
 

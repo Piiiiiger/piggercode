@@ -1,7 +1,7 @@
 import {
   getProviderCliRuntimeSpec,
   resolveAgentIdFromSessionMetadata,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 function normalizeNotificationText(value: unknown): string | null {
   if (typeof value !== 'string') return null;

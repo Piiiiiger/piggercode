@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useNavigation, useRouter } from 'expo-router';
 
-import { PromptDocBodyV1Schema } from '@happier-dev/protocol';
+import { PromptDocBodyV1Schema } from '@piggercode/protocol';
 
 import { t } from '@/text';
 import { layout } from '@/components/ui/layout/layout';

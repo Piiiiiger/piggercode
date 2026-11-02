@@ -66,7 +66,7 @@ describe('session special command payload steerability', () => {
   it('keeps the CLI parser as a protocol re-export instead of a second command parser', () => {
     const source = readFileSync(resolve(REPO_ROOT, 'apps/cli/src/cli/parsers/specialCommands.ts'), 'utf8');
 
-    expect(source).toContain("from '@happier-dev/protocol'");
+    expect(source).toContain("from '@piggercode/protocol'");
     expect(source).toContain('isNonSteerablePromptPayload');
     expect(source).not.toContain('function parse');
   });

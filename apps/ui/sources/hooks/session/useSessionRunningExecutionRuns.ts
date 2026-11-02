@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { ExecutionRunPublicState } from '@happier-dev/protocol';
+import type { ExecutionRunPublicState } from '@piggercode/protocol';
 
 import {
     EMPTY_RUNNING_EXECUTION_RUNS,

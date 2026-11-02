@@ -1,5 +1,5 @@
-import { MachineTransferSendEnvelopeSchema } from '@happier-dev/protocol';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { MachineTransferSendEnvelopeSchema } from '@piggercode/protocol';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { Server, Socket } from 'socket.io';
 import {
   formatCurrentMachineSocketError,

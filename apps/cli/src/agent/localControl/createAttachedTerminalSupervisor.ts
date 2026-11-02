@@ -16,7 +16,7 @@ import { clearTerminalControlServiceabilityProjection } from '@/daemon/sessions/
 import { resolveTerminalHostLaunchFailure, TerminalHostCreationError, TerminalHostStartupError } from '@/integrations/terminalHost/errors';
 import { bindHerdrAgentIfNeeded } from '@/integrations/herdr/bindManagedSession';
 import { resolveSessionStartupTimeoutMs } from '@/daemon/spawn/waitForSessionWebhook';
-import type { SessionProviderCliAttachPrepareRequestV1 } from '@happier-dev/protocol';
+import type { SessionProviderCliAttachPrepareRequestV1 } from '@piggercode/protocol';
 import { createHerdrClient } from '@/integrations/herdr/client';
 import { resolveHerdrRuntimeBinary } from '@/integrations/herdr/runtimeBinary';
 import { createTerminalAttachmentId, readTerminalAttachmentState, terminalAttachmentMatchesTerminal, terminalMetadataMatchesHostHandle,

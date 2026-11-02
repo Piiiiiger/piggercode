@@ -4,7 +4,7 @@ import { homedir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 
 import chalk from 'chalk';
-import { createStepPrinter, definitionList, sectionTitle, warn } from '@happier-dev/cli-common/output';
+import { createStepPrinter, definitionList, sectionTitle, warn } from '@piggercode/cli-common/output';
 
 import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { configuration, reloadConfiguration } from '@/configuration';
@@ -18,8 +18,8 @@ import {
   prepareFirstPartyComponentPayloadFromGitHubRelease,
   resolveManagedCliReleaseChannelSync,
   resolveRelayRuntimeDefaults,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { createRelayHostEngine } from '@happier-dev/cli-common/relayHost';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { createRelayHostEngine } from '@piggercode/cli-common/relayHost';
 import {
   installRemoteFirstPartyComponent,
   normalizeRemoteReleaseArch,
@@ -27,13 +27,13 @@ import {
   type RelayRuntimeStatusSnapshot,
   type RelayRuntimeTaskParams,
   type SystemTaskSshConnectionConfig,
-} from '@happier-dev/cli-common/systemTasks';
-import { getReleaseRingPublicLabel, normalizePublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/systemTasks';
+import { getReleaseRingPublicLabel, normalizePublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import {
   classifyTailscaleServeRootSlot,
   runTailscaleServeEnable,
   runTailscaleServeStatus,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 import { readTailscaleStatusSnapshot } from '@/integrations/tailscale/tailscaleStatus';
 import { promptConfirmYesNo } from '@/terminal/prompts/promptConfirmYesNo';
 import { defaultNameFromUrl, defaultWebappUrlFromServerUrl } from '../server/commandUtilities';

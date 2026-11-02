@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import { CONNECTED_SERVICE_BROKER_BRIDGE_FETCH_TIMEOUT_MS } from '../broker/brokerBridgeCallSource';
 

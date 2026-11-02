@@ -1,4 +1,4 @@
-import { BackendTargetRefSchema, parseBackendTargetKey, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { BackendTargetRefSchema, parseBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 function parseSerializedBackendTarget(value: unknown): BackendTargetRefV1 | null {
     const parsed = BackendTargetRefSchema.safeParse(value);

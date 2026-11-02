@@ -1,6 +1,6 @@
 import { dirname } from 'node:path';
 
-import type { ExactSessionTurnEndMutationV1 } from '@happier-dev/protocol';
+import type { ExactSessionTurnEndMutationV1 } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 

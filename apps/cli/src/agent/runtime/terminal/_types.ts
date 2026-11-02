@@ -5,7 +5,7 @@ import type {
   TerminalInjectionFailurePhase,
   TerminalInputInjectionResult,
   TerminalPromptInput,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export type {
   TerminalHostKind,

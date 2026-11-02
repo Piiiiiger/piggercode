@@ -2,7 +2,7 @@ import type {
   AccountSettings,
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceCredentialRevisionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 

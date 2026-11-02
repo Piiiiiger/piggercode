@@ -4,7 +4,7 @@ import {
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceQuotaSnapshotV1,
   type ConnectedServiceUsageSourceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';

@@ -1,4 +1,4 @@
-import type { MemorySearchQueryV1, MemorySearchResultV1 } from '@happier-dev/protocol';
+import type { MemorySearchQueryV1, MemorySearchResultV1 } from '@piggercode/protocol';
 
 import type { OperationalMemoryEmbeddingsSettings } from './resolveOperationalMemoryEmbeddingsSettings';
 import { openSummaryShardIndexDb } from './summaryShardIndexDb';

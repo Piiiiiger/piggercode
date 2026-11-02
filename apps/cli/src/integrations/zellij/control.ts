@@ -4,7 +4,7 @@ import {
   type TerminalControlSendFailureReason,
   type TerminalControlSendResult,
   type TerminalControlUnsupportedReason,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { buildTerminalControlCapture } from '../terminalHost/controlCapture';
 import { TERMINAL_SPECIAL_KEY_RAW_SEQUENCES } from '../terminalHost/controlTypes';

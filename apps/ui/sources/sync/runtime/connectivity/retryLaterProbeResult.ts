@@ -1,4 +1,4 @@
-import type { ReadinessProbeResult, ReadinessRetryLaterReason } from '@happier-dev/connection-supervisor';
+import type { ReadinessProbeResult, ReadinessRetryLaterReason } from '@piggercode/connection-supervisor';
 
 const RETRY_REASON_HEADER = 'X-Happier-Retry-Reason';
 

@@ -10,7 +10,7 @@ import type { ExecutionRunState } from '@/agent/executionRuns/runtime/executionR
 import type { ExecutionBudgetRegistry } from '@/daemon/executionBudget/ExecutionBudgetRegistry';
 import { writeExecutionRunMarker } from '@/daemon/executionRunRegistry';
 import { buildExecutionRunConnectedServicesLaunchV1 } from '@/daemon/connectedServices/runsBridge/contract';
-import { projectExecutionRunRequestedConfiguration, type ExecutionRunResumeHandle } from '@happier-dev/protocol';
+import { projectExecutionRunRequestedConfiguration, type ExecutionRunResumeHandle } from '@piggercode/protocol';
 
 type EnqueueMarkerWrite = (runId: string, write: () => Promise<void>) => Promise<void>;
 

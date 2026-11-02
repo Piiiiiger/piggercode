@@ -1,4 +1,4 @@
-import { ConnectedServiceQuotaMeterV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaMeterV1Schema } from '@piggercode/protocol';
 import { buildConnectedServiceAuthGroupRuntimeStateFromMeters } from '../quotas/projection';
 import { describe, expect, it, vi } from 'vitest';
 

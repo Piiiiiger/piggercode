@@ -1,4 +1,4 @@
-import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@happier-dev/protocol';
+import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type {

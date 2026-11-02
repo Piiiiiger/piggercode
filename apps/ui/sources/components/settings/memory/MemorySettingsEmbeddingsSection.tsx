@@ -14,7 +14,7 @@ import {
     MemoryEmbeddingsLocalTransformersConfigSchema,
     MemoryEmbeddingsOpenAiCompatibleConfigSchema,
     type MemorySettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function normalizeSecretStringPromptInput(value: string | null): SecretString | null {
     if (value === null) return null;

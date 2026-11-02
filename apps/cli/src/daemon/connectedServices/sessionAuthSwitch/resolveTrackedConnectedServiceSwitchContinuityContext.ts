@@ -1,10 +1,10 @@
 import { isAbsolute } from 'node:path';
 
-import { resolveVendorResumeIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveVendorResumeIdFromSessionMetadata } from '@piggercode/agents';
 import {
   readConnectedServiceMaterializationIdentityV1FromMetadata,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import type { TrackedSession } from '@/daemon/types';

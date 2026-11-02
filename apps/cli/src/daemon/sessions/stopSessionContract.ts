@@ -2,14 +2,14 @@ import {
   SessionStopCleanupIncompleteReasonSchema,
   type StopSessionIncompleteReason,
   type StopSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export {
   StopSessionIncompleteReasonSchema,
   StopSessionResultSchema,
   type StopSessionIncompleteReason,
   type StopSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function incompleteStopSession(reason: StopSessionIncompleteReason): StopSessionResult {
   return { status: 'incomplete', reason };

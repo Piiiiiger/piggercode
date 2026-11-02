@@ -1,7 +1,7 @@
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import {
     type DirectSessionCandidateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { deriveDirectSessionActivityFromTimestamp } from '@/api/directSessions/activity/deriveDirectSessionActivityFromTimestamp';
 import type { CodexAppServerClient } from '../client/createCodexAppServerClient';

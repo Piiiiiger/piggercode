@@ -5,7 +5,7 @@ import { readMcpServersSettingsFromAccountSettings } from '@/mcp/servers/readMcp
 import { loadFreshMcpAccountSettingsContext } from '../loadFreshMcpAccountSettingsContext';
 
 import type { McpCommandDeps } from '../deps';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 function summarizeMcpServersForJson(settings: ReturnType<typeof readMcpServersSettingsFromAccountSettings>): unknown {
   const bindingCountByServerId = new Map<string, number>();

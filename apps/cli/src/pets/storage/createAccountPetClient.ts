@@ -2,7 +2,7 @@ import {
   AccountPetCreateResponseV1Schema,
   type AccountPetCreateRequestV1,
   type AccountPetCreateResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { readCredentials, type Credentials } from '@/persistence';

@@ -85,7 +85,7 @@ import {
     type AcpConfigOptionOverridesV1,
     type BackendTargetRefV1,
     type WindowsRemoteSessionLaunchMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useNewSessionMcpSelection } from '@/components/sessions/new/hooks/useNewSessionMcpSelection';
 import { resolveEffectiveWindowsRemoteSessionLaunchMode } from '@/sync/domains/session/spawn/windowsRemoteSessionLaunchMode';
 import { useNewSessionAvailabilityState } from '@/components/sessions/new/hooks/screenModel/useNewSessionAvailabilityState';

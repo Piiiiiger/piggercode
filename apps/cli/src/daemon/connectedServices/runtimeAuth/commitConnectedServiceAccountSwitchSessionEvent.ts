@@ -15,7 +15,7 @@ import {
   type ConnectedServiceSwitchAttemptSessionAdoptionV1,
   type SessionStoredMessageContent,
   type TranscriptRawAgentEventV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import {

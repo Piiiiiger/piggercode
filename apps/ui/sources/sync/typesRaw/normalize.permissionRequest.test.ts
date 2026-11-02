@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeRawMessage } from './normalize';
-import { formatPermissionRequestSummary } from '@happier-dev/protocol';
+import { formatPermissionRequestSummary } from '@piggercode/protocol';
 
 describe('typesRaw.normalizeRawMessage (permission-request)', () => {
   it('uses description as a permission title when options are missing', () => {

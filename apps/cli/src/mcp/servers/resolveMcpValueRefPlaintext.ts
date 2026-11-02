@@ -11,7 +11,7 @@ import {
   decryptSecretValueWithKeysV1,
   type McpValueRefV1,
   type SecretStringV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export {
   deriveSettingsSecretsKeyForCredentials,

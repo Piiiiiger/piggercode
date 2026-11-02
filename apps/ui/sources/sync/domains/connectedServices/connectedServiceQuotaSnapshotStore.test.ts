@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ConnectedServiceQuotaSnapshotV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaSnapshotV1Schema } from '@piggercode/protocol';
 import type { connectedServiceQuotaRecoveryCreditConsume } from '@/sync/ops/connectedServiceQuotaRecoveryCredits';
 
 const { consumeSpy } = vi.hoisted(() => ({

@@ -1,4 +1,4 @@
-import type { CliAcquisitionPhase, CliAcquisitionProgress } from '@happier-dev/protocol';
+import type { CliAcquisitionPhase, CliAcquisitionProgress } from '@piggercode/protocol';
 
 export type FirstPartyAcquisitionOptions = Readonly<{
   signal?: AbortSignal;

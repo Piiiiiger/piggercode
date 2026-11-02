@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { parsePermissionIntentAlias, type PermissionIntent } from '@happier-dev/agents';
+import { parsePermissionIntentAlias, type PermissionIntent } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import { readCommandPositionals } from '@/cli/commands/shared/argvFlags';
@@ -8,7 +8,7 @@ import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { createCliActionExecutorFromCredentials } from '@/session/actions/createCliActionExecutorFromCredentials';
 import { normalizeActionExecuteResult } from './shared/normalizeActionExecuteResult';
 import { tryHandleApprovalRequestCreated } from './shared/tryHandleApprovalRequestCreated';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 function parseIntentOrThrow(raw: string): PermissionIntent {
   const parsed = parsePermissionIntentAlias(raw);

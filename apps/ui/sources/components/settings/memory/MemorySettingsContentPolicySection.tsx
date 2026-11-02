@@ -6,7 +6,7 @@ import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { Switch } from '@/components/ui/forms/Switch';
 import { t, type TranslationKeyNoParams } from '@/text';
 
-import type { MemorySettingsV1 } from '@happier-dev/protocol';
+import type { MemorySettingsV1 } from '@piggercode/protocol';
 import { Icon, type IconName } from '@/components/ui/icons/Icon';
 import {
     readMemoryContentPolicy,

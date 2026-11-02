@@ -25,7 +25,7 @@ import { AgentInput } from '@/components/sessions/agentInput';
 import { AttachmentFilePicker } from '@/components/sessions/attachments/AttachmentFilePicker';
 import { PopoverBoundaryProvider } from '@/components/ui/popover';
 import { t } from '@/text';
-import { resolveRequestedSessionModeId, type AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
+import { resolveRequestedSessionModeId, type AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 import type { HandleCreateSessionOptions } from '../hooks/useCreateNewSession';
 import { useNewSessionAttachmentsController } from '@/components/sessions/new/attachments/useNewSessionAttachmentsController';
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';

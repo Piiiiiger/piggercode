@@ -13,8 +13,8 @@ import { HAPPIER_DAEMON_PENDING_FIRST_INPUT_ENV_KEY } from '@/daemon/spawn/pendi
 import { configuration } from '@/configuration';
 import type { registerRunnerTerminationHandlers as registerRunnerTerminationHandlersFn } from '@/agent/runtime/runnerTerminationHandlers';
 import type { RunnerTerminationEvent, RunnerTerminationOutcome } from '@/agent/runtime/runnerTerminationOutcome';
-import type { AgentModelDescriptor } from '@happier-dev/agents';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { AgentModelDescriptor } from '@piggercode/agents';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 // Observe/replace only the OS child boundary; the startup regression runs the real provider loop.
 vi.mock('node:child_process', async importOriginal => {

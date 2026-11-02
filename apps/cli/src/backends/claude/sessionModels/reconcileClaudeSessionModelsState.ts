@@ -1,5 +1,5 @@
 import type { Metadata } from '@/api/types';
-import { readNewestSessionModelsMetadataStateV1 } from '@happier-dev/agents';
+import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 
 type SessionModelsState = NonNullable<Metadata['sessionModelsV1']>;
 type SessionModelEntry = SessionModelsState['availableModels'][number];

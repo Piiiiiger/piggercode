@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import renderer, { act } from 'react-test-renderer';
-import { RPC_METHODS } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol';
 
 import { flushHookEffects, renderHook, standardCleanup } from '@/dev/testkit';
 import type { FlushHookEffectsOptions } from '@/dev/testkit';

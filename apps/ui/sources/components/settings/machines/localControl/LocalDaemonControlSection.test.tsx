@@ -210,7 +210,7 @@ describe('LocalDaemonControlSection', () => {
         // other desktop surface renders, so the gate, the drift banner and this row cannot
         // describe the same computer differently (F6).
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         ambient.data = {
             ...HEALTHY_AMBIENT_STATUS_DATA,
             serviceInstalled: true,
@@ -354,7 +354,7 @@ describe('LocalDaemonControlSection', () => {
                 update: { currentVersion: '0.2.10', latestVersion: '0.2.14', updateAvailable: true, managed: false },
                 choice: {
                     mode: 'own',
-                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: null, updateCommand: 'npm install -g @happier-dev/cli@latest' },
+                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: null, updateCommand: 'npm install -g @piggercode/cli@latest' },
                 },
             },
         };
@@ -364,7 +364,7 @@ describe('LocalDaemonControlSection', () => {
         await settleAmbientInspection();
 
         const row = screen.findByTestId('settings.localDaemonControl.updateKeptCli');
-        expect(row?.props.copy).toBe('npm install -g @happier-dev/cli@latest');
+        expect(row?.props.copy).toBe('npm install -g @piggercode/cli@latest');
         expect(row?.props.onPress).toBeUndefined();
         // The app still never offers to run an update of a CLI it did not install.
         expect(screen.findByTestId('settings.localDaemonControl.updateCli')).toBeNull();
@@ -372,7 +372,7 @@ describe('LocalDaemonControlSection', () => {
 
     it('repairs through the one setup executor, never the deleted relay.connectBackgroundService kind', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const starts: unknown[] = [];
@@ -419,7 +419,7 @@ describe('LocalDaemonControlSection', () => {
 
     it('names the command line by version and offers the one Update when a newer one exists (R17)', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         ambient.data = {
             ...HEALTHY_AMBIENT_STATUS_DATA,
             acquisition: { ...HEALTHY_AMBIENT_STATUS_DATA.acquisition, version: '0.2.13' },
@@ -496,7 +496,7 @@ describe('LocalDaemonControlSection', () => {
 
     it('says this computer runs the person\'s own command line, and changes it through the one setup run (R12)', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         ambient.data = {
             ...HEALTHY_AMBIENT_STATUS_DATA,
             acquisition: { command: '/usr/local/bin/happier', provenance: 'override', version: '0.2.13' },
@@ -504,7 +504,7 @@ describe('LocalDaemonControlSection', () => {
                 update: null,
                 choice: {
                     mode: 'own',
-                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @happier-dev/cli', updateCommand: 'npm install -g @happier-dev/cli@latest' },
+                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @piggercode/cli', updateCommand: 'npm install -g @piggercode/cli@latest' },
                 },
             },
         };
@@ -543,7 +543,7 @@ describe('LocalDaemonControlSection', () => {
                 update: null,
                 choice: {
                     mode: 'managed',
-                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @happier-dev/cli', updateCommand: 'npm install -g @happier-dev/cli@latest' },
+                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @piggercode/cli', updateCommand: 'npm install -g @piggercode/cli@latest' },
                 },
             },
         };
@@ -555,7 +555,7 @@ describe('LocalDaemonControlSection', () => {
         expect(screen.findByTestId('settings.localDaemonControl.cli')?.props.subtitle).toBe('machine.thisComputer.cliChoiceManaged');
         const oldCopy = screen.findByTestId('settings.localDaemonControl.oldCli');
         expect(oldCopy?.props.subtitle).toBe('machine.thisComputer.cliOldCopyRemove');
-        expect(oldCopy?.props.copy).toBe('npm uninstall -g @happier-dev/cli');
+        expect(oldCopy?.props.copy).toBe('npm uninstall -g @piggercode/cli');
         expect(screen.findByTestId('settings.localDaemonControl.changeCli')).toBeTruthy();
     });
 
@@ -566,7 +566,7 @@ describe('LocalDaemonControlSection', () => {
                 update: null,
                 choice: {
                     mode: null,
-                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @happier-dev/cli', updateCommand: 'npm install -g @happier-dev/cli@latest' },
+                    otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: 'npm uninstall -g @piggercode/cli', updateCommand: 'npm install -g @piggercode/cli@latest' },
                 },
             },
         };
@@ -577,7 +577,7 @@ describe('LocalDaemonControlSection', () => {
 
         const oldCopy = screen.findByTestId('settings.localDaemonControl.oldCli');
         expect(oldCopy?.props.subtitle).toBe('machine.thisComputer.cliOldCopyRemove');
-        expect(oldCopy?.props.copy).toBe('npm uninstall -g @happier-dev/cli');
+        expect(oldCopy?.props.copy).toBe('npm uninstall -g @piggercode/cli');
     });
 
     it('offers no change when there is no other command line to choose (R12)', async () => {
@@ -623,7 +623,7 @@ describe('LocalDaemonControlSection', () => {
     });
     it('shows the named reason when Start could not start a service, even though another one started (N3)', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         ambient.data = {
             ...HEALTHY_AMBIENT_STATUS_DATA,
             serviceInstalled: true,

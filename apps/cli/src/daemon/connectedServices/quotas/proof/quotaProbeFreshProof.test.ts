@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 import { computeConnectedServiceAccessTokenFingerprint } from '../../refresh/credentialFreshness/tokenFingerprint';
 
 import { matchesCurrentQuotaObservationCredential, resolveQuotaProbeFreshProof } from './quotaProbeFreshProof';

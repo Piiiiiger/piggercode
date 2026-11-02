@@ -1,5 +1,5 @@
 import type { DecryptedTranscriptRow } from '@/session/replay/decryptTranscriptRows';
-import type { MemoryContentPolicyV1, MemoryCoveragePolicyV1 } from '@happier-dev/protocol';
+import type { MemoryContentPolicyV1, MemoryCoveragePolicyV1 } from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 import { logger } from '@/ui/logger';
 

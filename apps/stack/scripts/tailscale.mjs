@@ -13,7 +13,7 @@ import {
   runTailscaleServeReset as runSharedTailscaleServeReset,
   runTailscaleServeStatus as runSharedTailscaleServeStatus,
   tailscaleServeHttpsUrlForInternalServerUrlFromStatus,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 
 /**
  * Manage Tailscale Serve for exposing the local UI/API over HTTPS (secure context).

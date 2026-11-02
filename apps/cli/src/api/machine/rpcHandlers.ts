@@ -13,8 +13,8 @@ import {
   type SpawnSessionResult,
 } from '@/rpc/handlers/registerSessionHandlers';
 import { resolveCanonicalCodexBackendMode } from '@/rpc/handlers/codexBackendMode';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 import {
   AcpConfigOptionOverridesV1Schema,
   AgentRuntimeDescriptorV1Schema,
@@ -41,7 +41,7 @@ import {
   type SessionForkRpcResult,
   type SessionHandoffStartRequest,
   type SessionSpawnSourceContextV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { isPermissionMode } from '@/api/types';
 import { CATALOG_AGENT_IDS } from '@/backends/types';
 import type { CatalogAgentId } from '@/backends/types';
@@ -74,7 +74,7 @@ import {
   StopSessionResultSchema,
   type StopSessionResult,
 } from '@/daemon/sessions/stopSessionContract';
-import type { DaemonExecutionRunEntry, DaemonExecutionRunProcessInfo } from '@happier-dev/protocol';
+import type { DaemonExecutionRunEntry, DaemonExecutionRunProcessInfo } from '@piggercode/protocol';
 
 import type { RpcHandlerManager } from '../rpc/RpcHandlerManager';
 import type { MemoryWorkerHandle } from '@/daemon/memory/memoryWorker';
@@ -126,13 +126,13 @@ import type {
   MachineTransferReceiveEnvelope,
   MachineTransferSendEnvelope,
   TransferEndpointCandidate,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   applyOpenCodeSessionAffinityMetadata,
   buildOpenCodeSessionEnvironmentVariables,
   readOpenCodeSessionAffinityFromMetadata,
 } from '@/backends/opencode/utils/opencodeSessionAffinity';
-import { inferAgentIdFromSessionMetadata, resolveVendorResumeIdFromSessionMetadata } from '@happier-dev/agents';
+import { inferAgentIdFromSessionMetadata, resolveVendorResumeIdFromSessionMetadata } from '@piggercode/agents';
 import { getAcpForkContinuationHandler } from '@/backends/catalog';
 import {
   isProviderNativeForkFailedBeforeDispatchError,
@@ -241,7 +241,7 @@ export type MachineRpcHandlers = {
     hooks: import('@/rpc/handlers/registerSessionHandlers').SpawnSessionRunnerAcceptanceHooks,
   ) => Promise<SpawnSessionResult>;
   resolveSpawnSessionByNonce?: (spawnNonce: string) => Promise<
-    import('@happier-dev/protocol').SpawnSessionNonceResolution
+    import('@piggercode/protocol').SpawnSessionNonceResolution
   >;
   abandonSpawnSessionByNonce?: (spawnNonce: string) => Promise<
     | { status: 'completed'; sessionId: string }

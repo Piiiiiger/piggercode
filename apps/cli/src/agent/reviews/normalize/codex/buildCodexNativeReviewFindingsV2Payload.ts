@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1, ExecutionRunRetentionPolicy, ReviewFindingsV2 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ExecutionRunRetentionPolicy, ReviewFindingsV2 } from '@piggercode/protocol';
 
 import { buildReviewFindingsV2Payload } from '@/agent/reviews/normalize/buildReviewFindingsV2Payload';
 import { parseCodexNativeReviewText } from './parseCodexNativeReviewText';

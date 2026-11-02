@@ -1,4 +1,4 @@
-import type { SessionForkPoint } from '@happier-dev/protocol';
+import type { SessionForkPoint } from '@piggercode/protocol';
 
 import { buildNewSessionTempDataFromSessionConfiguration } from '@/components/sessions/authoring/draft/sessionConfigurationSeed';
 import type { ExistingSessionAuthoringSnapshotSession } from '@/components/sessions/authoring/draft/sessionAuthoringDraftAdapters';

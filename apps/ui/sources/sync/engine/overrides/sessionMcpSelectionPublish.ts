@@ -4,7 +4,7 @@ import {
     readSessionMcpSelectionV1FromMetadata,
     SessionMcpSelectionV1Schema,
     type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/sync/domains/state/storageTypes';
 

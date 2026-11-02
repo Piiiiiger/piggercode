@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import renderer, { act } from 'react-test-renderer';
 
 import type { WorkflowPhaseRollup } from '@/components/sessions/workState/sessionWorkflowActivityTypes';
-import type { SessionWorkflowRunStatusV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunStatusV1 } from '@piggercode/protocol';
 
 import { installWorkflowRendererCommonModuleMocks } from './workflowRendererTestHelpers';
 

@@ -5,7 +5,7 @@ import {
   SPAWN_SESSION_ERROR_CODES,
   isConnectedServiceUxDiagnosticSpawnErrorDetail,
   type ConnectedServiceUxDiagnosticCodeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildConnectedServiceUxDiagnostic } from './connectedServiceUxDiagnostics';
 import {

@@ -18,7 +18,7 @@ import {
   type WindowsProtectedAclCommandResult,
   type WindowsProtectedAclCommandRunner,
   type WindowsProtectedPathKind,
-} from '@happier-dev/cli-common/fs/windowsProtectedAcl';
+} from '@piggercode/cli-common/fs/windowsProtectedAcl';
 
 export type ProtectedLocalStateKind = WindowsProtectedPathKind;
 export type WindowsProtectedLocalStateCommandResult = WindowsProtectedAclCommandResult;

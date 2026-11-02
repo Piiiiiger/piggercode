@@ -1,4 +1,4 @@
-import { ConnectedServiceImportRequestV1Schema, ConnectedServiceImportSourceV1Schema, supportsConnectedServiceOperation, type ConnectedServiceImportRequestV1, type ConnectedServiceImportResponseV1 } from '@happier-dev/protocol';
+import { ConnectedServiceImportRequestV1Schema, ConnectedServiceImportSourceV1Schema, supportsConnectedServiceOperation, type ConnectedServiceImportRequestV1, type ConnectedServiceImportResponseV1 } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { AGENTS } from '@/backends/catalog';
 import { buildConnectedAccountOauthCredentialRecord } from '@/daemon/connectedServices/descriptors/buildConnectedAccountCredentialRecord';

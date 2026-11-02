@@ -1,4 +1,4 @@
-import type { ScmWorkingSnapshot as ProtocolScmWorkingSnapshot } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot as ProtocolScmWorkingSnapshot } from '@piggercode/protocol';
 
 import type { ScmCapabilities, ScmWorkingEntry, ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 

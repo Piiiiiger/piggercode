@@ -1,11 +1,11 @@
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
 import {
     evaluateScmRemoteMutationPolicy,
     SCM_OPERATION_ERROR_CODES,
     type ScmRemoteMutationKind,
     type ScmRemoteMutationPolicy,
     type ScmRemoteMutationReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type RemoteMutationGuardResult =
     | { ok: true }

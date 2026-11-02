@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import cliDistBuildManifest from '@happier-dev/cli-common/cliDistBuildManifest';
+import cliDistBuildManifest from '@piggercode/cli-common/cliDistBuildManifest';
 
 import { atomicPromoteDirectorySync, resolveCliPackageRoot } from './syncPackageDist.mjs';
 

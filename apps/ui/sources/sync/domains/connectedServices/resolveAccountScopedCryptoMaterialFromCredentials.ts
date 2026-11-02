@@ -1,4 +1,4 @@
-import type { AccountScopedCryptoMaterial } from '@happier-dev/protocol';
+import type { AccountScopedCryptoMaterial } from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { isLegacyAuthCredentials, isDataKeyAuthCredentials } from '@/auth/storage/tokenStorage';

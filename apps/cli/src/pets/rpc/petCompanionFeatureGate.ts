@@ -1,7 +1,7 @@
 import { configuration } from '@/configuration';
 import { resolveCliFeatureDecisionForServer } from '@/features/featureDecisionService';
 import { resolveCliGlobalOnlyFeatureDecision } from '@/features/featureDecisionGlobalOnly';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 
 const PET_COMPANION_FEATURE_GATE_TIMEOUT_MS = 800;
 const PET_COMPANION_FEATURE_GATE_CACHE_TTL_MS = 5_000;

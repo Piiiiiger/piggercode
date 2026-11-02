@@ -17,7 +17,7 @@ import {
     ConnectedServicesProviderStateSharingSettingsV1Schema,
     type ConnectedServicesProviderConfigSharingModeV1,
     type ConnectedServicesProviderStateSharingSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ProviderStateSharingRows } from './ProviderStateSharingRow';
 import { Icon } from '@/components/ui/icons/Icon';

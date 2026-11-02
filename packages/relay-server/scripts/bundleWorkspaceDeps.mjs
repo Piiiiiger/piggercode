@@ -23,7 +23,7 @@ function findRepoRoot(startDir) {
 async function loadCliCommonWorkspacesModule(repoRoot, env = process.env) {
   const modulePath = resolve(repoRoot, 'packages', 'cli-common', 'dist', 'workspaces', 'index.js');
   if (!existsSync(modulePath)) {
-    await ensureWorkspacePackagesBuiltByName(repoRoot, ['@happier-dev/cli-common'], {
+    await ensureWorkspacePackagesBuiltByName(repoRoot, ['@piggercode/cli-common'], {
       quiet: false,
       env,
     });

@@ -18,7 +18,7 @@ import {
     SessionSystemRecordUpsertRequestSchema,
     SessionStoredMessageContentSchema,
     type SessionStoredContentKind,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 const SESSION_SYSTEM_RECORD_CURSOR_PREFIX = "v1";
 const SESSION_SYSTEM_RECORD_MAX_LIMIT = 500;

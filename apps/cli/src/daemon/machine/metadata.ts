@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { configuration } from '@/configuration';
 import { projectPath } from '@/projectPath';
 import type { MachineMetadata } from '@/api/types';
-import type { CliUpdateFacts } from '@happier-dev/protocol';
+import type { CliUpdateFacts } from '@piggercode/protocol';
 import packageJson from '../../../package.json';
 
 const execFileAsync = promisify(execFile);

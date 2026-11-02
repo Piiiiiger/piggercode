@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { getActionSpec, resolveEffectiveActionInputFields } from '@happier-dev/protocol';
+import { getActionSpec, resolveEffectiveActionInputFields } from '@piggercode/protocol';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
 import { buildResumeSessionExtrasFromUiState, DEFAULT_AGENT_ID, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';

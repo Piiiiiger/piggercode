@@ -37,7 +37,7 @@ import type { AcpRuntimeSessionClient } from '@/agent/acp/sessionClient';
 import { isAbortLikeError } from '@/agent/executionRuns/runtime/turnDelivery';
 import type { ACPMessageData } from '@/api/session/sessionMessageTypes';
 import type { AgentState, Metadata } from '@/api/types';
-import { getAgentModelConfig, getAgentSessionModeDescriptor, readNewestSessionModelsMetadataStateV1, type AgentId } from '@happier-dev/agents';
+import { getAgentModelConfig, getAgentSessionModeDescriptor, readNewestSessionModelsMetadataStateV1, type AgentId } from '@piggercode/agents';
 import { updateAgentStateBestEffort, updateMetadataBestEffort } from '@/api/session/sessionWritesBestEffort';
 import { createStreamedTranscriptWriter } from '@/api/session/streamedTranscriptWriter';
 import type { TurnAssistantPreviewTracker } from '@/agent/runtime/turnAssistantPreviewTracker';
@@ -67,7 +67,7 @@ import {
 } from '@/agent/acp/configOptionChoiceNormalization';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { isGenericSubAgentToolName, readPendingLocalId } from '@happier-dev/protocol';
+import { isGenericSubAgentToolName, readPendingLocalId } from '@piggercode/protocol';
 import { canonicalizeToolNameV2 } from '@/agent/tools/normalization';
 import type {
   ProviderPromptSubmissionCallbacks,
@@ -93,7 +93,7 @@ import {
   type SessionMediaUnavailableV1,
   TranscriptRawAgentEventV1Schema,
   type TranscriptRawAgentEventV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   applyAcpPlanSnapshotToMetadata,
   type NormalizedAcpPlanSnapshot,

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 describe('session HTTP connected-service reader support', () => {
   afterEach(() => { vi.restoreAllMocks(); vi.resetModules(); });

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { registerMachineSessionGoalRpcHandlers } from './rpcHandlers.sessionGoals';
 import type { Credentials } from '@/persistence';

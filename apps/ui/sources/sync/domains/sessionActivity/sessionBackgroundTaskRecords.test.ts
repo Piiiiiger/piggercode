@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SessionSystemRecord } from '@happier-dev/protocol';
+import type { SessionSystemRecord } from '@piggercode/protocol';
 
 const request = vi.hoisted(() => vi.fn());
 vi.mock('@/sync/api/session/apiSocket', () => ({ apiSocket: { request } }));

@@ -9,7 +9,7 @@ import type { Metadata, PermissionMode } from "@/api/types";
 import { configuration } from "@/configuration";
 import type { Credentials } from '@/persistence';
 import type { ExecutionRunServiceResult, WaitForExecutionRunResult } from "@/session/services/executionRuns";
-import type { AccountSettings, BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { AccountSettings, BackendTargetRefV1 } from '@piggercode/protocol';
 import { createMcpActionEnablement, createMcpActionSettingsProvider } from '@/mcp/server/createMcpActionEnablement';
 
 export type HappyMcpExecutionRunService = Readonly<{

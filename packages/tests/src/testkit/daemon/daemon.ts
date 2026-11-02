@@ -165,7 +165,7 @@ function looksLikeDaemonCommand(command: string): boolean {
     normalized.includes('src/index.ts') &&
     (
       normalized.includes('apps/cli') ||
-      normalized.includes('@happier-dev/cli') ||
+      normalized.includes('@piggercode/cli') ||
       normalized.includes('/cli-dist-snapshot/src/index.ts') ||
       normalized.includes('/cli-dist/src/index.ts') ||
       (

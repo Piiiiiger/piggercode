@@ -36,7 +36,7 @@ import {
 } from './SidechainHydrationInlineStatus';
 import { buildToolCallMessageRouteId } from '@/sync/domains/messages/messageRouteIds';
 import { Typography } from '@/constants/Typography';
-import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 import { resolveInactiveSessionToolCallFailure } from '../permissions/resolveInactiveSessionToolCallFailure';
 import { navigateWithBlurOnWeb } from '@/utils/platform/navigateWithBlurOnWeb';
 import { buildApprovalToolCallLocation, doesApprovalMatchToolCall } from './toolApprovalPromptMatching';

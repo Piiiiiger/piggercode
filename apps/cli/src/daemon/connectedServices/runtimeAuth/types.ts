@@ -4,7 +4,7 @@ import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceLimitCategoryV1,
   ProviderAccountUsageRecordId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ConnectedServiceSharedGenerationMutationCurrentness } from '../credentials/lifecycleTypes';
 import type { ConnectedServiceAccountTransitionVerificationResult } from '../accountTransitions/connectedServiceAccountTransition';
 

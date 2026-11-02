@@ -182,7 +182,7 @@ describe('metro.config.js (web)', () => {
 
         expect(() => config.resolver.resolveRequest(
             { originModulePath: join(uiDir, 'index.ts') },
-            '@happier-dev/definitely-missing-package',
+            '@piggercode/definitely-missing-package',
             'web',
         )).toThrow();
     });

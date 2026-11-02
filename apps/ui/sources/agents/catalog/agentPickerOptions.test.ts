@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENT_IDS, type AgentId } from '@happier-dev/agents';
+import { AGENT_IDS, type AgentId } from '@piggercode/agents';
 import { getAgentPickerOptions } from './agentPickerOptions';
 
 describe('agents/agentPickerOptions', () => {

@@ -6,7 +6,7 @@ import {
   type ConnectedServiceCredentialHealthStatusV1,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../accountGroups/quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
 import {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
-import { getAgentStaticModels } from '@happier-dev/agents';
+import { buildBackendTargetKey } from '@piggercode/protocol';
+import { getAgentStaticModels } from '@piggercode/agents';
 import {
   readDynamicModelProbeCache,
   resetDynamicModelProbeCacheForTests,

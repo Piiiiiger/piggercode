@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 
 import { eventRouter } from "./eventRouter";
 import { getSocketRooms } from "@/app/api/socketRooms";
-import { ConnectedServiceIdSchema } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema } from "@piggercode/protocol";
 
 const require = createRequire(import.meta.url);
 const { io: ioClient } = require("socket.io-client") as typeof import("socket.io-client");

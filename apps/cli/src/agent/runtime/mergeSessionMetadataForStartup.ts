@@ -4,13 +4,13 @@ import {
     LEGACY_ACP_SESSION_MODE_OVERRIDE_KEY,
     resolveMetadataStringOverrideStateV1,
     SESSION_MODE_OVERRIDE_KEY,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
     buildAcpSessionModeOverrideV1,
     buildModelOverrideV1,
     readSessionMcpSelectionV1FromMetadata,
     type SessionAttachMetadataIdentityPolicy,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 
 export type PermissionModeOverride = {

@@ -1,4 +1,4 @@
-import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { createProviderAccountUsageStore } from '../accountUsage/store';

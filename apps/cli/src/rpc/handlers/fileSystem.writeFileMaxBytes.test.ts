@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RpcHandlerManager } from '@/api/rpc/RpcHandlerManager';
 import { createHash } from 'crypto';
 import { mkdtemp, readFile, rm, stat, writeFile } from 'fs/promises';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { tmpdir } from 'os';
 import { join } from 'path';
 

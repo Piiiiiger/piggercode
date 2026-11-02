@@ -3,7 +3,7 @@ import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushHookEffects, renderHook } from '@/dev/testkit';
 
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 
 import type { SessionParticipantTarget } from '@/sync/domains/session/participants/participantTargets';
 import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';

@@ -1,4 +1,4 @@
-import type { SessionPendingQueueDeliveryTiming } from "@happier-dev/protocol";
+import type { SessionPendingQueueDeliveryTiming } from "@piggercode/protocol";
 
 export function resolvePendingMaterializeDeliveryStateOptIn(value: unknown): "provider" | undefined {
     if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;

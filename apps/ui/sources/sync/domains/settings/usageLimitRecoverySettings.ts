@@ -1,4 +1,4 @@
-import type { UsageLimitRecoverySettingsV1 } from '@happier-dev/protocol';
+import type { UsageLimitRecoverySettingsV1 } from '@piggercode/protocol';
 
 type UsageLimitRecoverySettingsRecord = UsageLimitRecoverySettingsV1 & Record<string, unknown>;
 

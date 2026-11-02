@@ -3,7 +3,7 @@ import {
   openConnectedServiceQuotaSnapshotCiphertext,
   type ConnectedServiceQuotaSnapshotV1,
   type SealedConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { resolveAccountScopedCryptoMaterialFromCredentials } from './resolveAccountScopedCryptoMaterialFromCredentials';

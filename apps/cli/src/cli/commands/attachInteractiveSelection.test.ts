@@ -4,7 +4,7 @@ import { encodeBase64, encryptLegacy } from '@/api/encryption';
 import type { Credentials } from '@/persistence';
 import type { RawSessionListRow } from '@/session/transport/http/sessionsHttp';
 import type { TerminalAttachmentInfo } from '@/terminal/attachment/terminalAttachmentInfo';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import { buildAttachSelectionModel, formatAttachIneligibilityFooter } from './attachInteractiveSelection';
 

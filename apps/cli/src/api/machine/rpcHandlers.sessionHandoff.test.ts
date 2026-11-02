@@ -10,9 +10,9 @@ import type {
   MachineTransferSendEnvelope,
   SessionHandoffResumePlan,
   TransferEndpointCandidate,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SessionHandoffAbortResponseV2Schema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SessionHandoffAbortResponseV2Schema } from '@piggercode/protocol';
 
 import { createEncryptedTransferChunkEnvelope } from '../../machines/transfer/transferChunkEncryption';
 import type { DirectPeerOnDemandTransferScope } from '../../machines/transfer/directPeerTransport';

@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceChildSelection } from '../connectedServiceChildEnvironment';
 import type {

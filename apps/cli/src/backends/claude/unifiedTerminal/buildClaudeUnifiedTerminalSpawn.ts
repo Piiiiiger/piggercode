@@ -2,9 +2,9 @@ import { chmodSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createUnreadTerminalArtifactsCleanup, writeTerminalLaunchSpec, type TerminalSpawn } from '@/terminal/runtime/terminalLaunchSpec';
 
-import type { CommandInvocation } from '@happier-dev/cli-common/process';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
-import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@happier-dev/protocol';
+import type { CommandInvocation } from '@piggercode/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
+import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
 
 import { resolveClaudeSdkPermissionModeFromEnhancedMode } from '../utils/permissionMode';
 import { getClaudeSystemPrompt } from '../utils/systemPrompt';

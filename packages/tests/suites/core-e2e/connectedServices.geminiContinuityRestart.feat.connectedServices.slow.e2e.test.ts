@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { randomUUID } from 'node:crypto';
 
-import { type ConnectedServiceId } from '@happier-dev/protocol';
+import { type ConnectedServiceId } from '@piggercode/protocol';
 
 import {
   startConnectedServicesCodexDaemon,

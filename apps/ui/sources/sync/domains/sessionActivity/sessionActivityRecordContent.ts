@@ -1,4 +1,4 @@
-import type { SessionSystemRecordContent } from '@happier-dev/protocol';
+import type { SessionSystemRecordContent } from '@piggercode/protocol';
 
 import { sync } from '@/sync/sync';
 

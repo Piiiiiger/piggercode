@@ -4,7 +4,7 @@ import { DiffProcessor } from './utils/diffProcessor';
 import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { logger } from '@/ui/logger';
-import { isConditionalPendingSteerClaim } from '@happier-dev/protocol';
+import { isConditionalPendingSteerClaim } from '@piggercode/protocol';
 import { resolveHasTTY } from '@/ui/tty/resolveHasTTY';
 import { Credentials } from '@/persistence';
 import type { Metadata } from '@/api/types';
@@ -36,8 +36,8 @@ import { applyRunnerMcpSessionContext } from '@/mcp/runtime/applyRunnerMcpSessio
 import { MessageBuffer } from "@/ui/ink/messageBuffer";
 import { trimIdent } from "@/utils/trimIdent";
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
-import { readNewestSessionModelsMetadataStateV1 } from '@happier-dev/agents';
+import { readPendingLocalId } from '@piggercode/protocol';
+import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 import type { CodexSessionConfig } from './types';
 import { registerKillSessionHandler } from '@/rpc/handlers/killSession';
 import { delay } from "@/utils/time";
@@ -115,8 +115,8 @@ import { resolveConfiguredCodexHome } from './utils/resolveConfiguredCodexHome';
 import { buildCodexAppServerConfigOverrides } from './appServer/buildCodexAppServerConfigOverrides';
 import { reconcileCodexAppServerOverridesBeforeTurn } from './appServer/reconcileCodexAppServerOverridesBeforeTurn';
 import { seedCodexAppServerPendingSessionOverrides } from './appServer/seedPendingSessionOverrides';
-import { SessionRollbackRpcParamsSchema } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SessionRollbackRpcParamsSchema } from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { syncCodexAcpSessionModeFromPermissionMode } from './acp/syncSessionModeFromPermissionMode';
 import { publishInFlightSteerCapability } from './utils/publishInFlightSteerCapability';
 import { shouldUseInFlightSteer } from './runtime/shouldUseInFlightSteer';
@@ -200,7 +200,7 @@ import {
     SESSION_MODELS_STATE_KEY,
     SESSION_MODES_STATE_KEY,
     type CodexBackendMode,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 	import type { CodexMcpClient } from './codexMcpClient';
 	import { resolveCodexBackendModeForRun } from './utils/resolveCodexBackendModeForRun';
 	import { resolveCodexRequestedDirectory } from './utils/resolveCodexRequestedDirectory';
@@ -324,7 +324,7 @@ export async function runCodex(opts: {
             existingSessionId?: string | null;
             strictNativeResumeIdentity?: boolean;
             importHistory?: boolean;
-            initialGoal?: import('@happier-dev/protocol').SessionInitialGoalRequestV1;
+            initialGoal?: import('@piggercode/protocol').SessionInitialGoalRequestV1;
         }) => Promise<unknown>;
         setSessionMode: (mode: string) => Promise<void>;
         setSessionModel: (model: string) => Promise<void>;
@@ -354,7 +354,7 @@ export async function runCodex(opts: {
         listVendorPlugins?: () => Promise<unknown>;
         listSkills?: () => Promise<unknown>;
         flushTurn: () => Promise<void | ProviderTurnCompletionResult>;
-        rollbackConversation: (request: import('@happier-dev/protocol').SessionRollbackRpcParams) => Promise<import('@happier-dev/protocol').SessionRollbackRpcResult>;
+        rollbackConversation: (request: import('@piggercode/protocol').SessionRollbackRpcParams) => Promise<import('@piggercode/protocol').SessionRollbackRpcResult>;
     }>;
     //
     // Define session

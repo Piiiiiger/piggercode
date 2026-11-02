@@ -1,4 +1,4 @@
-import { ConnectedServiceIdSchema, SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY, SessionUsageLimitRecoveryV1Schema, type SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY, SessionUsageLimitRecoveryV1Schema, type SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 import type { RuntimeAuthRecoveryIntent } from '../RuntimeAuthRecoveryScheduler';
 
 /** Presentation of the daemon's recovery intent, never a second recovery decision. */

@@ -2,8 +2,8 @@ import {
   getAgentLocalControlCapabilityForSession,
   inferAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
-import { compareMachineHosts } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { compareMachineHosts } from '@piggercode/protocol';
 
 import { getProviderAttachOps } from '@/backends/catalog';
 import { probeSessionRunnerPresence } from '@/daemon/sessions/isSessionRunnerActive';

@@ -8,7 +8,7 @@ import {
   type ConnectedServiceId,
   type ConnectedServiceLimitCategoryV1,
   type ConnectedServiceProfileId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { classifyPrimarySessionRuntimeIssue } from '@/agent/runtime/session/errors/classifyPrimarySessionRuntimeIssue';
 import { classifyProviderLimitEvidence } from '@/daemon/connectedServices/quotas/normalization';

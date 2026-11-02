@@ -2,7 +2,7 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { McpServerBindingV1, McpServerCatalogEntryV1 } from '@happier-dev/protocol';
+import type { McpServerBindingV1, McpServerCatalogEntryV1 } from '@piggercode/protocol';
 import { renderScreen } from '@/dev/testkit';
 import {
     installMcpServersCommonModuleMocks,

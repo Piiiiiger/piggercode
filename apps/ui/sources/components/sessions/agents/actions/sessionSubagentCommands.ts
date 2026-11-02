@@ -1,4 +1,4 @@
-import type { SubagentCommandV1 } from '@happier-dev/protocol';
+import type { SubagentCommandV1 } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 import { resolveSubagentStructuredSend } from '@/sync/domains/input/subagents/resolveSubagentStructuredSend';

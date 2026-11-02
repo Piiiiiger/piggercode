@@ -1,7 +1,7 @@
 import { AGENT_IDS, getAgentCore, isAgentId, type AgentId } from '@/agents/catalog/catalog';
 import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
-import { buildBackendTargetKey, parseBackendTargetKey } from '@happier-dev/protocol';
-import { getAgentStaticModels } from '@happier-dev/agents';
+import { buildBackendTargetKey, parseBackendTargetKey } from '@piggercode/protocol';
+import { getAgentStaticModels } from '@piggercode/agents';
 import { getResolvedBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { storage } from '@/sync/domains/state/storage';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';

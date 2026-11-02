@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ChangeKindSchema } from '@happier-dev/protocol/changes';
+import { ChangeKindSchema } from '@piggercode/protocol/changes';
 import { CHANGE_CHECKPOINT_COVERAGE, classifyChangeForCheckpoint, planSyncActionsFromChanges } from './changesPlanner';
 import type { ApiChangeEntry } from '@/sync/api/types/apiTypes';
 

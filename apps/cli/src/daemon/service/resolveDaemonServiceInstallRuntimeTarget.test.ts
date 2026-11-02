@@ -2,7 +2,7 @@ import { chmod, mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { writeHappierCliChoice } from '@happier-dev/cli-common/firstPartyRuntime';
+import { writeHappierCliChoice } from '@piggercode/cli-common/firstPartyRuntime';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {

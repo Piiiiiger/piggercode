@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-import { getFirstPartyComponentCatalogEntry } from '@happier-dev/cli-common/firstPartyRuntime';
+import { getFirstPartyComponentCatalogEntry } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { pathExists } from '../../utils/fs/fs.mjs';
 import { readJsonIfExists } from '../../utils/fs/json.mjs';

@@ -2,7 +2,7 @@ import type {
   RuntimeConfigOutcomeChangeKeyV1,
   RuntimeConfigOutcomeStatusV1,
   RuntimeConfigOutcomeTimingV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { logger as defaultLogger } from '@/ui/logger';
 

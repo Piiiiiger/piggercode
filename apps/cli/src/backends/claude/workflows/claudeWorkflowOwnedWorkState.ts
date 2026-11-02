@@ -1,4 +1,4 @@
-import type { SessionWorkStateV1 } from '@happier-dev/protocol';
+import type { SessionWorkStateV1 } from '@piggercode/protocol';
 
 /**
  * CWF4 work-state coherence filter.

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { AGENT_IDS } from '@happier-dev/agents';
-import { ConnectedServiceBindingsV1Schema } from '@happier-dev/protocol';
+import { AGENT_IDS } from '@piggercode/agents';
+import { ConnectedServiceBindingsV1Schema } from '@piggercode/protocol';
 import { RuntimeAccountIdentitySelectionFactV1Schema } from '../quotas/identity/runtimeAccountIdentityTypes';
 
 /**

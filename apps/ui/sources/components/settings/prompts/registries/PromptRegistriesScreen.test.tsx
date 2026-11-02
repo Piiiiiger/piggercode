@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act, ReactTestRenderer } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { PromptRegistryListAdaptersResponseV1, PromptRegistryScanSourceResponseV1 } from '@happier-dev/protocol';
+import type { PromptRegistryListAdaptersResponseV1, PromptRegistryScanSourceResponseV1 } from '@piggercode/protocol';
 import type { PromptRegistrySkillImportResult } from '@/sync/ops/promptLibrary/promptRegistrySkillImports';
 import { createModalModuleMock } from '@/dev/testkit/mocks/modal';
 import { createPartialStorageModuleMock } from '@/dev/testkit/mocks/storage';

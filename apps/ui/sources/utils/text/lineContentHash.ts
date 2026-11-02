@@ -3,7 +3,7 @@ import {
     isLineContentHashV1,
     normalizeLineContentForHashV1,
     type LineContentHashV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type LineContentHash = LineContentHashV1;
 

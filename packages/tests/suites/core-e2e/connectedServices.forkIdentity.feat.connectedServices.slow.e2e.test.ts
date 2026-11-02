@@ -4,7 +4,7 @@ import {
   openEncryptedDataKeyEnvelopeV1,
   RPC_METHODS,
   SessionForkRpcResultSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   spawnConnectedCodexSession,

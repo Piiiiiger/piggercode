@@ -8,7 +8,7 @@ import {
 import { PiRpcBackend } from '@/backends/pi/rpc/PiRpcBackend';
 import { readConnectedServiceChildSelectionsFromEnv } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
-import { parsePermissionIntentAlias, providers } from '@happier-dev/agents';
+import { parsePermissionIntentAlias, providers } from '@piggercode/agents';
 
 export interface PiBackendOptions extends AgentFactoryOptions {
   mcpServers?: Record<string, McpServerConfig>;

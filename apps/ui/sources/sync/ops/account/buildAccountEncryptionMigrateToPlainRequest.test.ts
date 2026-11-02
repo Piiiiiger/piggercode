@@ -4,7 +4,7 @@ import { Encryption } from '@/sync/encryption/encryption';
 import { MachineEncryption } from '@/sync/encryption/machineEncryption';
 import { EncryptionCache } from '@/sync/encryption/encryptionCache';
 import { decodeBase64 } from '@/encryption/base64';
-import { decodePlainMachineStoredContent, MACHINE_PLAIN_DATA_KEY_MARKER } from '@happier-dev/protocol';
+import { decodePlainMachineStoredContent, MACHINE_PLAIN_DATA_KEY_MARKER } from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import {
@@ -14,7 +14,7 @@ import {
   encryptSecretStringV1,
   openConnectedServiceCredentialCiphertext,
   sealConnectedServiceCredentialCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveAccountScopedCryptoMaterialFromCredentials } from '@/sync/domains/connectedServices/resolveAccountScopedCryptoMaterialFromCredentials';
 

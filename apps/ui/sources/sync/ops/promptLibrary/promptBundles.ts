@@ -4,7 +4,7 @@ import {
   type PromptBundleBodyV1,
   type PromptBundleEntryV1,
   type PromptBundleSchemaIdV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { encodeBase64, decodeBase64 } from '@/encryption/base64';
 import { sync } from '@/sync/sync';

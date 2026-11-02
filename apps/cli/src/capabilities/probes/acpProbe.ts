@@ -16,8 +16,8 @@ import {
     createAcpClientConnection,
     type AcpClientConnection,
 } from '@/agent/acp/connection/createAcpClientConnection';
-import { AsyncTtlCache } from '@happier-dev/protocol';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { AsyncTtlCache } from '@piggercode/protocol';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 export type AcpProbeResult =
     | { ok: true; checkedAt: number; agentCapabilities: InitializeResponse['agentCapabilities'] }

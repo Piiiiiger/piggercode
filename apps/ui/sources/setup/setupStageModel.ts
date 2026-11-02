@@ -4,7 +4,7 @@ import {
     parseSetupCliChoicePromptData,
     readCliAcquisitionFailurePhase,
     type CliAcquisitionPhase,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveSystemTaskStepLabel, SETUP_SERVICE_STEP_STATUS_KEY } from '@/components/systemTasks/resolveSystemTaskStepLabel';
 import type { SystemTaskRunState } from '@/components/systemTasks/types';
 import { t, type TranslationKeyNoParams } from '@/text';

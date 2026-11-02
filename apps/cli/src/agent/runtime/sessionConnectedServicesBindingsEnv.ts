@@ -1,7 +1,7 @@
 import {
     ConnectedServiceBindingsV1Schema,
     type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY =
     'HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_JSON' as const;

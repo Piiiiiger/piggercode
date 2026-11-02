@@ -14,14 +14,14 @@ const rootPackage = JSON.parse(readFileSync('package.json', 'utf8')) as {
 for (const [lane, expectedCommands] of Object.entries({
   unit: [
     ['-s', 'test:shared-packages:local'],
-    ['workspace', '@happier-dev/app', 'test'],
-    ['workspace', '@happier-dev/cli', 'test:unit'],
+    ['workspace', '@piggercode/app', 'test'],
+    ['workspace', '@piggercode/cli', 'test:unit'],
     ['--cwd', 'apps/server', 'test:unit'],
     ['--cwd', 'apps/stack', 'test:unit'],
   ],
   integration: [
-    ['workspace', '@happier-dev/app', 'test:integration'],
-    ['workspace', '@happier-dev/cli', 'test:integration'],
+    ['workspace', '@piggercode/app', 'test:integration'],
+    ['workspace', '@piggercode/cli', 'test:integration'],
     ['--cwd', 'apps/server', 'test:integration'],
     ['--cwd', 'apps/stack', 'test:integration'],
   ],
@@ -67,16 +67,16 @@ test('root typecheck script delegates workspace ownership to the all-settled run
 test('root typecheck inventory preserves every existing workspace owner', () => {
   assert.deepEqual(ROOT_TYPECHECK_COMMANDS.map((command) => command.args), [
     ['workspace', 'privacy-kit', 'typecheck'],
-    ['workspace', '@happier-dev/protocol', 'typecheck'],
-    ['workspace', '@happier-dev/transfers', 'typecheck'],
-    ['workspace', '@happier-dev/agents', 'typecheck'],
-    ['workspace', '@happier-dev/cli-common', 'typecheck'],
-    ['workspace', '@happier-dev/connection-supervisor', 'typecheck'],
-    ['workspace', '@happier-dev/bootstrap', 'typecheck'],
-    ['workspace', '@happier-dev/app', 'typecheck'],
-    ['workspace', '@happier-dev/cli', 'typecheck'],
+    ['workspace', '@piggercode/protocol', 'typecheck'],
+    ['workspace', '@piggercode/transfers', 'typecheck'],
+    ['workspace', '@piggercode/agents', 'typecheck'],
+    ['workspace', '@piggercode/cli-common', 'typecheck'],
+    ['workspace', '@piggercode/connection-supervisor', 'typecheck'],
+    ['workspace', '@piggercode/bootstrap', 'typecheck'],
+    ['workspace', '@piggercode/app', 'typecheck'],
+    ['workspace', '@piggercode/cli', 'typecheck'],
     ['--cwd', 'apps/server', 'typecheck'],
-    ['workspace', '@happier-dev/tests', 'typecheck'],
+    ['workspace', '@piggercode/tests', 'typecheck'],
   ]);
 });
 
@@ -88,8 +88,8 @@ test('root typecheck attempts later workspaces after failures and reports the co
   await assert.rejects(
     runRootTypecheck({
       commands: [
-        { id: 'ui', args: ['workspace', '@happier-dev/app', 'typecheck'] },
-        { id: 'cli', args: ['workspace', '@happier-dev/cli', 'typecheck'] },
+        { id: 'ui', args: ['workspace', '@piggercode/app', 'typecheck'] },
+        { id: 'cli', args: ['workspace', '@piggercode/cli', 'typecheck'] },
         { id: 'server', args: ['--cwd', 'apps/server', 'typecheck'] },
       ],
       runCommand: async (command) => {
@@ -115,17 +115,17 @@ test('root typecheck attempts later workspaces after failures and reports the co
 test('root import-cycle command delegates to the CLI guard', () => {
   assert.equal(
     rootPackage.scripts?.['test:import-cycles'],
-    'yarn workspace @happier-dev/cli test:import-cycles',
+    'yarn workspace @piggercode/cli test:import-cycles',
   );
 });
 
 test('root provider aliases expose Cursor smoke and extended presets', () => {
   assert.equal(
     rootPackage.scripts?.['test:providers:cursor:smoke'],
-    'yarn workspace @happier-dev/tests providers:cursor:smoke',
+    'yarn workspace @piggercode/tests providers:cursor:smoke',
   );
   assert.equal(
     rootPackage.scripts?.['test:providers:cursor:extended'],
-    'yarn workspace @happier-dev/tests providers:cursor:extended',
+    'yarn workspace @piggercode/tests providers:cursor:extended',
   );
 });

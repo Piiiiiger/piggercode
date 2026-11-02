@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { describe, expect, it } from 'vitest';
-import { buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 
 import { buildSettingsPropertiesFromArtifacts } from './buildSettingsPropertiesFromArtifacts';
 import { serializeTrackedSettingEntries } from './serializeTrackedSettingEntries';

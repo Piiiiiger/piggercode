@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
-import type { ScmBackendPreference } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmBackendPreference } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import { resolveFilesystemPolicyDefaultDirectory } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
 import { defaultScmBackendRegistry } from '@/scm/defaultRegistry';

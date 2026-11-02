@@ -9,7 +9,7 @@ import {
   sealBoxBundle,
   stringifySerializedJsonValue,
   type Base64Variant,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Encode a Uint8Array to base64 string

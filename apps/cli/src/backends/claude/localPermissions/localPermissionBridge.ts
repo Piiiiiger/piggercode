@@ -17,7 +17,7 @@ import { buildClaudePermissionHookResponse } from '../utils/buildClaudePermissio
 import { mapToClaudeMode } from '../utils/permissionMode';
 import { deepEqual } from '@/utils/deterministicJson';
 import type { PermissionRpcPayload } from '../utils/permissionRpc';
-import { computeNextMetadataStringOverrideV1, SESSION_MODE_OVERRIDE_KEY } from '@happier-dev/agents';
+import { computeNextMetadataStringOverrideV1, SESSION_MODE_OVERRIDE_KEY } from '@piggercode/agents';
 import { isToolAllowedForSession } from '@/agent/permissions/permissionToolIdentifier';
 import { applyAllowedToolsToAllowlist, applyUpdatedPermissionsToAllowlist, seedAllowlistFromCompletedRequests } from '@/agent/permissions/applyPermissionAllowlistUpdates';
 import { resolvePermissionIntentFromMetadataSnapshot } from '@/agent/runtime/permission/permissionModeFromMetadata';
@@ -31,9 +31,9 @@ import {
     CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
     CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
     isClaudeLocalPermissionBridgeAgentStateRequest,
-} from '@happier-dev/agents';
-import { isChangeTitleToolLikeName } from '@happier-dev/protocol/tools/v2';
-import { isAskUserQuestionToolName } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { isChangeTitleToolLikeName } from '@piggercode/protocol/tools/v2';
+import { isAskUserQuestionToolName } from '@piggercode/protocol';
 import { normalizeClaudeAskUserQuestionInputForPublication } from '../utils/normalizeClaudeAskUserQuestionInput';
 import { buildAskUserQuestionAnswersForClaude } from '../utils/askUserQuestionAnswersForClaude';
 import {

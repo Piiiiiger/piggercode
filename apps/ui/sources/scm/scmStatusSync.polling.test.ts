@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 const getStateMock = vi.hoisted(() => vi.fn());
 // The sync publishes through the batched store action; forward it to the per-action

@@ -7,7 +7,7 @@ import {
   sealAccountScopedBlobCiphertext,
   type ConnectedServiceUsageSourceV1,
   type ProviderAccountUsageRecordKeyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ApiClient } from './api';
 import { logger } from '@/ui/logger';

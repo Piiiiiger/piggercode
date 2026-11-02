@@ -1,4 +1,4 @@
-import { isAcpSessionListingDeclared, type AgentId } from '@happier-dev/agents';
+import { isAcpSessionListingDeclared, type AgentId } from '@piggercode/agents';
 
 import type { AgentCatalogEntry } from '@/backends/types';
 

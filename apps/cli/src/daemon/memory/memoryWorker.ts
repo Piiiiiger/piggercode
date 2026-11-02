@@ -1,7 +1,7 @@
 import { chmodSync, mkdirSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { DEFAULT_MEMORY_SETTINGS, readMemorySettingsFromDisk, type MemorySettingsV1 } from '@/settings/memorySettings';
@@ -136,7 +136,7 @@ export async function startMemoryWorker(params: Readonly<{
   env?: NodeJS.ProcessEnv;
   deps?: Readonly<{
     fetchDecryptedTranscriptPageAfterSeq: (args: Readonly<{ sessionId: string; afterSeq: number; limit: number }>) => Promise<DecryptedTranscriptRow[]>;
-    fetchCommittedSummaryShards?: (sessionId: string) => Promise<import('@happier-dev/protocol').SessionSummaryShardV1[]>;
+    fetchCommittedSummaryShards?: (sessionId: string) => Promise<import('@piggercode/protocol').SessionSummaryShardV1[]>;
   }>;
 }>): Promise<MemoryWorkerHandle> {
   let stopped = false;

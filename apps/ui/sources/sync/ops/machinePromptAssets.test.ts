@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import type { FeaturesResponse } from '@happier-dev/protocol';
-import type { TransferRouteViabilityRecord } from '@happier-dev/transfers';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import type { FeaturesResponse } from '@piggercode/protocol';
+import type { TransferRouteViabilityRecord } from '@piggercode/transfers';
 
 let policyConsulted = false;
 

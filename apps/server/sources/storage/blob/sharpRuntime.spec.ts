@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileBunBinary, resolveBunCommand, resolveCurrentBinaryTarget, resolveSharpRuntimeSidecarEntries, SERVER_BINARY_TARGETS } from "@happier-dev/cli-common/componentArtifacts";
+import { compileBunBinary, resolveBunCommand, resolveCurrentBinaryTarget, resolveSharpRuntimeSidecarEntries, SERVER_BINARY_TARGETS } from "@piggercode/cli-common/componentArtifacts";
 
 const tempDirs: string[] = [];
 const bunCommand = resolveBunCommand() ?? "";

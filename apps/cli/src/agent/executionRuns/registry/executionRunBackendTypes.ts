@@ -1,6 +1,6 @@
 import type { AgentBackend, McpServerConfig } from '@/agent/core/AgentBackend';
 import type { AcpPermissionHandler } from '@/agent/acp/AcpBackend';
-import type { AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
+import type { AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 
 export type ExecutionRunBackendStartContext = Readonly<{
   intentInput?: unknown;

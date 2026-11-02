@@ -1,5 +1,5 @@
-import { systemTasks } from '@happier-dev/cli-common';
-import type { InteractiveSystemTaskEventInput, InteractiveSystemTaskKind, InteractiveSystemTaskKindMap } from '@happier-dev/cli-common/systemTasks';
+import { systemTasks } from '@piggercode/cli-common';
+import type { InteractiveSystemTaskEventInput, InteractiveSystemTaskKind, InteractiveSystemTaskKindMap } from '@piggercode/cli-common/systemTasks';
 import { createInterface } from 'node:readline';
 import { pathToFileURL } from 'node:url';
 import {
@@ -10,7 +10,7 @@ import {
   type SystemTaskJsonValue,
   type SystemTaskEvent,
   type SystemTaskResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ensureSetupCapableLocalHappierCli } from '../systemTasks/happierCli.js';
 import {

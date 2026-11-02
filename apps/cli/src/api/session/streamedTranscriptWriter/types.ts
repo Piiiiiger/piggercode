@@ -2,9 +2,9 @@ import type { ACPMessageData, ACPProvider } from '../sessionMessageTypes';
 import type { StreamedTranscriptSegmentKind } from './segmentKey';
 import type { StreamedTranscriptSegmentState } from './segmentRuntime';
 import type { EphemeralSendResult } from '../ephemeralSendOutcome';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 import type { SessionMessageCommitResult } from '../sessionMessageCommitResult';
-import type { ManagedConnectionState } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState } from '@piggercode/connection-supervisor';
 
 export type StreamedTranscriptCommitOptions = {
   localId: string;

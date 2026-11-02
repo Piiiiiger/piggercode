@@ -1,5 +1,5 @@
 import { MMKV } from 'react-native-mmkv';
-import { normalizeServerIdentityIdCapability } from '@happier-dev/protocol';
+import { normalizeServerIdentityIdCapability } from '@piggercode/protocol';
 import { isTauriDesktop } from '@/utils/platform/tauri';
 import { readStorageScopeFromEnv, scopedStorageId } from '@/utils/system/storageScope';
 import { isStackContext } from './serverContext';

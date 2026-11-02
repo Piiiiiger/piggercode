@@ -8,7 +8,7 @@ import {
     openTerminalProvisioningV3Response,
     TERMINAL_PROVISIONING_V2_PLAINTEXT_BYTES,
     TERMINAL_PROVISIONING_V2_VERSION_BYTE,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     buildTerminalResponseV1,

@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import {
   readFakeCodexAppServerRequestLog,

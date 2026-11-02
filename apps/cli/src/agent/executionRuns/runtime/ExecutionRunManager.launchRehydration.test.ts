@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { AgentBackend, AgentMessageHandler, SessionId, StartSessionResult } from '@/agent/core/AgentBackend';
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import type {
   SessionRuntimeActivityContribution,
   SessionRuntimeActivityContributionHandle,

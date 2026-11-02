@@ -113,7 +113,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
         expoRouterMock.spies.push.mockClear();
 
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -236,7 +236,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
 
     it('starts secure access with the local relay url and shows the returned shareable URL', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -305,7 +305,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
         openExternalUrlSpy.mockClear();
 
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -364,7 +364,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
 
     it('retries secure access instead of attempting a prompt response while approval is pending', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -432,7 +432,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
 
     it('does not treat installer prompts as approval prompts', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -487,7 +487,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
 
     it('wires cancel while a secure-access task is still running', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -541,7 +541,7 @@ describe('LocalTailscaleSecureAccessSection', () => {
 
     it('clears stale secure-access state when the upstream relay becomes unavailable', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {

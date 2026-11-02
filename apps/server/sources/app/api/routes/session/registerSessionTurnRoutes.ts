@@ -6,7 +6,7 @@ import {
     CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY,
     projectSessionRuntimeIssueForReader,
     readConnectedServiceReaderSupport,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { z } from "zod";
 
 import { checkSessionAccess } from "@/app/share/accessControl";

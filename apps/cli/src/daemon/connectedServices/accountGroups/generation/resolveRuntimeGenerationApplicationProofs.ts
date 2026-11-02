@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import type { ConnectedServiceCredentialLifecycleDescriptor } from '../../credentials/lifecycleTypes';

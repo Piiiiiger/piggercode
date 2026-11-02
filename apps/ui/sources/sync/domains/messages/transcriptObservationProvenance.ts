@@ -2,7 +2,7 @@ import {
     isRecoveredHistoryTranscriptObservationProvenance,
     type SessionMessageDeliveryResolutionV1,
     type SessionTranscriptObservationProvenanceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type TranscriptObservationMetadata = {
     sourceCreatedAt?: number;

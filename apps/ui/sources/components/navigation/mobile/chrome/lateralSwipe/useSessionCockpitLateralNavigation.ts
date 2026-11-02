@@ -31,7 +31,7 @@ import {
 import { storage } from '@/sync/domains/state/storage';
 import { getSessionName } from '@/utils/sessions/sessionUtils';
 import { fireAndForget } from '@/utils/system/fireAndForget';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 export type SessionLateralNavigationTarget = Readonly<{
     sessionId: string;

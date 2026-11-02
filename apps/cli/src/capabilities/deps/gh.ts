@@ -3,10 +3,10 @@ import { chmod, copyFile, mkdir, mkdtemp, readdir, readFile, rename, rm, writeFi
 import { basename, delimiter as pathDelimiter, dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-import { extractReleasePayloadRootFromArchive } from '@happier-dev/cli-common/firstPartyRuntime';
-import { downloadGitHubReleaseAsset } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandOnPath } from '@happier-dev/cli-common/process';
-import { fetchGitHubLatestRelease } from '@happier-dev/release-runtime/github';
+import { extractReleasePayloadRootFromArchive } from '@piggercode/cli-common/firstPartyRuntime';
+import { downloadGitHubReleaseAsset } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandOnPath } from '@piggercode/cli-common/process';
+import { fetchGitHubLatestRelease } from '@piggercode/release-runtime/github';
 
 import { configuration } from '@/configuration';
 import { readRuntimeInstallableLastCheckAtMs } from '@/installables/runtime/runtimeInstallableUpdateState';

@@ -64,9 +64,9 @@ import type {
     ScmStashShowResponse,
     ScmStatusSnapshotRequest,
     ScmStatusSnapshotResponse,
-} from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
-import { RPC_ERROR_MESSAGES, RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
+import { RPC_ERROR_MESSAGES, RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { assertScmResponse, runMachineScmRpc, scmFallbackError, withScmBackendPreference } from './scm/machineScm';
 import { canUseSessionRpc, readMachineControlTargetForSession, resolveMachinePathFromSessionBase, shouldFallbackToSessionRpc } from './sessionMachineTarget';

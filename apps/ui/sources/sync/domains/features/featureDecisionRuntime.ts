@@ -10,7 +10,7 @@ import {
     type FeatureDecision,
     type FeatureDecisionScope,
     type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 
 import {

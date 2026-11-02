@@ -12,7 +12,7 @@ import {
 } from '@/hooks/server/connectedServices/useConnectedServiceAuthGroupsQuery';
 import { deriveConnectedServiceAuthGroupIdFromName } from '@/sync/domains/connectedServices/deriveConnectedServiceAuthGroupIdFromName';
 import { t } from '@/text';
-import type { ConnectedServiceAuthGroupV1, ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceAuthGroupV1, ConnectedServiceId } from '@piggercode/protocol';
 
 import { resolveConnectedServiceSettingsErrorMessage } from '../errors/connectedServiceSettingsErrors';
 export {

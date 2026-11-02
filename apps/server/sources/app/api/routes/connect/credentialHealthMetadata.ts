@@ -2,7 +2,7 @@ import type { Prisma } from "@prisma/client";
 import {
     ConnectedServiceCredentialHealthV1Schema,
     type ConnectedServiceCredentialHealthV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 type MetadataIdentity = Readonly<{
     providerEmail?: string | null;

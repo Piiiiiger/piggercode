@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { AuthErrorCodeSchema } from "@happier-dev/protocol";
+import { AuthErrorCodeSchema } from "@piggercode/protocol";
 
 describe("protocol (AuthErrorCodeSchema)", () => {
     it("accepts provider-agnostic oauth error codes", () => {

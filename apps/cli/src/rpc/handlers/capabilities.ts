@@ -18,7 +18,7 @@ import type {
     CapabilitiesInvokeRequest,
     CapabilitiesInvokeResponse,
 } from '@/capabilities/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { probeAgentModelsBestEffort } from '@/capabilities/probes/agentModelsProbe';
 import { probeAgentModesBestEffort } from '@/capabilities/probes/agentModesProbe';
 import { probeAgentConfigOptionsBestEffort } from '@/capabilities/probes/agentConfigOptionsProbe';
@@ -34,14 +34,14 @@ import { logger } from '@/ui/logger';
 import { stripDaemonOwnedChildEnvOverrides } from '@/daemon/spawn/stripDaemonOwnedChildEnvOverrides';
 import { readCredentials } from '@/persistence';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
-import type { AgentId } from '@happier-dev/agents';
-import { applyAgentRuntimeKindOverrideToAccountSettings } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
+import { applyAgentRuntimeKindOverrideToAccountSettings } from '@piggercode/agents';
 import {
     BackendTargetRefSchema,
     ConnectedServiceBindingsV1Schema,
     type BackendTargetRefV1,
     type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { invokeProviderCliInstall as invokeSharedProviderCliInstall } from '@/runtime/managedTools/invokeProviderCliInstall';
 import { existsSync, statSync } from 'node:fs';
 import { dirname, resolve as resolvePath } from 'node:path';

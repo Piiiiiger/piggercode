@@ -1,4 +1,4 @@
-import { getActionSpec, type ActionContextualDefaults, type ActionId } from '@happier-dev/protocol';
+import { getActionSpec, type ActionContextualDefaults, type ActionId } from '@piggercode/protocol';
 import { z } from 'zod';
 
 export type SessionBoundActionToolContext = Readonly<{

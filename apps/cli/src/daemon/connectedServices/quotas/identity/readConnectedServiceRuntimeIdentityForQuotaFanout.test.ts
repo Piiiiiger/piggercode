@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { readConnectedServiceRuntimeIdentityForQuotaFanout } from './readConnectedServiceRuntimeIdentityForQuotaFanout';
 import type { Credentials } from '@/persistence';

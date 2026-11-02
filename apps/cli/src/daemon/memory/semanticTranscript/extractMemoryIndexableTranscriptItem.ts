@@ -1,5 +1,5 @@
 import type { SessionEncryptionContext } from '@/session/transport/encryption/sessionEncryptionContext';
-import { redactBugReportSensitiveText } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText } from '@piggercode/protocol';
 
 import type { DecryptedTranscriptRow } from '@/session/replay/decryptTranscriptRows';
 import {

@@ -66,22 +66,22 @@ test('ensureServerSchemaReady builds source server internal workspace deps befor
   await mkdir(join(root, 'apps', 'ui'), { recursive: true });
   await mkdir(join(root, 'apps', 'cli'), { recursive: true });
   await writeJson(join(serverDir, 'package.json'), {
-    name: '@happier-dev/server',
+    name: '@piggercode/server',
     version: '0.0.0',
     type: 'module',
     dependencies: {
-      '@happier-dev/cli-common': '0.0.0',
+      '@piggercode/cli-common': '0.0.0',
     },
   });
-  await writeJson(join(root, 'apps', 'ui', 'package.json'), { name: '@happier-dev/app', private: true });
-  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@happier-dev/cli', private: true });
+  await writeJson(join(root, 'apps', 'ui', 'package.json'), { name: '@piggercode/app', private: true });
+  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@piggercode/cli', private: true });
   await writeFile(join(serverDir, 'yarn.lock'), '# yarn\n', 'utf-8');
   await seedServerProbeDeps(serverDir);
 
   const cliCommonDir = join(root, 'packages', 'cli-common');
   await mkdir(cliCommonDir, { recursive: true });
   await writeJson(join(cliCommonDir, 'package.json'), {
-    name: '@happier-dev/cli-common',
+    name: '@piggercode/cli-common',
     version: '0.0.0',
     type: 'module',
     exports: {

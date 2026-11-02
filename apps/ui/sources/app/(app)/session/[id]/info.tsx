@@ -24,7 +24,7 @@ import {
     isSessionRouteHydrationMissing,
 } from '@/sync/domains/session/sessionRouteHydrationState';
 import { HappyError } from '@/utils/errors/errors';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { resolveProfileById } from '@/sync/domains/profiles/profileUtils';
 import { getProfileDisplayName } from '@/components/profiles/profileDisplay';
 import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
@@ -50,7 +50,7 @@ import {
 } from '@/sync/domains/sessionHandoff/resolveSessionHandoffUiAvailability';
 import { readDisplayMachineTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { useSessionMachineTarget } from '@/components/sessions/model/useSessionMachineTarget';
-import { getActionSpec } from '@happier-dev/protocol';
+import { getActionSpec } from '@piggercode/protocol';
 import { SessionRetentionNotice } from '@/components/sessions/info/SessionRetentionNotice';
 import { useSessionRouteServerScope, type SessionRouteServerScope } from '@/hooks/session/sessionRouteServerScope';
 import { useServerFeaturesSnapshotForServerId } from '@/sync/domains/features/featureDecisionRuntime';

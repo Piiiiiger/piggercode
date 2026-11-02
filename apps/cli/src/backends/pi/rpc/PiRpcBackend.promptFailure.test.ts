@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { logger } from '@/ui/logger';
 import type { AgentMessage } from '@/agent/core';
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import type { SessionTurnMutationV1 } from '@/api/session/mutations/sessionMutationTypes';
 import { createSessionTurnLifecycle } from '@/agent/runtime/session/turn/lifecycle';
 import { createTestAcpRuntime } from '@/testkit/backends/acpRuntime';

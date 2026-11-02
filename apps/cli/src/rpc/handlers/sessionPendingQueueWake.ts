@@ -1,8 +1,8 @@
 import {
   SessionPendingQueueWakeCapabilityRequestV1Schema,
   SessionPendingQueueWakeRequestV1Schema,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { SessionRuntimeControls } from './sessionControls';

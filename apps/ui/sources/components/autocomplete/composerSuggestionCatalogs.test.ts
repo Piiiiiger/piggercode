@@ -86,7 +86,7 @@ describe('pre-session composer catalog snapshot', () => {
         const { buildStructuredInputMetaOverrides, createStructuredInputMentionFromSuggestion } = await import(
             '@/components/sessions/agentInput/structuredInputMentions'
         );
-        const { sanitizeSessionUserMessageSendMeta } = await import('@happier-dev/protocol');
+        const { sanitizeSessionUserMessageSendMeta } = await import('@piggercode/protocol');
         const opaqueId = ' reviewer ';
         machineRpc.mockResolvedValue({ ok: true, result: {
             ...nativeCatalogs, skills: { supported: true, items: [

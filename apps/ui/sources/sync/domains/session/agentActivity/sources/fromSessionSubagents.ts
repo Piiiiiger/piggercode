@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
 
 import type { SessionSubagent, SessionSubagentKind } from '../../subagents/types';
 import type { AgentActivityEntryKind, AgentActivityLocalEntry } from '../types';

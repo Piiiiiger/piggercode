@@ -1,4 +1,4 @@
-import type { ScmHostingProvider, ScmPullRequestSummary } from '@happier-dev/protocol';
+import type { ScmHostingProvider, ScmPullRequestSummary } from '@piggercode/protocol';
 
 export type PrStatusCacheKey = Readonly<{
     repoRootPath: string;

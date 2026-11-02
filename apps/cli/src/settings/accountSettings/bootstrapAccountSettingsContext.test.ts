@@ -3,7 +3,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { encodeBase64, encrypt } from '@/api/encryption';

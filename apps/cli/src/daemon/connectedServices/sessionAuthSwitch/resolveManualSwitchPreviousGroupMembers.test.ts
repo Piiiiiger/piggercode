@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import { resolveManualSwitchPreviousGroupMembers } from './resolveManualSwitchPreviousGroupMembers';
 
 describe('resolveManualSwitchPreviousGroupMembers', () => {

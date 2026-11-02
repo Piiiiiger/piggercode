@@ -559,9 +559,9 @@ test('source daemon lifecycle commands run after the CLI publication lock is rel
   await mkdir(join(repoDir, 'apps', 'ui'), { recursive: true });
   await mkdir(join(repoDir, 'apps', 'server'), { recursive: true });
   await mkdir(cliHomeDir, { recursive: true });
-  await writeFile(join(cliDir, 'package.json'), '{"name":"@happier-dev/cli"}\n', 'utf-8');
-  await writeFile(join(repoDir, 'apps', 'ui', 'package.json'), '{"name":"@happier-dev/ui"}\n', 'utf-8');
-  await writeFile(join(repoDir, 'apps', 'server', 'package.json'), '{"name":"@happier-dev/server"}\n', 'utf-8');
+  await writeFile(join(cliDir, 'package.json'), '{"name":"@piggercode/cli"}\n', 'utf-8');
+  await writeFile(join(repoDir, 'apps', 'ui', 'package.json'), '{"name":"@piggercode/ui"}\n', 'utf-8');
+  await writeFile(join(repoDir, 'apps', 'server', 'package.json'), '{"name":"@piggercode/server"}\n', 'utf-8');
   await writeFile(cliBin, '#!/usr/bin/env node\n', 'utf-8');
   await writeFile(
     distEntrypoint,

@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { readSessionMetadataRuntimeDescriptor } from '@happier-dev/agents';
+import { readSessionMetadataRuntimeDescriptor } from '@piggercode/agents';
 
 import { requireConnectedServiceTokenCredentialRecord } from '@/daemon/connectedServices/shared/connectedServiceCredentialRecord';
 import type { ConnectedServicesProviderMaterializer } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';

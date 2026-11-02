@@ -6,10 +6,10 @@ import { join } from 'node:path';
 import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import * as privacyKit from 'privacy-kit';
 import tweetnacl from 'tweetnacl';
-import { readHappierCliChoiceSync } from '@happier-dev/cli-common/firstPartyRuntime';
-import { writeUpdateCache } from '@happier-dev/cli-common/update';
-import { SETUP_CLI_CHOICE_PROMPT_KIND, SETUP_PAIRING_PROMPT_KIND } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { readHappierCliChoiceSync } from '@piggercode/cli-common/firstPartyRuntime';
+import { writeUpdateCache } from '@piggercode/cli-common/update';
+import { SETUP_CLI_CHOICE_PROMPT_KIND, SETUP_PAIRING_PROMPT_KIND } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { seedCliAuthForServer } from '../../src/testkit/cliAuth';
 import { fetchJson } from '../../src/testkit/http';
@@ -708,7 +708,7 @@ test.describe('ui e2e: desktop local setup through the real hsetup (hermetic com
             await navigateSpa(app.page, '/settings/machines/this-computer?happier_hmr=0');
             const oldCli = app.page.getByTestId('settings.localDaemonControl.oldCli');
             await expect(oldCli).toContainText(own.command, { timeout: 120_000 });
-            await expect(oldCli).toContainText('npm uninstall -g @happier-dev/cli');
+            await expect(oldCli).toContainText('npm uninstall -g @piggercode/cli');
             expect(existsSync(own.command)).toBe(true);
         } catch (error) {
             throw appendBrowserDiagnostics(error, app.diagnostics());

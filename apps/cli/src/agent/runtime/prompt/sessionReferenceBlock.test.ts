@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { MENTION_BOUNDS } from '@happier-dev/protocol';
+import { MENTION_BOUNDS } from '@piggercode/protocol';
 
 import { buildSessionReferenceBlockV1 } from './sessionReferenceBlock';
 import { resolveProviderPromptForDispatch } from './resolveProviderPromptForDispatch';

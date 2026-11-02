@@ -10,8 +10,8 @@ const {
   runStandardAcpProviderMock: vi.fn(),
 }));
 
-vi.mock('@happier-dev/agents', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/agents')>();
+vi.mock('@piggercode/agents', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/agents')>();
   return {
     ...actual,
     getProviderCliRuntimeSpec: getProviderCliRuntimeSpecMock,

@@ -6,7 +6,7 @@ import {
     normalizeExecutionRunsGuidanceFingerprintV1,
     type BackendTargetRefV1,
     type ExecutionRunsGuidanceEntryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ExecutionRunsGuidanceIntent = 'review' | 'plan' | 'delegate';
 

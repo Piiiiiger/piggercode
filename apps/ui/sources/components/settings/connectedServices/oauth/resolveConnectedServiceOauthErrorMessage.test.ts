@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ConnectedServiceCredentialBindingMismatchError } from '@happier-dev/protocol';
+import { ConnectedServiceCredentialBindingMismatchError } from '@piggercode/protocol';
 
 import { resolveConnectedServiceOauthErrorMessage } from './resolveConnectedServiceOauthErrorMessage';
 

@@ -2,7 +2,7 @@ import type {
   PromptExternalLinksV1,
   PromptInvocationsV1,
   PromptStacksV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function removePromptLibraryArtifactReferences(args: Readonly<{
   artifactId: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@happier-dev/protocol/rpcErrors';
+import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@piggercode/protocol/rpcErrors';
 import {
     normalizeLegacyStructuredQuestionAnswers,
     normalizeStructuredQuestionAnswersV1,

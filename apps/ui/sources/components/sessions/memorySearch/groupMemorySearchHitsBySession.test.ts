@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { MemorySearchHitV1 } from '@happier-dev/protocol';
+import type { MemorySearchHitV1 } from '@piggercode/protocol';
 
 import { groupMemorySearchHitsBySession } from './groupMemorySearchHitsBySession';
 

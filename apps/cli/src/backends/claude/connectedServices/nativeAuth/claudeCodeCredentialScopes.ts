@@ -1,14 +1,14 @@
 import {
   CLAUDE_CODE_REQUIRED_OAUTH_SCOPES,
   CLAUDE_CODE_SETUP_TOKEN_SCOPES,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export {
   CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE,
   CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPES,
   CLAUDE_CODE_REQUIRED_OAUTH_SCOPES,
   CLAUDE_CODE_SETUP_TOKEN_SCOPES,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export function parseClaudeCodeCredentialScopes(
   value: string | readonly string[] | null | undefined,

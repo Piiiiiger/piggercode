@@ -1,4 +1,4 @@
-import type { AccountPetCreateResponseV1, AccountPetDeleteResponseV1 } from "@happier-dev/protocol";
+import type { AccountPetCreateResponseV1, AccountPetDeleteResponseV1 } from "@piggercode/protocol";
 
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from "@/app/encryption/accountEncryptionMode";
 import { readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv";

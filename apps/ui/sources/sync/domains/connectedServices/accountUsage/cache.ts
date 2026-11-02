@@ -2,7 +2,7 @@ import {
   ProviderAccountUsageRecordIdSchema,
   type ProviderAccountUsageRecordId,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ScopeCache = Map<ProviderAccountUsageRecordId, ProviderAccountUsageSnapshotV1>;
 

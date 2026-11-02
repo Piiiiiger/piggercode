@@ -5,15 +5,15 @@ import {
     resolveDirectTranscriptContinuation,
     SessionMessageRoleSchema,
     SessionStoredMessageContentSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
     DirectTranscriptRawMessageV1,
     DirectTranscriptTruncationReason,
     SessionMessageRole,
     SessionStoredMessageContent,
-} from '@happier-dev/protocol';
-import { EphemeralUpdateSchema, UpdateContainerSchema } from '@happier-dev/protocol/updates';
-import type { UpdateContainer, EphemeralUpdate } from '@happier-dev/protocol/updates';
+} from '@piggercode/protocol';
+import { EphemeralUpdateSchema, UpdateContainerSchema } from '@piggercode/protocol/updates';
+import type { UpdateContainer, EphemeralUpdate } from '@piggercode/protocol/updates';
 
 export type TranscriptStreamSegmentEphemeralUpdate = Readonly<{
     type: 'transcript-stream-segment';

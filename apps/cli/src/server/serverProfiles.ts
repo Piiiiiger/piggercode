@@ -1,11 +1,11 @@
 import { readSettings, updateSettings, type Settings } from '@/persistence';
 import { deriveServerIdFromName, deriveServerIdFromUrl, sanitizeServerIdForFilesystem } from '@/server/serverId';
 import { isLocalishServerUrl } from '@/server/serverUrlClassification';
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 import { existsSync } from 'node:fs';
 import { chmod, copyFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { resolveHappyHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { resolveHappyHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 import { BUILTIN_RELAY } from './builtinRelay';
 
 function normalizeServerUrlForEnvId(url: string): string {

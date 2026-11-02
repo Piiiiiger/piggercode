@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { Credentials } from '@/persistence';
 import { createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';

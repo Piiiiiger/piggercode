@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { RestartAllSessionRunnersResultV1, SessionRunnerRuntimeStateV1 } from '@happier-dev/protocol';
+import type { RestartAllSessionRunnersResultV1, SessionRunnerRuntimeStateV1 } from '@piggercode/protocol';
 
 import { createDaemonControlApp, startDaemonControlServer } from './controlServer';
 

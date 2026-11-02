@@ -1,4 +1,4 @@
-import type { PrimaryTurnStatusV1, SessionRuntimeActivityState } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1, SessionRuntimeActivityState } from '@piggercode/protocol';
 
 export type SessionListReadyForReviewInput = Readonly<{
     seq?: number | null;

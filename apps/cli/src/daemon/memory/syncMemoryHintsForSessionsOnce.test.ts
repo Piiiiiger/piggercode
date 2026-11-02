@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@happier-dev/protocol';
+import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@piggercode/protocol';
 
 import { openSummaryShardIndexDb } from './summaryShardIndexDb';
 import type { DecryptedTranscriptRow } from '@/session/replay/decryptTranscriptRows';

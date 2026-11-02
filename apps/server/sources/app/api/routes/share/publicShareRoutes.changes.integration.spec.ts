@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { createHash } from "node:crypto";
-import { encodeBase64, stringifySerializedJsonValue } from "@happier-dev/protocol";
+import { encodeBase64, stringifySerializedJsonValue } from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

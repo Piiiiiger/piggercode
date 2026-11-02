@@ -1,4 +1,4 @@
-import type { DirectTranscriptRawMessageV1, SessionMessageRole } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1, SessionMessageRole } from '@piggercode/protocol';
 
 import { resolveAcpSessionMessageRole } from '@/api/session/messageRole/resolveAcpSessionMessageRole';
 

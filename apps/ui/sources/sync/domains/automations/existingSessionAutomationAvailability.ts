@@ -1,7 +1,7 @@
 import {
     evaluateExistingSessionAutomationEligibility,
     type ExistingSessionAutomationEligibility,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 type ExistingSessionAutomationSession = Readonly<{
     id?: string;

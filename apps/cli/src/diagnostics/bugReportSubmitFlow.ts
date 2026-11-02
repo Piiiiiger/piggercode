@@ -2,7 +2,7 @@ import {
   submitBugReportToService as submitBugReportToSharedService,
   type BugReportArtifactPayload,
   type BugReportFormPayload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SubmitBugReportInput = {
   providerUrl: string;

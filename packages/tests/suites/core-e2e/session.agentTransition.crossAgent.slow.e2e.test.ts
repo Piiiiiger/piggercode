@@ -14,7 +14,7 @@ import {
   isSessionAgentTransitionDividerLocalId,
   openEncryptedDataKeyEnvelopeV1,
   readSessionAgentTransitionDividerFromStoredRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createTestAuth } from '../../src/testkit/auth';
 import { seedCliDataKeyAuthForServer } from '../../src/testkit/cliAuth';

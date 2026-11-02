@@ -1,4 +1,4 @@
-import { STRUCTURED_QUESTION_LIMITS, isAskUserQuestionToolName } from '@happier-dev/protocol';
+import { STRUCTURED_QUESTION_LIMITS, isAskUserQuestionToolName } from '@piggercode/protocol';
 import {
     validateStructuredQuestionDescriptors,
     type StructuredQuestionLike,

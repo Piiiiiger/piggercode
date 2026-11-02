@@ -19,7 +19,7 @@ import {
     createSessionOrganizationDomain,
     type SessionOrganizationDomain,
 } from '@/sync/store/domains/sessionOrganization';
-import type { SessionOrganizationSnapshot } from '@happier-dev/protocol';
+import type { SessionOrganizationSnapshot } from '@piggercode/protocol';
 
 import type { SessionAttentionStandingPolicy } from './attentionStanding';
 import { buildSessionOrganizationProjection } from './projection';

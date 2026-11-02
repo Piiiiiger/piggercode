@@ -2,7 +2,7 @@ import { AccountProfile } from "@/types";
 import { getPublicUrl } from "@/storage/blob/files";
 import { resolveMessageAttentionImpact } from "@/app/session/messageAttentionImpact";
 import { type UpdatePayload, type EphemeralPayload } from "./eventPayloadTypes";
-import { SessionMessageDeliveryResolutionV1Schema, SessionRuntimeActivityProjectionSchema } from "@happier-dev/protocol";
+import { SessionMessageDeliveryResolutionV1Schema, SessionRuntimeActivityProjectionSchema } from "@piggercode/protocol";
 import type {
     PrimaryTurnStatusV1,
     SessionRuntimeActivityState,
@@ -10,7 +10,7 @@ import type {
     SessionMessageRole,
     SessionRuntimeIssueV1,
     SessionTranscriptObservationProvenanceV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 type UpdateMessagePayloadInput = Readonly<{
     id: string;
@@ -277,7 +277,7 @@ export function buildPendingChangedUpdate(
         meaningfulActivityAt?: Date | null;
         changedByAccountId?: string;
         pendingActivationRequestId?: string;
-        pendingActivationAuthorization?: import('@happier-dev/protocol').PendingActivationAuthorizationV1 | null;
+        pendingActivationAuthorization?: import('@piggercode/protocol').PendingActivationAuthorizationV1 | null;
     },
     updateSeq: number,
     updateId: string,

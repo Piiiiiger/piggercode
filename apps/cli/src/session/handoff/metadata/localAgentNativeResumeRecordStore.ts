@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
-import type { AgentId } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
 import { z } from 'zod';
 
 import {

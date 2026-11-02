@@ -8,14 +8,14 @@ import { PassThrough, Writable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AxiosError, AxiosHeaders } from 'axios';
 
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
-import { openConnectedServiceCredentialCiphertext } from '@happier-dev/protocol';
-import { ConnectedServiceCredentialRecordV1Schema } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
+import { openConnectedServiceCredentialCiphertext } from '@piggercode/protocol';
+import { ConnectedServiceCredentialRecordV1Schema } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { ApiClient } from '@/api/api';
 import { logger } from '@/ui/logger';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { writeClaudeCodeCredentialsFile } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialFile';
 import { resolveClaudeConnectedServiceStableConfigDir } from '@/backends/claude/connectedServices/resolveClaudeConnectedServiceStableAuthDir';
 import {

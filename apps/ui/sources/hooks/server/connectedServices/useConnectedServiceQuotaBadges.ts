@@ -9,7 +9,7 @@ import { useSettings } from '@/sync/store/hooks';
 import {
     ConnectedServiceIdSchema,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     useConnectedServiceQuotaSnapshots,

@@ -5,7 +5,7 @@ import { buildAgentLocalControlUiConfig } from '@/agents/registry/buildAgentLoca
 import { buildAgentResumeUiConfig } from '@/agents/registry/buildAgentResumeUiConfig';
 import { buildAgentSessionStorageUiConfig } from '@/agents/registry/buildAgentSessionStorageUiConfig';
 import { buildAgentToolsUiConfig } from '@/agents/registry/buildAgentToolsUiConfig';
-import { getAgentModelConfig, getAgentSessionModesKind } from '@happier-dev/agents';
+import { getAgentModelConfig, getAgentSessionModesKind } from '@piggercode/agents';
 
 export const CLAUDE_CORE: AgentCoreConfig = {
     id: 'claude',

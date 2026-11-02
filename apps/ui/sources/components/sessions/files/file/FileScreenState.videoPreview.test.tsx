@@ -6,7 +6,7 @@ import { FileBinaryState } from './FileScreenState';
 import { Platform, Text } from 'react-native';
 import { useSessionFileDetailsLoading } from '../views/sessionFileDetails/useSessionFileDetailsLoading';
 import type { SessionStatFileResponse } from '@/sync/ops/sessionFileSystem/pathMetadataMutations';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { createEncryptedTransferChunkEnvelope } from '@/sync/domains/transfers/runtime/bulkTransferPipeline/transferChunkEncryption';
 
 const media = vi.hoisted(() => ({

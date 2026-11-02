@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { type PromptAssetDiscoveryItemV1, type PromptAssetScopeV1, type PromptAssetTypeDescriptorV1 } from '@happier-dev/protocol';
+import { type PromptAssetDiscoveryItemV1, type PromptAssetScopeV1, type PromptAssetTypeDescriptorV1 } from '@piggercode/protocol';
 
 import { ContextBar } from '@/components/settings/contextBar/ContextBar';
 import { layout } from '@/components/ui/layout/layout';

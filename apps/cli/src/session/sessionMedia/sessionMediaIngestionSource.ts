@@ -1,4 +1,4 @@
-import type { SessionMediaItemV1 as ProtocolSessionMediaItemV1, SessionMediaOriginV1 } from '@happier-dev/protocol';
+import type { SessionMediaItemV1 as ProtocolSessionMediaItemV1, SessionMediaOriginV1 } from '@piggercode/protocol';
 
 export type SessionMediaIngestionSource =
     | Readonly<{

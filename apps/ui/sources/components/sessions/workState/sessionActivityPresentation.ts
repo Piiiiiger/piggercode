@@ -1,4 +1,4 @@
-import { resolveSessionWorkStatePrimaryItemId } from '@happier-dev/protocol';
+import { resolveSessionWorkStatePrimaryItemId } from '@piggercode/protocol';
 
 import type {
     AgentInputStatusBadgeEmphasis,

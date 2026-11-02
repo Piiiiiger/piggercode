@@ -4,7 +4,7 @@ import type {
   SessionProviderInputRejectedBeforeEffectReason,
 } from '@/api/session/sessionClient';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 const GEMINI_ACP_PROVIDER_INPUT_PRODUCER = Object.freeze({
   providerId: 'gemini',

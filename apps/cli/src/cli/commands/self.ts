@@ -15,21 +15,21 @@ import {
   resolveManagedCliReleaseChannelSync,
   resolveManagedCliToolNameForRing,
   runManagedCliUpdate,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import type { FirstPartyComponentId } from '@happier-dev/cli-common/firstPartyRuntime';
-import { cmd, createStepPrinter, fail } from '@happier-dev/cli-common/output';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import type { FirstPartyComponentId } from '@piggercode/cli-common/firstPartyRuntime';
+import { cmd, createStepPrinter, fail } from '@piggercode/cli-common/output';
 import {
   compareVersions,
   readCachedCliUpdateState,
   readNpmDistTagVersion,
   recordCliUpdateCheck,
   resolveNpmPackageNameOverride,
-} from '@happier-dev/cli-common/update';
+} from '@piggercode/cli-common/update';
 import {
   getReleaseRingCatalogEntry,
   normalizePublicReleaseRingId,
   type PublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 import { handleSelfMigrateCommand } from './self/handleSelfMigrateCommand';
 import { maybeRunVersionGatedRuntimeMigration } from './self/maybeRunVersionGatedRuntimeMigration';
 import { maybeRunDoctorRepair } from './self/maybeRunDoctorRepair';

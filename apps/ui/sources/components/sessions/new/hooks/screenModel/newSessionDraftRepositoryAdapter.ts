@@ -1,4 +1,4 @@
-import type { SyncedSessionAuthoringValueV1 } from '@happier-dev/protocol';
+import type { SyncedSessionAuthoringValueV1 } from '@piggercode/protocol';
 
 import {
     buildNewSessionAuthoringDraft,

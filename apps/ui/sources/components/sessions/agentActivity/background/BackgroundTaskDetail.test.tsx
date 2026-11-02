@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import renderer, { act } from 'react-test-renderer';
 
-import type { SessionBackgroundTaskRecordV1 } from '@happier-dev/protocol';
+import type { SessionBackgroundTaskRecordV1 } from '@piggercode/protocol';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 

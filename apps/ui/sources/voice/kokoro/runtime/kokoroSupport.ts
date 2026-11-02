@@ -8,7 +8,7 @@ type KokoroSupportOverrides = {
 function getHasNativeKokoroModule(): boolean {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const mod = require('@happier-dev/sherpa-native') as any;
+    const mod = require('@piggercode/sherpa-native') as any;
     const getter = mod?.getOptionalHappierSherpaNativeModule;
     if (typeof getter !== 'function') return false;
     return Boolean(getter());

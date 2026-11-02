@@ -1,4 +1,4 @@
-import { SecretStringV1Schema, type SecretStringV1 } from '@happier-dev/protocol';
+import { SecretStringV1Schema, type SecretStringV1 } from '@piggercode/protocol';
 
 export function indexSavedSecretsByIdFromAccountSettings(
   settingsLike: unknown,

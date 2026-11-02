@@ -1,4 +1,4 @@
-import type { AuthProviderId } from "@happier-dev/protocol";
+import type { AuthProviderId } from "@piggercode/protocol";
 
 import type { OAuthFlowProvider } from "@/app/oauth/providers/types";
 import type { IdentityProvider } from "@/app/auth/providers/identityProviders/types";

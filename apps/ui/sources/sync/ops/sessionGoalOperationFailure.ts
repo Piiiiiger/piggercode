@@ -1,4 +1,4 @@
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
 
 import { t } from '@/text';
 

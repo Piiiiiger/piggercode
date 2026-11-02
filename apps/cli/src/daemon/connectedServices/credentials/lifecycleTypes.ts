@@ -4,8 +4,8 @@ import type {
   ConnectedServiceId,
   SessionConnectedServiceAuthApplyGenerationRequestV1,
   SessionConnectedServiceAuthCurrentGroupTruthV1,
-} from '@happier-dev/protocol';
-import type { AgentId as CatalogAgentId } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import type { AgentId as CatalogAgentId } from '@piggercode/agents';
 
 import type { ConnectedServiceSameAccountFanoutStrategy } from '../quotas/identity/providerFanoutStrategy';
 import type { ConnectedServiceRuntimeRefreshTarget } from '../runtimeRegistry/target';

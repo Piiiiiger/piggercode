@@ -1,4 +1,4 @@
-import type { StructuredQuestionAnswersV1 } from '@happier-dev/protocol';
+import type { StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 
 /**
  * Provider-neutral result returned by the canonical permission coordinator.

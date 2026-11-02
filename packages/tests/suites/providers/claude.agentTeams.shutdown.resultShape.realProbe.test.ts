@@ -6,7 +6,7 @@
  * - Captures the observed TaskStop tool_use input + tool_result status/text so Happier lifecycle normalization stays aligned.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @happier-dev/tests test:providers claude.agentTeams.shutdown.resultShape.realProbe.test.ts
+ *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.shutdown.resultShape.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';

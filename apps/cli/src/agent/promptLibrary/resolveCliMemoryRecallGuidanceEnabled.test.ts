@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_MEMORY_SETTINGS, type MemorySettingsV1 } from '@happier-dev/protocol';
+import { DEFAULT_MEMORY_SETTINGS, type MemorySettingsV1 } from '@piggercode/protocol';
 
 import { resolveCliMemoryRecallGuidanceEnabled } from './resolveCliMemoryRecallGuidanceEnabled';
 

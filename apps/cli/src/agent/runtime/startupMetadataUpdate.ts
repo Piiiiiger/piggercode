@@ -1,6 +1,6 @@
 import type { Metadata, PermissionMode } from '@/api/types';
 import { logger } from '@/ui/logger';
-import type { SessionAttachMetadataIdentityPolicy } from '@happier-dev/protocol';
+import type { SessionAttachMetadataIdentityPolicy } from '@piggercode/protocol';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 
 import {

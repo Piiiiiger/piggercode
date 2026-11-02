@@ -1,4 +1,4 @@
-import { isClaudeAsyncAgentLaunchToolResult, isGenericSubAgentToolName, normalizeClaudeActivityStatusSignal, type ClaudeActivityStatusSignal } from '@happier-dev/protocol';
+import { isClaudeAsyncAgentLaunchToolResult, isGenericSubAgentToolName, normalizeClaudeActivityStatusSignal, type ClaudeActivityStatusSignal } from '@piggercode/protocol';
 
 import { parseClaudeTaskNotificationXml } from './claudeTaskNotificationXml';
 import { RawJSONLinesSchema, type RawJSONLines } from '../types';

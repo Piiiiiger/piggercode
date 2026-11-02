@@ -12,7 +12,7 @@
  * Decision and copy only; printing (and its colors) stay with the command.
  */
 
-import { isLoopbackHostname } from '@happier-dev/protocol';
+import { isLoopbackHostname } from '@piggercode/protocol';
 
 export type RelayBindSignupNotice = Readonly<{
   /** One line, printed as the notice's heading. */

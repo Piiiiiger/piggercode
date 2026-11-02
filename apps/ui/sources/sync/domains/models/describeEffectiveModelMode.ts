@@ -3,7 +3,7 @@ import type { Metadata } from '@/sync/domains/state/storageTypes';
 import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 import { hasDynamicModelListForSession, getSelectableModelIdsForSession, supportsFreeformModelSelectionForSession } from '@/sync/domains/models/modelOptions';
 import { matchesSessionControlProvider, readSessionModelsState, readSessionModesState } from '@/sync/domains/sessionControl/readSessionControlMetadata';
-import { readSessionAppliedModelMetadataStateV1 } from '@happier-dev/agents';
+import { readSessionAppliedModelMetadataStateV1 } from '@piggercode/agents';
 
 export type ModelApplyScope = 'live' | 'next_prompt' | 'spawn_only';
 

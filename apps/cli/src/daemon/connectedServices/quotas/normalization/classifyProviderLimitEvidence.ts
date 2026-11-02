@@ -1,4 +1,4 @@
-import type { ConnectedServiceLimitCategoryV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceLimitCategoryV1 } from '@piggercode/protocol';
 
 export type ProviderLimitCategory = ConnectedServiceLimitCategoryV1;
 

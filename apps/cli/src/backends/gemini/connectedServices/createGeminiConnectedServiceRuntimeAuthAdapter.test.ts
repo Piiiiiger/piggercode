@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ConnectedServiceQuotaSnapshotV1Schema,
   buildConnectedServiceCredentialRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createGeminiConnectedServiceRuntimeAuthAdapter } from './createGeminiConnectedServiceRuntimeAuthAdapter';
 

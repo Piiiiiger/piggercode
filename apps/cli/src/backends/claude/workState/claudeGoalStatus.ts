@@ -1,4 +1,4 @@
-import { resolveSessionWorkStatePrimaryItemId, type SessionWorkStateGoalCapabilitiesV1, type SessionWorkStateItemV1, type SessionWorkStateV1 } from '@happier-dev/protocol';
+import { resolveSessionWorkStatePrimaryItemId, type SessionWorkStateGoalCapabilitiesV1, type SessionWorkStateItemV1, type SessionWorkStateV1 } from '@piggercode/protocol';
 
 import { createClaudeGoalControlEpochTracker, type ClaudeGoalControlIntent } from './claudeGoalControlState';
 

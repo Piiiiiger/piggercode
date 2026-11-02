@@ -3,14 +3,14 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
     ScmBackendDescribeResponseSchema,
     ScmCommitCreateResponseSchema,
     ScmDiffFileResponseSchema,
     ScmLogListResponseSchema,
     ScmStatusSnapshotResponseSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createRunDirs } from '../testkit/runDir';
 import { startServerLight } from '../testkit/process/serverLight';

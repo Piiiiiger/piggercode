@@ -1,4 +1,4 @@
-import type { SystemTaskSpec } from '@happier-dev/protocol';
+import type { SystemTaskSpec } from '@piggercode/protocol';
 
 import { buildLocalDaemonServiceSystemTaskSpec } from '@/components/settings/machines/localControl/buildLocalDaemonServiceSystemTaskSpec';
 import type { DesktopBackgroundServiceAutostartMode } from '@/setup/deriveDesktopLocalSetupSnapshot';

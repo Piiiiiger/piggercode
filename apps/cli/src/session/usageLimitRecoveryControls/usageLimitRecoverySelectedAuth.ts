@@ -4,7 +4,7 @@ import {
   type ConnectedServiceId,
   type SessionRuntimeIssueV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { isNativeLocalCredentialUsageSourceProfileId } from '@/daemon/connectedServices/accountUsage/nativeSourceIdentity';
 

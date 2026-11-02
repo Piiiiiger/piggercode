@@ -6,7 +6,7 @@ import {
     SESSION_TRANSCRIPT_OBSERVATION_CAPABILITY_EVENT_V1,
     SESSION_TRANSCRIPT_OBSERVATION_CAPABILITY_V1,
     SESSION_TRANSCRIPT_OBSERVATION_EVENT_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let tempDir: string | null = null;

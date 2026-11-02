@@ -1,4 +1,4 @@
-import { getAgentLocalControlCapability, type AgentId } from '@happier-dev/agents';
+import { getAgentLocalControlCapability, type AgentId } from '@piggercode/agents';
 
 import type { AgentCoreConfig } from './registryCore';
 

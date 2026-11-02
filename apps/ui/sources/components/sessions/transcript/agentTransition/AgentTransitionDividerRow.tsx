@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 
-import type { BackendTargetRefV1, SessionAgentTransitionDividerV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, SessionAgentTransitionDividerV1 } from '@piggercode/protocol';
 
 import { getAgentCore, isAgentId } from '@/agents/catalog/catalog';
 import { resolveExecutionRunBackendLabel } from '@/components/sessions/runs/resolveExecutionRunBackendLabel';

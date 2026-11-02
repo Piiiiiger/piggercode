@@ -10,7 +10,7 @@
  */
 
 import { runTailscaleServeStatus } from '@/integrations/tailscale/tailscaleCommand';
-import { tailscaleServeHttpsUrlForInternalServerUrlFromStatus } from '@happier-dev/cli-common/tailscale';
+import { tailscaleServeHttpsUrlForInternalServerUrlFromStatus } from '@piggercode/cli-common/tailscale';
 
 export async function tailscaleServeHttpsUrlForInternalServerUrl(params: Readonly<{
   internalServerUrl: string;

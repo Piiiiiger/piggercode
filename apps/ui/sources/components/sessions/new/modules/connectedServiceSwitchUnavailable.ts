@@ -3,7 +3,7 @@ import {
     isConnectedServiceResumeUnreachableSpawnErrorDetail,
     isConnectedServiceUxDiagnosticSpawnErrorDetail,
     type SpawnSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     resolveConnectedServiceUxDiagnosticPresentation,

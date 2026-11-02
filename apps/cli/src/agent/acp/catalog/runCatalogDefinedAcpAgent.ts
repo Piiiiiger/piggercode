@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type { AgentId } from '@happier-dev/agents';
-import { AGENTS_CORE, getBuiltInAcpConfig, getProviderCliRuntimeSpec } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
+import { AGENTS_CORE, getBuiltInAcpConfig, getProviderCliRuntimeSpec } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import type { PermissionMode } from '@/api/types';

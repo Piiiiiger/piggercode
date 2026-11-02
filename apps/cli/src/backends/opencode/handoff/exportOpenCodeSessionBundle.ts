@@ -1,7 +1,7 @@
 import { execFile as execFileCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { readOpenCodeSessionAffinityFromMetadata } from '../utils/opencodeSessionAffinity';
 import { resolveOpenCodeCliLaunchSpec } from '../utils/resolveOpenCodeCliCommand';

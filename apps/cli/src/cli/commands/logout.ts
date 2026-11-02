@@ -1,4 +1,4 @@
-import { cmd, errorFrame, warn } from '@happier-dev/cli-common/output';
+import { cmd, errorFrame, warn } from '@piggercode/cli-common/output';
 
 import { handleAuthCommand } from '@/cli/commands/auth';
 

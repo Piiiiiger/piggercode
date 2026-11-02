@@ -6,7 +6,7 @@ import {
   type SessionWorkflowActivityHeadlineV1,
   type SessionWorkflowRunHeadlineV1,
   type SessionWorkflowRunStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const WORKFLOW_ACTIVITY_STARTUP_RECONCILE_GRACE_MS = 30_000;
 

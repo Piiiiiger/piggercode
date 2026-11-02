@@ -4,7 +4,7 @@ import {
   ReviewFindingsV1Schema,
   ReviewFindingsV2Schema,
   ReviewFollowUpInputSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ACPMessageData, ACPProvider } from '@/api/session/sessionMessageTypes';
 import type { AcpSendFn } from '@/agent/acp/bridge/acpSessionForwarding';

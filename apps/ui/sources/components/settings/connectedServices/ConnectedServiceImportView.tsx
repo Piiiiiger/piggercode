@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ConnectedServiceIdSchema, ConnectedServiceProfileIdSchema, type ConnectedServiceImportSourceV1 } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, ConnectedServiceProfileIdSchema, type ConnectedServiceImportSourceV1 } from '@piggercode/protocol';
 
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

@@ -2,7 +2,7 @@ import { randomUUID } from '@/platform/randomUUID';
 import { storage } from '@/sync/domains/state/storage';
 import { nowServerMs } from '@/sync/runtime/time';
 import type { NormalizedMessage } from '@/sync/typesRaw';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 function appendNormalizedMessage(conversationSessionId: string, message: NormalizedMessage): void {
   const state: any = storage.getState();

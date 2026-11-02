@@ -13,12 +13,12 @@ import {
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export {
   ConnectedServiceCredentialBindingMismatchError,
   assertConnectedServiceCredentialRecordBinding,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceCredentialApi } from '@/api/connectedServices/connectedServiceCredentialApi';
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';

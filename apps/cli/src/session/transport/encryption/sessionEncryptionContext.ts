@@ -1,6 +1,6 @@
 import { createHmac } from 'node:crypto';
 
-import { normalizeSessionMetadataForRead, stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { normalizeSessionMetadataForRead, stringifySerializedJsonValue } from '@piggercode/protocol';
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 import { decodeBase64, decrypt, encodeBase64, encrypt, encryptWithDerivedNonce } from '@/api/encryption';
 import { openSessionDataEncryptionKey } from '@/api/client/openSessionDataEncryptionKey';

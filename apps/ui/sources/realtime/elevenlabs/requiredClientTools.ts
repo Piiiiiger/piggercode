@@ -1,4 +1,4 @@
-import { actionSpecToElevenLabsClientToolParameters, describeActionForVoiceTool, type JsonSchemaObject } from '@happier-dev/protocol';
+import { actionSpecToElevenLabsClientToolParameters, describeActionForVoiceTool, type JsonSchemaObject } from '@piggercode/protocol';
 import {
     resolveDisabledVoiceActionIdsFromState,
     resolveEnabledVoiceToolActionSpecsFromState,

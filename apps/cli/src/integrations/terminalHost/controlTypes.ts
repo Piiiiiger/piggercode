@@ -1,7 +1,7 @@
-import { TERMINAL_SHIFT_TAB_SEQUENCE } from '@happier-dev/agents';
-import type { TerminalSpecialKey } from '@happier-dev/agents';
+import { TERMINAL_SHIFT_TAB_SEQUENCE } from '@piggercode/agents';
+import type { TerminalSpecialKey } from '@piggercode/agents';
 
-export { TERMINAL_SHIFT_TAB_SEQUENCE, TERMINAL_SPECIAL_KEYS } from '@happier-dev/agents';
+export { TERMINAL_SHIFT_TAB_SEQUENCE, TERMINAL_SPECIAL_KEYS } from '@piggercode/agents';
 
 export type {
   TerminalControlCapture,
@@ -11,7 +11,7 @@ export type {
   TerminalControlSendResult,
   TerminalControlUnsupportedReason,
   TerminalSpecialKey,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 /**
  * Raw byte sequence used for a {@link TerminalSpecialKey} when a host has no native named key

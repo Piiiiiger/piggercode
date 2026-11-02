@@ -19,7 +19,7 @@ describe('bundleWorkspacePackage', () => {
   it('preserves conditional package imports and their package-root runtime targets', () => {
     rootDir = mkdtempSync(join(tmpdir(), 'workspace-package-imports-'));
     const sourceDir = resolve(rootDir, 'packages', 'fixture');
-    const destinationDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'fixture');
+    const destinationDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'fixture');
     const imports = {
       '#http': { node: './runtime/node.js', default: './dist/fetch.js' },
       '#fs': 'fs',
@@ -28,13 +28,13 @@ describe('bundleWorkspacePackage', () => {
     mkdirSync(resolve(sourceDir, 'dist'), { recursive: true });
     mkdirSync(resolve(sourceDir, 'runtime'), { recursive: true });
     writeFileSync(resolve(sourceDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/fixture', version: '0.0.0', type: 'module',
+      name: '@piggercode/fixture', version: '0.0.0', type: 'module',
       exports: { '.': './dist/connect.js' }, imports,
     }));
     writeFileSync(resolve(sourceDir, 'dist/connect.js'), 'import { transport } from "#http"; import { existsSync } from "#fs"; export const selected = transport + ":" + typeof existsSync;\n');
     writeFileSync(resolve(sourceDir, 'dist/fetch.js'), 'export const transport = "fetch";\n');
     writeFileSync(resolve(sourceDir, 'runtime/node.js'), 'export const transport = "node";\n');
-    bundleWorkspacePackage({ packageName: '@happier-dev/fixture', srcDir: sourceDir, destDir: destinationDir });
+    bundleWorkspacePackage({ packageName: '@piggercode/fixture', srcDir: sourceDir, destDir: destinationDir });
     // Real Node resolution observes the bundled manifest, not Vitest's resolver.
     const result = spawnSync(process.execPath, ['--input-type=module', '-e',
       `const module = await import(${JSON.stringify(pathToFileURL(resolve(destinationDir, 'dist/connect.js')).href)}); console.log(module.selected);`,
@@ -55,7 +55,7 @@ describe('bundleWorkspacePackage', () => {
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -66,7 +66,7 @@ describe('bundleWorkspacePackage', () => {
     );
     writeFileSync(resolve(srcDistDir, 'index.js'), 'export {};');
 
-    const destPackageDir = resolve(rootDir, 'apps/stack/node_modules/@happier-dev/protocol');
+    const destPackageDir = resolve(rootDir, 'apps/stack/node_modules/@piggercode/protocol');
     mkdirSync(resolve(destPackageDir, 'dist'), { recursive: true });
     const legacyTmpDir = resolve(destPackageDir, 'dist.__sync_tmp__.old-staging');
     const legacyBackupDir = resolve(destPackageDir, 'dist.__sync_backup__.old-staging');
@@ -74,7 +74,7 @@ describe('bundleWorkspacePackage', () => {
     mkdirSync(legacyBackupDir, { recursive: true });
 
     bundleWorkspacePackage({
-      packageName: '@happier-dev/protocol',
+      packageName: '@piggercode/protocol',
       srcDir: srcPackageDir,
       destDir: destPackageDir,
     });
@@ -86,7 +86,7 @@ describe('bundleWorkspacePackage', () => {
     const destPackageJson = JSON.parse(readFileSync(destPackageJsonPath, 'utf8'));
     expect(destPackageJson).toEqual(
       expect.objectContaining({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         private: true,
         exports: { '.': { default: './dist/index.js' } },
       }),
@@ -117,7 +117,7 @@ describe('bundleWorkspacePackage', () => {
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -134,14 +134,14 @@ describe('bundleWorkspacePackage', () => {
     );
     writeFileSync(resolve(zodPackageDir, 'v4/core/schemas.js'), 'export const schemas = {};\n');
 
-    const destPackageDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/agents');
+    const destPackageDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/agents');
 
     (bundleWorkspacePackageWithRuntimeDependencies as (params: {
       packageName: string;
       srcDir: string;
       destDir: string;
     }) => void)({
-      packageName: '@happier-dev/agents',
+      packageName: '@piggercode/agents',
       srcDir: srcPackageDir,
       destDir: destPackageDir,
     });
@@ -162,7 +162,7 @@ describe('bundleWorkspacePackage', () => {
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/cli-common',
+          name: '@piggercode/cli-common',
           version: '0.0.0',
           type: 'module',
           exports: {
@@ -182,9 +182,9 @@ describe('bundleWorkspacePackage', () => {
       'export { lease } from "./workspaceLockLease.mjs";\n',
     );
 
-    const destPackageDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/cli-common');
+    const destPackageDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/cli-common');
     bundleWorkspacePackage({
-      packageName: '@happier-dev/cli-common',
+      packageName: '@piggercode/cli-common',
       srcDir: srcPackageDir,
       destDir: destPackageDir,
     });
@@ -284,7 +284,7 @@ describe('atomicReplaceDirSync', () => {
   it('retries a staged swap when the destination briefly reappears during the rename', () => {
     rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-common-atomic-replace-'));
 
-    const destDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/protocol');
+    const destDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/protocol');
     const tempFileName = 'next.txt';
     const previousFileName = 'previous.txt';
 
@@ -323,7 +323,7 @@ describe('atomicReplaceDirSync', () => {
   it('continues when the destination disappears after the existence check', () => {
     rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-common-atomic-replace-'));
 
-    const destDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/protocol');
+    const destDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/protocol');
     const tempFileName = 'next.txt';
     const previousFileName = 'previous.txt';
 
@@ -370,7 +370,7 @@ describe('atomicReplaceDirSync', () => {
   it('does not remove the live destination when backup rename is blocked', () => {
     rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-common-atomic-replace-'));
 
-    const destDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/protocol');
+    const destDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/protocol');
     const previousFileName = 'previous.txt';
 
     mkdirSync(destDir, { recursive: true });
@@ -416,7 +416,7 @@ describe('copyDirSafeSync', () => {
     rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-common-copy-dir-'));
 
     const srcDir = resolve(rootDir, 'packages/protocol/dist');
-    const destDir = resolve(rootDir, 'apps/cli/node_modules/@happier-dev/protocol/dist');
+    const destDir = resolve(rootDir, 'apps/cli/node_modules/@piggercode/protocol/dist');
     mkdirSync(srcDir, { recursive: true });
     writeFileSync(resolve(srcDir, 'index.js'), 'export const ok = true;\n');
 

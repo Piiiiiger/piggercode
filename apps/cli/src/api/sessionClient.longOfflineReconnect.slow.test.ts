@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
-import type { ReadinessProbeResult } from '@happier-dev/connection-supervisor';
+import type { ReadinessProbeResult } from '@piggercode/connection-supervisor';
 import { createMockSession } from '@/testkit/backends/sessionFixtures';
 import { bindApiSessionSocketPairMock, createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
 

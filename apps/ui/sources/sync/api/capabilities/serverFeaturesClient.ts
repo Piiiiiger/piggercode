@@ -1,5 +1,5 @@
-import type { FeaturesResponse as ServerFeatures } from '@happier-dev/protocol';
-import { AsyncTtlCache } from '@happier-dev/protocol';
+import type { FeaturesResponse as ServerFeatures } from '@piggercode/protocol';
+import { AsyncTtlCache } from '@piggercode/protocol';
 
 import { ServerFetchAbortedForServerSwitchError, serverFetch } from '@/sync/http/client';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';

@@ -4,7 +4,7 @@ import {
   getAgentLocalControlCapabilityForSession,
   inferAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { getProviderAttachOps } from '@/backends/catalog';
 import type { ProviderAttachOps } from '@/backends/types';
@@ -16,7 +16,7 @@ import { fetchSessionById, fetchSessionsPage, type RawSessionListRow, type RawSe
 import { tryDecryptSessionMetadata, resolveSessionEncryptionContextFromCredentials, resolveSessionStoredContentEncryptionMode } from '@/session/transport/encryption/sessionEncryptionContext';
 import { callSessionRpc } from '@/session/transport/rpc/sessionRpc';
 import { probeSessionRunnerPresence } from '@/daemon/sessions/isSessionRunnerActive';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   readTerminalAttachmentInfo,
   readTerminalAttachmentState,
@@ -38,13 +38,13 @@ import {
   type AgentAttachStrategyForExplainer,
 } from '@/session/attach/explainAttachIneligibility';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
-import { accountSettingsParse, SessionProviderCliAttachPrepareResultV1Schema } from '@happier-dev/protocol';
+import { accountSettingsParse, SessionProviderCliAttachPrepareResultV1Schema } from '@piggercode/protocol';
 import { hostname } from 'node:os';
 import { resolveInheritedHerdrRuntime } from '@/terminal/runtime/inheritedHerdrRuntime';
 import { buildAttachSelectionModel, formatAttachIneligibilityFooter } from './attachInteractiveSelection';
 
 import type { CommandContext } from '@/cli/commandRegistry';
-import { cmd, fail, neutral } from '@happier-dev/cli-common/output';
+import { cmd, fail, neutral } from '@piggercode/cli-common/output';
 
 type AttachCommandDeps = Readonly<{
   readCredentialsFn?: () => Promise<Credentials | null>;

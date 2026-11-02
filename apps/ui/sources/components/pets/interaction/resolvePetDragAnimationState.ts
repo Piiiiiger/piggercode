@@ -1,4 +1,4 @@
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 import { PET_DRAG_THRESHOLD_PX } from './petPointerDragConfig';
 

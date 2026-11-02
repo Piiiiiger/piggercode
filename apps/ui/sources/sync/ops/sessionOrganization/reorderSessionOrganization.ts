@@ -1,7 +1,7 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { reorderSessionOrganization as reorderSessionOrganizationApi } from '@/sync/api/session/sessionOrganizationApi';
 import { getStorage } from '@/sync/domains/state/storageStore';
-import type { ReorderSessionOrganizationRequest } from '@happier-dev/protocol';
+import type { ReorderSessionOrganizationRequest } from '@piggercode/protocol';
 
 export async function reorderSessionOrganization(params: Readonly<{
     credentials: AuthCredentials;

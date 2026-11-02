@@ -8,7 +8,7 @@
  * @module MobileMessageFormat
  */
 
-import type { AgentId } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
 
 /**
  * Supported agent types for the mobile app

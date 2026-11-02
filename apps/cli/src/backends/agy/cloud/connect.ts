@@ -1,5 +1,5 @@
 import type { CloudConnectTarget } from '@/cloud/connectTypes';
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 import { authenticateAgy } from './authenticate';
 import { importAgyCredentials } from './importCredentials';
 

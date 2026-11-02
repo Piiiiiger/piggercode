@@ -5,7 +5,7 @@ import {
     getReleaseRingPublicLabel,
     normalizePublicReleaseRingId,
     type PublicReleaseRingLabel,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 import { config } from '@/config';
 

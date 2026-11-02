@@ -2,7 +2,7 @@ import {
   inferMcpServerAuthModeV1,
   type ManagedMcpPreviewEntryV1,
   type ResolveManagedSessionMcpSelectionV1Result,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function resolveManagedScopeKind(item: ResolveManagedSessionMcpSelectionV1Result['itemsByName'][string]): ManagedMcpPreviewEntryV1['scopeKind'] {
   if (item.bindingTargetKind === 'allMachines' || item.bindingTargetKind === 'machine' || item.bindingTargetKind === 'workspace') {

@@ -1,5 +1,5 @@
 import type { FeaturesPayloadDelta } from "./types";
-import { ConnectedServiceIdSchema } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema } from "@piggercode/protocol";
 import { readConnectedServicesFeatureEnv } from "./catalog/readFeatureEnv";
 
 export function resolveConnectedServicesFeature(

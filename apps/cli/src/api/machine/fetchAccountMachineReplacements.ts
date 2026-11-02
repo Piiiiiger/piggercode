@@ -1,4 +1,4 @@
-import { type MachineReplacementRecord } from '@happier-dev/protocol';
+import { type MachineReplacementRecord } from '@piggercode/protocol';
 
 import { fetchAccountMachines } from './fetchAccountMachines';
 

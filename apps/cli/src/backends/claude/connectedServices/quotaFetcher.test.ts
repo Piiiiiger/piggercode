@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { ConnectedServiceQuotaSnapshotV1Schema, buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaSnapshotV1Schema, buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import * as claudeSubscriptionQuotaFetcherModule from './quotaFetcher';
 import { createClaudeSubscriptionQuotaFetcher } from './quotaFetcher';

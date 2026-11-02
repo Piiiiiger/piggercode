@@ -3,7 +3,7 @@ import { type Fastify } from "../../types";
 import {
     ClientVersionCheckRequestV1Schema,
     ClientVersionCheckResponseV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const LegacyClientVersionCheckRequestSchema = z.object({
     platform: z.string(),

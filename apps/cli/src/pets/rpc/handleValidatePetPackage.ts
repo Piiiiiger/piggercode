@@ -4,7 +4,7 @@ import {
   type DaemonPetValidatePackageResponseV1,
   type PetPackageValidationIssueV1,
   type PetPackageValidationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { validatePetPackage } from '../validation/validatePetPackage';
 import type { PetRpcRateLimiter } from './petRpcRateLimiter';

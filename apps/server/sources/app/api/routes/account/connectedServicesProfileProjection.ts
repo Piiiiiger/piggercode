@@ -1,5 +1,5 @@
-import type { AccountProfile, ConnectedServiceId } from "@happier-dev/protocol";
-import { ConnectedServiceIdSchema } from "@happier-dev/protocol";
+import type { AccountProfile, ConnectedServiceId } from "@piggercode/protocol";
+import { ConnectedServiceIdSchema } from "@piggercode/protocol";
 
 import type { Tx } from "@/storage/inTx";
 import { isServerFeatureEnabledForRequest } from "@/app/features/catalog/serverFeatureGate";

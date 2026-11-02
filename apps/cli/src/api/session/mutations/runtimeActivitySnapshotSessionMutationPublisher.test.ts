@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { SessionRuntimeActivitySnapshot } from '@happier-dev/protocol';
+import type { SessionRuntimeActivitySnapshot } from '@piggercode/protocol';
 import type { SessionSyncPendingInputServerContractMode } from '@/api/clientCompatibility/sessionSyncPendingInputServerContract';
 
 import {

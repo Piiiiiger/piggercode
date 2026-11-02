@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { AGENT_IDS as SHARED_AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS as SHARED_AGENT_IDS } from '@piggercode/agents';
 
 import { AGENT_IDS, DEFAULT_AGENT_ID, getAgentCore } from './catalog';
 
@@ -34,7 +34,7 @@ describe('agents/catalog', () => {
     });
 
     it('has no catalog-local vendor resume id writer competing with the shared projector', async () => {
-        // `projectCurrentAgentSessionView` in `@happier-dev/agents` is the single
+        // `projectCurrentAgentSessionView` in `@piggercode/agents` is the single
         // owner of the current-Agent view, including the one-flat-key invariant.
         // A catalog-local writer here would silently reintroduce the multi-key
         // state that makes a Session unresumable from its own metadata.

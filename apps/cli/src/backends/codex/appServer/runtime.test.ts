@@ -8,7 +8,7 @@ import {
     SESSION_CONFIG_OPTIONS_STATE_KEY,
     SESSION_MODELS_STATE_KEY,
     SESSION_MODES_STATE_KEY,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
     buildConnectedServiceCredentialRecord,
     buildUsageLimitIssueFingerprint,
@@ -17,7 +17,7 @@ import {
     SessionMediaMessageMetaEnvelopeV1Schema,
     SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
     type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import type { ACPMessageData } from '@/api/session/sessionMessageTypes';

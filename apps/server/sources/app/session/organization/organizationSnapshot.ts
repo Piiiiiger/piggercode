@@ -8,7 +8,7 @@ import {
     type SessionOrganizationSnapshot,
     type SessionOrganizationTag,
     type SessionTagAssignment,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { parseSessionOrganizationDisplayEnvelope } from "./contentEnvelope";
 import type {

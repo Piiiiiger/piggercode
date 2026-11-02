@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SESSION_PERMISSION_INTENT_INPUTS } from '@happier-dev/protocol';
+import { SESSION_PERMISSION_INTENT_INPUTS } from '@piggercode/protocol';
 
 import { captureConsoleJsonOutput, captureConsoleText } from '@/testkit/logger/captureOutput';
 import { SESSION_CREATE_USAGE } from './create/parseSessionCreateSpawnOptions';

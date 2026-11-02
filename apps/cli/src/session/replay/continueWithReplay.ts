@@ -9,7 +9,7 @@ import { createSpawnedSession } from '@/session/services/createSpawnedSession';
 import { readReplaySeededCreationFailure } from '@/session/replay/replaySeededCreationFailure';
 import type { CatalogAgentId } from '@/backends/types';
 import { SPAWN_SESSION_ERROR_CODES, type SpawnSessionOptions, type SpawnSessionResult } from '@/rpc/handlers/registerSessionHandlers';
-import type { LlmTaskRunnerConfigV1 } from '@happier-dev/protocol';
+import type { LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
 export type RunReplaySummaryForDialogFn = typeof import('@/session/replay/summary/runReplaySummaryForDialog').runReplaySummaryForDialog;
 

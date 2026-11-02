@@ -1,4 +1,4 @@
-import { maybeParseJson } from '@happier-dev/protocol';
+import { maybeParseJson } from '@piggercode/protocol';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return null;

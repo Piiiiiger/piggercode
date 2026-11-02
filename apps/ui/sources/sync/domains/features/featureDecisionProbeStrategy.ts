@@ -1,6 +1,6 @@
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 
-import { featureRequiresServerSnapshot } from '@happier-dev/protocol';
+import { featureRequiresServerSnapshot } from '@piggercode/protocol';
 
 import { getFeatureBuildPolicyDecision } from './featureBuildPolicy';
 import { resolveLocalFeaturePolicyEnabled, type FeatureLocalPolicySettings } from './featureLocalPolicy';

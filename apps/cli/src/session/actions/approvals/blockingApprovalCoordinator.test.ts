@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ApprovalRequestV1 } from '@happier-dev/protocol';
+import type { ApprovalRequestV1 } from '@piggercode/protocol';
 
 import { createBlockingApprovalCoordinator } from './blockingApprovalCoordinator';
 

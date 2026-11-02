@@ -9,7 +9,7 @@ import {
     type ExecutionRunIoMode,
     type ExecutionRunPublicState,
     type ExecutionRunRetentionPolicy,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     readOptionalString,

@@ -1,4 +1,4 @@
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   DaemonTerminalCloseRequestSchema,
   DaemonTerminalEnsureRequestSchema,
@@ -8,7 +8,7 @@ import {
   DaemonTerminalStreamReadRequestSchema,
   type DaemonTerminalErrorCode,
   type DaemonTerminalLaunchIntent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
 import type { RpcHandlerManager } from '../rpc/RpcHandlerManager';

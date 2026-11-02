@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
     encodeV2SessionListCursorV1,
     encodeV2SessionListCursorV2,
-} from "@happier-dev/protocol";
-import type { SessionRuntimeIssueV1 } from "@happier-dev/protocol";
+} from "@piggercode/protocol";
+import type { SessionRuntimeIssueV1 } from "@piggercode/protocol";
 
 import { mapV2SessionListRow } from "./v2SessionListRows";
 import {
@@ -17,7 +17,7 @@ import {
     sessionTurnFindMany,
 } from "./sessionRoutes.testkit";
 import { withAuthenticatedTestApp } from "../../testkit/sqliteFastify";
-import { SessionRuntimeIssueV1Schema as ReleasedRuntimeIssueSchema } from "@happier-dev/protocol/testing/releasedV0215RuntimeIssue";
+import { SessionRuntimeIssueV1Schema as ReleasedRuntimeIssueSchema } from "@piggercode/protocol/testing/releasedV0215RuntimeIssue";
 import { DEFAULT_V2_SESSION_LIST_INITIAL_ATTENTION_ROW_LIMIT } from "./v2SessionListInitialPage";
 import { V2_ACTIVE_SESSION_LIST_ROW_LIMIT } from "./v2SessionListPage";
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildAgentActivityEntryId, type SessionAgentActivityHeadlineV1 } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId, type SessionAgentActivityHeadlineV1 } from '@piggercode/protocol';
 
 import {
     buildAgentActivityEvidenceIndex,

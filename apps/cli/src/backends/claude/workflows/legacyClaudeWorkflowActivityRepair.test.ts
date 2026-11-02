@@ -6,7 +6,7 @@ import {
   buildSessionAgentActivityHeadline,
   buildSessionWorkflowActivityHeadline,
   type SessionWorkflowRunHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 

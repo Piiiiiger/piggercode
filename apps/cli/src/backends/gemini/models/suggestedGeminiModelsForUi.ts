@@ -1,4 +1,4 @@
-import { getAgentModelConfig } from '@happier-dev/agents';
+import { getAgentModelConfig } from '@piggercode/agents';
 
 export function getSuggestedGeminiModelsForUi(): string[] {
   const cfg = getAgentModelConfig('gemini');

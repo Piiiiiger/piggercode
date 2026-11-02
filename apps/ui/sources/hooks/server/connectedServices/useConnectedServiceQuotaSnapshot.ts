@@ -10,7 +10,7 @@ import {
 } from '@/sync/domains/connectedServices/connectedServiceQuotaRecoveryCreditSummary';
 import { useSetting } from '@/sync/store/hooks';
 import { useApplySettings } from '@/sync/store/settingsWriters';
-import { type ConnectedServiceId } from '@happier-dev/protocol';
+import { type ConnectedServiceId } from '@piggercode/protocol';
 import { t } from '@/text';
 import { Modal } from '@/modal';
 import { resolveConnectedServiceQuotaRecoveryCreditReceiptNoticeKey } from '@/sync/domains/connectedServices/connectedServiceQuotaRecoveryCreditReceiptPresentation';

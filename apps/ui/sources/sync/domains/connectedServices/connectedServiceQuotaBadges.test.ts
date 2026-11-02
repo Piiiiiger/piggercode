@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import { computeConnectedServiceQuotaSummaryBadges } from './connectedServiceQuotaBadges';
 

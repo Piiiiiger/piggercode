@@ -26,7 +26,7 @@ import {
     type NotificationChannelV1,
     type NotificationsSettingsV1,
     type WebhookNotificationChannelV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     addWebhookNotificationChannel,

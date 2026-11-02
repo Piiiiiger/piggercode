@@ -1,4 +1,4 @@
-import { createAccountContentPublicKeyBindingMessage } from '@happier-dev/protocol';
+import { createAccountContentPublicKeyBindingMessage } from '@piggercode/protocol';
 import { authChallenge } from "./challenge";
 import { encodeBase64 } from "@/encryption/base64";
 import { Encryption } from "@/sync/encryption/encryption";
@@ -6,7 +6,7 @@ import sodium from '@/encryption/libsodium.lib';
 import { getReadyServerFeatures } from '@/sync/api/capabilities/getReadyServerFeatures';
 import { serverFetch } from '@/sync/http/client';
 import { HappyError } from '@/utils/errors/errors';
-import { AuthErrorCodeSchema, readServerEnabledBit } from '@happier-dev/protocol';
+import { AuthErrorCodeSchema, readServerEnabledBit } from '@piggercode/protocol';
 
 
 export async function authGetToken(secret: Uint8Array) {

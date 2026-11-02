@@ -196,7 +196,7 @@ describe('core e2e: Claude native goal live usage (G-3 / Lane E)', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',

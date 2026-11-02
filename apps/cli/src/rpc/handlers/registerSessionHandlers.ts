@@ -4,7 +4,7 @@ import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { Metadata } from '@/api/types';
 import type { SessionAttachFilePayload } from '@/agent/runtime/sessionAttachPayload';
 import type { ConnectedServicesMaterializationDiagnostic } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
-import type { CodexBackendMode } from '@happier-dev/agents';
+import type { CodexBackendMode } from '@piggercode/agents';
 import { configuration } from '@/configuration';
 import {
     AcpConfigOptionOverridesV1,
@@ -16,9 +16,9 @@ import {
     SessionMcpSelectionV1,
     SpawnSessionErrorCode,
     type SpawnSessionErrorDetail,
-} from '@happier-dev/protocol';
-export { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
-export type { SpawnSessionErrorCode, SpawnSessionErrorDetail } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+export { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
+export type { SpawnSessionErrorCode, SpawnSessionErrorDetail } from '@piggercode/protocol';
 export { resolveCanonicalCodexBackendMode } from './codexBackendMode';
 import { registerCapabilitiesHandlers } from './capabilities';
 import { registerPreviewEnvHandler } from './previewEnv';
@@ -100,7 +100,7 @@ export interface SpawnSessionOptions {
      * delivered once without replaying older turns.
      */
     initialTranscriptAfterSeq?: number;
-    executionAuthorization?: import('@happier-dev/protocol').SpawnSessionExecutionAuthorization;
+    executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
     /**
      * Optional native goal to apply immediately after provider attach/resume and before
      * pending queue replay.

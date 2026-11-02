@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { TranscriptRawRecordV1Schema, type DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import { TranscriptRawRecordV1Schema, type DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 import type { PiSessionEntry } from './piEntryContext';
 import { mapPiSessionToDirectMessages } from './mapPiSessionToDirectMessages';

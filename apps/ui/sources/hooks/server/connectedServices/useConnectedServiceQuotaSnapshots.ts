@@ -6,11 +6,11 @@ import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { connectedServiceProfileKey } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { shouldHideQuotaForCredentialStatus } from '@/sync/domains/connectedServices/shouldHideQuotaForCredentialStatus';
 
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 import {
   ConnectedServiceIdSchema,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useCredentialScopedAccountModeResolver } from './useCredentialScopedAccountModeResolver';
 import {
   buildQuotaSnapshotScopeKey,

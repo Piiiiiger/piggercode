@@ -2,8 +2,8 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import type { McpServerBindingV1, McpServerCatalogEntryV1 } from '@happier-dev/protocol';
-import { McpServerBindingV1Schema, McpServerCatalogEntryV1Schema } from '@happier-dev/protocol';
+import type { McpServerBindingV1, McpServerCatalogEntryV1 } from '@piggercode/protocol';
+import { McpServerBindingV1Schema, McpServerCatalogEntryV1Schema } from '@piggercode/protocol';
 
 import type { Machine } from '@/sync/domains/state/storageTypes';
 import { DropdownMenu, type DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';

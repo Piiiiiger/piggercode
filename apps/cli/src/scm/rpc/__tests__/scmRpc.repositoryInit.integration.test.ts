@@ -3,9 +3,9 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { describe, expect, it } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
-import type { ScmStatusSnapshotRequest, ScmStatusSnapshotResponse } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
+import type { ScmStatusSnapshotRequest, ScmStatusSnapshotResponse } from '@piggercode/protocol';
 
 import { createTestRpcManager, runGit as git } from './testRpcHarness';
 

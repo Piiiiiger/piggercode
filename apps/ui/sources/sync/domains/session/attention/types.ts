@@ -1,7 +1,7 @@
 import type {
     PrimaryTurnStatusV1,
     SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionAttentionState = 'idle' | 'running' | 'waiting' | 'failed' | 'review';
 

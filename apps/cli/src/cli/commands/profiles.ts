@@ -5,7 +5,7 @@ import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 
 import { showProfilesHelp } from './profiles/help';
 import { runProfilesSubcommand } from './profiles/subcommands';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 export async function handleProfilesCommand(args: string[]): Promise<void> {
   const json = wantsJson(args);

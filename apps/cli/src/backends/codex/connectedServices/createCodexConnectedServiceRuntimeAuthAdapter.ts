@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import { evaluateCodexConnectedServiceHotApplyEligibility } from './applyCodexConnectedServiceAuthGeneration';
 import { classifyCodexConnectedServiceAuthFailure } from './classifyCodexConnectedServiceAuthFailure';

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fastify from 'fastify';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_USERINFO_URL } from '@happier-dev/agents';
+import { AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_USERINFO_URL } from '@piggercode/agents';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';

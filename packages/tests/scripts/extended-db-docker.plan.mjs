@@ -12,9 +12,9 @@ function resolveServerAppWorkspaceName() {
     const raw = readFileSync(pkgPath, 'utf8');
     const json = JSON.parse(raw);
     const name = typeof json?.name === 'string' ? json.name.trim() : '';
-    return name || '@happier-dev/server';
+    return name || '@piggercode/server';
   } catch {
-    return '@happier-dev/server';
+    return '@piggercode/server';
   }
 }
 
@@ -24,9 +24,9 @@ function resolveCliAppWorkspaceName() {
     const raw = readFileSync(pkgPath, 'utf8');
     const json = JSON.parse(raw);
     const name = typeof json?.name === 'string' ? json.name.trim() : '';
-    return name || '@happier-dev/cli';
+    return name || '@piggercode/cli';
   } catch {
-    return '@happier-dev/cli';
+    return '@piggercode/cli';
   }
 }
 

@@ -26,10 +26,10 @@ import { resolveMachineIdForServerFromSettings } from '@/daemon/resolveMachineId
 import { cleanupAtomicWriteTempFiles, cleanupAtomicWriteTempFilesSync, writeJsonAtomicSync } from '@/utils/fs/writeJsonAtomicSync';
 import { reclaimJsonOwnerFileLockSnapshot } from '@/utils/fs/jsonOwnerFileLock';
 import { isPidAliveBySignal } from '@/daemon/processRunState';
-import type { PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import type { PublicReleaseRingLabel } from '@piggercode/release-runtime/releaseRings';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 import { BUILTIN_RELAY } from '@/server/builtinRelay';
-import type { MachineReplacementReason } from '@happier-dev/protocol';
+import type { MachineReplacementReason } from '@piggercode/protocol';
 
 async function bestEffortChmod(path: string, mode: number): Promise<void> {
   if (process.platform === 'win32') return;

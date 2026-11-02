@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import type {
     SessionRollbackRangeV1,
     SessionRollbackTarget,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type SessionRollbackRangesV1 = {
     v: 1;

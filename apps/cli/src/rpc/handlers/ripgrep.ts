@@ -1,7 +1,7 @@
 import { logger } from '@/ui/logger';
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import { run as runRipgrep } from '@/integrations/ripgrep/index';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { FilesystemAccessPolicy } from './fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from './fileSystem/accessPolicy/filesystemPathAuthorization';
 

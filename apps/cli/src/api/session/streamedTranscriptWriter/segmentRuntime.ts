@@ -1,6 +1,6 @@
 import type { StreamedTranscriptSegmentKey, StreamedTranscriptSegmentKind } from './segmentKey';
 import type { LiveDeliveryState } from './liveDeliveryState';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 import type { SessionMessageCommitResult } from '../sessionMessageCommitResult';
 
 export type DurableCommitFailureIncident = {

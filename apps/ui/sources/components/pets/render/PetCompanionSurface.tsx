@@ -12,7 +12,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import {
     type PetAnimationStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ImageProps } from 'expo-image';
 
 import {

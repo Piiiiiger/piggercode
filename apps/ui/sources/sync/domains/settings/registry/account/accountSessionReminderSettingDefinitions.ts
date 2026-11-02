@@ -1,4 +1,4 @@
-import { defineSettingDefinitions } from '@happier-dev/protocol';
+import { defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 
 import { SessionReminderPresetsV1Schema } from '@/sync/domains/session/organization/sessionReminderPreset';

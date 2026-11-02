@@ -1,6 +1,6 @@
 import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import {
   ConnectedServiceRefreshCoordinator,
 } from '../refresh/ConnectedServiceRefreshCoordinator';

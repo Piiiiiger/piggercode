@@ -1,4 +1,4 @@
-import type { TerminalHostKind } from '@happier-dev/agents';
+import type { TerminalHostKind } from '@piggercode/agents';
 
 import type {
   TerminalControlCaptureResult,

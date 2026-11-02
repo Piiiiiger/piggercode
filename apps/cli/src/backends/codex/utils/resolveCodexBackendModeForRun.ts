@@ -1,4 +1,4 @@
-import type { CodexBackendMode } from '@happier-dev/agents';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 export function resolveCodexBackendModeForRun(opts: {
   codexBackendMode?: CodexBackendMode;

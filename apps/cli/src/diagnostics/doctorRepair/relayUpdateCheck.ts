@@ -1,8 +1,8 @@
 import { join } from 'node:path';
 
-import { readUpdateCache, writeUpdateCache } from '@happier-dev/cli-common/update';
-import { fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
-import type { PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
+import { readUpdateCache, writeUpdateCache } from '@piggercode/cli-common/update';
+import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
+import type { PublicReleaseRingLabel } from '@piggercode/release-runtime/releaseRings';
 
 import { configuration } from '@/configuration';
 import {
@@ -16,7 +16,7 @@ import { extractSemverFromReleaseJson, withTimeout } from './_updateCheck';
  * Resolve the latest published relay version for a channel.
  *
  * Caching: same on-disk shape as the CLI auto-update check (`UpdateCache`
- * from `@happier-dev/cli-common/update`), scoped to a relay-specific file.
+ * from `@piggercode/cli-common/update`), scoped to a relay-specific file.
  *
  * By default during `doctor repair` the caller passes `forceRefresh: true` to
  * do a live GitHub fetch; the cache is just a fallback when the network call

@@ -3,7 +3,7 @@ import {
   buildOpenCodeAgentRuntimeDescriptor,
   normalizeOpenCodeServerBaseUrl,
   normalizeOpenCodeServerBaseUrlExplicit,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export type OpenCodeSessionMetadataPublicationState = {
   sessionId: string | null;

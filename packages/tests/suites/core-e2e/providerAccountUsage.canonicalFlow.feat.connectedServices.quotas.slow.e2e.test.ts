@@ -14,7 +14,7 @@ import {
   type ProviderAccountUsageSnapshotV1,
   type ProviderAccountUsageSourceV1,
   type ProviderAccountUsageSubjectKindV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { createTestAuth, type TestAuth } from '../../src/testkit/auth';

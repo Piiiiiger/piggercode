@@ -9,7 +9,7 @@ import { createScopedCacheTokenKeyRegistry } from './scopedCacheTokenKey';
 import { createScopedResolutionSingleFlight } from './scopedResolutionSingleFlight';
 import { createRpcCallError, readRpcErrorCode } from '@/sync/runtime/rpcErrors';
 import { t } from '@/text';
-import { AccountEncryptionModeResponseSchema, isPlainMachineDataKeyMarker } from '@happier-dev/protocol';
+import { AccountEncryptionModeResponseSchema, isPlainMachineDataKeyMarker } from '@piggercode/protocol';
 
 type ScopedMachineEncryptionContext =
     | Readonly<{ mode: 'plain' }>

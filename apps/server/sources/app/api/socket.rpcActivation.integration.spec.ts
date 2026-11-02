@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { io as ioClient } from "socket.io-client";
 
-import { SOCKET_RPC_EVENTS } from "@happier-dev/protocol/socketRpc";
+import { SOCKET_RPC_EVENTS } from "@piggercode/protocol/socketRpc";
 import { auth } from "@/app/auth/auth";
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

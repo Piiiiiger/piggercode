@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui/text/Text';
 import { t } from '@/text';
-import { fromWorkflowAgentStatus } from '@happier-dev/protocol';
+import { fromWorkflowAgentStatus } from '@piggercode/protocol';
 import type { AgentActivityStalenessResolver } from '@/components/sessions/agentActivity/presentation/useAgentActivityStaleness';
 import { WorkflowAgentActivityRow } from '@/components/tools/renderers/workflow/WorkflowAgentActivityRow';
 import { WorkflowPhaseHeader } from '@/components/tools/renderers/workflow/WorkflowPhaseHeader';
@@ -16,7 +16,7 @@ import type {
     SessionWorkflowRunHeadlineV1,
     SessionWorkflowRunSnapshotV1,
     SessionWorkflowRunStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     buildWorkflowActivityRows,

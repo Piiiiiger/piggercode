@@ -1,6 +1,6 @@
 import type {
   SessionHandoffProviderBundleTransferPublication as ProtocolSessionHandoffProviderBundleTransferPublication,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionHandoffProviderBundleTransferPublication =
   ProtocolSessionHandoffProviderBundleTransferPublication;

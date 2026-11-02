@@ -56,8 +56,8 @@ resolve_daemon_state_helper_module() {
   fi
   if [[ -n "$install_root" ]]; then
     candidates+=("$install_root/scripts/utils/auth/credentials_paths.mjs")
-    candidates+=("$install_root/runtime/node_modules/@happier-dev/stack/scripts/utils/auth/credentials_paths.mjs")
-    candidates+=("$install_root/node_modules/@happier-dev/stack/scripts/utils/auth/credentials_paths.mjs")
+    candidates+=("$install_root/runtime/node_modules/@piggercode/stack/scripts/utils/auth/credentials_paths.mjs")
+    candidates+=("$install_root/node_modules/@piggercode/stack/scripts/utils/auth/credentials_paths.mjs")
   fi
 
   local candidate
@@ -92,8 +92,8 @@ resolve_tailscale_status_helper_module() {
   fi
   if [[ -n "$install_root" ]]; then
     candidates+=("$install_root/scripts/utils/tailscale/extract_https_url_from_status.mjs")
-    candidates+=("$install_root/runtime/node_modules/@happier-dev/stack/scripts/utils/tailscale/extract_https_url_from_status.mjs")
-    candidates+=("$install_root/node_modules/@happier-dev/stack/scripts/utils/tailscale/extract_https_url_from_status.mjs")
+    candidates+=("$install_root/runtime/node_modules/@piggercode/stack/scripts/utils/tailscale/extract_https_url_from_status.mjs")
+    candidates+=("$install_root/node_modules/@piggercode/stack/scripts/utils/tailscale/extract_https_url_from_status.mjs")
   fi
 
   local candidate

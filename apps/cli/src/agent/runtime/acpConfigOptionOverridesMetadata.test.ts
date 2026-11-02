@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { computeNextMetadataConfigOptionOverrideV1 } from '@happier-dev/agents';
+import { computeNextMetadataConfigOptionOverrideV1 } from '@piggercode/agents';
 
 describe('computeNextMetadataConfigOptionOverrideV1', () => {
   it('stores a config option override when updatedAt is newer', () => {

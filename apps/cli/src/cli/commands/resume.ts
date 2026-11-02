@@ -10,12 +10,12 @@ import { resolveSessionIdOrPrefix } from '@/session/query/resolveSessionId';
 import { resolveSessionEncryptionContextFromCredentials, tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';
 import { encodeBase64 } from '@/api/encryption';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
-import type { AccountSettings, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { AccountSettings, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import {
   accountSettingsParse,
   ConnectedServiceBindingsV1Schema,
   SessionTerminalMetadataSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { canUseInkSelector, runSessionActionSelector } from '@/ui/ink/runSessionActionSelector';
 import { buildCliSessionRowModel } from '@/cli/output/session/buildCliSessionRowModel';
 import { buildContinueSelectionModel } from '@/cli/commands/resumeInteractiveSelection';
@@ -33,7 +33,7 @@ import {
 } from '@/cli/connectedServices/resolveDirectConnectedServiceEnvironment';
 
 import type { CommandContext, CommandHandler } from '@/cli/commandRegistry';
-import { fail, neutral, warn } from '@happier-dev/cli-common/output';
+import { fail, neutral, warn } from '@piggercode/cli-common/output';
 
 type FetchSessionByIdFn = (params: { token: string; sessionId: string }) => Promise<RawSessionRecord | null>;
 type FetchSessionsPageFn = (params: { token: string; cursor?: string; limit?: number; activeOnly?: boolean; archivedOnly?: boolean }) => Promise<{

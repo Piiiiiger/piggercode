@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import type { DirectSessionActivityV1 } from '@happier-dev/protocol';
+import type { DirectSessionActivityV1 } from '@piggercode/protocol';
 
 import type { ResolvedItemDensity } from '@/components/ui/lists/useResolvedItemDensity';
 import { ITEM_SUBTITLE_TEXT_METRICS } from '@/components/ui/lists/itemDensityMetrics';

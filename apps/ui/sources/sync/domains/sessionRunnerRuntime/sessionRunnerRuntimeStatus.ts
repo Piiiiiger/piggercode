@@ -3,7 +3,7 @@ import {
     SessionRunnerRuntimeStateV1Schema,
     type SessionRunnerRestartDisabledReason,
     type SessionRunnerRuntimeStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export { SESSION_RUNNER_RUNTIME_STATE_FIELD_ID };
 

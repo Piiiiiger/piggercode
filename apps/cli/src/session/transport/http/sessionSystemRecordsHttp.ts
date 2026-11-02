@@ -10,7 +10,7 @@ import {
   type SessionSystemRecordKind,
   type SessionSystemRecordNamespace,
   type SessionSystemRecordPageResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   createHttpStatusError,

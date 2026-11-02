@@ -4,7 +4,7 @@ import type {
   AccountSettings,
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServicesMaterializationDiagnostic } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
 import type { ConnectedServicesProviderMaterializerInput } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';

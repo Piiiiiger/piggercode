@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SessionStoredMessageContentSchema } from "@happier-dev/protocol";
+import { SessionStoredMessageContentSchema } from "@piggercode/protocol";
 
 import { buildNewMessageUpdate, buildUpdateSessionUpdate, eventRouter } from "@/app/events/eventRouter";
 import { createServerFeatureGatePreHandler } from "@/app/features/catalog/serverFeatureGate";

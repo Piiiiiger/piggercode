@@ -2,7 +2,7 @@ import {
     resolveAgentActivityEntryAgentHandle,
     type SessionAgentActivityEntryV1,
     type SessionAgentActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { toAgentActivityEntryKind, type AgentActivityHeadlineEntry } from '../types';
 

@@ -6,7 +6,7 @@ import {
   ProviderAccountUsageSnapshotV1Schema,
   sealProviderAccountUsageSnapshotCiphertext,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type { getProviderAccountUsageSnapshotPlain } from '@/sync/api/account/apiProviderAccountUsageV3';
 import type { getProviderAccountUsageSnapshotSealed } from '@/sync/api/account/apiProviderAccountUsageV2';

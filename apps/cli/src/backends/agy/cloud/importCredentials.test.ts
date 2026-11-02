@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_SCOPES, AGY_OAUTH_TOKEN_URL } from '@happier-dev/agents';
+import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_SCOPES, AGY_OAUTH_TOKEN_URL } from '@piggercode/agents';
 import { buildConnectedAccountOauthCredentialRecord } from '@/daemon/connectedServices/descriptors/buildConnectedAccountCredentialRecord';
 import { agyCloudConnect } from './connect';
 import { materializeConnectedServicesForSpawn } from '@/daemon/connectedServices/materialize/materializeConnectedServicesForSpawn';

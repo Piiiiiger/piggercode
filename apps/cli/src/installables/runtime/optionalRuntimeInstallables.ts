@@ -8,8 +8,8 @@ import {
   prepareFirstPartyComponentPayloadFromGitHubRelease,
   resolveFirstPartyVersionInstallPath,
   type FirstPartyComponentId,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { readSettings } from '@/persistence';

@@ -12,7 +12,7 @@ import {
     type PrimaryTurnStatusV1,
     type SessionRuntimeActivityProjection,
     type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SessionParticipantCursor } from '@/app/session/changeTracking/markSessionParticipantsChanged';
 import type { createSessionPublisherPresence } from '@/app/presence/sessionPublisherPresence';

@@ -1,7 +1,7 @@
 import {
   TranscriptRawAgentEventV1Schema,
   type SessionStoredMessageContent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import {

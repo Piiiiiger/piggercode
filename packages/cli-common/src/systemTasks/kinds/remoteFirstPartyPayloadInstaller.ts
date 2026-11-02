@@ -2,7 +2,7 @@ import { chmod, cp, lstat, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 
-import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type {
   FirstPartyComponentId,

@@ -62,7 +62,7 @@ describe('buildPiBridgeExtensionSource', () => {
     expect(source).not.toContain('memory_search');
     expect(source).not.toContain('change_title');
     expect(source).not.toMatch(/from ['"]@\//);
-    expect(source).not.toMatch(/from ['"]@happier-dev\//);
+    expect(source).not.toMatch(/from ['"]@piggercode\//);
   });
 
   it('bridges every manifest tool through the semantic session-Agent call form', () => {

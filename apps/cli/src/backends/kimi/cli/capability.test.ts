@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { withTempDir } from '@/testkit/fs/tempDir';
 import { writeKimiFixture } from './runtimeDiscovery.testkit';
 import { cliCapability } from './capability';
-import { AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS } from '@piggercode/agents';
 import type { DetectCliSnapshot } from '@/capabilities/snapshots/cliSnapshot';
 
 afterEach(() => vi.unstubAllEnvs());

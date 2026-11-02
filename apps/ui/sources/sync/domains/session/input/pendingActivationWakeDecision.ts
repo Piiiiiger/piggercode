@@ -1,4 +1,4 @@
-import { PENDING_INPUT_PROTOCOL_VERSION_V2 } from '@happier-dev/protocol';
+import { PENDING_INPUT_PROTOCOL_VERSION_V2 } from '@piggercode/protocol';
 
 import type { ServerFeaturesSnapshot } from '@/sync/api/capabilities/serverFeaturesClient';
 import type { Machine, Session } from '@/sync/domains/state/storageTypes';

@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, statSync, unlinkSync, writeFileSy
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { configuration } from '@/configuration';
 import { createEncryptedTransferChunkEnvelope } from '@/machines/transfer/transferChunkEncryption';

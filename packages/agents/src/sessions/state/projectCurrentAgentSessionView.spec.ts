@@ -1,4 +1,4 @@
-import { readDisplayableSessionWorkStateV1 } from '@happier-dev/protocol';
+import { readDisplayableSessionWorkStateV1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { buildHappierReplayPromptFromDialog } from '../replay/happierReplayPrompt.js';

@@ -6,7 +6,7 @@ import {
   ConnectedServiceCredentialHealthV1Schema,
   ConnectedServiceIdSchema,
   type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import {
   isConnectedServiceCredentialMetadataV2,

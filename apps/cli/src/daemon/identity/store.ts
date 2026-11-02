@@ -19,7 +19,7 @@ import tweetnacl from 'tweetnacl';
 import {
   MachineInstallationIdentityV1Schema,
   type MachineInstallationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { encodeBase64 } from '@/api/encryption';
 import { configuration } from '@/configuration';

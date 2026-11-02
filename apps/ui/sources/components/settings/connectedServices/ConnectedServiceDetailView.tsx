@@ -29,10 +29,10 @@ import {
   ConnectedServiceIdSchema,
   ConnectedServiceProfileIdSchema,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
-import { supportsConnectedServiceOperation } from '@happier-dev/protocol';
+import { supportsConnectedServiceOperation } from '@piggercode/protocol';
 
 import { AccountBlock } from './account/AccountBlock';
 import { buildConnectedServiceAccountRowActions } from './account/buildConnectedServiceAccountRowActions';

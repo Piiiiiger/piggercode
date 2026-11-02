@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cmd, fail, info, ok, warn } from '@happier-dev/cli-common/output';
+import { cmd, fail, info, ok, warn } from '@piggercode/cli-common/output';
 
 import { bold, code, glyph, muted, statusGlyph, subLineArrow, success, warning } from './styles';
 

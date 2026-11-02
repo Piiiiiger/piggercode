@@ -304,7 +304,7 @@ describe('runCodex app-server composer reference resolution', () => {
   });
 
   it('sends resolved skill and vendor-plugin items for a turn whose envelope carries only mentions[]', async () => {
-    const { MENTION_KIND_V1, buildMentionRefForKindV1 } = await import('@happier-dev/protocol');
+    const { MENTION_KIND_V1, buildMentionRefForKindV1 } = await import('@piggercode/protocol');
     const root = await createTempDir('happier-codex-run-mentions-');
     tempRoots.add(root);
     await mkdir(root, { recursive: true });

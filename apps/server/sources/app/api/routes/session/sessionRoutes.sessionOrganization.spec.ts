@@ -6,7 +6,7 @@ import {
     SESSION_ORGANIZATION_MAX_PINNED_SESSIONS,
     SESSION_ORGANIZATION_MAX_TAGS,
     SESSION_ORGANIZATION_SNAPSHOT_VERSION,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import {
     createSessionRouteTestBuilder,
     markAccountChanged,

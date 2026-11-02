@@ -17,13 +17,13 @@ describe('resolveProviderCliSpawnSpec', () => {
       platform: 'darwin',
       scriptPath: '/usr/bin/script',
       baseCommand: 'yarn',
-      baseArgs: ['-s', 'workspace', '@happier-dev/cli', 'dev', 'claude'],
+      baseArgs: ['-s', 'workspace', '@piggercode/cli', 'dev', 'claude'],
       scenario,
     });
 
     expect(resolved).toEqual({
       command: '/usr/bin/script',
-      args: ['-q', '/dev/null', 'yarn', '-s', 'workspace', '@happier-dev/cli', 'dev', 'claude'],
+      args: ['-q', '/dev/null', 'yarn', '-s', 'workspace', '@piggercode/cli', 'dev', 'claude'],
     });
   });
 });

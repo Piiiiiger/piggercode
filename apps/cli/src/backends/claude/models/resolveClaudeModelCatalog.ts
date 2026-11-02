@@ -2,8 +2,8 @@ import {
   AGENT_MODEL_CONFIG,
   providers,
   type AgentModelDescriptor,
-} from '@happier-dev/agents';
-import { parseBooleanEnv, type ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { parseBooleanEnv, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { buildDiscoveredClaudeModelDescriptor } from './deriveDiscoveredClaudeModel';
 import { fetchAnthropicModels, type AnthropicModelEntry } from './fetchAnthropicModels';

@@ -1,4 +1,4 @@
-import { resolveProviderCliCommandCandidates, type ProviderCliResolutionSource } from '@happier-dev/cli-common/providers';
+import { resolveProviderCliCommandCandidates, type ProviderCliResolutionSource } from '@piggercode/cli-common/providers';
 
 import { kimiTransport } from '@/backends/kimi/acp/transport';
 import { probeAcpAgentCapabilities, type AcpProbeResult } from '@/capabilities/probes/acpProbe';

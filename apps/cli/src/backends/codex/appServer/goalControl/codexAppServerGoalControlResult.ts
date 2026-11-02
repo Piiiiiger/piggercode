@@ -1,4 +1,4 @@
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { CodexAppServerGoalControlError } from './codexAppServerGoalControlTypes';
 

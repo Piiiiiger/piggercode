@@ -8,7 +8,7 @@ import {
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createGeminiConnectedServicesMaterializer } from './createGeminiConnectedServicesMaterializer';
 

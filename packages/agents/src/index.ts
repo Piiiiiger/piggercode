@@ -1,4 +1,4 @@
-export const HAPPY_AGENTS_PACKAGE = '@happier-dev/agents';
+export const HAPPY_AGENTS_PACKAGE = '@piggercode/agents';
 
 export {
     AGENT_IDS,
@@ -433,7 +433,7 @@ export {
 } from './sessions/state/projectCurrentAgentSessionView.js';
 export { normalizeVoiceAgentTurnTranscriptText } from './voice/normalizeVoiceAgentTurnTranscriptText.js';
 
-// Provider CLI runtime surface (used by bundled products like apps/cli via @happier-dev/cli-common).
+// Provider CLI runtime surface (used by bundled products like apps/cli via @piggercode/cli-common).
 export {
   getProviderCliBinaryNames,
   PROVIDER_CLI_RUNTIME_SPECS,

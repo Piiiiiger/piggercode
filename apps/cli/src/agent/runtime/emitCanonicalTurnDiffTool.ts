@@ -1,4 +1,4 @@
-import type { TurnChangeSet, ToolNormalizationProtocol } from '@happier-dev/protocol';
+import type { TurnChangeSet, ToolNormalizationProtocol } from '@piggercode/protocol';
 
 import { buildTurnChangeSetDiffInput } from '@/agent/tools/diff/buildTurnChangeSetDiffInput';
 import { resolveCanonicalTurnDiffCallId } from '@/agent/tools/diff/canonicalTurnDiffIdentity';

@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { commandExists, resolveBunCommand, resolveYarnCommand } from '@happier-dev/cli-common/componentArtifacts';
+import { commandExists, resolveBunCommand, resolveYarnCommand } from '@piggercode/cli-common/componentArtifacts';
 
 import { resolveStackBaseDir, resolveStackEnvPath } from '../utils/paths/paths.mjs';
 import { parseArgs } from '../utils/cli/args.mjs';

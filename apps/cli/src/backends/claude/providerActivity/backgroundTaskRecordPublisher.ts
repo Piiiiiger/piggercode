@@ -7,7 +7,7 @@ import {
   type AgentActivityStatusV1,
   type BackgroundTaskKindV1,
   type SessionBackgroundTaskRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { isPermanentRequestError } from '@/api/client/httpStatusError';
 import { createCoalescedScheduler } from '@/utils/coalescedScheduler';

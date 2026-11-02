@@ -11,7 +11,7 @@ import {
   buildConnectedServiceCredentialRecord,
   openConnectedServiceCredentialCiphertext,
   sealAccountScopedBlobCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { ApiClient } from '@/api/api';

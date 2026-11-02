@@ -8,9 +8,9 @@ import {
     type RestartSessionRunnerStatusV1,
     type SessionRunnerRuntimeStateV1,
     type SessionRunnerStatusGetRequestV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError, readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError, readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 

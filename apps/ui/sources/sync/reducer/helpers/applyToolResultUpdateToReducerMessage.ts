@@ -1,4 +1,4 @@
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
 
 import type { MessageMeta } from '../../domains/messages/messageMetaTypes';
 import type { ReducerMessage } from '../reducer';

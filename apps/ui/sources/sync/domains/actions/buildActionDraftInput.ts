@@ -1,6 +1,6 @@
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
-import type { ActionId } from '@happier-dev/protocol';
-import { buildActionDraftSeedInput, getActionSpec } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
+import type { ActionId } from '@piggercode/protocol';
+import { buildActionDraftSeedInput, getActionSpec } from '@piggercode/protocol';
 
 export function buildActionDraftInput(args: Readonly<{
   actionId: ActionId;

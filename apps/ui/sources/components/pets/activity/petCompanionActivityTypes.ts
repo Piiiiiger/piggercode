@@ -1,4 +1,4 @@
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { Session } from '@/sync/domains/state/storageTypes';

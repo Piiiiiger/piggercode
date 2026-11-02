@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-import { RPC_METHODS, type WorkspaceAnchorsResolveResponseV1, computeLineContentHashV1 } from '@happier-dev/protocol';
+import { RPC_METHODS, type WorkspaceAnchorsResolveResponseV1, computeLineContentHashV1 } from '@piggercode/protocol';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';

@@ -5,7 +5,7 @@ import {
   SPAWN_SESSION_ERROR_DETAIL_KINDS,
   type ConnectedServiceUxDiagnosticV1,
   type SpawnSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import type { ConnectedServicesMaterializationDiagnostic } from '../materialize/providerMaterializerTypes';

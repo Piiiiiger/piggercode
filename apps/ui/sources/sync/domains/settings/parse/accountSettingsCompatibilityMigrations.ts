@@ -1,5 +1,5 @@
-import { buildBackendTargetKey, normalizeCodexBackendMode } from '@happier-dev/protocol';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { buildBackendTargetKey, normalizeCodexBackendMode } from '@piggercode/protocol';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 import { z } from 'zod';
 
 import { AGENT_IDS, getAgentCore } from '@/agents/registry/registryCore';

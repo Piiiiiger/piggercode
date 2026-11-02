@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     type SessionSystemRecord,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { makeSessionWorkflowRunSnapshot } from '@/dev/testkit';
 
 const decryptRaw = vi.fn((_ciphertext: string): Promise<unknown> => Promise.resolve(null));

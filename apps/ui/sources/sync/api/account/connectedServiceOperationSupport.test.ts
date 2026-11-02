@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildConnectedServiceCredentialRecord, ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, ConnectedServiceIdSchema } from '@piggercode/protocol';
 import { createRootLayoutFeaturesResponse } from '@/dev/testkit/fixtures/featureFixtures';
 
 afterEach(() => { vi.unstubAllGlobals(); vi.resetModules(); vi.clearAllMocks(); });

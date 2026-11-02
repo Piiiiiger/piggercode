@@ -9,7 +9,7 @@ import { stopStackWithEnv } from './utils/stack/stop.mjs';
 import { observePsEnvLine } from './utils/proc/ownership.mjs';
 import { terminateProcessGroup, terminateProcessPid } from './utils/proc/terminate.mjs';
 import { isAlive, spawnOwnedSleep, waitForProcessAlive, waitForProcessExit } from './testkit/stack_stop_sweeps_testkit.mjs';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping session processes', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
@@ -61,7 +61,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_REPO_DIR: repoDir,
       HAPPIER_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(legacyInfra);
@@ -102,7 +102,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_REPO_DIR: repoDir,
       HAPPIER_STACK_PROCESS_KIND: 'session',
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(sessionWithLegacyServerMarkers);
@@ -122,7 +122,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_REPO_DIR: repoDir,
       HAPPIER_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(identityUnavailableInfra);
@@ -139,7 +139,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_STACK: stackName,
       HAPPIER_STACK_REPO_DIR: repoDir,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(identityTimedOutInfra);
@@ -156,7 +156,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_STACK: stackName,
       HAPPIER_STACK_REPO_DIR: repoDir,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(identityMismatchInfra);
@@ -174,7 +174,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       HAPPIER_STACK_REPO_DIR: repoDir,
       HAPPIER_STACK_PROCESS_KIND: undefined,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
   });
   children.push(incarnationMismatchInfra);
@@ -212,7 +212,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
     if (pid === identityMismatchInfra.pid) {
       return {
         status: 'ok',
-        line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@happier-dev/server`,
+        line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
         reason: 'ps',
       };
     }
@@ -314,7 +314,7 @@ test('stopStackWithEnv repo-local fallback sweeps legacy infra without stopping 
       if (pid === identityTimedOutInfra.pid || pid === identityMismatchInfra.pid) {
         return {
           status: 'ok',
-          line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@happier-dev/server`,
+          line: `${pid} node HAPPIER_STACK_STACK=foreign HAPPIER_STACK_REPO_DIR=/tmp/foreign npm_lifecycle_event=dev:light npm_package_name=@piggercode/server`,
           reason: 'ps',
         };
       }

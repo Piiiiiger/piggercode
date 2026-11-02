@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { Icon, ICON_SIZE } from '@/components/ui/icons/Icon';
 import { TabBadge } from '@/components/ui/navigation/tabBadge/TabBadge';

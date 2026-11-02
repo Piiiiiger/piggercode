@@ -4,7 +4,7 @@ import type {
     UserMessage,
 } from '../types';
 import { SessionMessageContentSchema, UserMessageSchema } from '../types';
-import { coerceSessionUserPromptV1 } from '@happier-dev/protocol';
+import { coerceSessionUserPromptV1 } from '@piggercode/protocol';
 import { summarizeValueShapeForLog } from '@/diagnostics/eventShapeForLog';
 import { readSessionHistoryReplayProvenance } from './sessionMessageCatchUp';
 

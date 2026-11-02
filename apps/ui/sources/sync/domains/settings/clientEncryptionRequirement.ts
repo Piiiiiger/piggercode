@@ -5,7 +5,7 @@ import {
     isSessionEncryptionModeAllowedByClientRequirement,
     type ClientEncryptionRequirement,
     type SessionEncryptionMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type RequirementSettings = Readonly<{
     clientEncryptionRequirementV1?: unknown;

@@ -9,15 +9,15 @@ import {
   ProviderAccountUsageSnapshotV1Schema,
   openAccountScopedBlobCiphertext,
   sealAccountScopedBlobCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
   ConnectedServiceAuthGroupV1,
   ConnectedServiceQuotaSnapshotV1,
   ProviderAccountUsageRecordKeyV1,
   ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { randomBytes } from 'node:crypto';
-import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@happier-dev/protocol/testing/accountScopedCipherFixtures';
+import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@piggercode/protocol/testing/accountScopedCipherFixtures';
 
 import type { Credentials } from '@/persistence';
 import { logger } from '@/ui/logger';

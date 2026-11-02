@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ActionId } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
 
 import * as actionSettingsTargets from './actionSettingsTargets';
 

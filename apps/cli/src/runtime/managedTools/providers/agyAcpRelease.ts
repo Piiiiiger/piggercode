@@ -3,8 +3,8 @@
 // each ZIP contains the flat server + companion localharness payload.
 // Native execution still requires the matching platform and architecture.
 
-import type { ArchiveExtractionLimits } from '@happier-dev/release-runtime/archiveExtraction';
-import { AGY_ACP_SERVER_VERSION } from '@happier-dev/protocol/installables';
+import type { ArchiveExtractionLimits } from '@piggercode/release-runtime/archiveExtraction';
+import { AGY_ACP_SERVER_VERSION } from '@piggercode/protocol/installables';
 
 // Reviewed 1.3.0 maxima: 333,727,150 archive bytes, 930,848,992 bytes
 // per file and 1,056,922,005 expanded bytes. Retain the existing release-owned

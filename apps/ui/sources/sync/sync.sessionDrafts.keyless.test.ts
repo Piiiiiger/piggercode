@@ -5,7 +5,7 @@ import {
     SessionDraftMutateRequestV1Schema,
     SessionDraftMutateResponseV1Schema,
     type SessionDraftRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { createSessionFixture } from '@/dev/testkit/fixtures/sessionFixtures';

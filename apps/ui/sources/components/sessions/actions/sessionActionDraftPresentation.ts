@@ -1,4 +1,4 @@
-import { getActionSpec, resolveEffectiveActionInputFields, type ActionSpec, type EffectiveActionInputField } from '@happier-dev/protocol';
+import { getActionSpec, resolveEffectiveActionInputFields, type ActionSpec, type EffectiveActionInputField } from '@piggercode/protocol';
 
 import { resolveActionInputValidationError } from '@/sync/domains/actions/resolveActionInputValidationError';
 import type { SessionActionDraft } from '@/sync/domains/sessionActions/sessionActionDraftTypes';

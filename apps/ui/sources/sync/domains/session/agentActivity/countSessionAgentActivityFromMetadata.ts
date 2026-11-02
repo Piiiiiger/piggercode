@@ -1,4 +1,4 @@
-import { readSessionAgentActivityHeadlineFromMetadata } from '@happier-dev/protocol';
+import { readSessionAgentActivityHeadlineFromMetadata } from '@piggercode/protocol';
 
 // The older workflow key's reader still lives beside its presentation, which is where its cross-repo
 // parity test pins the literal. Importing it is better than spelling that key a second time here,

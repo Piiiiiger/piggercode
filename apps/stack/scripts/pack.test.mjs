@@ -10,10 +10,10 @@ import { analyzeTarList, findMonorepoRoot, resolvePackDirForComponent } from './
 test('analyzeTarList detects bundled workspace deps in tar listing', () => {
   const { hasAgents, hasCliCommon, hasProtocol } = analyzeTarList([
     'package/dist/index.mjs',
-    'package/node_modules/@happier-dev/agents/package.json',
-    'package/node_modules/@happier-dev/agents/dist/index.js',
-    'package/node_modules/@happier-dev/cli-common/package.json',
-    'package/node_modules/@happier-dev/protocol/package.json',
+    'package/node_modules/@piggercode/agents/package.json',
+    'package/node_modules/@piggercode/agents/dist/index.js',
+    'package/node_modules/@piggercode/cli-common/package.json',
+    'package/node_modules/@piggercode/protocol/package.json',
   ]);
   assert.equal(hasAgents, true);
   assert.equal(hasCliCommon, true);
@@ -89,17 +89,17 @@ test('createPackSandbox includes root workspace scripts required by workspace pa
       join(root, 'apps', 'cli', 'package.json'),
       JSON.stringify({
         dependencies: {
-          '@happier-dev/connection-supervisor': '0.0.0',
-          '@happier-dev/transfers': '0.0.0',
+          '@piggercode/connection-supervisor': '0.0.0',
+          '@piggercode/transfers': '0.0.0',
         },
-        bundledDependencies: ['@happier-dev/release-runtime'],
+        bundledDependencies: ['@piggercode/release-runtime'],
       }),
     );
     await writeFile(join(root, 'apps', 'stack', 'scripts', 'utils', 'workspaces', 'workspaceBundleLock.mjs'), 'export const lock = true;\n');
     await writeFile(join(root, 'scripts', 'workspaces', 'execYarnCommand.mjs'), 'export const sentinel = true;\n');
-    await writeFile(join(root, 'packages', 'connection-supervisor', 'package.json'), JSON.stringify({ name: '@happier-dev/connection-supervisor' }));
-    await writeFile(join(root, 'packages', 'release-runtime', 'package.json'), JSON.stringify({ name: '@happier-dev/release-runtime' }));
-    await writeFile(join(root, 'packages', 'transfers', 'package.json'), JSON.stringify({ name: '@happier-dev/transfers' }));
+    await writeFile(join(root, 'packages', 'connection-supervisor', 'package.json'), JSON.stringify({ name: '@piggercode/connection-supervisor' }));
+    await writeFile(join(root, 'packages', 'release-runtime', 'package.json'), JSON.stringify({ name: '@piggercode/release-runtime' }));
+    await writeFile(join(root, 'packages', 'transfers', 'package.json'), JSON.stringify({ name: '@piggercode/transfers' }));
 
     assert.equal(typeof packModule.createPackSandbox, 'function');
     sandbox = await packModule.createPackSandbox({ monorepoRoot: root, packageRelDir: 'apps/cli' });

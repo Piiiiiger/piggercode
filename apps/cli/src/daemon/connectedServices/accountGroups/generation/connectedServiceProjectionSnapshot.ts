@@ -2,7 +2,7 @@ import {
   AccountProfileSchema,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceProjectedAuthGroup = Readonly<{
   serviceId: ConnectedServiceId;

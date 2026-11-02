@@ -1,5 +1,5 @@
 import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import { Platform } from 'react-native';
 
 import { getPersistenceStorage } from './persistence';

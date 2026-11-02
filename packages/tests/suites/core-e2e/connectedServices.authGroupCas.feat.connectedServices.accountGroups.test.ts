@@ -5,7 +5,7 @@ import {
   buildConnectedServiceCredentialRecord,
   sealAccountScopedBlobCiphertext,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createTestAuth } from '../../src/testkit/auth';
 import { fetchJson } from '../../src/testkit/http';

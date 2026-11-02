@@ -1,5 +1,5 @@
-import { summarizeToolInputForNotification } from '@happier-dev/protocol';
-import { buildReadyNotificationContent, redactBugReportSensitiveText } from '@happier-dev/protocol';
+import { summarizeToolInputForNotification } from '@piggercode/protocol';
+import { buildReadyNotificationContent, redactBugReportSensitiveText } from '@piggercode/protocol';
 
 import { readSafeOauthProviderErrorCode } from '../../cloud/safeOauthProviderError';
 import { resolveConnectedServiceProviderDisplayName } from '../../daemon/connectedServices/descriptors/connectedAccountDescriptors';

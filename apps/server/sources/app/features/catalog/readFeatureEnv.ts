@@ -5,7 +5,7 @@ import {
   PET_PACKAGE_LIMITS_V1,
   PetsEncryptedCustomPetSyncPolicySchema,
   type PetsEncryptedCustomPetSyncPolicy,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { FEATURE_ENV_KEYS } from './featureEnvSchema';
 import { resolveEffectiveWebappBaseUrl } from '../../serverUrls/effectiveServerUrls';
 

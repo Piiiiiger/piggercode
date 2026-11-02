@@ -1,4 +1,4 @@
-import { BUG_REPORT_DEFAULT_ACCEPTED_ARTIFACT_KINDS, normalizeBugReportProviderUrl } from "@happier-dev/protocol";
+import { BUG_REPORT_DEFAULT_ACCEPTED_ARTIFACT_KINDS, normalizeBugReportProviderUrl } from "@piggercode/protocol";
 import type { FeaturesPayloadDelta } from "./types";
 import { readBugReportsFeatureEnv } from "./catalog/readFeatureEnv";
 

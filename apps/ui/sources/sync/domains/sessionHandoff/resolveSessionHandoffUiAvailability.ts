@@ -1,4 +1,4 @@
-import type { SessionHandoffTransportStrategy } from '@happier-dev/protocol';
+import type { SessionHandoffTransportStrategy } from '@piggercode/protocol';
 
 import { resolveMachineTransferAvailability } from '@/sync/domains/transfers/runtime/resolveTransferAvailability';
 import { readCachedMachineRpcDirectRoute } from '@/sync/domains/transfers/runtime/transferRouteCache';

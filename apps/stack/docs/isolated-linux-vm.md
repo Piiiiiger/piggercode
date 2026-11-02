@@ -149,7 +149,7 @@ curl -fsSL https://raw.githubusercontent.com/happier-dev/happier/main/apps/stack
 If your goal is to **work on changes** (not just review a PR), you can run the dev profile:
 
 ```bash
-npx --yes -p @happier-dev/stack@latest hstack setup-from-source --profile=dev --bind=loopback
+npx --yes -p @piggercode/stack@latest hstack setup-from-source --profile=dev --bind=loopback
 ```
 
 Notes:
@@ -161,7 +161,7 @@ Notes:
 Inside the VM:
 
 ```bash
-npx --yes -p @happier-dev/stack@latest hstack review-pr \
+npx --yes -p @piggercode/stack@latest hstack review-pr \
   --repo=https://github.com/happier-dev/happier/pull/<PR_NUMBER> \
   --vm-ports \
   --no-mobile \
@@ -173,7 +173,7 @@ npx --yes -p @happier-dev/stack@latest hstack review-pr \
 Notes:
 - `--no-mobile` keeps the validation focused (Expo mobile dev-client adds more host requirements).
 - You can also add `--keep-sandbox` if you want to inspect the sandbox contents after a failure.
-- For full reproducibility, pin the version: `npx --yes -p @happier-dev/stack@0.3.0 hstack review-pr ...`
+- For full reproducibility, pin the version: `npx --yes -p @piggercode/stack@0.3.0 hstack review-pr ...`
 - `--vm-ports` forces the stack/server and Expo dev-server (web) ports into the forwarded VM ranges
   (pairs with the `portForwards` config in this doc).
 

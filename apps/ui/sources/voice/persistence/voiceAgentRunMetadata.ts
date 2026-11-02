@@ -3,7 +3,7 @@ import {
     buildBackendTargetKey,
     type BackendTargetRefV1,
     type ExecutionRunResumeHandle,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { storage } from '@/sync/domains/state/storage';
 import { sync } from '@/sync/sync';

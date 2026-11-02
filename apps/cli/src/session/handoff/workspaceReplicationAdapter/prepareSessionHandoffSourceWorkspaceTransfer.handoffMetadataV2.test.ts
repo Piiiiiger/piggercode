@@ -6,7 +6,7 @@ import { promisify } from 'node:util';
 
 import { describe, expect, it } from 'vitest';
 
-import type { SessionHandoffWorkspaceTransfer } from '@happier-dev/protocol';
+import type { SessionHandoffWorkspaceTransfer } from '@piggercode/protocol';
 
 import { prepareSessionHandoffSourceWorkspaceTransfer } from './sessionHandoffWorkspaceReplicationAdapter';
 

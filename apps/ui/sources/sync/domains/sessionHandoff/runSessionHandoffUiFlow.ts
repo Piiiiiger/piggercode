@@ -1,4 +1,4 @@
-import type { ActionExecutorContext, SessionHandoffWorkspaceTransfer } from '@happier-dev/protocol';
+import type { ActionExecutorContext, SessionHandoffWorkspaceTransfer } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 import { t } from '@/text';

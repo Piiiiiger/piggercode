@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { accountSettingsParse, INSTALLABLE_KEYS, type InstallableKey } from '@happier-dev/protocol';
+import { accountSettingsParse, INSTALLABLE_KEYS, type InstallableKey } from '@piggercode/protocol';
 
 import { ensureRuntimeInstallablesForLaunch } from './ensureRuntimeInstallablesForLaunch';
 import type { RuntimeInstallableAdapter } from './runtimeInstallablesRegistry';

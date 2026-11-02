@@ -10,7 +10,7 @@ import {
     renderScreen,
 } from '@/dev/testkit';
 import { installWorkflowRendererCommonModuleMocks } from '@/components/tools/renderers/workflow/workflowRendererTestHelpers';
-import { buildAgentActivityEntryId, type SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId, type SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 import type { SessionWorkflowRunPanelProps } from './SessionWorkflowRunPanel';
 

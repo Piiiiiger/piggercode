@@ -1,5 +1,5 @@
 import type { UnistylesThemes } from 'react-native-unistyles';
-import type { ConnectedServiceQuotaMeterV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaMeterV1 } from '@piggercode/protocol';
 
 import type { MeterTone } from '@/components/ui/lists/MeterBar';
 import type { StatusPillVariant } from '@/components/ui/status/StatusPill';

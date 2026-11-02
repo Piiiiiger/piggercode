@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { buildUpdatedOauthRecord } from './oauthCredentialRecords';
 

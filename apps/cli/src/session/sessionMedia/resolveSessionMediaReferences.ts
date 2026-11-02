@@ -1,7 +1,7 @@
 import { lstat, open, realpath, stat } from 'node:fs/promises';
 import { relative } from 'node:path';
 
-import type { SessionMediaReferenceV1 } from '@happier-dev/protocol';
+import type { SessionMediaReferenceV1 } from '@piggercode/protocol';
 
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemPathAuthorization';

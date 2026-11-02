@@ -8,7 +8,7 @@ import {
     type SessionAgentActivityHeadlineV1,
     type SessionRuntimeIssueV1,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { clearSessionTranscriptDerivedCachesForSession } from '@/sync/runtime/sessionTranscriptDerivedCaches';
 import type { Session } from '@/sync/domains/state/storageTypes';

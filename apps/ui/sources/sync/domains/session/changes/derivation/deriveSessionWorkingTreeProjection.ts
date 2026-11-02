@@ -2,7 +2,7 @@ import {
     reconcileWithScmSnapshot,
     type SessionChangeSet,
     type ScmWorkingSnapshot as ProtocolScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 import { mergeScmCapabilities } from '@/scm/core/snapshotMappers';
 

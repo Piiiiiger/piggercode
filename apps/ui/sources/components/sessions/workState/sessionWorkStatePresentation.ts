@@ -1,4 +1,4 @@
-import { SessionWorkStateStatusReasonV1Schema } from '@happier-dev/protocol';
+import { SessionWorkStateStatusReasonV1Schema } from '@piggercode/protocol';
 
 import type {
     SessionWorkStateGoalCapabilities,

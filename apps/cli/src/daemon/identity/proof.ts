@@ -7,7 +7,7 @@ import {
   type MachineInstallationProofV1,
   type MachineReplacementReason,
   type MachineReplacementRegistrationIntent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';
 

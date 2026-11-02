@@ -5,7 +5,7 @@ import {
   decryptSecretValueWithKeysV1,
   hasConfiguredSecretStringValue,
   type WebhookNotificationChannelV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ActivityNotificationEvent } from './activityNotificationEvent';
 import { buildActivityNotificationContent } from './buildActivityNotificationContent';

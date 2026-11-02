@@ -11,7 +11,7 @@ import {
   DoctorSnapshotSchema,
   sanitizeDoctorSnapshotUrls,
   type DoctorSnapshot as ProtocolDoctorSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type DoctorSnapshot = ProtocolDoctorSnapshot;
 

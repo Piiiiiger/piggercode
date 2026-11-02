@@ -3,7 +3,7 @@ import {
   parsePermissionIntentAlias,
   resolvePermissionIntentFromSessionMetadata,
   type PermissionIntent,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export type SessionMessagePermissionIntentResolution =
   | Readonly<{ ok: true; permissionIntent: PermissionIntent }>

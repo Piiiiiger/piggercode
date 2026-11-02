@@ -136,7 +136,7 @@ function prepareRuntimeGenerationManifest(manifest, outputDir) {
   const bundled = new Set(
     (Array.isArray(manifest?.bundledDependencies) ? manifest.bundledDependencies : [])
       .map((name) => String(name))
-      .filter((name) => name.startsWith('@happier-dev/')),
+      .filter((name) => name.startsWith('@piggercode/')),
   );
   if (bundled.size === 0) return prepared;
 

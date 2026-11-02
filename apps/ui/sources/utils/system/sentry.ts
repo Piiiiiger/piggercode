@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 import * as Application from 'expo-application';
 import type { ComponentType } from 'react';
-import { parseOptionalBooleanEnv, type FeatureId } from '@happier-dev/protocol';
+import { parseOptionalBooleanEnv, type FeatureId } from '@piggercode/protocol';
 import { config } from '@/config';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 import { readStorageScopeFromEnv, scopedStorageId } from '@/utils/system/storageScope';

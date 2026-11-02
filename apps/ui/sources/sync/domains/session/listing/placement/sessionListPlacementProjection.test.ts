@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import type { SessionAttentionStandingPolicy } from '../../organization/attentionStanding';
 import type { SessionListRenderableSession } from '../sessionListRenderable';

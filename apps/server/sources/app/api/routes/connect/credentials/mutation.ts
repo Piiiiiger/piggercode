@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import type { ConnectedServiceCredentialHealthV1 } from "@happier-dev/protocol";
+import type { ConnectedServiceCredentialHealthV1 } from "@piggercode/protocol";
 
 import { inTx, type Tx } from "@/storage/inTx";
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from "@/app/encryption/accountEncryptionMode";

@@ -1,7 +1,7 @@
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
-import type { SessionForkPoint } from '@happier-dev/protocol';
-import { evaluateAgentSessionCapabilitySupport, inferAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import type { SessionForkPoint } from '@piggercode/protocol';
+import { evaluateAgentSessionCapabilitySupport, inferAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 export type SessionForkSupportSource =
   | Pick<Session, 'metadata'>

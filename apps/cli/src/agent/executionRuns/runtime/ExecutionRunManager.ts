@@ -6,14 +6,14 @@ import {
   buildExecutionRunCompletionInputV1,
   projectExecutionRunRequestedConfiguration,
   type ExecutionRunUserTranscriptDirective,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ExecutionBudgetRegistry } from '@/daemon/executionBudget/ExecutionBudgetRegistry';
 import {
   type AcpConfigOptionOverridesV1,
   type BackendTargetRefV1,
   ExecutionRunPublicStateSchema,
   type ExecutionRunPublicState,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ExecutionRunStructuredMeta } from '@/agent/executionRuns/profiles/ExecutionRunIntentProfile';
 import { VoiceAgentError, VoiceAgentManager } from '@/agent/voice/agent/VoiceAgentManager';

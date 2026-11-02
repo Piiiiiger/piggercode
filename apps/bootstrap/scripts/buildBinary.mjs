@@ -2,7 +2,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { componentArtifacts } from '@happier-dev/cli-common';
+import { componentArtifacts } from '@piggercode/cli-common';
 import { resolveBuildBinaryTarget } from './buildBinaryTarget.mjs';
 
 const repoRoot = fileURLToPath(new URL('../../../', import.meta.url));

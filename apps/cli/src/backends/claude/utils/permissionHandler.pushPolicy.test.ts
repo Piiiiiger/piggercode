@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import type { Session } from '../session';
 import { PermissionHandler } from './permissionHandler';

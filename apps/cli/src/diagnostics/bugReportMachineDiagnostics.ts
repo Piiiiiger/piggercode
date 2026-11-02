@@ -5,7 +5,7 @@ import { dirname, join, sep } from 'node:path';
 import { readDaemonState } from '@/persistence';
 import { listDaemonLogFiles } from '@/ui/logger';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
-import { redactBugReportSensitiveText } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText } from '@piggercode/protocol';
 import { buildDoctorSnapshot, type DoctorSnapshot } from '@/ui/doctorSnapshot';
 
 export type BugReportMachineDiagnosticsSnapshot = {

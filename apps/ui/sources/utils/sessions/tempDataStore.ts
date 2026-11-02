@@ -6,8 +6,8 @@ import type {
     BackendTargetRefV1,
     SessionMcpSelectionV1,
     SessionSpawnSourceContextV1,
-} from '@happier-dev/protocol';
-import type { CodexBackendMode } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
 import type { PermissionMode, ModelMode } from '@/sync/domains/permissions/permissionTypes';
 import type { NewSessionAutomationDraft } from '@/sync/domains/automations/automationDraft';
 

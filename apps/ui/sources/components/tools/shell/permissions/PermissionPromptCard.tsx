@@ -20,8 +20,8 @@ import {
     resolveToolViewDetailLevelDefaultForChromeMode,
     type ToolViewDetailLevelSetting,
 } from '@/components/tools/normalization/policy/resolveToolViewDetailDefaultsForChromeMode';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 import { Icon } from '@/components/ui/icons/Icon';
 
 const PROMPT_CARD_HORIZONTAL_PADDING = 12;

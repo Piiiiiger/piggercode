@@ -16,7 +16,7 @@ import {
     getExpoErrorCode,
     PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS,
     PUSH_NOTIFICATION_CATEGORY_IDS,
-} from '@happier-dev/protocol'
+} from '@piggercode/protocol'
 
 export interface PushToken {
     id: string

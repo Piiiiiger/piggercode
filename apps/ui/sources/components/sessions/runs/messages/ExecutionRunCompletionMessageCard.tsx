@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
-import type { ExecutionRunCompletionV1 } from '@happier-dev/protocol';
+import type { ExecutionRunCompletionV1 } from '@piggercode/protocol';
 import { Text } from '@/components/ui/text/Text';
 import { t } from '@/text';
 

@@ -3,7 +3,7 @@ import {
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceExecutionAuthorityV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceAuthGroupGenerationTarget = Readonly<{
   serviceId: ConnectedServiceId;

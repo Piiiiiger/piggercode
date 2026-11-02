@@ -13,7 +13,7 @@ import {
   PromptAssetWriteDocRequest,
   PromptAssetWriteBundleRequest,
   type PromptAssetCapabilitiesV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PromptAssetAdapter } from '@/promptAssets/types';
 import { toPromptAssetMutationError, toPromptAssetReadError } from '@/promptAssets/shared/promptAssetResponses';

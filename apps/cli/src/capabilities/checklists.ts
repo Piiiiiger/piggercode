@@ -2,7 +2,7 @@ import type { AgentCatalogEntry } from '@/backends/catalog';
 import { AGENTS } from '@/backends/catalog';
 import { CATALOG_AGENT_IDS } from '@/backends/types';
 import type { CatalogAgentId } from '@/backends/types';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 
 import { CHECKLIST_IDS, resumeChecklistId, type ChecklistId } from './checklistIds';
 import type { CapabilityDetectRequest } from './types';

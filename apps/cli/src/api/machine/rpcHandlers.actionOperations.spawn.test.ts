@@ -2,7 +2,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ACTION_OPERATION_RPC_METHODS_V1, RPC_METHODS, SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { ACTION_OPERATION_RPC_METHODS_V1, RPC_METHODS, SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 import { RpcHandlerManager } from '@/api/rpc/RpcHandlerManager';
 import type { SpawnSessionOptions, SpawnSessionResult } from '@/rpc/handlers/registerSessionHandlers';
 import { registerMachineRpcHandlers } from './rpcHandlers';

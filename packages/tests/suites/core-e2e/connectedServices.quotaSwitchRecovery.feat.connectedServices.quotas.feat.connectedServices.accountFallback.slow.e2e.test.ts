@@ -12,7 +12,7 @@ import {
   sealAccountScopedBlobCiphertext,
   type ConnectedServiceId,
   type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createTestAuth } from '../../src/testkit/auth';
 import { fetchJson } from '../../src/testkit/http';

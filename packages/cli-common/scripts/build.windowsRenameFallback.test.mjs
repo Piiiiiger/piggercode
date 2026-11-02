@@ -52,7 +52,7 @@ describe('cli-common build Windows rename fallback', () => {
     writeFileSync(join(distDir, 'index.js'), 'export const oldValue = true;\n', 'utf8');
     writeFileSync(join(distDir, 'index.d.ts'), 'export declare const oldValue: boolean;\n', 'utf8');
     writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/cli-common-fixture',
+      name: '@piggercode/cli-common-fixture',
       exports: {
         '.': {
           default: './dist/index.js',
@@ -119,7 +119,7 @@ describe('cli-common build Windows rename fallback', () => {
     writeFileSync(join(fixtureDir, 'dist', 'index.js'), 'export const oldValue = true;\n', 'utf8');
     writeFileSync(join(fixtureDir, 'dist', 'index.d.ts'), 'export declare const oldValue: boolean;\n', 'utf8');
     writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/cli-common-fixture',
+      name: '@piggercode/cli-common-fixture',
       exports: {
         '.': {
           default: './dist/index.js',
@@ -166,7 +166,7 @@ describe('cli-common build Windows rename fallback', () => {
     const successor = JSON.stringify({ pid: process.pid, token: 'successor' });
 
     writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/cli-common-fixture',
+      name: '@piggercode/cli-common-fixture',
       exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
     }), 'utf8');
     writeFileSync(join(fixtureDir, 'tsconfig.json'), '{}\n', 'utf8');
@@ -198,7 +198,7 @@ describe('cli-common build Windows rename fallback', () => {
     writeFileSync(join(distDir, 'index.js'), 'export const stable = true;\n', 'utf8');
     writeFileSync(join(distDir, 'index.d.ts'), 'export declare const stable: boolean;\n', 'utf8');
     writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/cli-common-fixture',
+      name: '@piggercode/cli-common-fixture',
       exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
     }), 'utf8');
     writeFileSync(join(fixtureDir, 'tsconfig.json'), '{}\n', 'utf8');
@@ -234,7 +234,7 @@ describe('cli-common build Windows rename fallback', () => {
     utimesSync(staleDir, old, old);
     utimesSync(staleTsconfig, old, old);
     writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-      name: '@happier-dev/cli-common-fixture',
+      name: '@piggercode/cli-common-fixture',
       exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
     }), 'utf8');
     writeFileSync(join(fixtureDir, 'tsconfig.json'), '{}\n', 'utf8');

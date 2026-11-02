@@ -5,7 +5,7 @@ import {
   type ConnectedServiceQuotaRecoveryCreditsV1,
   type SessionUsageLimitRecoveryAuthSelectionV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   UsageLimitCheckNowRateLimiter,
   USAGE_LIMIT_CHECK_NOW_RATE_LIMITED_CODE,

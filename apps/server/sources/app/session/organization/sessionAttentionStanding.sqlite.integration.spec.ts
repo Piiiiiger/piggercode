@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import {
     SESSION_ORGANIZATION_MAX_ATTENTION_STANDINGS,
     SessionOrganizationSnapshotResponseSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { registerSessionOrganizationRoutes } from "@/app/api/routes/session/registerSessionOrganizationRoutes";

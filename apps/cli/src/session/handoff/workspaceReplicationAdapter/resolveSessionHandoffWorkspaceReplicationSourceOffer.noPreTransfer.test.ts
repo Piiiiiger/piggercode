@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { MachineTransferChannel } from '@/machines/transfer/serverRoutedTransport';
 import type { WorkspaceReplicationTransfers } from '@/workspaces/replication/transport/workspaceReplicationTransfers';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { resolveSessionHandoffWorkspaceReplicationSourceOffer } from './sessionHandoffWorkspaceReplicationAdapter';
 

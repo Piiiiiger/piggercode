@@ -1,4 +1,4 @@
-import { AGY_ACP_SERVER_DEP_ID } from '@happier-dev/protocol/installables';
+import { AGY_ACP_SERVER_DEP_ID } from '@piggercode/protocol/installables';
 
 import type { Capability } from '../service';
 import { CapabilityError } from '../errors';

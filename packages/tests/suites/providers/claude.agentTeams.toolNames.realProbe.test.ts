@@ -5,7 +5,7 @@
  * - Captures any emitted tool_use names so we can keep Happier normalization in sync.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 yarn -s workspace @happier-dev/tests test:providers claude.agentTeams.toolNames.realProbe.test.ts
+ *   HAPPIER_TEST_REAL_CLAUDE=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.toolNames.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';

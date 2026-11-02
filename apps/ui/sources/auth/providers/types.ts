@@ -1,5 +1,5 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
-import type { AuthProviderId } from '@happier-dev/protocol';
+import type { AuthProviderId } from '@piggercode/protocol';
 
 export type RestoreRedirectReason = 'provider_already_linked';
 

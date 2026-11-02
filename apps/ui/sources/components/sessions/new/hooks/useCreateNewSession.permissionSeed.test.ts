@@ -10,7 +10,7 @@ import { normalizeSessionAuthoringConnectedServices } from '@/sync/domains/sessi
 import {
     buildBackendTargetKey,
     type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { AIBackendProfileSchema } from '@/sync/domains/profiles/profileCompatibility';
 import { renderScreen } from '@/dev/testkit';
 import { createTextModuleMock } from '@/dev/testkit/mocks/text';

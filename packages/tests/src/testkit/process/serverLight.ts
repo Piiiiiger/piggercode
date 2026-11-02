@@ -9,7 +9,7 @@ import {
   renderPrismaCompatibleSqliteDatabaseUrl,
   resolvePrismaSqliteDatabaseUrlOptionsFromEnv,
   resolveServerLightSqliteDatabaseUrlOptionsFromEnv,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 import { repoRootDir } from '../paths';
 import { runLoggedCommand, spawnLoggedProcess, type SpawnedProcess } from './spawnProcess';

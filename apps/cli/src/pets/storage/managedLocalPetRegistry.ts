@@ -1,7 +1,7 @@
 import { lstat, readFile, readdir, realpath, rm } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 
-import type { PetPackageSourceV1 } from '@happier-dev/protocol';
+import type { PetPackageSourceV1 } from '@piggercode/protocol';
 import { z } from 'zod';
 
 import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';

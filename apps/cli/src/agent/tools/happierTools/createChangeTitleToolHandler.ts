@@ -1,4 +1,4 @@
-import type { ActionId, ApprovalRequestOriginV1 } from '@happier-dev/protocol';
+import type { ActionId, ApprovalRequestOriginV1 } from '@piggercode/protocol';
 
 type ActionExecutorResult = Readonly<
   | { ok: true; result: unknown }

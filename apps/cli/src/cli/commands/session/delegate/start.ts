@@ -9,7 +9,7 @@ import { resolveSessionEncryptionContextFromCredentials, resolveSessionStoredCon
 import { readCommandPositionals, readFlagValue } from '@/cli/commands/shared/argvFlags';
 import { resolveSessionIdOrPrefix } from '@/session/query/resolveSessionId';
 import { normalizeBackendTargetKeysFromCsv } from '../shared/normalizeBackendTargetKeys';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 export async function cmdSessionDelegateStart(
   argv: string[],

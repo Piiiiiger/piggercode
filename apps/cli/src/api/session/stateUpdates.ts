@@ -1,5 +1,5 @@
 import { logger } from '@/ui/logger'
-import { normalizeSessionMetadataForRead, projectSessionMetadataForWire } from '@happier-dev/protocol';
+import { normalizeSessionMetadataForRead, projectSessionMetadataForWire } from '@piggercode/protocol';
 import { backoff } from '@/utils/time';
 import { emitSocketWithAck } from '@/session/transport/shared/socketAck';
 import type { AgentState, Metadata } from '../types';

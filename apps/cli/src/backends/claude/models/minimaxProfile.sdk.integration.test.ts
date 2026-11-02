@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { mkdtemp, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { query, type SDKUserMessage } from '@anthropic-ai/claude-agent-sdk';
-import { getBuiltInBackendProfile } from '@happier-dev/protocol';
+import { getBuiltInBackendProfile } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 import { buildProfileEnvOverlay } from '@/settings/profiles/buildProfileEnvOverlay';
 import { buildClaudeSubprocessEnv } from '@/backends/claude/spawn/buildClaudeSubprocessEnv';

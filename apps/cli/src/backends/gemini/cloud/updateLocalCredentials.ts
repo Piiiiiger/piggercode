@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 import { resolveGeminiConfigPaths } from '../utils/resolveGeminiConfigPaths';
-import { warn } from '@happier-dev/cli-common/output';
+import { warn } from '@piggercode/cli-common/output';
 
 type GeminiOAuthTokens = Readonly<{
   access_token: string;

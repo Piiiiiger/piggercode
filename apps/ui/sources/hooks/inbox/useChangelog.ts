@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 import {
     getLastViewedVersion,

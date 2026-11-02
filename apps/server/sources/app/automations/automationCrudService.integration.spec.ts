@@ -1,4 +1,4 @@
-import { buildBackendTargetKey } from "@happier-dev/protocol";
+import { buildBackendTargetKey } from "@piggercode/protocol";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { db } from "@/storage/db";

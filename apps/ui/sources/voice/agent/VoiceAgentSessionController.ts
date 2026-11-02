@@ -3,7 +3,7 @@ import { DaemonVoiceAgentClient } from '@/voice/agent/daemonVoiceAgentClient';
 import { OpenAiCompatVoiceAgentClient } from '@/voice/agent/openaiCompatVoiceAgentClient';
 import { initializeVoiceAgentHandle } from '@/voice/agent/initializeVoiceAgentHandle';
 import type { VoiceAgentHandle, VoiceAgentSendTurnOptions } from '@/voice/agent/types';
-import type { VoiceAssistantAction } from '@happier-dev/protocol';
+import type { VoiceAssistantAction } from '@piggercode/protocol';
 import { VOICE_AGENT_GLOBAL_SESSION_ID } from '@/voice/agent/voiceAgentGlobalSessionId';
 import { resolveVoiceTurnStreamReadConfig } from '@/voice/agent/resolveVoiceTurnStreamReadConfig';
 import {

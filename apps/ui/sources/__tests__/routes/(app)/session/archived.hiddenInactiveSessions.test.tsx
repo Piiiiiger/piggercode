@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
-import { ActionsSettingsV1Schema } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema } from '@piggercode/protocol';
 import { createStorageStoreMock } from '@/dev/testkit/mocks/storage';
 import { createTextModuleMock } from '@/dev/testkit/mocks/text';
 

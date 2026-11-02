@@ -31,7 +31,7 @@ let readiness: {
 } = { authenticated: false, machineRegistered: false, credentialState: 'missing' };
 let interactive = true;
 let relayInstallResultUrl: string | null = null;
-let tailscaleStatus: import('@happier-dev/cli-common/tailscale').TailscaleStatusSnapshot | null = null;
+let tailscaleStatus: import('@piggercode/cli-common/tailscale').TailscaleStatusSnapshot | null = null;
 let installedAgentIds = new Set<string>();
 const installInvocations: string[] = [];
 const installFailures = new Set<string>();

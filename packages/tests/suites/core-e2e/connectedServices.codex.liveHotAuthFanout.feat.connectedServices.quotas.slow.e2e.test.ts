@@ -7,7 +7,7 @@ import {
   ConnectedServiceQuotaSnapshotV1Schema,
   type ConnectedServiceId,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   readFakeCodexAppServerRequestLog,

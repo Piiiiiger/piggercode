@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { McpServersSettingsV1, SessionMcpSelectionV1 } from '@happier-dev/protocol';
+import type { McpServersSettingsV1, SessionMcpSelectionV1 } from '@piggercode/protocol';
 import type {
     SelectionListOption,
     SelectionListProps,

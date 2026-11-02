@@ -5,7 +5,7 @@ import {
   PromptAssetListTypesResponseV1,
   RPC_METHODS,
   type PromptAssetMutationResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PromptAssetAdapter } from '@/promptAssets/types';
 import type { RpcHandlerManager } from '../rpc/RpcHandlerManager';

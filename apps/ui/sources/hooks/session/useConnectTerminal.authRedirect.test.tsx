@@ -7,7 +7,7 @@ import {
     deriveAccountMachineKeyFromRecoverySecret,
     openTerminalProvisioningV2Payload,
     openTerminalProvisioningV3Payload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { renderScreen } from '@/dev/testkit';
 import { installSessionHooksCommonModuleMocks } from './sessionHooksTestHelpers';
 

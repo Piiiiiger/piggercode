@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getActionSpec, resolveEffectiveActionInputFields } from '@happier-dev/protocol';
+import { getActionSpec, resolveEffectiveActionInputFields } from '@piggercode/protocol';
 import { changeTextTestInstance, findTestInstanceByTypeContainingText, pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 import {
     installSessionActionsCommonModuleMocks,

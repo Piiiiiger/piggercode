@@ -3,7 +3,7 @@ import {
   ConnectedServiceCredentialRevisionV1Schema,
   ProviderAccountUsageRecordIdSchema,
   readConnectedServiceLimitCategoryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   ConnectedServiceRuntimeAuthFailureKindSchema,

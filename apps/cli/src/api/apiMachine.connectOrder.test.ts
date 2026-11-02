@@ -4,8 +4,8 @@ import {
   bindApiSessionSocketSequenceMock,
   createApiSessionSocketStub,
 } from '@/testkit/backends/apiSessionSocketHarness';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { ApiMachineClient } from './apiMachine';
 import type { RpcHandlerManager } from './rpc/RpcHandlerManager';
 
@@ -84,7 +84,7 @@ vi.mock('socket.io-client', () => ({
   io: ioMock,
 }));
 
-vi.mock('@happier-dev/connection-supervisor', () => ({
+vi.mock('@piggercode/connection-supervisor', () => ({
   DEFAULT_MANAGED_CONNECTION_POLICY: {},
   createManagedConnectionSupervisor: connectionHarness.createManagedConnectionSupervisor,
 }));

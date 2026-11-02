@@ -3,7 +3,7 @@ import type {
 } from '../types';
 import type {
   SessionUsageLimitRecoveryResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type RuntimeAuthFailureReportOutboxAction = Readonly<{
   kind: 'open_url';

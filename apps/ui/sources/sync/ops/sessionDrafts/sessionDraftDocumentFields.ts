@@ -1,4 +1,4 @@
-import type { SessionDraftDocumentV1, StrictJsonValue, SyncedSessionAuthoringValueV1 } from '@happier-dev/protocol';
+import type { SessionDraftDocumentV1, StrictJsonValue, SyncedSessionAuthoringValueV1 } from '@piggercode/protocol';
 
 export type DraftFieldPathV1 =
     | Readonly<{ kind: 'composer'; field: 'text' | 'mentions' | 'attachments' }>

@@ -32,12 +32,12 @@ import {
   isLocalishServerUrl,
   isLoopbackHttpServerUrl,
 } from '@/server/serverUrlClassification';
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 import {
   resolveServerSelectionBackgroundServiceOutcomeForCurrentRelay,
   runServerSelectionBackgroundServiceFollowUp,
 } from '../backgroundServiceFollowUp.js';
-import { ACCENT_HEX, cmd, definitionList, fail, neutral, ok, sectionTitle } from '@happier-dev/cli-common/output';
+import { ACCENT_HEX, cmd, definitionList, fail, neutral, ok, sectionTitle } from '@piggercode/cli-common/output';
 
 export async function runServerSubcommand(subcommand: string, args: string[]): Promise<boolean> {
   switch (subcommand) {

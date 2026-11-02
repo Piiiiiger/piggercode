@@ -1,5 +1,5 @@
 import { readActionsSettingsFromEnv } from '@/settings/actionsSettings';
-import type { ActionExecutorDeps } from '@happier-dev/protocol';
+import type { ActionExecutorDeps } from '@piggercode/protocol';
 import { createCliActionExecutorHarness } from './createCliActionExecutorHarness';
 
 function resolveCallerPermissionMode(params: Parameters<typeof createCliActionExecutorHarness>[0]): string | null {

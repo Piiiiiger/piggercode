@@ -1,5 +1,5 @@
-import type { ActionId } from '@happier-dev/protocol';
-import { getActionSpec, listActionSpecs } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
+import { getActionSpec, listActionSpecs } from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { sync } from '@/sync/sync';

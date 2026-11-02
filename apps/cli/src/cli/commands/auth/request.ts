@@ -7,7 +7,7 @@ import { encodeBase64, encodeBase64Url } from '@/api/encryption';
 import { writeJsonStdout } from '@/cli/output/jsonEnvelope';
 import { configuration } from '@/configuration';
 import { applyServerSelectionFromArgs } from '@/server/serverSelection';
-import { buildConfigureServerLinks, buildTerminalConnectLinks } from '@happier-dev/cli-common/links';
+import { buildConfigureServerLinks, buildTerminalConnectLinks } from '@piggercode/cli-common/links';
 import {
   createTerminalPairingAuthentication,
   applyTerminalAuthRequestExpiry,

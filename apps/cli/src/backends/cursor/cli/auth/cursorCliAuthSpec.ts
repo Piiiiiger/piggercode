@@ -1,4 +1,4 @@
-import { getProviderCliBinaryNames } from '@happier-dev/agents';
+import { getProviderCliBinaryNames } from '@piggercode/agents';
 
 import type { CliAuthSpec, CliAuthStatusDraft } from '@/backends/types';
 import { resolveCommonApiKeyStatus, runCliCommandBestEffort } from '@/capabilities/cliAuth/shared';

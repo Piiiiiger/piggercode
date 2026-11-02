@@ -1,6 +1,6 @@
 import { mkdir, rm } from 'node:fs/promises';
 
-import { extractFirstPartyReleaseArchiveToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
+import { extractFirstPartyReleaseArchiveToDirectory } from '@piggercode/release-runtime/archiveExtraction';
 
 export async function extractReleaseArchiveIntoCache({ archiveName, archivePath, cacheDir }) {
   await rm(cacheDir, { recursive: true, force: true });

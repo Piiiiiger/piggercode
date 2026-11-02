@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-import { getReleaseRingCatalogEntry } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingCatalogEntry } from '@piggercode/release-runtime/releaseRings';
 
 import { configuration } from '@/configuration';
 import {

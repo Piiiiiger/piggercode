@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createSetupCliChoicePromptData, SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskEvent } from '@happier-dev/protocol';
+import { createSetupCliChoicePromptData, SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskEvent } from '@piggercode/protocol';
 
 import type { SystemTaskRunState } from '@/components/systemTasks/types';
 
@@ -352,11 +352,11 @@ describe('deriveSetupStageModel (INV3 — milestone-quantised)', () => {
         const code = 'cli_own_below_setup_floor';
         const named = deriveSetupStageModel(null, facts({
             startFailure: { code, message: 'Your Happier CLI at /usr/local/bin/happier is version 0.2.5' },
-            ownCliUpdateCommand: 'npm install -g @happier-dev/cli@latest',
+            ownCliUpdateCommand: 'npm install -g @piggercode/cli@latest',
         }));
         expect(named.statusSentence).toEqual({
             key: 'setupSurface.blockedCliOwnOutdatedStatus',
-            params: { command: 'npm install -g @happier-dev/cli@latest' },
+            params: { command: 'npm install -g @piggercode/cli@latest' },
         });
 
         // Where it came from is unknown: it says so without inventing a command.
@@ -380,8 +380,8 @@ describe('deriveSetupStageModel (INV3 — milestone-quantised)', () => {
                     command: '/usr/local/bin/happier',
                     version: null,
                     origin: 'npm',
-                    removalCommand: 'npm uninstall -g @happier-dev/cli',
-                    updateCommand: 'npm install -g @happier-dev/cli@latest',
+                    removalCommand: 'npm uninstall -g @piggercode/cli',
+                    updateCommand: 'npm install -g @piggercode/cli@latest',
                     belowSetupFloor: true,
                     missing: false,
                     keepBlockedBy: null,
@@ -392,7 +392,7 @@ describe('deriveSetupStageModel (INV3 — milestone-quantised)', () => {
 
         expect(deriveSetupStageModel(run, facts()).statusSentence).toEqual({
             key: 'setupSurface.blockedCliOwnOutdatedStatus',
-            params: { command: 'npm install -g @happier-dev/cli@latest' },
+            params: { command: 'npm install -g @piggercode/cli@latest' },
         });
     });
 

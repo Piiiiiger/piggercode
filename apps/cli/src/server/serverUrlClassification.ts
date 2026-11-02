@@ -3,7 +3,7 @@ import net from 'node:net';
 import {
   isLoopbackHostname as isProtocolLoopbackHostname,
   normalizeHostnameForLoopbackCheck,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function stripBrackets(hostname: string): string {
   const host = String(hostname ?? '').trim();
@@ -61,7 +61,7 @@ export function isLocalishHostname(hostname: string): boolean {
  * Reachability, not identity: this answers "can another device reach this
  * URL?", and its correctness criterion is being accurate about networking. For
  * "are these two URLs the same server?" use `createServerUrlComparableKey` from
- * `@happier-dev/protocol`, which is deliberately stricter.
+ * `@piggercode/protocol`, which is deliberately stricter.
  *
  * Broader than protocol's `isLoopbackHostname`: a bind address of `0.0.0.0` is
  * not a loopback address, but a *URL* carrying it is just as useless to another
@@ -71,7 +71,7 @@ export function isLoopbackServerHost(serverUrl: string): boolean {
   try {
     const rawHost = String(new URL(serverUrl).hostname ?? '');
 
-    // Loopback itself belongs to `@happier-dev/protocol`: it owns the bracket
+    // Loopback itself belongs to `@piggercode/protocol`: it owns the bracket
     // and trailing-dot parsing that private copies of this check kept getting
     // wrong. `new URL('http://[::1]:3005').hostname` is `"[::1]"`, so comparing
     // raw strings classified an IPv6 loopback relay as remote.

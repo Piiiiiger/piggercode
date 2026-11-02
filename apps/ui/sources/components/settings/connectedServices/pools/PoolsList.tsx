@@ -18,7 +18,7 @@ import { projectConnectedServiceQuotaSnapshotForLimitSelection } from '@/sync/do
 import type {
     ConnectedServiceAuthGroupQuotaLimitSelectionV1,
     ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { t } from '@/text';
 
 import { ConnectedServiceCapacityAvatar, CONNECTED_SERVICE_GAUGE_BOX } from '../ConnectedServiceCapacityAvatar';

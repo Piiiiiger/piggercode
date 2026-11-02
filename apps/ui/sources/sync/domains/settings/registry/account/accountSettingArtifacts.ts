@@ -1,4 +1,4 @@
-import { buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 
 import { ACCOUNT_ACTIONS_SETTING_DEFINITIONS } from './accountActionsSettingDefinitions';
 import { ACCOUNT_BACKEND_SETTING_DEFINITIONS } from './accountBackendSettingDefinitions';

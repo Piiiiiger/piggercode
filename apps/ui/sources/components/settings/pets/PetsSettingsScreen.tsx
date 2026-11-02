@@ -14,7 +14,7 @@ import {
     type DaemonPetImportLocalPackageRequestV1,
     type DiscoveredPetPackageV1,
     type ImportedLocalPetPackageV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Item } from '@/components/ui/lists/Item';

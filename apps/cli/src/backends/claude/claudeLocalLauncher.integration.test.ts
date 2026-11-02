@@ -6,7 +6,7 @@ import { Session } from './session';
 import { EventEmitter } from 'node:events';
 import type { EnhancedMode } from './loop';
 import { completedNativeChildTranscript } from './workflows/claudeWorkflowActivitySource.testkit';
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 vi.mock('@/agent/runtime/createHappierMcpBridge', () => ({
   createHappierMcpBridge: vi.fn(async () => ({

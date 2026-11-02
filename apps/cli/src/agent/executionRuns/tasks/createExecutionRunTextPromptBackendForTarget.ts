@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { AgentBackend, SessionId } from '@/agent/core/AgentBackend';
 import { createExecutionRunBackend } from '@/agent/executionRuns/runtime/createExecutionRunBackend';

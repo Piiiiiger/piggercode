@@ -1,9 +1,9 @@
 import type { AgentId } from '@/agent/core';
-import { AGENTS_CORE, supportsExistingSessionHandoffState } from '@happier-dev/agents';
+import { AGENTS_CORE, supportsExistingSessionHandoffState } from '@piggercode/agents';
 import {
   type ConnectedServiceId,
   type DirectSessionsProviderId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { BUILT_IN_CATALOG_DEFINED_ACP_AGENTS } from '@/agent/acp/catalog';
 import { agent as auggie } from '@/backends/auggie';
 import { agent as agy } from '@/backends/agy';

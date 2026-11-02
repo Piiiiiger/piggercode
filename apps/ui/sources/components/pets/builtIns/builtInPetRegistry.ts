@@ -2,7 +2,7 @@ import {
     PET_ATLAS_V1,
     type BuiltInPetIdV1,
     type PetPackageManifestV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ImageProps } from 'expo-image';
 
 export type BuiltInPetId = BuiltInPetIdV1;

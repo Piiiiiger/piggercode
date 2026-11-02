@@ -1,4 +1,4 @@
-import type { SessionContinuationResumePromptModeV1 } from '@happier-dev/protocol';
+import type { SessionContinuationResumePromptModeV1 } from '@piggercode/protocol';
 import type { ConnectedServiceRuntimeAuthFailureKind } from '../runtimeAuth/types';
 
 export const USAGE_LIMIT_CONTINUATION_RESUME_PROMPT =

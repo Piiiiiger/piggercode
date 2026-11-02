@@ -20,8 +20,8 @@ vi.mock('../../sync', () => ({
 }));
 
 import { sessionAbort } from '../../ops';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { storage } from '@/sync/domains/state/storage';
 

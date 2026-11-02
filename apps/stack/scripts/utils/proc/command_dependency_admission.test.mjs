@@ -11,7 +11,7 @@ async function writeMonorepo(root) {
   for (const component of ['ui', 'cli', 'server']) {
     const dir = join(root, 'apps', component);
     await mkdir(dir, { recursive: true });
-    await writeFile(join(dir, 'package.json'), `{ "name": "@happier-dev/${component}" }\n`, 'utf-8');
+    await writeFile(join(dir, 'package.json'), `{ "name": "@piggercode/${component}" }\n`, 'utf-8');
   }
 }
 

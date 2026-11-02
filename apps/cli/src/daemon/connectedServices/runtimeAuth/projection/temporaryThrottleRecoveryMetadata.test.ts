@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY as key } from '@happier-dev/protocol';
+import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY as key } from '@piggercode/protocol';
 import { projectTemporaryThrottleRecoveryMetadata } from './temporaryThrottleRecoveryMetadata';
 
 const intent = {

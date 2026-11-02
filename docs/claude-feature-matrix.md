@@ -41,7 +41,7 @@ reach lifecycle handling but cannot replace the active Claude resume identity,
 transcript path, or owned-session lineage during local/remote handoff.
 
 Development-source transcript ingestion and UI normalization share
-`providers.claude.isClaudeInternalEventType` from `@happier-dev/agents` for
+`providers.claude.isClaudeInternalEventType` from `@piggercode/agents` for
 non-conversation records, including Claude SDK `command_lifecycle` status events.
 Raw runtime observers receive these records before transcript filtering; filtering
 does not establish message acceptance or foreground activity. UI normalization also

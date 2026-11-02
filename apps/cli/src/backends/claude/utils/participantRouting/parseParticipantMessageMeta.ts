@@ -1,4 +1,4 @@
-import { parseParticipantMessageV1, type ParticipantMessageV1, type ParticipantRecipientV1 } from '@happier-dev/protocol';
+import { parseParticipantMessageV1, type ParticipantMessageV1, type ParticipantRecipientV1 } from '@piggercode/protocol';
 import { readClaudeHappierEnvelope } from '@/backends/claude/utils/structuredMessages/readClaudeHappierEnvelope';
 
 export type ClaudeParticipantRoutingMeta = Readonly<{

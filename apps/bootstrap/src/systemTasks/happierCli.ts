@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 
-import { systemTasks } from '@happier-dev/cli-common';
-import { compareVersions, normalizeSemverBase } from '@happier-dev/cli-common/update';
-import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { systemTasks } from '@piggercode/cli-common';
+import { compareVersions, normalizeSemverBase } from '@piggercode/cli-common/update';
+import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import {
   describeHappierCliOrigin,
   FirstPartyPayloadMutationLockError,
@@ -15,8 +15,8 @@ import {
   type FirstPartyAcquisitionOptions,
   type HappierCliChoice,
   type ManagedCliUpdateRestart,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import type { CliAcquisitionPhase, SetupCliChoicePromptPayload } from '@happier-dev/protocol';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import type { CliAcquisitionPhase, SetupCliChoicePromptPayload } from '@piggercode/protocol';
 
 import {
   acquireManagedLocalFirstPartyComponentCommand,

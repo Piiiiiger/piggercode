@@ -1,5 +1,5 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
-import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@piggercode/protocol';
 
 export function resolveConnectTargetServiceIds(targetId: string): ConnectedServiceId[] {
   const normalized = String(targetId ?? '').trim().toLowerCase();

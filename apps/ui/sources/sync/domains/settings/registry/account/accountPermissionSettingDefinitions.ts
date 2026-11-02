@@ -1,4 +1,4 @@
-import { buildBackendTargetKey, buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { buildBackendTargetKey, buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 
 import { AGENT_IDS, type AgentId } from '@/agents/registry/registryCore';

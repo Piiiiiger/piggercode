@@ -1,13 +1,13 @@
 import chalk from 'chalk';
 
 import type { Credentials } from '@/persistence';
-import { ExecutionRunTurnStreamCancelRequestSchema } from '@happier-dev/protocol';
+import { ExecutionRunTurnStreamCancelRequestSchema } from '@piggercode/protocol';
 
 import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { readCommandPositionals } from '@/cli/commands/shared/argvFlags';
 import { cancelExecutionRunStream } from '@/session/services/executionRuns';
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 export async function cmdSessionRunStreamCancel(
   argv: string[],

@@ -3,7 +3,7 @@ import {
     isTerminalAgentActivityStatus,
     type SessionAgentActivityHeadlineV1,
     type SessionWorkflowActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentActivityCountable } from './deriveAgentActivityCounts';
 import {

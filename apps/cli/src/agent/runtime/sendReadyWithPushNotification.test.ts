@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { accountSettingsParse } from '@happier-dev/protocol'
+import { accountSettingsParse } from '@piggercode/protocol'
 
 import { sendReadyWithPushNotification } from '@/agent/runtime/sendReadyWithPushNotification'
 import { setActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot'

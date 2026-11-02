@@ -1,4 +1,4 @@
-import { AccountKeyProvisioningUnavailableError, assertAccountKeyProvisioningAllowed } from '@happier-dev/protocol';
+import { AccountKeyProvisioningUnavailableError, assertAccountKeyProvisioningAllowed } from '@piggercode/protocol';
 import { isTokenOnlyAuthCredentials, type AuthCredentials } from '@/auth/storage/tokenStorage';
 import { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import { getUserProfile } from '@/sync/api/social/apiFriends';

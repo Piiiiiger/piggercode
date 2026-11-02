@@ -17,7 +17,7 @@ import {
   CHANGE_TITLE_TOOL_NAME_ALIASES,
   isChangeTitleToolNameAlias,
   redactBugReportSensitiveText,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
   TransportHandler,
   ToolPattern,

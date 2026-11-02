@@ -1,5 +1,5 @@
-import type { MachineOwnerConflictMetadata } from '@happier-dev/protocol';
-import { readMachineOwnerConflictSocketPayload } from '@happier-dev/protocol';
+import type { MachineOwnerConflictMetadata } from '@piggercode/protocol';
+import { readMachineOwnerConflictSocketPayload } from '@piggercode/protocol';
 
 export type MachineOwnerConflictDetails = MachineOwnerConflictMetadata;
 

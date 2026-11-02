@@ -4,7 +4,7 @@ import { once } from 'node:events';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { encryptSecretStringV1 } from '@happier-dev/protocol';
+import { encryptSecretStringV1 } from '@piggercode/protocol';
 
 function createEncryptedApiKeySecret(key: Uint8Array) {
   return {

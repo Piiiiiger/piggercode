@@ -1,5 +1,5 @@
-import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { buildLocalMachineSetupSystemTaskSpec, type LocalMachineSetupTarget } from '@/components/systemTasks/buildLocalMachineSetupSystemTaskSpec';
 import { buildLocalDaemonServiceSystemTaskSpec } from '@/components/settings/machines/localControl/buildLocalDaemonServiceSystemTaskSpec';

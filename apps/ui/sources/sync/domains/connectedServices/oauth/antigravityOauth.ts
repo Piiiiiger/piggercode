@@ -4,7 +4,7 @@ import {
   AGY_OAUTH_CALLBACK_URL,
   AGY_OAUTH_CLIENT_ID,
   AGY_OAUTH_SCOPES,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export const ANTIGRAVITY_OAUTH = Object.freeze({
   clientId: AGY_OAUTH_CLIENT_ID,

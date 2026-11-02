@@ -96,7 +96,7 @@ test('remote daemon command reuses the Stack dev owner and adopts a last-green d
   });
   assert.match(
     command,
-    /corepack yarn workspace @happier-dev\/stack stack dev .*repo-local-dev.* --no-server --no-ui --no-browser --no-dev-targets --watch/,
+    /corepack yarn workspace @piggercode\/stack stack dev .*repo-local-dev.* --no-server --no-ui --no-browser --no-dev-targets --watch/,
   );
   assert.doesNotMatch(command, /--restart/);
   assert.match(command, /stack-state\/repo-local-dev\/env/);
@@ -130,7 +130,7 @@ test('remote daemon command reuses the Stack dev owner and adopts a last-green d
   assert.match(decodedPowerShell, /HAPPIER_CLI_PKGROLL_TIMEOUT_MS=1800000/);
   assert.match(
     decodedPowerShell,
-    /corepack yarn workspace @happier-dev\/stack stack dev 'repo-local-dev' --no-server --no-ui --no-browser --no-dev-targets --watch/,
+    /corepack yarn workspace @piggercode\/stack stack dev 'repo-local-dev' --no-server --no-ui --no-browser --no-dev-targets --watch/,
   );
   assert.doesNotMatch(decodedPowerShell, /stack stop/);
   assert.doesNotMatch(decodedPowerShell, /--restart/);

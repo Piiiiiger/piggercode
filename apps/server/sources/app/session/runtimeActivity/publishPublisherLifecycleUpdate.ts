@@ -2,7 +2,7 @@ import type {
     PrimaryTurnStatusV1,
     SessionRuntimeActivityProjection,
     SessionRuntimeIssueV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { refreshSessionParticipantBadgePushes } from "@/app/activity/refreshAccountActivityBadgePushes";
 import {

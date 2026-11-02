@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AGENT_IDS } from '@/agents/catalog/catalog';
-import { getProviderCliInstallGuideUrl } from '@happier-dev/agents';
+import { getProviderCliInstallGuideUrl } from '@piggercode/agents';
 
 import { getProviderLocalAuthPlugin } from './providerLocalAuthRegistry';
 

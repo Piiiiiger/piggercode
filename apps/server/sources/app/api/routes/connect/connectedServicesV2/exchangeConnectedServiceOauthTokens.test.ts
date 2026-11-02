@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_SCOPES } from "@happier-dev/agents";
+import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_SCOPES } from "@piggercode/agents";
 import tweetnacl from "tweetnacl";
 
-import { decodeBase64, encodeBase64, openBoxBundle, BOX_BUNDLE_PUBLIC_KEY_BYTES } from "@happier-dev/protocol";
+import { decodeBase64, encodeBase64, openBoxBundle, BOX_BUNDLE_PUBLIC_KEY_BYTES } from "@piggercode/protocol";
 
 import {
     ConnectedServiceOauthExchangeError,

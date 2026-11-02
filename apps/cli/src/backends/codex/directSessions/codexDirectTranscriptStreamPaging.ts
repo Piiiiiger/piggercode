@@ -1,6 +1,6 @@
 import { stat } from 'node:fs/promises';
 
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 import type { DirectSessionTranscriptReadAfter } from '@/backends/directSessions/providerOps';
 
 import { readJsonlFileBackwardPage } from '@/api/directSessions/filePaging/jsonlBackwardPager';

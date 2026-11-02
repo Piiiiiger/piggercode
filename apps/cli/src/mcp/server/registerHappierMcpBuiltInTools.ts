@@ -1,6 +1,6 @@
 import { listBuiltInHappierTools, type BuiltInHappierToolsSurface } from '@/agent/tools/happierTools/listBuiltInHappierTools';
 import { dispatchBuiltInHappierTool } from '@/agent/tools/happierTools/dispatchBuiltInHappierTool';
-import type { ActionsSettingsV1, ApprovalRequestOriginV1 } from '@happier-dev/protocol';
+import type { ActionsSettingsV1, ApprovalRequestOriginV1 } from '@piggercode/protocol';
 import { getEquivalentActionIdForBuiltInTool } from '@/agent/tools/happierTools/actionToolCatalog';
 import { projectContextualActionToolInputSchema } from '@/agent/tools/happierTools/contextualActionToolInput';
 import { logger } from '@/ui/logger';

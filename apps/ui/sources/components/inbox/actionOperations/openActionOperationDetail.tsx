@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { router } from 'expo-router';
-import type { ActionOperationGetV1Response } from '@happier-dev/protocol';
+import type { ActionOperationGetV1Response } from '@piggercode/protocol';
 
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 import { navigateToSessionRoute } from '@/hooks/session/navigateToSessionRoute';

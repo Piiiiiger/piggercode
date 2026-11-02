@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { applyValidatedGitPatch } from './applyValidatedGitPatch';

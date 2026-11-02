@@ -1,4 +1,4 @@
-import { verifyAccountContentPublicKeyBinding } from "@happier-dev/protocol";
+import { verifyAccountContentPublicKeyBinding } from "@piggercode/protocol";
 import { z } from "zod";
 import * as privacyKit from "privacy-kit";
 import { db } from "@/storage/db";
@@ -7,7 +7,7 @@ import { resolveAuthPolicyFromEnv } from "@/app/auth/authPolicy";
 import { enforceLoginEligibility } from "@/app/auth/enforceLoginEligibility";
 import { type Fastify } from "../../types";
 import { readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv";
-import { resolveEffectiveDefaultAccountEncryptionMode } from "@happier-dev/protocol";
+import { resolveEffectiveDefaultAccountEncryptionMode } from "@piggercode/protocol";
 
 export function registerKeyChallengeAuthRoute(app: Fastify): void {
     app.post('/v1/auth', {

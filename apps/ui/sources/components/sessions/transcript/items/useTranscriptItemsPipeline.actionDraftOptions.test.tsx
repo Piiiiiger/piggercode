@@ -21,7 +21,7 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
 
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 
 import { renderHook } from '@/dev/testkit';
 import { AGENT_IDS } from '@/agents/registry/registryCore';

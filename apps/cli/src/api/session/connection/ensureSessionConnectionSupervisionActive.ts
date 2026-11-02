@@ -1,4 +1,4 @@
-import type { ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 
 /**
  * Queue admission and ACK waiters may activate an idle supervisor, but they do

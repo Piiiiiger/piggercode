@@ -3,12 +3,12 @@ import type {
     ScmCommitBackoutResponse,
     ScmCommitCreateRequest,
     ScmCommitCreateResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     SCM_COMMIT_MESSAGE_MAX_LENGTH,
     SCM_OPERATION_ERROR_CODES,
     resolveScmScopedChangedPaths,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ScmBackendContext } from '../../../types';
 import { normalizeCommitRef, normalizePathspec, runScmCommand } from '../../../runtime';
 

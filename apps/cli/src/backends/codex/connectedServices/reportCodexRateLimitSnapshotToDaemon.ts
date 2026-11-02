@@ -1,4 +1,4 @@
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import {
   findConnectedServiceBindingSelectionFromSessionMetadata,

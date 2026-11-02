@@ -16,7 +16,7 @@ export {
     isMachineReplaced,
     normalizeMachineIdentityString,
     type CanonicalMachineResolution,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type MachineTargetResolution = Readonly<{
     machineId: string;

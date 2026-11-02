@@ -1,4 +1,4 @@
-import { DEFAULT_AGENT_ID } from '@happier-dev/agents';
+import { DEFAULT_AGENT_ID } from '@piggercode/agents';
 import { z } from 'zod';
 import { SecretStringSchema } from '../../encryption/secretSettings';
 import { DEFAULT_ELEVENLABS_VOICE_ID } from '@/realtime/elevenlabs/defaults';

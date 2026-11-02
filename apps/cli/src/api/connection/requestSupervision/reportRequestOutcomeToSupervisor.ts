@@ -1,4 +1,4 @@
-import type { ManagedConnectionSupervisor, ReadinessProbeResult } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionSupervisor, ReadinessProbeResult } from '@piggercode/connection-supervisor';
 
 import { isAuthenticationStatus, readAuthenticationStatus, readHttpStatus } from '@/api/client/httpStatusError';
 import { isNetworkError, readNormalizedErrorCode } from '@/api/offline/serverConnectionErrors';

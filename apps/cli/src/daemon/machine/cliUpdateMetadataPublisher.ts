@@ -1,6 +1,6 @@
-import type { CliUpdateFacts } from '@happier-dev/protocol';
-import { watchLastCliUpdateResult } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { CliUpdateFacts } from '@piggercode/protocol';
+import { watchLastCliUpdateResult } from '@piggercode/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { MachineMetadata } from '@/api/types';
 

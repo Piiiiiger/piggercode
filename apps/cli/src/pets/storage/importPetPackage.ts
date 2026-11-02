@@ -9,8 +9,8 @@ import type {
   PetAssetMediaTypeV1,
   PetPackageManifestV1,
   PetPackageSourceV1,
-} from '@happier-dev/protocol';
-import { PET_PACKAGE_LIMITS_V1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { PET_PACKAGE_LIMITS_V1 } from '@piggercode/protocol';
 
 import { createPetSourceKey } from '../discovery/createPetSourceKey';
 import { splitSafePetSpritesheetRelativePath } from '../validation/validatePetManifest';

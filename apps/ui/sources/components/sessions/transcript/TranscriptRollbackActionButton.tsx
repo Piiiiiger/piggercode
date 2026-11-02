@@ -11,7 +11,7 @@ import { flushSessionDraft, writeExistingSessionDraft } from '@/sync/ops/session
 import { fireAndForget } from '@/utils/system/fireAndForget';
 import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { t } from '@/text';
-import type { SessionRollbackTarget } from '@happier-dev/protocol';
+import type { SessionRollbackTarget } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
 
 export const TranscriptRollbackActionButton = React.memo((props: {

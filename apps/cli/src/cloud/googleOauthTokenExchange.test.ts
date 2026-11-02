@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AGY_OAUTH_SCOPES, GEMINI_CLI_OAUTH_SCOPES } from '@happier-dev/agents';
+import { AGY_OAUTH_SCOPES, GEMINI_CLI_OAUTH_SCOPES } from '@piggercode/agents';
 import { exchangeGoogleOauthAuthorizationCodeForTokens } from './googleOauthTokenExchange';
 
 afterEach(() => vi.unstubAllGlobals());

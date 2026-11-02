@@ -1,4 +1,4 @@
-import { VOICE_ACTIONS_BLOCK } from '@happier-dev/protocol';
+import { VOICE_ACTIONS_BLOCK } from '@piggercode/protocol';
 
 type DeltaEvent = Readonly<{ t: 'delta'; textDelta: string }>;
 

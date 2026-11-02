@@ -5,7 +5,7 @@ import { StringDecoder } from 'node:string_decoder';
 import {
   resolveWindowsCommandInvocation,
   type CommandInvocation,
-} from '@happier-dev/cli-common/process';
+} from '@piggercode/cli-common/process';
 
 import { resolveCliRuntimeAssetPath } from '@/runtime/assets/resolveCliRuntimeAssetPath';
 import { resolveJavaScriptRuntimeExecutable } from '@/runtime/js/resolveJavaScriptRuntimeExecutable';

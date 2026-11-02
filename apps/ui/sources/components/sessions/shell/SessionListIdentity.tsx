@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useUnistyles } from 'react-native-unistyles';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 import { getAgentPickerIconScale } from '@/agents/catalog/catalog';
 import { AgentIcon } from '@/agents/registry/AgentIcon';

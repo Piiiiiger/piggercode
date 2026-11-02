@@ -5,9 +5,9 @@ import { join } from 'node:path';
 import {
   deriveBoxPublicKeyFromSeed,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import {
   bindApiSessionSocketMock,
   bindApiSessionSocketSequenceMock,

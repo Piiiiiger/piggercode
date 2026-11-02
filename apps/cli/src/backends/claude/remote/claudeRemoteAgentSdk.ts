@@ -8,7 +8,7 @@ import {
 import {
     redactBugReportSensitiveText,
     trimBugReportTextToMaxBytes,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { parseSpecialCommand } from '@/cli/parsers/specialCommands';
@@ -115,7 +115,7 @@ import type { ClaudeSubscriptionAuthTokensRefreshSelection } from '../connectedS
 import {
     createClaudeSubscriptionAccessTokenRefreshCallback,
 } from '../connectedServices/claudeSubscriptionAccessTokenRefresh';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import type { ClaudeEffectiveModelObservation } from '../sessionModels/effectiveModelUpdate';
 
 type AgentSdkQueryFactory = (params: {

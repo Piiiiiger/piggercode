@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 
 /**
  * The page's side of the relay's machine RPC route, observed at the network boundary: every

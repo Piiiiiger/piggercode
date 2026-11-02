@@ -1,7 +1,7 @@
 import { chmod, copyFile, mkdir, readdir, rename, stat } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 
-import { extractArchivePayloadToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
+import { extractArchivePayloadToDirectory } from '@piggercode/release-runtime/archiveExtraction';
 
 function stripArchiveExtension(archiveName: string): string {
   const normalized = archiveName.trim();

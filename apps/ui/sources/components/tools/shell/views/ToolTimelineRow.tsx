@@ -36,7 +36,7 @@ import {
     SidechainHydrationInlineStatus,
     shouldShowSidechainHydrationInlineStatus,
 } from './SidechainHydrationInlineStatus';
-import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 import { buildToolCallMessageRouteId } from '@/sync/domains/messages/messageRouteIds';
 import { PermissionFooter } from '../permissions/PermissionFooter';
 import { ApprovalPromptCard } from '../approvals/ApprovalPromptCard';
@@ -44,7 +44,7 @@ import { resolveInactiveSessionToolCallFailure } from '../permissions/resolveIna
 import { navigateWithBlurOnWeb } from '@/utils/platform/navigateWithBlurOnWeb';
 import { buildApprovalToolCallLocation, doesApprovalMatchToolCall } from './toolApprovalPromptMatching';
 import type { TranscriptInteraction } from '@/utils/sessions/deriveTranscriptInteraction';
-import { isAskUserQuestionToolName } from '@happier-dev/protocol';
+import { isAskUserQuestionToolName } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
 import {
     TranscriptRowSeqProvider,

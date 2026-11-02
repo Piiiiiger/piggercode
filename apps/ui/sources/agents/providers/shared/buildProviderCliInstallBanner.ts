@@ -1,5 +1,5 @@
-import type { AgentId } from '@happier-dev/agents';
-import { getProviderCliInstallGuideUrl, getProviderCliRuntimeSpec } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
+import { getProviderCliInstallGuideUrl, getProviderCliRuntimeSpec } from '@piggercode/agents';
 
 export function buildProviderCliInstallBanner(
     providerId: AgentId,

@@ -2,7 +2,7 @@ import {
     SESSION_RUNTIME_ACTIVITY_SNAPSHOT_EVENT,
     SessionRuntimeActivitySnapshotAckSchema,
     SessionRuntimeActivitySnapshotRequestSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { emitSocketWithAck } from '@/session/transport/shared/socketAck';
 import { createAuthenticationHttpStatusError, isAuthenticationError } from '@/api/client/httpStatusError';

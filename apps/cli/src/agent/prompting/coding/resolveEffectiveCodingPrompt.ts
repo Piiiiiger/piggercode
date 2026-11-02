@@ -5,7 +5,7 @@ import {
   renderPromptPlanV1,
   type PromptBlockV1,
   type PromptPlanV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { resolveCliMemoryRecallGuidanceEnabled } from '@/agent/promptLibrary/resolveCliMemoryRecallGuidanceEnabled';

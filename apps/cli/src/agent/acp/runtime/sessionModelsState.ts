@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import { updateMetadataBestEffort } from '@/api/session/sessionWritesBestEffort';
 import { normalizeAcpConfigOptionChoices } from '@/agent/acp/configOptionChoiceNormalization';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
-import { readNewestSessionModelsMetadataStateV1 } from '@happier-dev/agents';
+import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 
 type NormalizedConfigOptionValue = string | number | boolean | null;
 

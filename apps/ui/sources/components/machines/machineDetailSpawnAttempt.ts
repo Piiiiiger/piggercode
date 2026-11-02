@@ -1,4 +1,4 @@
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { SpawnSessionOptions } from '@/sync/domains/session/spawn/spawnSessionPayload';
 import { createUiSessionSpawnUserAttemptId } from '@/sync/domains/session/spawn/spawnSessionNonce';

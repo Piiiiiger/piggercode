@@ -1,10 +1,10 @@
 import { basename, join, win32 as win32Path } from 'node:path';
 
-import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { isServerIdFilesystemSafe } from '@/server/serverId';
 
 import { buildLaunchAgentPlistXml, buildLaunchdPath } from './darwin';
-import { buildServicePath, planServiceAction, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { buildServicePath, planServiceAction, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 
 export type DaemonServicePlatform = 'darwin' | 'linux' | 'win32';
 export type DaemonServiceMode = 'user' | 'system';

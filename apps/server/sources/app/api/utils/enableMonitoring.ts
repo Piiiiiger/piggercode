@@ -8,7 +8,7 @@ import {
     sendDatabaseReadinessResponse,
     sendLivenessResponse,
 } from "@/app/monitoring/readiness";
-import { redactPublicShareCapabilityUrl } from "@happier-dev/protocol";
+import { redactPublicShareCapabilityUrl } from "@piggercode/protocol";
 
 export function enableMonitoring(app: Fastify) {
     // Add metrics hooks

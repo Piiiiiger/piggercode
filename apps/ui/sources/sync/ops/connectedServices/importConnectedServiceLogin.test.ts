@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 
 import { importConnectedServiceLogin } from './importConnectedServiceLogin';
 

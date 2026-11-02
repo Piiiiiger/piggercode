@@ -1,6 +1,6 @@
 import type { ApiMessage } from '@/sync/api/types/apiTypes';
 import type { DecryptedMessage, Session } from '@/sync/domains/state/storageTypes';
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import type { SessionMessageRole } from '@piggercode/protocol';
 import { readStoredSessionMessage } from '@/sync/runtime/readStoredSessionContent';
 import { markStreamingMessagesAppliedForSessionUiTelemetry } from '@/sync/runtime/performance/sessionUiTelemetry';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';

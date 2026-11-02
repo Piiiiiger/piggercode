@@ -1,7 +1,7 @@
 import {
   ActionOperationProgressV1Schema,
   type ActionOperationProgressV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /** Keeps progress validation at the operation owner before a snapshot revision is accepted. */
 export function parseActionOperationProgress(

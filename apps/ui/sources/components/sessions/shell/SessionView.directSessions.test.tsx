@@ -1,5 +1,5 @@
 import { buildServerFeaturesResponse } from '@/hooks/server/serverFeaturesTestUtils';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { AgentInputChipPickerOption } from '@/components/sessions/agentInput/components/AgentInputChipPickerTypes';
 import type { SessionArmedAgentContinuation } from '@/sync/domains/input/draftValues/sessionDraftValueTypes';
 import { flushHookEffects } from '@/dev/testkit/hooks/flushHookEffects';
@@ -17,7 +17,7 @@ import {
   type ActionOperationSnapshotV1,
   type ProviderAccountUsageSnapshotV1,
   type SessionRunnerRuntimeStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { connectedServiceQuotaRecoveryCreditConsume } from '@/sync/ops/connectedServiceQuotaRecoveryCredits';
 import type { RestartStaleSessionRunnerResult } from '@/sync/ops/sessionRunnerRestart';
 import type { SessionUsageLimitRecoveryOperationResult } from '@/sync/ops/sessionUsageLimitRecovery';

@@ -1,8 +1,8 @@
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { CliAuthStatusData } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { getSessionLocalControlState, isSessionExclusiveLocalControl } from '@/sync/domains/session/control/sessionLocalControl';
-import { AGENTS_CORE, resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
-import { ConnectedServiceBindingsV1Schema } from '@happier-dev/protocol';
+import { AGENTS_CORE, resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+import { ConnectedServiceBindingsV1Schema } from '@piggercode/protocol';
 
 type SessionControlAuthState = CliAuthStatusData['state'] | null | undefined;
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 import { installErrorUtilityCommonModuleMocks } from './errorUtilityTestHelpers';
 
 installErrorUtilityCommonModuleMocks();

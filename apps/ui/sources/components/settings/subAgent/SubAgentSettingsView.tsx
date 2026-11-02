@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
-import { buildBackendTargetKey, type BackendTargetRefV1, isBuiltInAgentTarget } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type BackendTargetRefV1, isBuiltInAgentTarget } from '@piggercode/protocol';
 
 import { getAgentCore, isAgentId, type AgentId } from '@/agents/catalog/catalog';
 import { listProviderSubagentSettingsSections } from '@/agents/providers/registry/providerSubagentSettingsRegistry';

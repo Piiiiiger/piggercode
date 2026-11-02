@@ -4,7 +4,7 @@ import {
     encodeV2SessionListCursorV1,
     encodeV2SessionListCursorV2,
     SESSION_FOLDER_ASSIGNMENT_QUERY_MAX_SESSION_IDS,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import type { FakeRouteApp } from "../../testkit/routeHarness";
 import {
     createSessionRouteTestBuilder,

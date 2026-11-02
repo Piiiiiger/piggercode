@@ -6,7 +6,7 @@ import { unlink, writeFile } from 'node:fs/promises';
 import type {
     ScmHostingProvider,
     ScmPullRequestSummary,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
     ScmHostingProviderAdapter,

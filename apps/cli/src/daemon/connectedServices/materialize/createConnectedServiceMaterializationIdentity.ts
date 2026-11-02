@@ -4,7 +4,7 @@ import {
   buildConnectedServiceMaterializationIdentityV1,
   ConnectedServiceMaterializationIdentityV1Schema,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function readConnectedServiceMaterializationIdentityV1(
   value: unknown,

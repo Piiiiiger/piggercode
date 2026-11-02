@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import {
   UserResponseSchema,
   type AccountScopedCryptoMaterial,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createAccountProfileFixture, createAccountTokenFixture } from '../backends/accountFixtures';
 
 /** A current E2EE Account at the HTTP boundary, including its real signed content-key binding. */

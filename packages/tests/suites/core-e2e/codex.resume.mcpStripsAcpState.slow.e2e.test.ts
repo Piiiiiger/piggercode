@@ -127,7 +127,7 @@ describe('core e2e: Codex MCP attach strips stale ACP session state metadata', (
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'codex',
         '--existing-session',

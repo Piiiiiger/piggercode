@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import type { AgentId } from '@happier-dev/agents';
-import type { BackendTargetRefV1, ConnectedServiceBindingsV1, ConnectedServiceBindingSelectionV1, ConnectedServiceId } from '@happier-dev/protocol';
-import { ConnectedServiceBindingsV1Schema } from '@happier-dev/protocol';
+import type { AgentId } from '@piggercode/agents';
+import type { BackendTargetRefV1, ConnectedServiceBindingsV1, ConnectedServiceBindingSelectionV1, ConnectedServiceId } from '@piggercode/protocol';
+import { ConnectedServiceBindingsV1Schema } from '@piggercode/protocol';
 
 import {
   materializeDaemonConnectedServicesForExecutionRun,

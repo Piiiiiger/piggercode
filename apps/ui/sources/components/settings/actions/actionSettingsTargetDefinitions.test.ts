@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getActionSpec } from '@happier-dev/protocol';
+import { getActionSpec } from '@piggercode/protocol';
 import { en } from '@/text/translations/en';
 
 import { listActionSettingsTargetDefinitions } from './actionSettingsTargetDefinitions';

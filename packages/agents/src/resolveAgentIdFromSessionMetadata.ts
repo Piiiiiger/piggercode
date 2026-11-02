@@ -1,4 +1,4 @@
-import { readAgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
+import { readAgentRuntimeDescriptorV1 } from '@piggercode/protocol';
 import type { AgentId } from './types.js';
 import { AGENT_IDS } from './types.js';
 import { AGENTS_CORE, DEFAULT_AGENT_ID } from './manifest.js';

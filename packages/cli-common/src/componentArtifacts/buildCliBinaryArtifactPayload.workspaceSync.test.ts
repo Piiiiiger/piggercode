@@ -134,7 +134,7 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
             'apps',
             'cli',
             'node_modules',
-            '@happier-dev',
+            '@piggercode',
             'cli-common',
             'dist',
             'firstPartyRuntime',
@@ -145,11 +145,11 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
         await writeRepoFile(join(repoRoot, 'yarn.lock'), '');
 
         await writeRepoFile(join(repoRoot, 'apps', 'cli', 'package.json'), `${JSON.stringify({
-            name: '@happier-dev/cli',
+            name: '@piggercode/cli',
             version: '0.0.0',
-            bundledDependencies: ['@happier-dev/cli-common'],
+            bundledDependencies: ['@piggercode/cli-common'],
             dependencies: {
-                '@happier-dev/cli-common': '0.0.0',
+                '@piggercode/cli-common': '0.0.0',
                 '@huggingface/transformers': '0.0.0',
                 sharp: '0.0.0',
             },
@@ -184,7 +184,7 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
         await writeCliToolUnpackFixture(repoRoot, older);
 
         await writeRepoFile(join(repoRoot, 'packages', 'cli-common', 'package.json'), `${JSON.stringify({
-            name: '@happier-dev/cli-common',
+            name: '@piggercode/cli-common',
             version: '0.0.0',
             type: 'module',
             main: './dist/index.js',
@@ -201,8 +201,8 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
         await writeRepoFile(join(repoRoot, 'packages', 'cli-common', 'dist', 'firstPartyRuntime', 'index.js'), 'export {};\n', older);
         await writeRepoFile(sourceWorkspaceInstallPath, currentSourceContent, older);
 
-        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'package.json'), `${JSON.stringify({
-            name: '@happier-dev/cli-common',
+        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'package.json'), `${JSON.stringify({
+            name: '@piggercode/cli-common',
             version: '0.0.0',
             type: 'module',
             main: './dist/index.js',
@@ -212,8 +212,8 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
                 './expandHomeDirPath': './expandHomeDirPath.cjs',
             },
         }, null, 2)}\n`);
-        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'), 'export {};\n', older);
-        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'firstPartyRuntime', 'index.js'), 'export {};\n', older);
+        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'), 'export {};\n', older);
+        await writeRepoFile(join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'firstPartyRuntime', 'index.js'), 'export {};\n', older);
         await writeRepoFile(bundledWorkspaceInstallPath, staleBundledContent, older);
         for (const packageName of [
             '@huggingface/transformers',
@@ -281,7 +281,7 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
             .rejects.toMatchObject({ code: 'ENOENT' });
         await expect(readFile(join(payloadDir, 'tools', 'unpacked', 'difft'), 'utf8'))
             .rejects.toMatchObject({ code: 'ENOENT' });
-        await expect(readFile(join(payloadDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'firstPartyRuntime', 'installVersionedPayload.js'), 'utf8'))
+        await expect(readFile(join(payloadDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'firstPartyRuntime', 'installVersionedPayload.js'), 'utf8'))
             .resolves.toBe(currentSourceContent);
         for (const segments of staticRuntimeScriptAssets) {
             await expect(readFile(join(payloadDir, 'scripts', ...segments), 'utf8'))

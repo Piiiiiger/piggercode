@@ -5,7 +5,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 import { withConfiguredDaemonTestHome, writeDaemonSettingsFixture } from '@/daemon/testkit/fakeDaemonLifecycle.testkit';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
@@ -1547,7 +1547,7 @@ describe('runDaemonServiceCliCommand', () => {
       const spawnedCommands: Array<{ command: string; args: readonly string[] }> = [];
       const happierHomeDir = `${homeDir}/.happier`;
       const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@happier-dev/cli/bin/happier';
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
       let expectedServiceLabel = '';
       let expectedCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -3269,7 +3269,7 @@ describe('runDaemonServiceCliCommand', () => {
     await withTempDir('happier-service-install-dry-run-foreign-runtime-', async (homeDir) => {
       const happierHomeDir = `${homeDir}/.happier`;
       const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@happier-dev/cli/bin/happier';
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
       envScope.patch({
         HAPPIER_HOME_DIR: happierHomeDir,
         HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3333,7 +3333,7 @@ describe('runDaemonServiceCliCommand', () => {
     await withTempDir('happier-service-install-dry-run-kept-runtime-', async (homeDir) => {
       const happierHomeDir = `${homeDir}/.happier`;
       const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@happier-dev/cli/bin/happier';
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
       envScope.patch({
         HAPPIER_HOME_DIR: happierHomeDir,
         HAPPIER_DAEMON_SERVICE_PLATFORM: 'linux',

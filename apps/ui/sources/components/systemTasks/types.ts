@@ -1,4 +1,4 @@
-import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@happier-dev/protocol';
+import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@piggercode/protocol';
 
 export type SystemTaskRunnerMode = 'tauri' | 'dev' | 'unavailable';
 

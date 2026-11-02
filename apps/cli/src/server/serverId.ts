@@ -1,4 +1,4 @@
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 
 const SERVER_ID_SAFE_RE = /^[A-Za-z0-9._-]{1,64}$/;
 

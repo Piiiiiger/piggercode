@@ -8,7 +8,7 @@ import {
     ConnectedServiceIdSchema,
     StoredJsonContentEnvelopeSchema,
     type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { NotFoundSchema } from "../../../schemas/notFoundSchema";
 import { ConnectedServiceProfileIdSchema } from "../connectedServicesV2/profileIdSchema";
 import {

@@ -1,7 +1,7 @@
 import { open, readFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 
-import { buildWorkflowAgentSidechainId } from '@happier-dev/protocol';
+import { buildWorkflowAgentSidechainId } from '@piggercode/protocol';
 
 import {
   createJsonlFollowController,

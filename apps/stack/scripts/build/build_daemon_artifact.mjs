@@ -1,6 +1,6 @@
 import { readArtifactManifest, writeArtifactManifest, artifactPayloadDir } from '../runtime/shared/artifact_manifest.mjs';
 import { buildIntoTempThenReplace } from '../utils/fs/atomic_dir_swap.mjs';
-import { buildCliBinaryArtifactPayload, CLI_BINARY_TARGETS, resolveCurrentBinaryTarget } from '@happier-dev/cli-common/componentArtifacts';
+import { buildCliBinaryArtifactPayload, CLI_BINARY_TARGETS, resolveCurrentBinaryTarget } from '@piggercode/cli-common/componentArtifacts';
 
 export async function buildDaemonArtifact({
   rootDir,

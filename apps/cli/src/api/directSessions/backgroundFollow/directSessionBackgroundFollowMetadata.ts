@@ -6,13 +6,13 @@ import {
   readDirectSessionFollowPolicyV1,
   type DirectSessionFollowPolicy,
   type DirectSessionObservedProgress,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 import type { Credentials } from '@/persistence';
 import { updateSessionMetadataWithRetry } from '@/session/metadata/updateSessionMetadataWithRetry';
 
-export { deriveDirectSessionObservedProgress } from '@happier-dev/protocol';
+export { deriveDirectSessionObservedProgress } from '@piggercode/protocol';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;

@@ -2,7 +2,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
 import { createUseSettingMock, flushHookEffects, renderScreen } from '@/dev/testkit';
-import type { DaemonExecutionRunEntry } from '@happier-dev/protocol';
+import type { DaemonExecutionRunEntry } from '@piggercode/protocol';
 import { installMachineDetailsCommonModuleMocks } from './machineDetailsTestHelpers';
 
 const fixedNow = 1_700_000_000_000;

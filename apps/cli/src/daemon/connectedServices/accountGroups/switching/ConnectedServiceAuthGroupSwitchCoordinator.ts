@@ -17,7 +17,7 @@ import type { AcceptedConnectedServiceAccountVerificationByServiceId } from '../
 import { evaluatePredictiveSoftSwitchSessionApplyPolicy } from './predictiveSoftSwitchPolicy';
 import type { AutomaticQuotaResetContext, ConnectedServiceGroupQuotaProbeResult, ConnectedServiceQuotaRecoveryCreditConsumeResult } from '../../quotas/ConnectedServiceQuotasCoordinator';
 import { logger } from '@/ui/logger';
-import type { ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1 } from '@piggercode/protocol';
 import {
   buildGenerationApplyResult,
   buildLeaseCompletion,
@@ -653,7 +653,7 @@ export class ConnectedServiceAuthGroupSwitchCoordinator {
     loaded: Readonly<{
       activeProfileId: string | null;
       generation: number;
-      credentialRevision?: import('@happier-dev/protocol').ConnectedServiceCredentialRevisionV1 | null;
+      credentialRevision?: import('@piggercode/protocol').ConnectedServiceCredentialRevisionV1 | null;
     }>;
     resultStatus: ConnectedServiceAuthGroupSwitchResult['status'];
     toProfileId: string | null;
@@ -705,7 +705,7 @@ export class ConnectedServiceAuthGroupSwitchCoordinator {
     loaded: Readonly<{
       activeProfileId: string | null;
       generation: number;
-      credentialRevision?: import('@happier-dev/protocol').ConnectedServiceCredentialRevisionV1 | null;
+      credentialRevision?: import('@piggercode/protocol').ConnectedServiceCredentialRevisionV1 | null;
     }>;
     resultStatus: ConnectedServiceAuthGroupSwitchResult['status'];
     toProfileId: string | null;
@@ -749,7 +749,7 @@ export class ConnectedServiceAuthGroupSwitchCoordinator {
     loaded: Readonly<{
       activeProfileId: string | null;
       generation: number;
-      credentialRevision?: import('@happier-dev/protocol').ConnectedServiceCredentialRevisionV1 | null;
+      credentialRevision?: import('@piggercode/protocol').ConnectedServiceCredentialRevisionV1 | null;
     }>;
     result: ConnectedServiceAuthGroupSwitchResult;
     startedAtMs: number;
@@ -913,7 +913,7 @@ export class ConnectedServiceAuthGroupSwitchCoordinator {
     groupId: string;
     activeProfileId: string;
     generation: number;
-    credentialRevision?: import('@happier-dev/protocol').ConnectedServiceCredentialRevisionV1 | null;
+    credentialRevision?: import('@piggercode/protocol').ConnectedServiceCredentialRevisionV1 | null;
     reason: string;
     fromProfileId?: string | null;
   }>): Promise<ObservedGenerationApplyResult> {

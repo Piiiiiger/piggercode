@@ -4,7 +4,7 @@ import {
   normalizeCodexBackendMode as normalizeCanonicalCodexBackendMode,
   type CodexBackendMode as CanonicalCodexBackendMode,
   type SettingDefinitionMap,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ProviderSettingsDefinition } from '../types.js';
 

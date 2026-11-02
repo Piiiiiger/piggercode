@@ -4,7 +4,7 @@ import {
     MENTION_KIND_V1,
     readMentionRefOpaqueForKindV1,
     sanitizeMentionRefsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * The universal `<happier_session_reference>` projection (D-21).

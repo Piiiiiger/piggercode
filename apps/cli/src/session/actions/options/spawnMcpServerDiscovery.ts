@@ -2,8 +2,8 @@ import {
   type DaemonMcpServersPreviewResponse,
   type SessionMcpSelectionV1,
   type AccountSettings,
-} from '@happier-dev/protocol';
-import { resolveAgentIdFromFlavor } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { resolveAgentIdFromFlavor } from '@piggercode/agents';
 
 import { detectProviderMcpServers } from '@/mcp/providerDetection/detectProviderMcpServers';
 import { resolveSessionMcpPreview } from '@/mcp/preview/resolveSessionMcpPreview';

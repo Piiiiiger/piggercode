@@ -1,10 +1,10 @@
-import type { HappierReplayStrategy } from '@happier-dev/agents';
+import type { HappierReplayStrategy } from '@piggercode/agents';
 import {
   SPAWN_SESSION_ERROR_CODES,
   type LlmTaskRunnerConfigV1,
   type SessionForkPoint,
   type SpawnSessionErrorCode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import type { Credentials } from '@/persistence';

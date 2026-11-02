@@ -29,7 +29,7 @@ import { createWorkspaceReplicationSourceOffer } from './transport/createWorkspa
 import type { WorkspaceReplicationSourceOffer } from './transport/createWorkspaceReplicationSourceOffer';
 import { listWorkspaceReplicationJobs } from './engine/listWorkspaceReplicationJobs';
 import { executeWorkspaceReplicationJobWithLocalRuntime } from './orchestration/executeWorkspaceReplicationJobWithLocalRuntime';
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 import type { WorkspaceReplicationJobRecord } from './jobs/workspaceReplicationJobStore';
 import { inferWorkspaceManifestSafeFilterPolicyFromEntries } from '@/scm/sourceController/workspaceExportPackaging/workspaceManifestSafeFilterPolicy';
 

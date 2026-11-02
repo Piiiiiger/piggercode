@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { createAgyQuotaFetcher } from './quotaFetcher';
 
 function record(raw: Readonly<{ project_id?: string }> | null = null) {

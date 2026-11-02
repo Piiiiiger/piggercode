@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { INSTALLABLES_CATALOG, INSTALLABLE_KEYS } from '@happier-dev/protocol/installables';
+import { INSTALLABLES_CATALOG, INSTALLABLE_KEYS } from '@piggercode/protocol/installables';
 
 import { getInstallablesRegistryEntries } from './installablesRegistry';
 

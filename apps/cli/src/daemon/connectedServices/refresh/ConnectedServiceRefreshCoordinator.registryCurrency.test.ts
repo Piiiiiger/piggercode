@@ -4,7 +4,7 @@ import {
   buildConnectedServiceCredentialRecord,
   ConnectedServiceCredentialRevisionV1Schema,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';

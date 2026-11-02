@@ -1,8 +1,8 @@
 import {
   parseBackendTargetKey,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
-import { AGENT_IDS, type AgentId } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { AGENT_IDS, type AgentId } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import {

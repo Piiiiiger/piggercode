@@ -3,7 +3,7 @@ import {
     mergeSessionRuntimeActivityProjection,
     parseSessionRuntimeActivityProjectionFields,
     type SessionRuntimeActivityProjection,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { PendingQueueRuntimeActivityProjection } from '@/agent/runtime/sessionInput/pendingQueueDrainPolicy';
 import { tryParseJsonObject } from '@/utils/tryParseJsonRecord';
 

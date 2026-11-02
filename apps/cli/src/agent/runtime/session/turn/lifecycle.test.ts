@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { SessionTurnMutationV1 } from '@/api/session/mutations/sessionMutationTypes';
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import { createSessionTurnLifecycle } from './lifecycle';
 
 describe('SessionTurnLifecycle', () => {

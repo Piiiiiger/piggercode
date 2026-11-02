@@ -7,8 +7,8 @@ import { claudeRemoteLauncher } from "./claudeRemoteLauncher"
 import { claudeUnifiedTerminalLauncher } from './unifiedTerminal/claudeUnifiedTerminalLauncher';
 import type { JsRuntime } from "./runClaude"
 import type { PushNotificationClient } from "@/api/pushNotifications"
-import type { AccountSettings } from '@happier-dev/protocol';
-import type { ClaudeUnifiedTerminalHost, ClaudeUnifiedTerminalResumeChoice } from '@happier-dev/agents';
+import type { AccountSettings } from '@piggercode/protocol';
+import type { ClaudeUnifiedTerminalHost, ClaudeUnifiedTerminalResumeChoice } from '@piggercode/agents';
 import type { McpServerConfig } from '@/agent';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
 import { resolveCliFeatureDecision } from '@/features/featureDecisionService';

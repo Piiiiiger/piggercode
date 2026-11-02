@@ -1,7 +1,7 @@
 import type {
     PrimaryTurnStatusV1,
     SessionRuntimeActivityState,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const SESSION_RUNTIME_STATUS_STALE_SIGNAL_MS = 120_000;
 

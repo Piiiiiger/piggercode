@@ -1,4 +1,4 @@
-import { buildAgentActivityEntryId } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId } from '@piggercode/protocol';
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';

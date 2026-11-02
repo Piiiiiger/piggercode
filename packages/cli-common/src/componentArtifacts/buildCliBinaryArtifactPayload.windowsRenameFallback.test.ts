@@ -72,7 +72,7 @@ describe('buildCliBinaryArtifactPayload Windows rename fallback', () => {
         await writeRepoFile(join(repoRoot, 'package.json'), `${JSON.stringify({ name: 'repo-root', private: true })}\n`);
         await writeRepoFile(join(repoRoot, 'yarn.lock'), '');
         await writeRepoFile(join(cliDir, 'package.json'), `${JSON.stringify({
-            name: '@happier-dev/cli',
+            name: '@piggercode/cli',
             version: '0.0.0',
             bundledDependencies: [],
             dependencies: {

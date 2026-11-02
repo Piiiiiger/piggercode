@@ -13,7 +13,7 @@ import {
 import {
   STRUCTURED_QUESTION_LIMITS,
   type StructuredQuestionAnswersV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   InvalidAskUserQuestionInputError,
   normalizeAskUserQuestionInputForPublication,

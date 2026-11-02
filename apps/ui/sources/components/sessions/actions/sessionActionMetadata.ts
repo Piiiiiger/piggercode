@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import { isActionEnabledByActionsSettings, isApprovalRequiredByActionsSettings, type ActionsSettingsV1 } from '@happier-dev/protocol';
+import { isActionEnabledByActionsSettings, isApprovalRequiredByActionsSettings, type ActionsSettingsV1 } from '@piggercode/protocol';
 
 import type { TranslationKeyNoParams } from '@/text';
 

@@ -1,6 +1,6 @@
 import {
     ClientUpgradeRequiredV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function readRecord(value: unknown): Record<string, unknown> | null {
     return value && typeof value === 'object' && !Array.isArray(value)

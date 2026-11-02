@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { getActionSpec, serializeActionSpec } from '@happier-dev/protocol';
+import { getActionSpec, serializeActionSpec } from '@piggercode/protocol';
 
 import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/jsonEnvelope';
 import { readCommandPositionals } from '@/cli/commands/shared/argvFlags';

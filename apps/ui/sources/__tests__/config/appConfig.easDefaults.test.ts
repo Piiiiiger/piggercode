@@ -18,7 +18,7 @@ function readUiPackageJson(): any {
 function listFirstPartyExpoNativeWorkspaceDeps(): string[] {
     const pkg = readUiPackageJson();
     return Object.keys(pkg?.dependencies ?? {})
-        .filter((name) => name.startsWith('@happier-dev/'))
+        .filter((name) => name.startsWith('@piggercode/'))
         .map((name) => name.split('/')[1])
         .filter((workspace): workspace is string => typeof workspace === 'string' && workspace.length > 0)
         .filter((workspace) =>

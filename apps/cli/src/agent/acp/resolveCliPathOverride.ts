@@ -1,6 +1,6 @@
 import { accessSync, constants as fsConstants } from 'node:fs';
 
-import { resolveWindowsCommandOnPath, resolveWindowsCommandPath } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandOnPath, resolveWindowsCommandPath } from '@piggercode/cli-common/process';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
 export function resolveCliPathOverride(params: { agentId: string }): string | null {

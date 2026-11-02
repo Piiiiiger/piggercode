@@ -1,4 +1,4 @@
-import { redactBugReportSensitiveText } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText } from '@piggercode/protocol';
 
 const MAX_DEBUG_CHARS = 500;
 const MARKER_WINDOW_CHARS = 64;

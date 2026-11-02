@@ -1,8 +1,8 @@
 import { io, type Socket } from 'socket.io-client';
 
-import type { ManagedConnectionTransport } from '@happier-dev/connection-supervisor';
-import { buildMachineScopedSocketAuth, ConnectedServiceIdSchema, CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD } from '@happier-dev/protocol';
-import type { MachineInstallationProofV1 } from '@happier-dev/protocol';
+import type { ManagedConnectionTransport } from '@piggercode/connection-supervisor';
+import { buildMachineScopedSocketAuth, ConnectedServiceIdSchema, CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD } from '@piggercode/protocol';
+import type { MachineInstallationProofV1 } from '@piggercode/protocol';
 
 import type { DaemonToServerEvents, ServerToDaemonEvents } from '@/api/machine/socketTypes';
 import { createSocketTransportAdapter } from '@/api/connection/createSocketTransportAdapter';

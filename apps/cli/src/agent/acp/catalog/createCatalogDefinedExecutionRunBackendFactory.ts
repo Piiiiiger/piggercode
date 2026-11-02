@@ -1,4 +1,4 @@
-import { getAgentModelConfig, type AgentId } from '@happier-dev/agents';
+import { getAgentModelConfig, type AgentId } from '@piggercode/agents';
 
 import { permissionModeForExecutionRunPolicy } from '@/agent/executionRuns/policy/permissionModeForExecutionRunPolicy';
 import type { ExecutionRunBackendFactory } from '@/agent/executionRuns/registry/executionRunBackendTypes';

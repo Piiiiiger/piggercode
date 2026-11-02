@@ -12,7 +12,7 @@ Key principles:
 Quickstart (dev profile):
 
 ```bash
-npx --yes -p @happier-dev/stack hstack setup-from-source --profile=dev
+npx --yes -p @piggercode/stack hstack setup-from-source --profile=dev
 ```
 
 Common flows:

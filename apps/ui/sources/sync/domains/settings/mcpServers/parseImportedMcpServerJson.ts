@@ -1,4 +1,4 @@
-import type { McpServerCatalogEntryTransportV1 } from '@happier-dev/protocol';
+import type { McpServerCatalogEntryTransportV1 } from '@piggercode/protocol';
 
 import { toEnvToken } from './mcpCatalogNaming';
 

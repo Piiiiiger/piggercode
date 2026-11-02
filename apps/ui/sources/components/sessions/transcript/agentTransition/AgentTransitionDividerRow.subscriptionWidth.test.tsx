@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderScreen, standardCleanup } from '@/dev/testkit';
 import { storage } from '@/sync/domains/state/storageStore';
 import { useSession } from '@/sync/domains/state/storage';
-import type { SessionAgentTransitionDividerV1 } from '@happier-dev/protocol';
+import type { SessionAgentTransitionDividerV1 } from '@piggercode/protocol';
 
 import { AgentTransitionDividerRow } from './AgentTransitionDividerRow';
 

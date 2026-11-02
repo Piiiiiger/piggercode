@@ -8,7 +8,7 @@ import {
     type NotificationChannelV1,
     type NotificationChannelTopicsV1,
     type NotificationsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 import { installSettingsViewCommonModuleMocks } from '../settingsViewTestHelpers';
 

@@ -3,7 +3,7 @@ import { encodeBase64, decodeBase64 } from "@/encryption/base64";
 import sodium from '@/encryption/libsodium.lib';
 import { decodeUTF8, encodeUTF8 } from "@/encryption/text";
 import { decryptAESGCMString, encryptAESGCMString } from "@/encryption/aes";
-import { parseSerializedJsonValue, stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { parseSerializedJsonValue, stringifySerializedJsonValue } from '@piggercode/protocol';
 import { syncPerformanceTelemetry } from '../runtime/syncPerformanceTelemetry';
 import { mapCryptoBatchWithYield, yieldToEventLoop } from './cryptoBatchYield';
 import {

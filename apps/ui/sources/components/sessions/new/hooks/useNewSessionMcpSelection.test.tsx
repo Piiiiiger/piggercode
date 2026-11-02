@@ -3,10 +3,10 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { DaemonMcpServersPreviewResponse } from '@happier-dev/protocol';
-import { SessionMcpSelectionV1Schema } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import type { DaemonMcpServersPreviewResponse } from '@piggercode/protocol';
+import { SessionMcpSelectionV1Schema } from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 import { renderScreen } from '@/dev/testkit';
 import { installNewSessionScreenModelCommonModuleMocks } from './newSessionScreenModelTestHelpers';
 

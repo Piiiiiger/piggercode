@@ -6,7 +6,7 @@ import { runTasksWithLimit } from '@/sync/runtime/orchestration/runTasksWithLimi
 import type { MachineDisplayRenderable } from '@/sync/domains/machines/machineDisplayRenderable';
 import type { MachineDisplayCacheEntryV1 } from '@/sync/domains/state/warmCachePersistence';
 import { loadSyncTuning } from '@/sync/runtime/syncTuning';
-import { AccountEncryptionModeResponseSchema, isPlainMachineDataKeyMarker } from '@happier-dev/protocol';
+import { AccountEncryptionModeResponseSchema, isPlainMachineDataKeyMarker } from '@piggercode/protocol';
 
 type MachineEncryption = {
     decryptMetadata: (version: number, value: string) => Promise<any>;

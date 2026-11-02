@@ -1,4 +1,4 @@
-import type { VendorResumeEligibilityReasonCode } from '@happier-dev/agents';
+import type { VendorResumeEligibilityReasonCode } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import { summarizeSessionRow, type SessionSummary } from '@/cli/output/session/sessionSummary';

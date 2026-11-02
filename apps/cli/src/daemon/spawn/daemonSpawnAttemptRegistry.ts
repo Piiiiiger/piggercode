@@ -1,4 +1,4 @@
-import type { SpawnSessionNonceResolution } from '@happier-dev/protocol';
+import type { SpawnSessionNonceResolution } from '@piggercode/protocol';
 
 import type { SpawnSessionResult } from '@/rpc/handlers/registerSessionHandlers';
 

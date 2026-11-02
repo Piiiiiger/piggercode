@@ -2,7 +2,7 @@ import type {
   ConnectedServiceAuthGroupV1,
   ConnectedServiceId,
   ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildQuotaLifecycleCycleId } from '../../quotas/quotaLifecycleEventIdentity';
 import {

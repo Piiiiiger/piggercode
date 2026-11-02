@@ -1,7 +1,7 @@
 import type { Socket } from 'socket.io';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const mocks = vi.hoisted(() => ({
     sessionFindUnique: vi.fn(),

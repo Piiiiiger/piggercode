@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-import { getActionSpec, isActionSpecSurfacedOn, type ActionId } from '@happier-dev/protocol';
+import { getActionSpec, isActionSpecSurfacedOn, type ActionId } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { registerHappierMcpResources } from '@/mcp/resources/registerHappierMcpResources';

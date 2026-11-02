@@ -5,7 +5,7 @@ import type {
   ClaudeUnifiedTerminalHost,
   TerminalInputInjectionResult,
   TerminalInputInjectionV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   SessionTerminalComposerClearResultV1Schema,
   type SessionTerminalComposerClearFailureStatusV1,
@@ -13,7 +13,7 @@ import {
   type SessionTerminalComposerClearResultV1,
   type SessionPendingInputInterruptAndRunRequestV1,
   type SessionPendingInputInterruptAndRunResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   ClaudeUnifiedTerminalHostDeadError,
@@ -184,7 +184,7 @@ type ClaudeUnifiedTerminalQueuedInput<Mode> = Readonly<{
    */
   providerAcceptancePending?: boolean | null;
   pendingProviderAction?: import('@/agent/runtime/modeMessageQueue').PendingProviderAction;
-  pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+  pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 }>;
 
 type ClaudeUnifiedTerminalAcceptedInput<Mode> =

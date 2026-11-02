@@ -3,7 +3,7 @@ import type { ApiSessionClient } from '@/api/session/sessionClient';
 import { ProviderEnforcedPermissionHandler } from './ProviderEnforcedPermissionHandler';
 import type { PermissionRequestPushSender } from './BasePermissionHandler';
 import type { ToolTraceProtocol } from '@/agent/tools/trace/toolTrace';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 export function createProviderEnforcedPermissionHandler(params: {
   session: ApiSessionClient;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Fastify } from "../../../types";
 import { db } from "@/storage/db";
-import { ConnectedServiceIdSchema, SealedConnectedServiceCredentialV1Schema, type ConnectedServiceId } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema, SealedConnectedServiceCredentialV1Schema, type ConnectedServiceId } from "@piggercode/protocol";
 
 import { encodeCredentialTokenBytes, decodeCredentialTokenString } from "./credentialTokenCodec";
 import { type ConnectedServiceCredentialMetadataV2, isConnectedServiceCredentialMetadataV2 } from "./credentialMetadataV2";

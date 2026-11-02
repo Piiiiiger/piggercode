@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 import {
     PET_ANIMATION_TICK_MS,

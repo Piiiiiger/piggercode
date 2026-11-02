@@ -1,6 +1,6 @@
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { isRpcMethodNotAvailableError, readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { isRpcMethodNotAvailableError, readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { Modal } from '@/modal';
 import { t, type TranslationKey } from '@/text';

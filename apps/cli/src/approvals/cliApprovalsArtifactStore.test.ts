@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import type { Credentials } from '@/persistence';
 import { decodeBase64, decryptWithDataKey, libsodiumPublicKeyFromSecretKey } from '@/api/encryption';
-import { ApprovalRequestV1Schema, openEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { ApprovalRequestV1Schema, openEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 
 import { createCliApprovalsArtifactStore } from './cliApprovalsArtifactStore';
 

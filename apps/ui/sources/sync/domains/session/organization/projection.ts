@@ -11,7 +11,7 @@ import type {
     SessionOrganizationOrderEntry,
     SessionOrganizationPin,
     SessionOrganizationTag,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function compareNullableSortKey(a: string | null, b: string | null): number {
     if (a && b) return a.localeCompare(b);

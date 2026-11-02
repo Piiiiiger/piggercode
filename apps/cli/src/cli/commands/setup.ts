@@ -17,7 +17,7 @@ import {
     DEFAULT_AGENT_ID,
     getProviderCliRuntimeSpec,
     type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
     cmd,
     createSetupChoicePrompt,
@@ -31,11 +31,11 @@ import {
     renderSetupWelcome,
     sectionTitle,
     warn,
-} from '@happier-dev/cli-common/output';
+} from '@piggercode/cli-common/output';
 import {
     resolveTailscaleInstallStrategy,
     type TailscaleStatusSnapshot,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 
 import { resolveActiveServerAuthReadiness } from '@/auth/resolveActiveServerAuthReadiness';
 import type { CommandContext } from '@/cli/commandRegistry';

@@ -1,5 +1,5 @@
 {
-  "name": "@happier-dev/sherpa-native",
+  "name": "@piggercode/sherpa-native",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",

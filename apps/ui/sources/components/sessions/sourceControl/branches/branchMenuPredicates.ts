@@ -1,4 +1,4 @@
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 

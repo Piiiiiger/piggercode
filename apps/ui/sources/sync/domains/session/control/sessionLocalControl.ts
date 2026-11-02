@@ -1,5 +1,5 @@
 import type { Session, AgentState } from '@/sync/domains/state/storageTypes';
-import { resolveTerminalControlServiceabilityPolicy } from '@happier-dev/protocol';
+import { resolveTerminalControlServiceabilityPolicy } from '@piggercode/protocol';
 
 export type SessionLocalControlTopology = 'exclusive' | 'shared';
 

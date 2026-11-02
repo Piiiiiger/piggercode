@@ -9,7 +9,7 @@ import {
     SessionDraftReadRequestV1Schema,
     SessionDraftReadResponseV1Schema,
     type SessionDraftAddressV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { serverFetch } from '@/sync/http/client';

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 
 import { createConnectedServiceContinuationMessageDispatcher } from './createConnectedServiceContinuationMessageDispatcher';

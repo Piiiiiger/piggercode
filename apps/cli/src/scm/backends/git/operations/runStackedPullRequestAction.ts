@@ -17,7 +17,7 @@ import {
     type ScmRemoteRequest,
     type ScmRemoteResponse,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 

@@ -1,8 +1,8 @@
 import { randomUUID } from '@/platform/randomUUID';
 import { decodeBase64, encodeBase64 } from '@/encryption/base64';
 import { requestMicrophonePermission, showMicrophonePermissionDeniedAlert } from '@/utils/platform/microphonePermissions';
-import { getOptionalHappierAudioStreamNativeModule } from '@happier-dev/audio-stream-native';
-import { getOptionalHappierSherpaNativeModule } from '@happier-dev/sherpa-native';
+import { getOptionalHappierAudioStreamNativeModule } from '@piggercode/audio-stream-native';
+import { getOptionalHappierSherpaNativeModule } from '@piggercode/sherpa-native';
 import { ensureModelPackInstalled } from '@/voice/modelPacks/installer.native';
 import { resolveModelPackManifestUrl } from '@/voice/modelPacks/manifests';
 import { VoiceLocalSttSchema } from '@/sync/domains/settings/voiceLocalSttSettings';

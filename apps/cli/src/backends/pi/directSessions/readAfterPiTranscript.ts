@@ -1,4 +1,4 @@
-import type { DirectSessionsSource, DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectSessionsSource, DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 import type { DirectSessionTranscriptReadAfter } from '@/backends/directSessions/providerOps';
 
 import { mapPiSessionToDirectMessages } from './mapPiSessionToDirectMessages';

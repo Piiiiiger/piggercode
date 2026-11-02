@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { cmd, fail, info, ok, warn } from '@happier-dev/cli-common/output';
+import { cmd, fail, info, ok, warn } from '@piggercode/cli-common/output';
 
 /**
  * Shared CLI text style palette for doctor-repair rendering.
@@ -14,7 +14,7 @@ import { cmd, fail, info, ok, warn } from '@happier-dev/cli-common/output';
  * Anything else stays in default terminal color. Bold is reserved for
  * structural roles — section headers and finding titles — NOT for emphasis
  * inside body prose. Status glyphs and inline commands come from the shared
- * CLI vocabulary (`@happier-dev/cli-common/output`) so repair screens read like
+ * CLI vocabulary (`@piggercode/cli-common/output`) so repair screens read like
  * every other command.
  */
 

@@ -4,7 +4,7 @@ import type {
     ScmHostingRepositoryVisibility,
     ScmHostingProvider,
     ScmPullRequestSummary,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
     ScmHostingProviderAdapter,

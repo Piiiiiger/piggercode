@@ -7,7 +7,7 @@ set -euo pipefail
 #   ./scripts/provision/macos-lima-hstack-repeat-validation.sh [vm-name]
 #
 # Env:
-#   HSTACK_VERSION=latest            # @happier-dev/stack version to test (default: latest)
+#   HSTACK_VERSION=latest            # @piggercode/stack version to test (default: latest)
 #   HSTACK_REPEAT_COUNT=3            # number of repeated smoke runs (default: 3)
 #   HSTACK_REPEAT_OUTPUT_DIR=...     # host-side report dir (default: output/lima-validation-<ts>-<vm>)
 #   HSTACK_RAW_BASE=...              # override raw github base (default: happier-dev/happier main)
@@ -197,7 +197,7 @@ PY
 trap 'status=$?; ensure_summary "${status}"; exit "${status}"' EXIT
 
 echo "[lima-repeat] vm: ${VM_NAME}"
-echo "[lima-repeat] @happier-dev/stack: ${HSTACK_VERSION}"
+echo "[lima-repeat] @piggercode/stack: ${HSTACK_VERSION}"
 echo "[lima-repeat] repeat count: ${HSTACK_REPEAT_COUNT}"
 echo "[lima-repeat] report dir: ${REPORT_ROOT}"
 echo "[lima-repeat] raw base: ${HSTACK_RAW_BASE}"

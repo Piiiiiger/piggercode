@@ -1,5 +1,5 @@
 import { compactHomePath } from '@/ui/format/styles';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { CliSessionRowModel } from '@/cli/output/session/buildCliSessionRowModel';

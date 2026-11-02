@@ -4,7 +4,7 @@ import type {
   ExecutionRunIntent,
   ExecutionRunIoMode,
   ExecutionRunRetentionPolicy,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ExecutionRunProfileStartParams = Readonly<{
   sessionId: string;

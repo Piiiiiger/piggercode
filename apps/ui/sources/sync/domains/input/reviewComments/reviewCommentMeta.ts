@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { WorkspaceAnchorResolutionV1Schema } from '@happier-dev/protocol';
+import { WorkspaceAnchorResolutionV1Schema } from '@piggercode/protocol';
 
 import { isLineContentHash, type LineContentHash } from '@/utils/text/lineContentHash';
 

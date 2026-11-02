@@ -1,4 +1,4 @@
-import { buildUsageLimitIssueFingerprint, isSessionUsageLimitRecoveryForIssue } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, isSessionUsageLimitRecoveryForIssue } from '@piggercode/protocol';
 import { randomUUID } from 'node:crypto';
 import { canPublishSessionResumeIdentity } from '@/session/metadata/sessionIdentityPublication';
 import { join } from 'node:path';
@@ -36,9 +36,9 @@ import {
     SessionUsageLimitRecoveryV1Schema,
     type SessionUsageLimitRecoveryV1,
     readPendingLocalId,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { isChangeTitleToolNameAlias, normalizePatchInputRecord } from '@happier-dev/protocol/tools/v2';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { isChangeTitleToolNameAlias, normalizePatchInputRecord } from '@piggercode/protocol/tools/v2';
 import { TurnChangeSetCollector } from '@/agent/tools/diff/turnChangeSetCollector';
 import { emitCanonicalTurnDiffTool } from '@/agent/runtime/emitCanonicalTurnDiffTool';
 import { logger } from '@/ui/logger';
@@ -262,7 +262,7 @@ type CodexConnectedServiceRuntimeAppliedIdentity = Readonly<{
     profileId: string;
     groupId?: string;
     generation?: string | number;
-    credentialRevision?: import('@happier-dev/protocol').ConnectedServiceCredentialRevisionV1 | null;
+    credentialRevision?: import('@piggercode/protocol').ConnectedServiceCredentialRevisionV1 | null;
     credentialFingerprint: string | null;
     source: CodexConnectedServiceRuntimeAppliedIdentitySource;
 }>;

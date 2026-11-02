@@ -1,4 +1,4 @@
-import { AGENT_IDS, inferAgentIdFromSessionMetadata, type AgentId } from '@happier-dev/agents';
+import { AGENT_IDS, inferAgentIdFromSessionMetadata, type AgentId } from '@piggercode/agents';
 
 import { filterSessionListViewDataSessions } from './filterSessionListViewDataSessions';
 import type { SessionListRenderableSession } from './sessionListRenderable';

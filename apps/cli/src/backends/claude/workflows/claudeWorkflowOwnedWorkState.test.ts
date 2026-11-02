@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionWorkStateV1 } from '@happier-dev/protocol';
+import type { SessionWorkStateV1 } from '@piggercode/protocol';
 
 import { filterWorkflowOwnedWorkStateItems } from './claudeWorkflowOwnedWorkState';
 

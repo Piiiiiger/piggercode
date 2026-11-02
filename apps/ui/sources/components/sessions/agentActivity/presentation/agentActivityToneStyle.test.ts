@@ -1,4 +1,4 @@
-import { AGENT_ACTIVITY_STATUSES_V1, resolveAgentActivityTone } from '@happier-dev/protocol';
+import { AGENT_ACTIVITY_STATUSES_V1, resolveAgentActivityTone } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { lightTheme } from '@/theme';

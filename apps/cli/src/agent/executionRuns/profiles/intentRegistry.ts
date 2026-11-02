@@ -1,4 +1,4 @@
-import type { ExecutionRunIntent } from '@happier-dev/protocol';
+import type { ExecutionRunIntent } from '@piggercode/protocol';
 
 import type { ExecutionRunIntentProfile } from './ExecutionRunIntentProfile';
 import { ReviewProfile } from './review/ReviewProfile';

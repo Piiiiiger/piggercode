@@ -1,9 +1,9 @@
-import type { SessionRuntimeActivitySnapshot } from '@happier-dev/protocol';
+import type { SessionRuntimeActivitySnapshot } from '@piggercode/protocol';
 
 export type RuntimeActivityApplicability = 'supported' | 'unavailable' | 'not_applicable';
 export type RuntimeActivitySlot = 'agentRuntime' | 'executionRuns';
 
-export { SessionRuntimeActivitySnapshotSchema as SessionRuntimeActivityContributionSchema } from '@happier-dev/protocol';
+export { SessionRuntimeActivitySnapshotSchema as SessionRuntimeActivityContributionSchema } from '@piggercode/protocol';
 
 export type SessionRuntimeActivityContribution = SessionRuntimeActivitySnapshot;
 

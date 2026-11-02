@@ -5,7 +5,7 @@ import {
   type ClientEncryptionRequirement,
   type SessionEncryptionMode,
   type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { getActiveAccountSettingsSnapshot } from './activeAccountSettingsSnapshot';

@@ -1,6 +1,6 @@
-import { getAgentLocalControlCapabilityForSession, type AgentId } from '@happier-dev/agents';
-import { compareMachineHosts } from '@happier-dev/protocol';
-import type { AccountSettings } from '@happier-dev/protocol';
+import { getAgentLocalControlCapabilityForSession, type AgentId } from '@piggercode/agents';
+import { compareMachineHosts } from '@piggercode/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 import { getProviderAttachOps } from '@/backends/catalog';
 import { configuration } from '@/configuration';

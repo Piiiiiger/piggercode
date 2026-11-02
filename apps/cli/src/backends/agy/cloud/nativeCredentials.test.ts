@@ -5,7 +5,7 @@ import * as fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AGY_OAUTH_CLIENT_ID } from '@happier-dev/agents';
+import { AGY_OAUTH_CLIENT_ID } from '@piggercode/agents';
 import { parseAgyNativeCredential, readAgyNativeCredential } from './nativeCredentials';
 
 vi.mock('node:child_process', async (original) => ({ ...await original<typeof import('node:child_process')>(), spawn: vi.fn() }));

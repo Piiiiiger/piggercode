@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer';
 import type {
   TerminalControlPort,
   TerminalSpecialKey,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type {
   TerminalHostAdapter,

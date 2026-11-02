@@ -1,4 +1,4 @@
-import { AsyncTtlCache, type ConnectedServiceCredentialRecordV1, type ConnectedServiceId } from '@happier-dev/protocol';
+import { AsyncTtlCache, type ConnectedServiceCredentialRecordV1, type ConnectedServiceId } from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import { resolveConnectedServiceCredentials } from '@/cloud/connectedServices/resolveConnectedServiceCredentials';

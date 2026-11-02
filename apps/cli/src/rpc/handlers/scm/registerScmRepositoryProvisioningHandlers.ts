@@ -7,9 +7,9 @@ import type {
     ScmRepositoryInitResponse,
     ScmRepositoryRemoveIndexLockRequest,
     ScmRepositoryRemoveIndexLockResponse,
-} from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import {

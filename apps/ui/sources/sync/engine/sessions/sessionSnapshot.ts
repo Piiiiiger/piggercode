@@ -3,7 +3,7 @@ import {
     isSessionEncryptionModeAllowedByClientRequirement,
     type ClientEncryptionRequirement,
     type V2SessionListResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { serverFetch } from '@/sync/http/client';

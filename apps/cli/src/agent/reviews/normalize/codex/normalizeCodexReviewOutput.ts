@@ -2,7 +2,7 @@ import type {
   ExecutionRunProfileBoundedCompleteResult,
   ExecutionRunStructuredMeta,
 } from '@/agent/executionRuns/profiles/ExecutionRunIntentProfile';
-import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 
 import { normalizeStrictJsonReviewOutput } from '@/agent/reviews/normalize/normalizeStrictJsonReviewOutput';
 import { buildCodexNativeReviewFindingsV2Payload } from './buildCodexNativeReviewFindingsV2Payload';

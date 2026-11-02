@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 import {
   resolvePersistedCodexRuntimeIdentity,
   resolvePersistedCodexVendorSessionId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { prepareOwnedTerminalSpawn } from '@/terminal/runtime/terminalLaunchSpec';
 import { runOwnedTerminalProcess } from '@/terminal/runtime/ownedTerminalProcess';
 import type { ProviderAttachOps } from '@/backends/types';

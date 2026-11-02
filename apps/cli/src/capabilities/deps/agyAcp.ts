@@ -5,9 +5,9 @@ import { basename, dirname, isAbsolute, join, relative } from 'node:path';
 import {
   downloadGitHubReleaseAsset,
   promoteManagedInstallCandidate,
-} from '@happier-dev/cli-common/providers';
-import { AGY_ACP_SERVER_VERSION } from '@happier-dev/protocol/installables';
-import { extractArchivePayloadToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
+} from '@piggercode/cli-common/providers';
+import { AGY_ACP_SERVER_VERSION } from '@piggercode/protocol/installables';
+import { extractArchivePayloadToDirectory } from '@piggercode/release-runtime/archiveExtraction';
 
 import { configuration } from '@/configuration';
 import { readRuntimeInstallableLastCheckAtMs } from '@/installables/runtime/runtimeInstallableUpdateState';

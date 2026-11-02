@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { BackendTargetRefSchema, openAccountScopedBlobCiphertext, SessionMcpSelectionV1Schema } from '@happier-dev/protocol';
-import type { CodexBackendMode } from '@happier-dev/agents';
+import { BackendTargetRefSchema, openAccountScopedBlobCiphertext, SessionMcpSelectionV1Schema } from '@piggercode/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import {

@@ -6,7 +6,7 @@ import {
     type ActionToolExposureMode,
     type ActionToolExposureSurface,
     type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     getActionSettingsTargetDefinition,

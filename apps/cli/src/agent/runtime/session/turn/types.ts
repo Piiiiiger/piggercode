@@ -2,7 +2,7 @@ import type { ACPMessageData, ACPProvider } from '@/api/session/sessionMessageTy
 import type {
     PrimaryTurnStatusV1,
     SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionTurnTerminalStatus = Exclude<PrimaryTurnStatusV1, 'in_progress'>;
 

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { lookupSha256 } from '@happier-dev/release-runtime/checksums';
+import { lookupSha256 } from '@piggercode/release-runtime/checksums';
 
 test('lookupSha256 returns sha256 for matching filename', () => {
   const text = [

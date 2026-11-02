@@ -10,7 +10,7 @@ type WorkspacePackageSpec = Readonly<{
 
 const workspacePackages: readonly WorkspacePackageSpec[] = [
   {
-    packageName: '@happier-dev/protocol',
+    packageName: '@piggercode/protocol',
     packageSourceRoot: resolve('../../packages/protocol/src'),
     sourceSubpathAliases: {
       installablesPolicy: 'installables/policy',
@@ -22,9 +22,9 @@ const workspacePackages: readonly WorkspacePackageSpec[] = [
       transferSessions: 'transfers/sessions',
     },
   },
-  { packageName: '@happier-dev/agents', packageSourceRoot: resolve('../../packages/agents/src') },
+  { packageName: '@piggercode/agents', packageSourceRoot: resolve('../../packages/agents/src') },
   {
-    packageName: '@happier-dev/cli-common',
+    packageName: '@piggercode/cli-common',
     packageSourceRoot: resolve('../../packages/cli-common/src'),
     sourceFileAliases: {
       cliDistBuildManifest: resolve('../../packages/cli-common/cliDistBuildManifest.cjs'),
@@ -32,9 +32,9 @@ const workspacePackages: readonly WorkspacePackageSpec[] = [
       runtimeImportProbePolicy: resolve('../../packages/cli-common/runtimeImportProbePolicy.mjs'),
     },
   },
-  { packageName: '@happier-dev/connection-supervisor', packageSourceRoot: resolve('../../packages/connection-supervisor/src') },
-  { packageName: '@happier-dev/release-runtime', packageSourceRoot: resolve('../../packages/release-runtime/src') },
-  { packageName: '@happier-dev/transfers', packageSourceRoot: resolve('../../packages/transfers/src') },
+  { packageName: '@piggercode/connection-supervisor', packageSourceRoot: resolve('../../packages/connection-supervisor/src') },
+  { packageName: '@piggercode/release-runtime', packageSourceRoot: resolve('../../packages/release-runtime/src') },
+  { packageName: '@piggercode/transfers', packageSourceRoot: resolve('../../packages/transfers/src') },
 ] as const;
 
 function resolveWorkspacePackageSource(id: string, spec: WorkspacePackageSpec): string | null {

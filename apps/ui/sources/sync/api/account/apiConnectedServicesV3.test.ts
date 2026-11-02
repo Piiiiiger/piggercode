@@ -1,4 +1,4 @@
-import { withConnectedServiceReaderSupport } from '@happier-dev/protocol';
+import { withConnectedServiceReaderSupport } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';

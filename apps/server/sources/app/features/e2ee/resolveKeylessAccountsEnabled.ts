@@ -1,4 +1,4 @@
-import { evaluateFeatureBuildPolicy } from "@happier-dev/protocol";
+import { evaluateFeatureBuildPolicy } from "@piggercode/protocol";
 
 import { readE2eeFeatureEnv, readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv";
 import { resolveServerFeatureBuildPolicy } from "@/app/features/catalog/serverFeatureBuildPolicy";

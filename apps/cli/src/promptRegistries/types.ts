@@ -4,7 +4,7 @@ import type {
   PromptRegistryFetchItemResponseV1,
   PromptRegistryItemSummaryV1,
   PromptRegistrySourceDescriptorV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PromptRegistryResolvedSource = Readonly<{
   descriptor: PromptRegistrySourceDescriptorV1;

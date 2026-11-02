@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ReadinessProbeResult } from '@happier-dev/connection-supervisor';
+import type { ReadinessProbeResult } from '@piggercode/connection-supervisor';
 
 import type { Machine } from '@/api/types';
 import { encodeBase64, encrypt } from '@/api/encryption';

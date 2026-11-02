@@ -1,5 +1,5 @@
 import * as privacyKit from 'privacy-kit';
-import type { MachineKeyBasisV1 } from '@happier-dev/protocol';
+import type { MachineKeyBasisV1 } from '@piggercode/protocol';
 import type { Tx } from '@/storage/inTx';
 
 /** Converts the complete content triple only while its key, both versions and lifecycle remain current. */

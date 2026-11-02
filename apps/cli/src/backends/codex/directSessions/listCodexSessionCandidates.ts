@@ -1,4 +1,4 @@
-import type { DirectSessionCandidateV1, DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionCandidateV1, DirectSessionsSource } from '@piggercode/protocol';
 
 import { logger } from '@/utils/logger';
 

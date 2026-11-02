@@ -2,7 +2,7 @@ import { authProviderModules } from '@/auth/providers/providerModules';
 import type { AuthProvider } from '@/auth/providers/types';
 import { createExternalOAuthProvider } from '@/auth/providers/externalOAuthProvider';
 import { getCachedReadyServerFeatures } from '@/sync/api/capabilities/getReadyServerFeatures';
-import type { AuthProviderId } from '@happier-dev/protocol';
+import type { AuthProviderId } from '@piggercode/protocol';
 
 export type { AuthProvider } from '@/auth/providers/types';
 

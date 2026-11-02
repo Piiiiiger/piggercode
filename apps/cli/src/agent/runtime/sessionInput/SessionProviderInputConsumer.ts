@@ -18,7 +18,7 @@ import type {
   SessionProviderInputConsumer,
 } from './types';
 import { PENDING_QUEUE_ONE_AT_A_TIME_MAX_POP_PER_WAKE } from './pendingQueueDrainPolicy';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import type { RuntimeActivitySnapshotTail } from '@/api/session/mutations/createSessionMutationOutbox';
 import type {
   MaterializeNextPendingOptions,

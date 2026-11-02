@@ -1,4 +1,4 @@
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { rebaseWorkspaceRootRequestToMachineTarget } from '@/sync/runtime/sessionMachineRpcFallback';
 
 import { createSessionFileTransferRpcCaller } from './sessionFileTransferRpcCaller';

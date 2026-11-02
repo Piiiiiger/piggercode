@@ -25,7 +25,7 @@ function writeIsolatedPkgrollRepo(prefix: string) {
   const stagingDir = join(packageRoot, outputDir);
   mkdirSync(packageRoot, { recursive: true });
   writeFileSync(packageJsonPath, JSON.stringify({
-    name: '@happier-dev/pkgroll-fixture',
+    name: '@piggercode/pkgroll-fixture',
     version: '0.0.0',
     main: './dist/index.cjs',
   }), 'utf8');
@@ -157,15 +157,15 @@ describe('runPkgrollBuild', () => {
     const parentYamlRaw = 'name: user-authored-parent-manifest\ncustom: preserve-exactly\n';
     writeFileSync(fixture.packageYamlPath, parentYamlRaw, 'utf8');
     writeFileSync(fixture.packageJsonPath, JSON.stringify({
-      name: '@happier-dev/pkgroll-fixture',
+      name: '@piggercode/pkgroll-fixture',
       version: '0.0.0',
       main: './dist/index.cjs',
       module: './dist/index.mjs',
       dependencies: {
-        '@happier-dev/protocol': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
         zod: '4.3.6',
       },
-      bundledDependencies: ['@happier-dev/protocol'],
+      bundledDependencies: ['@piggercode/protocol'],
       bin: {
         happier: './bin/happier.mjs',
       },
@@ -202,7 +202,7 @@ describe('runPkgrollBuild', () => {
         main: './index.cjs',
         module: './index.mjs',
         dependencies: { zod: '4.3.6' },
-        devDependencies: { '@happier-dev/protocol': '0.0.0' },
+        devDependencies: { '@piggercode/protocol': '0.0.0' },
       });
       expect(stageManifestDuringPkgroll).not.toHaveProperty('bin');
       expect(stageManifestDuringPkgroll).not.toHaveProperty('x-happier-pkgroll-override');
@@ -358,24 +358,24 @@ runPkgrollBuild({
     const dir = createTempDirSync('happier-cli-pkgroll-immutable-generation-');
     const outputDir = 'dist.staging.immutable';
     try {
-      const dependencyDir = join(dir, 'node_modules', '@happier-dev', 'runtime-fixture');
+      const dependencyDir = join(dir, 'node_modules', '@piggercode', 'runtime-fixture');
       mkdirSync(join(dir, 'src'), { recursive: true });
       mkdirSync(dependencyDir, { recursive: true });
-      writeFileSync(join(dir, 'src', 'index.ts'), "export { generation } from '@happier-dev/runtime-fixture';\n", 'utf8');
+      writeFileSync(join(dir, 'src', 'index.ts'), "export { generation } from '@piggercode/runtime-fixture';\n", 'utf8');
       writeFileSync(join(dependencyDir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/runtime-fixture',
+        name: '@piggercode/runtime-fixture',
         version: '0.0.0',
         type: 'module',
         exports: './index.js',
       }), 'utf8');
       writeFileSync(join(dependencyDir, 'index.js'), "export const generation = 'previous';\n", 'utf8');
       writeFileSync(join(dir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/runtime-host-fixture',
+        name: '@piggercode/runtime-host-fixture',
         version: '0.0.0',
         type: 'module',
         module: './dist/index.mjs',
-        dependencies: { '@happier-dev/runtime-fixture': '0.0.0' },
-        bundledDependencies: ['@happier-dev/runtime-fixture'],
+        dependencies: { '@piggercode/runtime-fixture': '0.0.0' },
+        bundledDependencies: ['@piggercode/runtime-fixture'],
       }), 'utf8');
       runPkgrollBuild({
         packageJsonPath: join(dir, 'package.json'),
@@ -386,7 +386,7 @@ runPkgrollBuild({
       const builtPath = join(dir, outputDir, 'index.mjs');
       const built = await import(`${pathToFileURL(builtPath).href}?t=${Date.now()}`);
       expect(built.generation).toBe('previous');
-      expect(readFileSync(builtPath, 'utf8')).not.toContain('@happier-dev/runtime-fixture');
+      expect(readFileSync(builtPath, 'utf8')).not.toContain('@piggercode/runtime-fixture');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -1,5 +1,5 @@
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { InstalledDaemonServiceEntry } from './discoverInstalledDaemonServiceEntries';
 import type { DaemonServiceMode, DaemonServiceTargetMode } from './plan';

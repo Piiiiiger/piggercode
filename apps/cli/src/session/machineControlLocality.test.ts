@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { compareMachineHomeDirs } from '@happier-dev/protocol';
+import { compareMachineHomeDirs } from '@piggercode/protocol';
 
 const mocks = vi.hoisted(() => ({
   fetchAccountMachineReplacements: vi.fn(),

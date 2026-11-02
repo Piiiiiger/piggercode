@@ -5,7 +5,7 @@ import type {
   DeferredSessionBufferLimits,
   DeferredSessionBufferStats,
 } from './deferredSessionBuffer';
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
 import type { RpcHandler, RpcHandlerManagerLike } from '@/api/rpc/types';
 import type { AgentState, Metadata } from '@/api/types';
 import type {
@@ -20,7 +20,7 @@ import type { SessionRuntimeActivitySnapshotPublisher } from '@/session/runtimeA
 import type { SessionUserMessageEnqueueResult } from '@/rpc/handlers/sessionUserMessageSend';
 import type { SessionRuntimeControls } from '@/rpc/handlers/sessionControls';
 import { cloneCallableSessionRuntimeControls } from '@/api/session/sessionRuntimeControls';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 import type { StreamedTranscriptWriterSession } from '@/api/session/streamedTranscriptWriter';
 
 export type DeferredApiSessionTarget = Readonly<{

@@ -1,7 +1,7 @@
 import { createVoiceToolHandlers } from '@/voice/tools/handlers';
 import { resolveToolSessionId } from '@/voice/tools/resolveToolSessionId';
 import { resolveVoiceToolResultHumanSummary } from '@/voice/context/resolveVoiceToolResultHumanSummary';
-import type { ExecutionRunUserTranscriptDirective } from '@happier-dev/protocol';
+import type { ExecutionRunUserTranscriptDirective } from '@piggercode/protocol';
 
 type VoiceToolAction = Readonly<{ t?: unknown; args?: unknown }>;
 

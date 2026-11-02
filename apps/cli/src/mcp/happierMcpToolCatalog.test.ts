@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getActionSpec, listActionSpecs } from '@happier-dev/protocol';
+import { getActionSpec, listActionSpecs } from '@piggercode/protocol';
 
 import { HAPPIER_MCP_TOOL_CATALOG, HAPPIER_MCP_TOOL_CATALOG_NAMES } from './happierMcpToolCatalog';
 

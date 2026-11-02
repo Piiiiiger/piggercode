@@ -1,4 +1,4 @@
-import { McpServersSettingsV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { McpServersSettingsV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 
 function countSavedSecretRefs(value: unknown): number {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return 0;

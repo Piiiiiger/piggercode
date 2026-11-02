@@ -33,8 +33,8 @@ import {
     type DirectTranscriptPageResponse,
     type DirectTranscriptReadAfterRequest,
     type DirectTranscriptReadAfterResponse,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { ZodType } from 'zod';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';

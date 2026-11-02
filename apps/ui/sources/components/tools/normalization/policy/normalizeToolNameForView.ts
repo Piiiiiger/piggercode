@@ -1,4 +1,4 @@
-import { canonicalizeGenericSubAgentToolName, isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import { canonicalizeGenericSubAgentToolName, isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 
 const legacyToolNameToCanonical: Record<string, string> = {
     // Provider-branded historical names.

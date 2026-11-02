@@ -9,7 +9,7 @@
  * install`); this module only decides which of them to run, in what order.
  */
 
-import type { TailscaleStatusSnapshot } from '@happier-dev/cli-common/tailscale';
+import type { TailscaleStatusSnapshot } from '@piggercode/cli-common/tailscale';
 
 export type SetupRelaySelection =
   | Readonly<{ kind: 'cloud' }>

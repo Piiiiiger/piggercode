@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Pressable, Platform } from 'react-native';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import { Modal } from '@/modal';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { MarkdownView } from '@/components/markdown/MarkdownView';
@@ -48,7 +48,7 @@ import { openSessionForkStrategyFlow } from '@/components/sessions/fork/openSess
 import { readMachineTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
 import { getImageMimeTypeFromPath } from '@/scm/utils/filePresentation';
-import { normalizeVoiceAgentTurnTranscriptText } from '@happier-dev/agents';
+import { normalizeVoiceAgentTurnTranscriptText } from '@piggercode/agents';
 import { MessageSelectionCheckbox } from '@/components/sessions/transcript/messageSelection/MessageSelectionCheckbox';
 import { SelectMessageButton } from '@/components/sessions/transcript/messageSelection/SelectMessageButton';
 import { useOptionalTranscriptSelectionRow } from '@/components/sessions/transcript/messageSelection/TranscriptMessageSelectionContext';

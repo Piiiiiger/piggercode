@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
+import { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';
 
 import {
     FileMentionSuggestion,

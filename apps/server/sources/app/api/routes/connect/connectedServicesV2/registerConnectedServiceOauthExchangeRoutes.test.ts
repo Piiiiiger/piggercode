@@ -3,7 +3,7 @@ import { describe, expect, it, vi, afterEach } from 'vitest';
 import { serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod';
 import tweetnacl from 'tweetnacl';
 
-import { decodeBase64, encodeBase64, openBoxBundle } from '@happier-dev/protocol';
+import { decodeBase64, encodeBase64, openBoxBundle } from '@piggercode/protocol';
 
 import { registerConnectedServiceOauthExchangeRoutes } from './registerConnectedServiceOauthExchangeRoutes';
 

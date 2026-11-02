@@ -1,4 +1,4 @@
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import type { SessionMessageRole } from '@piggercode/protocol';
 
 import type { ACPMessageData } from '@/api/session/sessionMessageTypes';
 

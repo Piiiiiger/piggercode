@@ -1,6 +1,6 @@
 import type { EnhancedMode } from '../loop';
 import { randomUUID } from 'node:crypto';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import type { PendingProviderAction } from '@/agent/runtime/modeMessageQueue';
 
 export type ClaudeRemoteProviderPromptAcceptance = Readonly<{
@@ -16,7 +16,7 @@ export type ClaudeRemoteProviderAcceptedPrompt<Mode = EnhancedMode> = Readonly<{
     userMessageLocalIds?: readonly string[] | null;
     providerAcceptancePending?: boolean;
     pendingProviderAction?: PendingProviderAction;
-    pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 }>;
 
 export type ClaudeRemoteProviderPromptAttribution = Readonly<{
@@ -24,7 +24,7 @@ export type ClaudeRemoteProviderPromptAttribution = Readonly<{
     userMessageLocalIds: readonly string[];
     providerAcceptancePending: boolean;
     pendingProviderAction?: PendingProviderAction;
-    pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 }>;
 
 export function readClaudeRemoteProviderPromptAttribution(

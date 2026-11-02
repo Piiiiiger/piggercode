@@ -14,7 +14,7 @@
  * Decision only; prompting and the command live in `host.ts`.
  */
 
-import type { TailscaleServeRootSlot, TailscaleStatusSnapshot } from '@happier-dev/cli-common/tailscale';
+import type { TailscaleServeRootSlot, TailscaleStatusSnapshot } from '@piggercode/cli-common/tailscale';
 
 import { isLoopbackServerHost } from '@/server/serverUrlClassification';
 

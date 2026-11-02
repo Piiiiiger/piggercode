@@ -1,5 +1,5 @@
 import type { ToolCall } from '@/sync/domains/messages/messageTypes';
-import { maybeParseJson } from '@happier-dev/protocol';
+import { maybeParseJson } from '@piggercode/protocol';
 import { normalizeToolInputForRendering } from '../normalize/inputNormalization';
 import { canonicalizeToolNameForRendering } from '../normalize/nameInference';
 import { normalizeToolResultForRendering } from '../normalize/resultNormalization';

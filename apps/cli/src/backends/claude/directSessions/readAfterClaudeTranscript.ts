@@ -1,4 +1,4 @@
-import type { DirectSessionsSource, DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectSessionsSource, DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 import { readJsonlFileForward } from '@/api/directSessions/filePaging/jsonlForwardReader';
 

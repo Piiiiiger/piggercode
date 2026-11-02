@@ -1,12 +1,12 @@
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { computeHasUnreadActivity } from '@/sync/domains/messages/unread';
 import type {
     PrimaryTurnStatusV1,
     SessionRuntimeActivityState,
     SessionRuntimeIssueV1,
     PendingActivationAuthorizationV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     deriveLatestPendingRequestObservedAtFromSession,
     derivePendingRequestFlagsFromAgentState,

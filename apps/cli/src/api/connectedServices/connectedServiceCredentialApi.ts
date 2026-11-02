@@ -19,7 +19,7 @@ import {
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceId,
   type SealedConnectedServiceCredentialV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { logger } from '@/ui/logger';

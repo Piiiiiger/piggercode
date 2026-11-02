@@ -12,7 +12,7 @@ import {
 import {
   CLAUDE_UNIFIED_TERMINAL_DIALOG_CHOICE_REQUEST_SOURCE,
   isClaudeUnifiedTerminalDialogChoiceAgentStateRequest,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { Session } from '../../session';
 import type { PermissionRpcPayload } from '../../utils/permissionRpc';

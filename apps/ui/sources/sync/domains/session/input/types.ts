@@ -7,7 +7,7 @@ import type {
     NonSteerableSendPromptSetting,
     SessionMessageDirectBypassReason,
 } from '@/sync/domains/session/control/submitMode';
-import type { PendingRequestedActionV1 } from '@happier-dev/protocol';
+import type { PendingRequestedActionV1 } from '@piggercode/protocol';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { ResumeSessionOptions, ResumeSessionResult } from '@/sync/ops/sessions';
 import type { SessionInactiveResumePolicy } from '@/sync/domains/session/control/inactiveResumePolicy';

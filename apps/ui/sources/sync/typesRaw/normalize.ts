@@ -1,5 +1,5 @@
-import { providers } from '@happier-dev/agents';
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import { providers } from '@piggercode/agents';
+import type { SessionMessageRole } from '@piggercode/protocol';
 
 import type { MessageMeta } from '../domains/messages/messageMetaTypes';
 import type { TranscriptObservationMetadata } from '../domains/messages/transcriptObservationProvenance';
@@ -11,7 +11,7 @@ import {
 import { markUnsupportedContentMeta } from '../domains/messages/unsupportedContentMeta';
 import { hasSessionMediaRenderItems } from '../domains/sessionMedia/sessionMediaMessageMeta';
 import { rawRecordSchema, type AgentEvent, type RawAgentContent, type RawRecord, type UsageData } from './schemas';
-import { isSessionToolAnswerDeliveryMeta, normalizeClaudeActivityStatusSignal } from '@happier-dev/protocol';
+import { isSessionToolAnswerDeliveryMeta, normalizeClaudeActivityStatusSignal } from '@piggercode/protocol';
 import { buildUsageDataFromTokenCountMessage } from './tokenCountUsage';
 
 // Normalized types

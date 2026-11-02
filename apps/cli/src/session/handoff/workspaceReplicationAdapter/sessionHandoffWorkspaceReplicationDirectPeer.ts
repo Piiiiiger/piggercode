@@ -1,4 +1,4 @@
-import type { TransferEndpointCandidate, WorkspaceManifest } from '@happier-dev/protocol';
+import type { TransferEndpointCandidate, WorkspaceManifest } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import type { DirectPeerOnDemandTransferScope } from '@/machines/transfer/directPeerTransport';

@@ -15,7 +15,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
             writeFileSync(
                 join(workspaceSrc, 'package.json'),
                 JSON.stringify({
-                    name: '@happier-dev/cli-common',
+                    name: '@piggercode/cli-common',
                     version: '0.0.0',
                     main: './dist/index.js',
                     types: './dist/index.d.ts',
@@ -41,7 +41,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
                 repoRoot,
                 bundles: [
                     {
-                        packageName: '@happier-dev/cli-common',
+                        packageName: '@piggercode/cli-common',
                         srcDir: workspaceSrc,
                     },
                 ],
@@ -56,7 +56,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
             });
 
             expect(calls).toEqual([
-                ['@happier-dev/cli-common'],
+                ['@piggercode/cli-common'],
             ]);
         } finally {
             rmSync(repoRoot, { recursive: true, force: true });
@@ -71,7 +71,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
             writeFileSync(
                 join(workspaceSrc, 'package.json'),
                 JSON.stringify({
-                    name: '@happier-dev/protocol',
+                    name: '@piggercode/protocol',
                     version: '0.0.0',
                     main: './dist/index.js',
                     types: './dist/index.d.ts',
@@ -95,7 +95,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
                 repoRoot,
                 bundles: [
                     {
-                        packageName: '@happier-dev/protocol',
+                        packageName: '@piggercode/protocol',
                         srcDir: workspaceSrc,
                     },
                 ],
@@ -105,7 +105,7 @@ describe('ensureBundledWorkspacePackagesBuilt', () => {
                 },
             });
 
-            expect(calls).toEqual([['@happier-dev/protocol']]);
+            expect(calls).toEqual([['@piggercode/protocol']]);
         } finally {
             rmSync(repoRoot, { recursive: true, force: true });
         }

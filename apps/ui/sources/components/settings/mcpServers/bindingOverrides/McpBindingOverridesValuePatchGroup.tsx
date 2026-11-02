@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useUnistyles } from 'react-native-unistyles';
 
-import type { McpValueRefV1 } from '@happier-dev/protocol';
-import { McpValueRefV1Schema } from '@happier-dev/protocol';
+import type { McpValueRefV1 } from '@piggercode/protocol';
+import { McpValueRefV1Schema } from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

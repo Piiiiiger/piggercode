@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ConnectedServiceIdSchema } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema } from "@piggercode/protocol";
 
 import { createEnvReset } from "../../testkit/env";
 import { createRouteTestBuilder } from "../../testkit/routeTestBuilder";

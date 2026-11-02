@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { isConnectedServiceRuntimeAuthRecoveryCancellation, readSessionAgentTransitionDividerV1 } from '@happier-dev/protocol';
+import { isConnectedServiceRuntimeAuthRecoveryCancellation, readSessionAgentTransitionDividerV1 } from '@piggercode/protocol';
 import { ActivitySpinner, iconMatchedSpinnerSize } from '@/components/ui/feedback/ActivitySpinner';
 import { AgentTransitionDividerRow } from '@/components/sessions/transcript/agentTransition/AgentTransitionDividerRow';
 

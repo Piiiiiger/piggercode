@@ -11,7 +11,7 @@ import {
 } from '@/components/sessions/workState/sessionWorkflowActivityPresentation';
 import type { WorkflowPhaseRollup } from '@/components/sessions/workState/sessionWorkflowActivityTypes';
 import { AgentActivityStatusSlot } from '@/components/sessions/agentActivity/row/AgentActivityStatusSlot';
-import { fromWorkflowRunStatus, type SessionWorkflowRunStatusV1 } from '@happier-dev/protocol';
+import { fromWorkflowRunStatus, type SessionWorkflowRunStatusV1 } from '@piggercode/protocol';
 
 import { Icon } from '@/components/ui/icons/Icon';
 

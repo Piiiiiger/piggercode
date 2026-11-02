@@ -1,7 +1,7 @@
-import { SessionWorkStateGetResponseV1Schema } from '@happier-dev/protocol';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { SessionWorkStateGetResponseV1Schema } from '@piggercode/protocol';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { buildWakeResumeExtras } from '@/agents/catalog/catalog';
 import { buildResumeCapabilityOptionsFromUiState } from '@/agents/registry/registryUiBehavior';

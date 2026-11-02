@@ -1,11 +1,11 @@
 import {
     buildBackendTargetKey,
     type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { PermissionMode } from './permissionTypes';
 import { normalizePermissionModeForGroup } from './permissionTypes';
 import { getAgentCore, type AgentId } from '@/agents/catalog/catalog';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 export type AccountPermissionDefaults = Readonly<{
     byTargetKey: Record<string, PermissionMode>;

@@ -2,8 +2,8 @@ import { PassThrough } from 'node:stream';
 
 import { describe, expect, it } from 'vitest';
 
-import type { CliUpdateFacts } from '@happier-dev/protocol';
-import { SystemTaskExecutionError } from '@happier-dev/cli-common/systemTasks';
+import type { CliUpdateFacts } from '@piggercode/protocol';
+import { SystemTaskExecutionError } from '@piggercode/cli-common/systemTasks';
 
 import { createCliUpdateRemoteTaskKind, type DetachedUpdaterSpawn } from './cliUpdateRemote';
 
@@ -102,16 +102,16 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
 
   it('refuses a CLI Happier does not manage, naming the command that updates it', async () => {
     const kind = createCliUpdateRemoteTaskKind({
-      readFacts: () => facts({ installSource: 'npm', updateCommand: 'npm install -g @happier-dev/cli@latest', canUpdateRemotely: false }),
+      readFacts: () => facts({ installSource: 'npm', updateCommand: 'npm install -g @piggercode/cli@latest', canUpdateRemotely: false }),
       publicReleaseRing: 'preview',
-      script: '/usr/lib/node_modules/@happier-dev/cli/bin/happier.mjs',
+      script: '/usr/lib/node_modules/@piggercode/cli/bin/happier.mjs',
       cwd: '/tmp',
       logsDir: '/tmp/logs',
       spawnDetached: () => { throw new Error('must not spawn'); },
     });
     const error = await run(kind, {}).catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(SystemTaskExecutionError);
-    expect(error).toMatchObject({ code: 'cli_not_managed', message: expect.stringContaining('npm install -g @happier-dev/cli@latest') });
+    expect(error).toMatchObject({ code: 'cli_not_managed', message: expect.stringContaining('npm install -g @piggercode/cli@latest') });
   });
 
   it('refuses where the updater cannot outlive the service restart (Windows)', async () => {

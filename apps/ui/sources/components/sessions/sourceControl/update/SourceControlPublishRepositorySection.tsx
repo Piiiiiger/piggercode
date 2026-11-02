@@ -5,7 +5,7 @@ import type {
     ScmHostingRepositoryRemoteConflictStrategy,
     ScmHostingRepositoryRemoteUrlKind,
     ScmHostingRepositoryVisibility,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';

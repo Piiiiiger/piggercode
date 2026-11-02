@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act, ReactTestRenderer } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { PromptRegistryFetchItemResponseV1 } from '@happier-dev/protocol';
+import type { PromptRegistryFetchItemResponseV1 } from '@piggercode/protocol';
 import { invokeTestInstanceHandler, pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 import {
   installPromptRegistriesCommonModuleMocks,

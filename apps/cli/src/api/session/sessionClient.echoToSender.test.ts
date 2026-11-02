@@ -35,7 +35,7 @@ vi.mock('./connection/createSessionSocketTransport', () => ({
   },
 }));
 
-vi.mock('@happier-dev/connection-supervisor', () => ({
+vi.mock('@piggercode/connection-supervisor', () => ({
   DEFAULT_MANAGED_CONNECTION_POLICY: {},
   createManagedConnectionSupervisor: (params: { createTransport: () => unknown; onConnected?: () => Promise<void> | void }) => ({
     start: async () => {

@@ -10,8 +10,8 @@ import {
 } from '../toolCallActivityTimestamps';
 import type { SessionSubagent, SessionSubagentNativeRef } from '../types';
 import { resolveSubAgentSidechainProviderLabel } from './resolveSubAgentSidechainProviderLabel';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
-import { isClaudeAsyncAgentLaunchToolResult, normalizeClaudeActivityStatusSignal, readClaudeAgentSdkProviderTaskStatus } from '@happier-dev/protocol';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
+import { isClaudeAsyncAgentLaunchToolResult, normalizeClaudeActivityStatusSignal, readClaudeAgentSdkProviderTaskStatus } from '@piggercode/protocol';
 import { resolvePendingPermissionRouteForSubAgentTool } from './resolvePendingPermissionRouteForSubAgentTool';
 
 function readNonEmptyString(value: unknown): string | null {

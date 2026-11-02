@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
 import { renderHook, standardCleanup } from '@/dev/testkit';
 import { scopedSessionLocalStateKey } from '@/sync/domains/state/sessionLocalStateKeys';
-import type { ManagedEndpointSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedEndpointSupervisor } from '@piggercode/connection-supervisor';
 import { createSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 
 type EndpointSupervisorLookup = typeof import('@/sync/runtime/connectivity/endpointSupervisorPool').getEndpointSupervisorForServer;
@@ -80,8 +80,8 @@ import { useSessionPendingMessages } from './domains/state/storage';
 import type { Session } from './domains/state/storageTypes';
 import { apiSocket } from '@/sync/api/session/apiSocket';
 import { HappyError } from '@/utils/errors/errors';
-import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 import { TokenStorage } from '@/auth/storage/tokenStorage';
 import {
     loadPendingOutboxForSession,

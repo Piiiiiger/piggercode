@@ -25,7 +25,7 @@ const DARWIN_BASE = {
   webappUrl: 'https://app.happier.dev',
   publicServerUrl: 'https://api.happier.dev',
   nodePath: '/opt/homebrew/bin/node',
-  entryPath: '/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+  entryPath: '/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs',
 } as const;
 
 const LINUX_BASE = {
@@ -40,7 +40,7 @@ const LINUX_BASE = {
   webappUrl: 'https://app.happier.dev',
   publicServerUrl: 'https://api.happier.dev',
   nodePath: '/usr/bin/node',
-  entryPath: '/usr/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+  entryPath: '/usr/lib/node_modules/@piggercode/cli/dist/index.mjs',
 } as const;
 
 const WIN32_BASE = {

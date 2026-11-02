@@ -1,7 +1,7 @@
 import { TokenStorage } from '@/auth/storage/tokenStorage';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { toServerUrlDisplay } from '@/sync/domains/server/url/serverUrlDisplay';
-import { redactPublicShareCapabilityUrl, withConnectedServiceReaderSupport } from '@happier-dev/protocol';
+import { redactPublicShareCapabilityUrl, withConnectedServiceReaderSupport } from '@piggercode/protocol';
 import { runtimeFetch } from '@/utils/system/runtimeFetch';
 import { createEndpointSupervisedRequest } from '@/sync/runtime/connectivity/createEndpointSupervisedRequest';
 import { getEndpointSupervisorForServer } from '@/sync/runtime/connectivity/endpointSupervisorPool';

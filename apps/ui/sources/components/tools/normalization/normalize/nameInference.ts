@@ -1,5 +1,5 @@
 import { asRecord, firstNonEmptyString, hasNonEmptyRecord } from './_shared';
-import { canonicalizeGenericSubAgentToolName, isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import { canonicalizeGenericSubAgentToolName, isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 
 function isLegacySlashChangeTitleName(name: string): boolean {
     const normalized = typeof name === 'string' ? name.trim().toLowerCase() : '';

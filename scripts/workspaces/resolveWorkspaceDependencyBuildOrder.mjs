@@ -4,8 +4,8 @@ import { resolve } from 'node:path';
 function normalizeWorkspacePackageName(raw) {
   const value = String(raw ?? '').trim();
   if (!value) return '';
-  if (value.startsWith('@happier-dev/')) {
-    return value.slice('@happier-dev/'.length).trim();
+  if (value.startsWith('@piggercode/')) {
+    return value.slice('@piggercode/'.length).trim();
   }
   return value;
 }
@@ -19,7 +19,7 @@ function collectInternalDependencyNames(pkgJson, currentPackageName) {
   for (const field of [pkgJson?.dependencies, pkgJson?.optionalDependencies, pkgJson?.devDependencies]) {
     if (!field || typeof field !== 'object') continue;
     for (const dependencyName of Object.keys(field)) {
-      if (!dependencyName.startsWith('@happier-dev/')) continue;
+      if (!dependencyName.startsWith('@piggercode/')) continue;
       if (dependencyName === currentPackageName) continue;
       const normalized = normalizeWorkspacePackageName(dependencyName);
       if (normalized) {

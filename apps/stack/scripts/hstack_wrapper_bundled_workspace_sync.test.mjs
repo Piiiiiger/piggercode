@@ -52,9 +52,9 @@ function createBundledSyncFixture(rootDir, fixtureDir, { simulateMissingUpdateUn
       '  }',
       ...(simulateMissingUpdateUntilSync
         ? [
-            "  if (specifier === '@happier-dev/cli-common/update') {",
+            "  if (specifier === '@piggercode/cli-common/update') {",
             `    if (!existsSync(${JSON.stringify(syncMarkerPath)})) {`,
-            "      const error = new Error('Package subpath ./update is not defined by exports in partial bundled @happier-dev/cli-common copy');",
+            "      const error = new Error('Package subpath ./update is not defined by exports in partial bundled @piggercode/cli-common copy');",
             "      error.code = 'ERR_PACKAGE_PATH_NOT_EXPORTED';",
             '      throw error;',
             '    }',

@@ -1,4 +1,4 @@
-import { HappierMetaEnvelopeSchema, type HappierMetaEnvelope } from '@happier-dev/protocol';
+import { HappierMetaEnvelopeSchema, type HappierMetaEnvelope } from '@piggercode/protocol';
 
 export type { HappierMetaEnvelope };
 

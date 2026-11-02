@@ -43,7 +43,7 @@ type VoiceAgentSessionsLike = Readonly<{
       | {
           onTextDelta?: (delta: string) => void;
           signal?: AbortSignal;
-          userTranscript?: import('@happier-dev/protocol').ExecutionRunUserTranscriptDirective;
+          userTranscript?: import('@piggercode/protocol').ExecutionRunUserTranscriptDirective;
         }
       | undefined,
   ) => Promise<{ assistantText: string; actions?: ReadonlyArray<unknown> }>;

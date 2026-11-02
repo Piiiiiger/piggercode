@@ -1,5 +1,5 @@
-import { isDelegatedSessionApprovalRpcMethod } from '@happier-dev/protocol/rpc';
-import { isSocketRpcTargetFailureV1 } from '@happier-dev/protocol/rpcErrors';
+import { isDelegatedSessionApprovalRpcMethod } from '@piggercode/protocol/rpc';
+import { isSocketRpcTargetFailureV1 } from '@piggercode/protocol/rpcErrors';
 
 export type ForwardedRpcResponse =
     | Readonly<{ ok: true; result: unknown }>

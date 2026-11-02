@@ -1,5 +1,5 @@
 import tmp from 'tmp';
-import { renderPrismaCompatibleSqliteDatabaseUrl } from '@happier-dev/cli-common/firstPartyRuntime';
+import { renderPrismaCompatibleSqliteDatabaseUrl } from '@piggercode/cli-common/firstPartyRuntime';
 import { runCommand } from './runCommand';
 
 function parseNameArg(argv: string[]): { name: string | null; passthrough: string[] } {

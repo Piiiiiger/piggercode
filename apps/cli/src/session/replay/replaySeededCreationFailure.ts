@@ -1,4 +1,4 @@
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 
 /**
  * Classification of a canonical Replay-seeded creation failure.

@@ -4,7 +4,7 @@ import { storeConnectedServiceCredentialForAccount } from '@/sync/domains/connec
 import { t } from '@/text';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 
-import type { ConnectedServiceCredentialRecordV1, ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1, ConnectedServiceId } from '@piggercode/protocol';
 
 const PROVIDER_IDENTITY_MISMATCH_ERROR = 'connect_reconnect_provider_identity_mismatch';
 

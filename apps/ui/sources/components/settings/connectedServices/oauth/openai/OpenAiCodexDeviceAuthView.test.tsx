@@ -3,7 +3,7 @@ import React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { decodeBase64, encodeBase64, sealBoxBundle } from '@happier-dev/protocol';
+import { decodeBase64, encodeBase64, sealBoxBundle } from '@piggercode/protocol';
 import { pressTestInstanceAsync, renderScreen } from '@/dev/testkit';
 
 

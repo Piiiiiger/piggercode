@@ -3,7 +3,7 @@ import type { ToolCall } from '@/sync/domains/messages/messageTypes';
 import { t } from '@/text';
 import { ICON_EDIT } from '../icons';
 import type { KnownToolDefinition } from '../_types';
-import { PatchInputV2Schema } from '@happier-dev/protocol';
+import { PatchInputV2Schema } from '@piggercode/protocol';
 
 export const corePatchTools = {
     Patch: {

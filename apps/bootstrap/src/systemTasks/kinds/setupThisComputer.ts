@@ -1,5 +1,5 @@
-import { systemTasks } from '@happier-dev/cli-common';
-import type { FirstPartyAcquisitionOptions } from '@happier-dev/cli-common/firstPartyRuntime';
+import { systemTasks } from '@piggercode/cli-common';
+import type { FirstPartyAcquisitionOptions } from '@piggercode/cli-common/firstPartyRuntime';
 import { reportCliAcquisitionProgress } from '../cliAcquisitionProgress.js';
 import {
   createServerUrlComparableKey,
@@ -13,7 +13,7 @@ import {
   SETUP_PAIRING_PROMPT_KIND,
   SETUP_SERVICE_CONSENT_PROMPT_KIND,
   setupReplacesValidatedAccount,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   ensureHappierCliPathExposure,
   removeHappierCliPathExposure,
@@ -21,9 +21,9 @@ import {
   writeHappierCliChoice,
   type HappierCliChoice,
   type HappierCliPathRemovalResult,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import type { InteractiveSystemTaskContext, InteractiveSystemTaskKind } from '@happier-dev/cli-common/systemTasks';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import type { InteractiveSystemTaskContext, InteractiveSystemTaskKind } from '@piggercode/cli-common/systemTasks';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import {
   inspectLocalHappierCliChoice,

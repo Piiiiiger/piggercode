@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { clearConnectedServiceAuthGroupMemberRuntimeBlockers } from "@happier-dev/protocol";
+import { clearConnectedServiceAuthGroupMemberRuntimeBlockers } from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { inTx, type Tx } from "@/storage/inTx";

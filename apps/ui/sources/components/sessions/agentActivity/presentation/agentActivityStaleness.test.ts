@@ -1,5 +1,5 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
-import { AGENT_ACTIVITY_STATUSES_V1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
+import { AGENT_ACTIVITY_STATUSES_V1 } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/text', async () => {

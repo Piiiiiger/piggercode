@@ -28,7 +28,7 @@ const [{ useInSessionAgentPickerControls }, { getResolvedBackendCatalogEntries }
     import('@/agents/backendCatalog/getResolvedBackendCatalogEntries'),
     import('@/sync/domains/settings/settings'),
 ]);
-const { AccountProfileSchema } = await import('@happier-dev/protocol');
+const { AccountProfileSchema } = await import('@piggercode/protocol');
 const { resetDynamicModelProbeCacheForTests } = await import('@/sync/domains/models/dynamicModelProbeCache');
 
 beforeEach(installAgentInputAssetLoader);

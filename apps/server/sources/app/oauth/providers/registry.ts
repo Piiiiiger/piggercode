@@ -1,6 +1,6 @@
 import type { FeaturesResponse } from "@/app/features/types";
 import type { OAuthFlowProvider, OAuthProviderStatus } from "./types";
-import type { AuthProviderId } from "@happier-dev/protocol";
+import type { AuthProviderId } from "@piggercode/protocol";
 import { resolveProviderModules } from "@/app/auth/providers/providerModules";
 
 export type OAuthProviderId = AuthProviderId;

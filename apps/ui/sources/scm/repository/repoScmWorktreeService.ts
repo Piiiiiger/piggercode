@@ -4,7 +4,7 @@ import {
     type ScmWorktreeCreateResponse,
     type ScmWorktreePruneResponse,
     type ScmWorktreeRemoveResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 import { normalizeFileSystemPath } from '@/sync/domains/fileSystem/normalizeFileSystemPath';

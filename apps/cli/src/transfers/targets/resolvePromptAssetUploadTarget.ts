@@ -4,7 +4,7 @@ import {
   PromptAssetMutationResponseV1Schema,
   PromptAssetWriteRequestSchema,
   type PromptAssetMutationResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import type { PromptAssetAdapter } from '@/promptAssets/types';

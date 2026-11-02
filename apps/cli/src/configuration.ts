@@ -16,7 +16,7 @@ import { applyRuntimeContextPrefixEnv, parseRuntimeContextPrefixArgs } from '@/u
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath'
 import {
   resolveManagedCliReleaseChannelSync,
-} from '@happier-dev/cli-common/firstPartyRuntime'
+} from '@piggercode/cli-common/firstPartyRuntime'
 import { CANONICAL_DAEMON_STATE_BASENAME } from '@/daemon/ownership/daemonOwnershipPaths'
 import {
   createServerUrlComparableKey,
@@ -24,10 +24,10 @@ import {
   HAPPIER_REPLAY_SEED_MIN_CHARS,
   MAX_EXECUTION_RUN_OBSERVATION_TIMEOUT_SECONDS,
   type ClientEncryptionRequirement,
-} from '@happier-dev/protocol'
+} from '@piggercode/protocol'
 import packageJson from '../package.json'
 import { BUILTIN_RELAY } from '@/server/builtinRelay'
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings'
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings'
 
 export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 100_000_000;
 export const DEFAULT_EXECUTION_RUN_WAIT_MCP_TIMEOUT_GRACE_MS = 60_000;

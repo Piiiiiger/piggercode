@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { randomUUID } from 'node:crypto';
 
-import { ApprovalRequestV1Schema } from '@happier-dev/protocol';
+import { ApprovalRequestV1Schema } from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

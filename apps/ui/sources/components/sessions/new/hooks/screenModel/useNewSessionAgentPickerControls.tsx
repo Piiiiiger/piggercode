@@ -14,7 +14,7 @@ import {
     type AccountProfile,
     type BackendTargetRefV1,
     type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ModelMode } from '@/sync/domains/permissions/permissionTypes';
 import type { ResolvedBackendCatalogEntry } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { t } from '@/text';

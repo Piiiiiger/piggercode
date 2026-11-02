@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { openAccountScopedBlobCiphertext, type DirectSessionTranscriptDeltaEphemeral } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext, type DirectSessionTranscriptDeltaEphemeral } from '@piggercode/protocol';
 
 import {
   bindApiSessionSocketMock,
@@ -132,7 +132,7 @@ describe('ApiMachineClient transports', () => {
 
   it('configures machine RPC to project only strict completed-stop transport proof', async () => {
     const mod = await import('./apiMachine');
-    const { RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { RPC_METHODS } = await import('@piggercode/protocol/rpc');
 
     new mod.ApiMachineClient('fake-token', {
       id: 'test-machine',
@@ -245,7 +245,7 @@ describe('ApiMachineClient transports', () => {
     bindApiSessionSocketMock(mockIo, machineSocket);
 
     const mod = await import('./apiMachine');
-    const { SOCKET_RPC_EVENTS } = await import('@happier-dev/protocol/socketRpc');
+    const { SOCKET_RPC_EVENTS } = await import('@piggercode/protocol/socketRpc');
 
     const machine: Machine = {
       id: 'test-machine',

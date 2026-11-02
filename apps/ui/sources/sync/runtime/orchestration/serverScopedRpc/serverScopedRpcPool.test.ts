@@ -4,7 +4,7 @@ import {
     resetScopedMachineDataKeyCacheForTests,
     resolveScopedMachineEncryptionContext,
 } from './serverScopedRpcPool';
-import { MACHINE_PLAIN_DATA_KEY_MARKER } from '@happier-dev/protocol';
+import { MACHINE_PLAIN_DATA_KEY_MARKER } from '@piggercode/protocol';
 
 function readAuthorizationHeader(headers: RequestInit['headers']): string {
     if (!headers) return '';

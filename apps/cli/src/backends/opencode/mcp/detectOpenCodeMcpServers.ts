@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
-import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1 } from '@happier-dev/protocol';
+import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
+import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1 } from '@piggercode/protocol';
 
 export type DetectOpenCodeMcpServersResult = Readonly<{
   servers: ReadonlyArray<DetectedMcpServerV1>;

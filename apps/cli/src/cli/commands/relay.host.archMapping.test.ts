@@ -19,7 +19,7 @@ type PreparedPayload = Readonly<{
 
 let preparedRoots: string[] = [];
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,

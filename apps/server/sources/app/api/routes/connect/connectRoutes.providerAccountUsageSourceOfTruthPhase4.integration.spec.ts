@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import { buildProviderAccountUsageRecordId } from "@happier-dev/protocol";
+import { buildProviderAccountUsageRecordId } from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { connectRoutes } from "./connectRoutes";

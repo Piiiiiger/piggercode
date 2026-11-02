@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { DirectSessionStatusGetResponse } from '@happier-dev/protocol';
+import type { DirectSessionStatusGetResponse } from '@piggercode/protocol';
 
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
 import { readDirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';

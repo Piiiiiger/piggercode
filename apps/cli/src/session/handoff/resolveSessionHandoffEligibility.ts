@@ -3,7 +3,7 @@ import {
   evaluateVendorHandoffEligibility,
   resolveAgentIdFromFlavor,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 type SessionStorageMode = 'direct' | 'persisted';
 

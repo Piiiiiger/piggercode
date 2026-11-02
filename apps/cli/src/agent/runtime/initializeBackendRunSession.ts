@@ -6,7 +6,7 @@ import type {
 import type { AgentState, Metadata, Session } from '@/api/types'
 import {
   type SessionAttachMetadataIdentityPolicy,
-} from '@happier-dev/protocol'
+} from '@piggercode/protocol'
 import { setupOfflineReconnection } from '@/api/offline/setupOfflineReconnection'
 import { createBaseSessionForAttach } from '@/agent/runtime/createBaseSessionForAttach'
 import {

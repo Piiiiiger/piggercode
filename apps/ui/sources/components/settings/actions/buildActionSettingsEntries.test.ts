@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ActionsSettingsV1Schema, DEFAULT_ACTIONS_SETTINGS_V1 } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema, DEFAULT_ACTIONS_SETTINGS_V1 } from '@piggercode/protocol';
 
 describe('buildActionSettingsEntries', () => {
     it('marks inventory voice surfaces unavailable when device inventory sharing is disabled', async () => {

@@ -18,8 +18,8 @@ import { isAbortLikeError } from '@/agent/executionRuns/runtime/turnDelivery';
 import { configuration } from '@/configuration';
 import { isAgentNativeResumeIdentityMismatchError } from '@/session/agentTransition/agentNativeReturn';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
-import { readNewestSessionModelsMetadataStateV1 } from '@happier-dev/agents';
+import { readPendingLocalId } from '@piggercode/protocol';
+import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 import {
   resolveProviderPromptFailureDeliveryReason,
   type ProviderPromptWithMeta,

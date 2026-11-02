@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { randomUUID } from 'node:crypto';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { runClaude, type StartOptions } from '@/backends/claude/runClaude';
 import { isClaudeCliJavaScriptFile } from '@/backends/claude/utils/resolveClaudeCliPath';
@@ -37,7 +37,7 @@ import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/run
 import { claimSessionRunnerOwnership, withSessionRunnerOwnership } from '@/daemon/sessionRunnerLock';
 
 import type { CommandContext } from '@/cli/commandRegistry';
-import { fail, warn as presentationWarn } from '@happier-dev/cli-common/output';
+import { fail, warn as presentationWarn } from '@piggercode/cli-common/output';
 
 function readResumeFlagValue(args: readonly string[] | null | undefined): { flagIndex: number; valueIndex: number; value: string } | null {
   const list = Array.isArray(args) ? args : [];

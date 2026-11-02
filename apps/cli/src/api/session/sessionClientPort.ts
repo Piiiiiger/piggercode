@@ -31,7 +31,7 @@ import type {
   SessionSystemRecordNamespace,
   SessionSystemRecordUpsertRequest,
   SessionTurnsProjectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { EphemeralSendResult } from './ephemeralSendOutcome';
 import type { RuntimeActivitySnapshotTail } from './mutations/createSessionMutationOutbox';
 import type { SessionPermissionRpcRouter } from '@/agent/permissions/sessionPermissionRpcRouter';

@@ -4,7 +4,7 @@ import {
   SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION,
   SessionAgentActivityEntryV1Schema,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { projectWorkflowRunAgentActivityEntries } from './agentActivityHeadlineProjection';
 

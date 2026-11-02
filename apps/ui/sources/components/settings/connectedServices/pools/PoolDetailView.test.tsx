@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import { renderScreen } from '@/dev/testkit';
 
 import {

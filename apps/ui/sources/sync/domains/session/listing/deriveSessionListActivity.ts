@@ -1,6 +1,6 @@
 import type { SessionState } from '@/utils/sessions/sessionUtils';
 import { deriveSessionAttentionState } from '../attention/deriveSessionAttentionState';
-import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1, SessionRuntimeActivityState } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1, SessionRuntimeActivityState } from '@piggercode/protocol';
 import { hasUnseenSessionTurnCompletion, isSessionListReadyForReview } from './sessionListReadyForReview';
 import { resolveSessionListBackgroundWorkAttention, type SessionListBackgroundWorkAttentionMode } from './sessionListBackgroundWorkAttention';
 

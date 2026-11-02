@@ -47,7 +47,7 @@ import {
     type PendingDeliveryStatusV1 as ProtocolPendingDeliveryStatusV1,
     type PendingRequestedActionV1,
     type SessionStoredMessageContent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { t } from '@/text';
 import {
     isPendingOutboxProjectionForIdentity,

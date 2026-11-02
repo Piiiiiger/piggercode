@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CODEX_ACP_DEP_ID, INSTALLABLE_KEYS } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID, INSTALLABLE_KEYS } from '@piggercode/protocol/installables';
 
 import type { InstallableRegistryEntry, InstallableDepDataLike } from './installablesRegistry';
 import { planInstallablesBackgroundActions } from './installablesBackgroundPlan';

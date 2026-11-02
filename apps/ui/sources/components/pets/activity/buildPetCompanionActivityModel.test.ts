@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import { buildPetCompanionActivityModel } from './buildPetCompanionActivityModel';
 import type { PetCompanionActivitySession } from './petCompanionActivityTypes';

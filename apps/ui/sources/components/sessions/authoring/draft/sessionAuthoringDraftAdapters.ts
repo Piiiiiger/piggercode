@@ -4,7 +4,7 @@ import {
     isBuiltInAgentTarget,
     type BackendTargetRefV1,
     type SessionSpawnSourceContextV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { DEFAULT_AGENT_ID, isAgentId } from '@/agents/catalog/catalog';
 import {

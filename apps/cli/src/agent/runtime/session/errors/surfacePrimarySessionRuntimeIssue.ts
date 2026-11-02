@@ -5,7 +5,7 @@ import type { FailTurnInput, SessionTurnLifecycle } from '@/agent/runtime/sessio
 import type {
   PrimaryTurnStatusV1,
   SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   classifyPrimarySessionRuntimeIssue,

@@ -9,7 +9,7 @@ import {
     type SessionTurnMutationReceiptV1,
     type SessionTurnTranscriptAnchorsV1,
     type SessionTurnV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 type StoredBigInt = bigint | number | null | undefined;
 

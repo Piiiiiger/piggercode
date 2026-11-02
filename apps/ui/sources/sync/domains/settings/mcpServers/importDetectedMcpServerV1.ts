@@ -1,4 +1,4 @@
-import type { DetectedMcpServerV1, McpServerBindingTargetV1, McpServerBindingV1, McpServerCatalogEntryV1, McpValueRefV1, McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { DetectedMcpServerV1, McpServerBindingTargetV1, McpServerBindingV1, McpServerCatalogEntryV1, McpValueRefV1, McpServersSettingsV1 } from '@piggercode/protocol';
 
 import { upsertMcpServerWithBindingsV1 } from './mcpServerCrud';
 import {

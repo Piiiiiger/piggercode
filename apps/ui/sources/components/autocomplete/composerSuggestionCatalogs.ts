@@ -1,4 +1,4 @@
-import { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
+import { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';
 import type { FileItem } from '@/sync/domains/input/suggestionFile';
 import type { ComposerSessionSuggestionItem } from '@/sync/domains/input/suggestionSession';
 import { storage } from '@/sync/domains/state/storage';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { deriveCanonicalPatchFileDiffs } from '@happier-dev/protocol/tools/v2';
+import { deriveCanonicalPatchFileDiffs } from '@piggercode/protocol/tools/v2';
 import type { ToolViewProps } from '../core/_registry';
 import { ToolSectionView } from '../../shell/presentation/ToolSectionView';
 import { resolvePath } from '@/utils/path/pathUtils';

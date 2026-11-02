@@ -5,7 +5,7 @@ import {
     resolveOpenCodeSessionBackendMode,
     type AgentCoreRuntimeControlSurface,
     type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 type RuntimeSurfaceSessionContext = Readonly<{
     agentId: AgentId;

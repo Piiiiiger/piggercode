@@ -1,4 +1,4 @@
-import type { AcpBackendDefinitionV1 } from '@happier-dev/protocol';
+import type { AcpBackendDefinitionV1 } from '@piggercode/protocol';
 
 export function createDraftAcpBackend(now = Date.now()): AcpBackendDefinitionV1 {
     return {

@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { TERMINAL_SHIFT_TAB_SEQUENCE } from '@happier-dev/agents';
+import { TERMINAL_SHIFT_TAB_SEQUENCE } from '@piggercode/agents';
 
 import { createTmuxTerminalControlPort, type TmuxControlCommandExecutor } from '@/integrations/tmux/control';
 import type { TerminalControlPort } from '@/integrations/terminalHost/controlTypes';

@@ -1,6 +1,6 @@
-import { createRelayHostEngine } from '@happier-dev/cli-common/relayHost';
-import { resolveManagedCliReleaseChannelSync } from '@happier-dev/cli-common/firstPartyRuntime';
-import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { createRelayHostEngine } from '@piggercode/cli-common/relayHost';
+import { resolveManagedCliReleaseChannelSync } from '@piggercode/cli-common/firstPartyRuntime';
+import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 const LOCAL_RELAY_CHANNELS: readonly ('stable' | 'preview' | 'dev')[] = ['stable', 'preview', 'dev'];
 

@@ -9,7 +9,7 @@ import {
     supportsDirectTranscriptStorageForNewSession,
     type NewSessionTranscriptStorage,
 } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 type PersistedAuthoringDraftLike = Readonly<{
     transcriptStorage?: NewSessionTranscriptStorage | null;

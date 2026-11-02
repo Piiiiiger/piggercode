@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import type { FeaturesResponse } from '@piggercode/protocol';
 
 import { resolveMachineTransferRoute } from './resolveMachineTransferRoute';
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DIRECT_SESSION_TAKEOVER_ACTION_IDS, type ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import { DIRECT_SESSION_TAKEOVER_ACTION_IDS, type ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 import type { UseDirectSessionRuntimeResult } from '@/components/sessions/model/useDirectSessionRuntime';

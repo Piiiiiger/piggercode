@@ -12,7 +12,7 @@ import {
 import { spawnLoggedProcess, type SpawnedProcess } from '../process/spawnProcess';
 import { repoRootDir } from '../paths';
 import { waitForRegexInFile } from '../waitForRegexInFile';
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 
 const DEFAULT_TERMINAL_CONNECT_URL_TIMEOUT_MS = 180_000;
 

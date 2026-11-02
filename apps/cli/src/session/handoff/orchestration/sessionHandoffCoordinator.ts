@@ -17,9 +17,9 @@ import {
   type SessionHandoffStartResponse,
   type SessionHandoffStatus,
   type SessionHandoffWorkspaceTransfer,
-} from '@happier-dev/protocol';
-import { resolveMachineTransferRoute, SERVER_TRANSFER_POLICY_UNAVAILABLE_ERROR } from '@happier-dev/transfers';
-import { createRpcCallError, isRpcMethodNotFoundError } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { resolveMachineTransferRoute, SERVER_TRANSFER_POLICY_UNAVAILABLE_ERROR } from '@piggercode/transfers';
+import { createRpcCallError, isRpcMethodNotFoundError } from '@piggercode/protocol/rpcErrors';
 
 export type SessionHandoffCoordinatorInput = Readonly<{
   sessionId: string;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
-import type { SystemTaskResult } from '@happier-dev/protocol';
+import type { SystemTaskResult } from '@piggercode/protocol';
 
 import { SystemTaskProgressCard, getDefaultSystemTaskRunner, useSystemTaskSnapshot } from '@/components/systemTasks';
 import type { SystemTaskRunState, SystemTaskRunner } from '@/components/systemTasks/types';

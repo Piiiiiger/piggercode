@@ -3,7 +3,7 @@ import { chmod, mkdir, mkdtemp, readFile, readlink, readdir, rm, writeFile } fro
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { installVersionedPayload } from '@happier-dev/cli-common/firstPartyRuntime';
+import { installVersionedPayload } from '@piggercode/cli-common/firstPartyRuntime';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { ensureSetupCapableLocalHappierCli } from './happierCli.js';

@@ -1,7 +1,7 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { upsertSessionOrganizationLabel as upsertSessionOrganizationLabelApi } from '@/sync/api/session/sessionOrganizationApi';
 import { getStorage } from '@/sync/domains/state/storageStore';
-import type { UpsertSessionOrganizationLabelRequest } from '@happier-dev/protocol';
+import type { UpsertSessionOrganizationLabelRequest } from '@piggercode/protocol';
 import {
     openSessionOrganizationLabelDisplay,
     prepareSessionOrganizationDisplayEnvelopeForWrite,

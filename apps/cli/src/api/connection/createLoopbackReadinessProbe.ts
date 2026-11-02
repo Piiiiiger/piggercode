@@ -1,4 +1,4 @@
-import type { ReadinessProbeResult } from '@happier-dev/connection-supervisor';
+import type { ReadinessProbeResult } from '@piggercode/connection-supervisor';
 
 import { isAuthenticationStatus } from '@/api/client/httpStatusError';
 import { resolveLoopbackHttpUrl } from '@/api/client/loopbackUrl';

@@ -1,10 +1,10 @@
-import { isSameMachineLocality, resolveSessionWorkspaceRootForMachine } from '@happier-dev/protocol';
+import { isSameMachineLocality, resolveSessionWorkspaceRootForMachine } from '@piggercode/protocol';
 import {
   isRpcMethodNotAvailableError,
   isRpcMethodNotFoundError,
   readRpcErrorCode,
   type RpcErrorCarrier,
-} from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol/rpcErrors';
 import { resolveSessionMachineRpcTarget } from '@/sync/domains/session/resolveSessionReachableMachineId';
 import { resolveSessionDisplayTarget } from '@/sync/domains/machines/identity/resolveSessionMachineTargets';
 import { storage } from '@/sync/domains/state/storage';

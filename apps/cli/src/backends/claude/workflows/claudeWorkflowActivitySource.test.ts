@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-import type { SessionWorkflowActivityHeadlineV1, SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowActivityHeadlineV1, SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 import { CLAUDE_IMPLICIT_WORKFLOW_RUN_ID } from './claudeWorkflowActivityTypes';
 import { createClaudeWorkflowActivitySource as createProductionClaudeWorkflowActivitySource } from './claudeWorkflowActivitySource';
 function createClaudeWorkflowActivitySource(

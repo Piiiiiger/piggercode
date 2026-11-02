@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 afterEach(async () => {
     vi.unstubAllGlobals();

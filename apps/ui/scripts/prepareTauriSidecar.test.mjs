@@ -75,7 +75,7 @@ test('prepareTauriSidecar builds app workspace dependencies before compiling hse
   assert.match(String(calls[1][1]), /apps\/bootstrap$/);
   assert.equal(calls[2][0], 'spawn');
   assert.equal(calls[2][1], 'yarn');
-  assert.deepEqual(calls[2][2], ['-s', 'workspace', '@happier-dev/bootstrap', 'build:binary']);
+  assert.deepEqual(calls[2][2], ['-s', 'workspace', '@piggercode/bootstrap', 'build:binary']);
   assert.equal(calls[2][3].env.HAPPIER_BUN_TARGET, 'bun-darwin-arm64');
   assert.equal(calls[3][0], 'runtime');
   assert.equal(calls[4][0], 'entrypoint');
@@ -105,7 +105,7 @@ test('prepareTauriSidecar invokes Yarn via a Windows-safe shell so yarn.cmd can 
   assert.equal(calls.length, 1);
   assert.equal(calls[0][0], 'spawn');
   assert.equal(calls[0][1], 'yarn');
-  assert.deepEqual(calls[0][2], ['-s', 'workspace', '@happier-dev/bootstrap', 'build:binary']);
+  assert.deepEqual(calls[0][2], ['-s', 'workspace', '@piggercode/bootstrap', 'build:binary']);
   assert.equal(calls[0][3].shell, true);
 });
 

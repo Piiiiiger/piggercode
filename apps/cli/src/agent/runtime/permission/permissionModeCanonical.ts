@@ -1,6 +1,6 @@
 import type { PermissionMode } from '@/api/types';
 import { isPermissionMode } from '@/api/types';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 export function normalizePermissionModeToIntent(raw: unknown): PermissionMode | null {
   if (typeof raw !== 'string') return null;

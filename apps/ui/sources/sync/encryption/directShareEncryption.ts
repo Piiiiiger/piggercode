@@ -1,7 +1,7 @@
 import { encodeBase64, decodeBase64 } from '@/encryption/base64';
 import { encryptBox } from '@/encryption/libsodium';
 
-export { verifyAccountContentPublicKeyBinding as verifyRecipientContentPublicKeyBinding } from '@happier-dev/protocol';
+export { verifyAccountContentPublicKeyBinding as verifyRecipientContentPublicKeyBinding } from '@piggercode/protocol';
 
 export function encryptDataKeyForRecipientV0(
     sessionDataKey: Uint8Array,

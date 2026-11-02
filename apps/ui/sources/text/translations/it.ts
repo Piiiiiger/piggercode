@@ -10983,7 +10983,7 @@ settingsSession: {
     detectedCliDetected: "Rilevata",
     detectedCliNotDetected: "Non rilevata",
     detectedCliUnknown: "Sconosciuta",
-    detectedCliNotSupported: "Non supportata (aggiorna @happier-dev/cli)",
+    detectedCliNotSupported: "Non supportata (aggiorna @piggercode/cli)",
     untitledSession: "Sessione senza titolo",
     back: "Indietro",
     notFound: "Macchina non trovata",

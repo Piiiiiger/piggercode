@@ -16,10 +16,10 @@ function collectExternalRuntimeDepNamesFromPackageJson(rawPackageJson) {
     : {};
 
   const required = Object.keys(dependencies)
-    .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+    .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
     .map((name) => ({ name, optional: false }));
   const optional = Object.keys(optionalDependencies)
-    .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+    .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
     .map((name) => ({ name, optional: true }));
 
   return [...required, ...optional];

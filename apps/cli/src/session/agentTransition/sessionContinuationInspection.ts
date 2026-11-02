@@ -7,12 +7,12 @@ import {
   buildBackendTargetKey,
   SessionAgentTransitionSelectionV1Schema,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   resolveAgentNativeSpawnDefinitiveRejection,
   resolveAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import { CATALOG_AGENT_IDS } from '@/backends/types';

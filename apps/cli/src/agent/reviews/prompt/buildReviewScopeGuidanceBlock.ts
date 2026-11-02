@@ -1,4 +1,4 @@
-import { ReviewStartInputSchema } from '@happier-dev/protocol';
+import { ReviewStartInputSchema } from '@piggercode/protocol';
 
 export function buildReviewScopeGuidanceBlock(intentInput: unknown): string | null {
   const parsed = ReviewStartInputSchema.safeParse(intentInput);

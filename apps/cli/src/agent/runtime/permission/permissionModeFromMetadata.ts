@@ -6,7 +6,7 @@ import {
   resolveMetadataStringOverrideV1,
   resolvePermissionIntentFromSessionMetadata,
   SESSION_MODE_OVERRIDE_KEY,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 function metadataHasConcreteDefaultSessionMode(metadata: Metadata | null | undefined): boolean {
   const states = [

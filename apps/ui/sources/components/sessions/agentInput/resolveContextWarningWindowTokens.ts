@@ -1,7 +1,7 @@
 import type { AgentId } from '@/agents/catalog/catalog';
 import type { Metadata } from '@/sync/domains/state/storageTypes';
 import { matchesSessionControlProvider, readSessionModelsState } from '@/sync/domains/sessionControl/readSessionControlMetadata';
-import { getAgentStaticModels, providers as agentProviders } from '@happier-dev/agents';
+import { getAgentStaticModels, providers as agentProviders } from '@piggercode/agents';
 
 export const DEFAULT_CONTEXT_WINDOW_TOKENS = agentProviders.claude.CLAUDE_DEFAULT_CONTEXT_WINDOW_TOKENS;
 export const CLAUDE_1M_CONTEXT_WINDOW_TOKENS = agentProviders.claude.CLAUDE_1M_CONTEXT_WINDOW_TOKENS;

@@ -19,7 +19,7 @@ test('hstack self check defaults to invoker package.json name', (t) => {
   assert.equal(res.status, 0);
 
   const log = harness.readNpmArgsLog();
-  assert.ok(log.includes('view @happier-dev/stack@latest version'));
+  assert.ok(log.includes('view @piggercode/stack@latest version'));
 });
 
 test('hstack self check ignores invalid HAPPIER_STACK_UPDATE_PACKAGE_NAME', (t) => {
@@ -30,7 +30,7 @@ test('hstack self check ignores invalid HAPPIER_STACK_UPDATE_PACKAGE_NAME', (t) 
   assert.equal(res.status, 0);
 
   const log = harness.readNpmArgsLog();
-  assert.ok(log.includes('view @happier-dev/stack@latest version'));
+  assert.ok(log.includes('view @piggercode/stack@latest version'));
 });
 
 test('hstack self check --preview uses next dist-tag with valid package override', (t) => {
@@ -52,5 +52,5 @@ test('hstack self check --preview falls back to default package name for invalid
   assert.equal(res.status, 0);
 
   const log = harness.readNpmArgsLog();
-  assert.ok(log.includes('view @happier-dev/stack@next version'));
+  assert.ok(log.includes('view @piggercode/stack@next version'));
 });

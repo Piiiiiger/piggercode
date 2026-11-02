@@ -18,7 +18,7 @@ import {
   ProviderAccountUsageRecordIdSchema,
   type ProviderAccountUsageRecordId,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useCredentialScopedAccountModeResolver } from './useCredentialScopedAccountModeResolver';
 
 const ACCOUNT_USAGE_SNAPSHOTS_POLL_MS = 30_000;

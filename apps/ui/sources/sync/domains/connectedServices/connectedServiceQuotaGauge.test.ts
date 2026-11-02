@@ -3,7 +3,7 @@ import type {
     ConnectedServiceQuotaMeterV1,
     ConnectedServiceQuotaRecoveryCreditsV1,
     ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     type ConnectedServiceQuotaGaugeLabelFormatter,

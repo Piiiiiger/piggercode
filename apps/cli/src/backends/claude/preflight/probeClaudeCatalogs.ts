@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 
 import { query, type Query, type SDKUserMessage } from '@anthropic-ai/claude-agent-sdk';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import type {
   PreflightSessionCatalogsRaw,

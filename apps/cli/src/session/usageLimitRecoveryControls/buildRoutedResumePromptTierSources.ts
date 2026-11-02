@@ -5,7 +5,7 @@ import {
   SessionUsageLimitRecoveryV1Schema,
   type ConnectedServiceAuthGroupV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createConnectedServiceCredentialApi } from '@/api/connectedServices/connectedServiceCredentialApi';
 import type { Credentials } from '@/persistence';

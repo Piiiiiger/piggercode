@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import type { SessionStoredMessageContent } from '@happier-dev/protocol';
+import type { SessionStoredMessageContent } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { RawSessionRecord } from '@/session/transport/http/sessionsHttp';
@@ -11,7 +11,7 @@ import {
   resolveSessionStoredContentEncryptionMode,
 } from '@/session/transport/encryption/sessionEncryptionContext';
 import type { LoadedLinkedDirectSession } from '@/api/directSessions/takeover/loadLinkedDirectSession';
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 import { getDirectSessionProviderOps } from '@/backends/catalog';
 import { DirectSessionsProviderUnavailableError } from '@/backends/directSessions/providerOps';
 import { adoptDirectSessionMediaForImport } from './adoptDirectSessionMediaForImport';

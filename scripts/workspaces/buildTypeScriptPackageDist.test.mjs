@@ -20,7 +20,7 @@ async function createPackageFixture(t, name) {
   await mkdir(join(root, 'src'), { recursive: true });
   await mkdir(join(root, 'dist'), { recursive: true });
   await writeJson(join(root, 'package.json'), {
-    name: `@happier-dev/${name}`,
+    name: `@piggercode/${name}`,
     type: 'module',
     main: './dist/index.js',
     types: './dist/index.d.ts',

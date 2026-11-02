@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { TransferEndpointCandidate } from '@happier-dev/protocol';
+import type { TransferEndpointCandidate } from '@piggercode/protocol';
 
 describe('workspaceReplicationTransfers', () => {
   it('requests source offers through file-backed transfer APIs and decodes them from the on-disk format', async () => {

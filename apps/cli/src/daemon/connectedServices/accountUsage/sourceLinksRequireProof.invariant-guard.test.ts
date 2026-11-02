@@ -3,7 +3,7 @@ import {
   type ConnectedServiceUsageSourceV1,
   type ProviderAccountUsageRecordKeyV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { delegateSessionHandoffToSourceDaemon } from './delegatedSessionHandoff';
 

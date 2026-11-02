@@ -6,7 +6,7 @@ import {
   inspectServiceRegistration,
   planServiceAction,
   applyServicePlan,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 
 export { resolveServiceBackend, buildServiceDefinition, planServiceAction };
 

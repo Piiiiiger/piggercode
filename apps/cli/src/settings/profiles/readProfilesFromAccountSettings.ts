@@ -1,4 +1,4 @@
-import { AIBackendProfileSchema, type AIBackendProfile } from '@happier-dev/protocol';
+import { AIBackendProfileSchema, type AIBackendProfile } from '@piggercode/protocol';
 
 export type AccountSettingsProfilesSnapshot = Readonly<{
   customProfiles: AIBackendProfile[];

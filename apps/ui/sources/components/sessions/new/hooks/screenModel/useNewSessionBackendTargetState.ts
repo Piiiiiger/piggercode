@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { BackendTargetRefSchema, buildBackendTargetKey, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { BackendTargetRefSchema, buildBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/catalog/catalog';
 import { DEFAULT_AGENT_ID, isAgentId } from '@/agents/catalog/catalog';

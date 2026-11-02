@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { decodeBase64, decrypt, encodeBase64, encrypt, getRandomBytes, libsodiumPublicKeyFromSecretKey } from '@/api/encryption';
 import { RpcHandlerManager } from '@/api/rpc/RpcHandlerManager';
-import { deriveAccountMachineKeyFromRecoverySecret, sealEncryptedDataKeyEnvelopeV1, MACHINE_PLAIN_DATA_KEY_MARKER } from '@happier-dev/protocol';
+import { deriveAccountMachineKeyFromRecoverySecret, sealEncryptedDataKeyEnvelopeV1, MACHINE_PLAIN_DATA_KEY_MARKER } from '@piggercode/protocol';
 
 const socketHandlers = new Map<string, Array<(...args: unknown[]) => void>>();
 const socket = {
@@ -41,9 +41,9 @@ vi.mock('@/configuration', async (importOriginal) => ({
   },
 }));
 
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES, RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode, RpcError } from '@happier-dev/protocol/rpcErrors';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES, RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode, RpcError } from '@piggercode/protocol/rpcErrors';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { readRpcRequestDisposition } from './rpcRequestDisposition';
 
 import { callMachineRpc } from './machineRpc';

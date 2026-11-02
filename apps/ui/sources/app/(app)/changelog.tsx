@@ -7,7 +7,7 @@ import { getChangelogEntries, getLatestVersion, setLastViewedVersion } from '@/c
 import { Typography } from '@/constants/Typography';
 import { layout } from '@/components/ui/layout/layout';
 import { t } from '@/text';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 import { Text } from '@/components/ui/text/Text';
 

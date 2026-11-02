@@ -58,7 +58,7 @@ async function loadCliCommonWorkspacesModule(repoRoot, heldLockValue, env = proc
   }
 
   if (!existsSync(modulePath)) {
-    throw new Error('Missing dist/ for @happier-dev/cli-common');
+    throw new Error('Missing dist/ for @piggercode/cli-common');
   }
 
   return await import(pathToFileURL(modulePath).href);
@@ -109,7 +109,7 @@ function collectExternalRuntimeDependencyNames(pkgJson) {
   for (const deps of [pkgJson?.dependencies, pkgJson?.optionalDependencies]) {
     if (!deps || typeof deps !== 'object') continue;
     for (const name of Object.keys(deps)) {
-      if (!name.startsWith('@happier-dev/')) {
+      if (!name.startsWith('@piggercode/')) {
         names.add(name);
       }
     }
@@ -325,7 +325,7 @@ function buildWorkspaceBundleSourceSignature({ bundles }) {
 }
 
 function resolveWorkspaceBundleManifestPath(stackDir) {
-  return resolve(stackDir, 'node_modules', '@happier-dev', WORKSPACE_BUNDLE_MANIFEST_FILENAME);
+  return resolve(stackDir, 'node_modules', '@piggercode', WORKSPACE_BUNDLE_MANIFEST_FILENAME);
 }
 
 function isBundledWorkspaceComplete({ bundle, sourceBundleSignature }) {

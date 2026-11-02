@@ -17,7 +17,7 @@ import {
     type SetSessionPinRequest,
     type SetSessionTagAssignmentsRequest,
     type UpsertSessionOrganizationLabelRequest,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { createV2SessionListVisibilityWhere } from "@/app/api/routes/session/v2SessionListRows";
 import { markSessionReadInTx } from "@/app/session/sessionWriteService";

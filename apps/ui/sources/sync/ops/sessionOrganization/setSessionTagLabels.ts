@@ -5,7 +5,7 @@ import {
     readSessionOrganizationTagLabel,
 } from '@/sync/domains/session/organization';
 import { getStorage } from '@/sync/domains/state/storageStore';
-import type { SessionOrganizationTag } from '@happier-dev/protocol';
+import type { SessionOrganizationTag } from '@piggercode/protocol';
 
 import { setSessionTagAssignments } from './setSessionTagAssignments';
 import { fetchAndApplySessionOrganizationSnapshot } from './fetchSessionOrganizationSnapshot';

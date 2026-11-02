@@ -5,7 +5,7 @@ import {
     PET_DAEMON_RPC_METHODS,
     type DaemonPetReadPreviewAssetRequestV1,
     type PetAssetMediaTypeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveBuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import type { SelectedPetPackageSource } from '@/components/pets/source/resolveSelectedPetPackage';

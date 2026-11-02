@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import {
   readPrismaSqliteConnectionParams,
   resolvePrismaSqliteDatabaseFilePath as resolveSqliteDatabaseFilePath,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 import { parseBooleanEnv } from '@/config/env';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';

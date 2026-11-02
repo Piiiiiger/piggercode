@@ -2,7 +2,7 @@ import type { CapabilitiesDetectRequest, CapabilityDetectResult, CapabilityId } 
 import type { KnownSettings } from '@/sync/domains/settings/settings';
 import type { TranslationKey } from '@/text';
 import { t } from '@/text';
-import { INSTALLABLES_CATALOG, INSTALLABLE_KEYS, type InstallableAutoUpdateMode, type InstallableDefaultPolicy, type InstallableKey } from '@happier-dev/protocol/installables';
+import { INSTALLABLES_CATALOG, INSTALLABLE_KEYS, type InstallableAutoUpdateMode, type InstallableDefaultPolicy, type InstallableKey } from '@piggercode/protocol/installables';
 
 export type { InstallableAutoUpdateMode, InstallableDefaultPolicy };
 

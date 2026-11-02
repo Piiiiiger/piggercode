@@ -3,9 +3,9 @@ import { chmod, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { readHappierCliChoiceSync, resolveForeignHappierCli, writeHappierCliChoice } from '@happier-dev/cli-common/firstPartyRuntime';
-import { executeSystemTask } from '@happier-dev/cli-common/systemTasks';
-import { parseSetupCliChoicePromptData, SETUP_CLI_CHOICE_PROMPT_KIND, type SystemTaskJsonValue } from '@happier-dev/protocol';
+import { readHappierCliChoiceSync, resolveForeignHappierCli, writeHappierCliChoice } from '@piggercode/cli-common/firstPartyRuntime';
+import { executeSystemTask } from '@piggercode/cli-common/systemTasks';
+import { parseSetupCliChoicePromptData, SETUP_CLI_CHOICE_PROMPT_KIND, type SystemTaskJsonValue } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ensureSetupCapableLocalHappierCli } from '../happierCli.js';
@@ -81,12 +81,12 @@ async function createComputer(options: Readonly<{ brokenNpmCli?: boolean; userOw
   }
 
   // An npm global install: `<prefix>/bin/happier` → the package's own entry, with its package.json.
-  const packageRoot = join(root, 'npm-global', 'lib', 'node_modules', '@happier-dev', 'cli');
+  const packageRoot = join(root, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
   const npmBin = join(root, 'npm-global', 'bin');
   const npmCli = join(npmBin, 'happier');
   await mkdir(join(packageRoot, 'bin'), { recursive: true });
   await mkdir(npmBin, { recursive: true });
-  await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli', version: NPM_VERSION }));
+  await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli', version: NPM_VERSION }));
   await writeFile(join(packageRoot, 'bin', 'happier.cjs'), options.brokenNpmCli
     // A CLI that answers nothing setup can read (a pre-0.2 build, or one that errors).
     ? `#!${process.execPath}\nprocess.exit(3);\n`
@@ -235,7 +235,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
       data: {
         acquisition: { command: computer.npmCli, provenance: 'override', version: NPM_VERSION },
         runtimeConvergence: { cliVersionMatches: true },
-        cli: { choice: { mode: 'own', otherCli: { command: computer.npmCli, updateCommand: 'npm install -g @happier-dev/cli@latest' } } },
+        cli: { choice: { mode: 'own', otherCli: { command: computer.npmCli, updateCommand: 'npm install -g @piggercode/cli@latest' } } },
       },
     });
     // Every command setup and the status read ran — service install included — went to that CLI.
@@ -267,7 +267,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
       ok: true,
       data: {
         acquisition: { provenance: 'managed', version: MANAGED_VERSION },
-        cli: { choice: { mode: 'managed', otherCli: { command: computer.npmCli, removalCommand: 'npm uninstall -g @happier-dev/cli' } } },
+        cli: { choice: { mode: 'managed', otherCli: { command: computer.npmCli, removalCommand: 'npm uninstall -g @piggercode/cli' } } },
       },
     });
   });
@@ -279,7 +279,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
 
     await expect(computer.run('own')).rejects.toMatchObject({
       code: 'cli_own_below_setup_floor',
-      message: expect.stringContaining('npm install -g @happier-dev/cli@latest'),
+      message: expect.stringContaining('npm install -g @piggercode/cli@latest'),
     });
     expect(computer.preparePayload).not.toHaveBeenCalled();
 

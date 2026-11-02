@@ -2,8 +2,8 @@ import {
   ConnectedServiceCredentialRevisionV1Schema,
   SessionConnectedServiceAuthReadRuntimeIdentityResponseV1Schema,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { callSessionRpc as defaultCallSessionRpc } from '@/session/transport/rpc/sessionRpc';
 import { resolveSessionTransportContext as defaultResolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';

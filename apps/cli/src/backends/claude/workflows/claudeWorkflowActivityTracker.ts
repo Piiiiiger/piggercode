@@ -7,7 +7,7 @@ import {
   type SessionWorkflowRunSnapshotV1,
   type SessionWorkflowRunStatusReasonV1,
   type SessionWorkflowRunStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ClaudeWorkflowTaskReference } from './claudeWorkflowTaskReference';
 import type { ClaudeProviderTaskActivity } from '../providerActivity/createClaudeProviderActivityLedger';

@@ -2,7 +2,7 @@ import { lstat, mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/pro
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';

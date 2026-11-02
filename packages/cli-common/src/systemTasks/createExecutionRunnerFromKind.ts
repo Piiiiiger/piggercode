@@ -1,6 +1,6 @@
 import {
   type SystemTaskJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { type InteractiveSystemTaskKind, buildPromptEventData } from './interactiveTaskKinds.js';
 import { SystemTaskExecutionError, type SystemTaskExecutionRunner } from './runSystemTask.js';

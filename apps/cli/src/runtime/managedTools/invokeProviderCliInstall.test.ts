@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { InstallProviderCliResult } from '@happier-dev/cli-common/providers';
+import type { InstallProviderCliResult } from '@piggercode/cli-common/providers';
 
 import { invokeProviderCliInstall } from './invokeProviderCliInstall';
 

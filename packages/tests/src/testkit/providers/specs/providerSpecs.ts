@@ -9,7 +9,7 @@ import {
   E2eCliProviderSpecV1Schema,
   type E2eCliProviderScenarioRegistryV1,
   type E2eCliProviderSpecV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type CliProviderSpecV1 = E2eCliProviderSpecV1;
 export type CliProviderScenarioRegistryV1 = E2eCliProviderScenarioRegistryV1;

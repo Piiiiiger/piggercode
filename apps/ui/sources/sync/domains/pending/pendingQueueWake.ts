@@ -1,7 +1,7 @@
 import type { ResumeSessionOptions } from '@/sync/ops';
 import type { Session } from '../state/storageTypes';
 import { resolveAgentIdFromFlavor, buildWakeResumeExtras } from '@/agents/catalog/catalog';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import type { ResumeCapabilityOptions } from '@/agents/runtime/resumeCapabilities';
 import type { PermissionModeOverrideForSpawn } from '@/sync/domains/permissions/permissionModeOverride';
 import { buildResumeSessionBaseOptionsFromSession } from '@/sync/domains/session/resume/resumeSessionBase';

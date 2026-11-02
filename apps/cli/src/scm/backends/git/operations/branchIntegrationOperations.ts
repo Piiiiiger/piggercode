@@ -4,11 +4,11 @@ import type {
     ScmBranchIntegrationResponse,
     ScmBranchOperationControlRequest,
     ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     SCM_OPERATION_ERROR_CODES,
     normalizeScmBranchSourceRef,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { runScmCommand } from '../../../runtime';
 import type { ScmBackendContext } from '../../../types';

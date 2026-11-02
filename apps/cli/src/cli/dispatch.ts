@@ -10,7 +10,7 @@ import { resolveInheritedHerdrRuntime } from '@/terminal/runtime/inheritedHerdrR
 import { applyDaemonAutostartEnvForInvocation, shouldEnsureDaemonForInvocation } from '@/daemon/ensureDaemon';
 import { applyEphemeralServerSelectionFromPrefixArgs } from '@/server/serverSelection';
 import packageJson from '../../package.json';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 export async function dispatchCli(params: Readonly<{
   args: string[];

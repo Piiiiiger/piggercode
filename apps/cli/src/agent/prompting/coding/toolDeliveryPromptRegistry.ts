@@ -1,5 +1,5 @@
-import type { PromptBlockV1 } from '@happier-dev/protocol';
-import { resolveCodingPromptSessionTitleUpdatesModeV1 } from '@happier-dev/protocol';
+import type { PromptBlockV1 } from '@piggercode/protocol';
+import { resolveCodingPromptSessionTitleUpdatesModeV1 } from '@piggercode/protocol';
 
 import { buildHappierToolsPromptAppendix } from '@/agent/tools/happierTools/runtime/buildHappierToolsPromptAppendix';
 

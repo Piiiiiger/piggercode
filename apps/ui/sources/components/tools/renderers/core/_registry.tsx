@@ -31,7 +31,7 @@ import { TaskOutputView } from '../system/TaskOutputView';
 import { TaskStopView } from '../system/TaskStopView';
 import { AgentTeamView } from '../workflow/AgentTeamView';
 import { WorkflowActivityView } from '../workflow/WorkflowActivityView';
-import { KnownCanonicalToolNameV2Schema, type KnownCanonicalToolNameV2 } from '@happier-dev/protocol';
+import { KnownCanonicalToolNameV2Schema, type KnownCanonicalToolNameV2 } from '@piggercode/protocol';
 import { normalizeToolNameForView } from '@/components/tools/normalization/policy/normalizeToolNameForView';
 import type { TranscriptInteraction } from '@/utils/sessions/deriveTranscriptInteraction';
 

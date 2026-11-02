@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { OPEN_CODE_BROKER_SELECTION_IDENTITY_ENV } from '@/backends/opencode/brokerPlugin';
 import { materializeOpenCodeConnectedServiceRuntimeAuthSelection } from './materializeOpenCodeConnectedServiceRuntimeAuthSelection';

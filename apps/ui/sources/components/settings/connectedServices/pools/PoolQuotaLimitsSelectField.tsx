@@ -7,7 +7,7 @@ import {
     resolveConnectedServiceQuotaMeterLimitIdentity,
     type ConnectedServiceAuthGroupQuotaLimitSelectionV1,
     type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { MultiSelectField, type MultiSelectCandidate } from '@/components/ui/forms/dropdown/MultiSelectField';
 

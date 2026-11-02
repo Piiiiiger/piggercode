@@ -1,4 +1,4 @@
-import type { ActionId, ActionSurfaces, ActionsSettingsV1 } from '@happier-dev/protocol';
+import type { ActionId, ActionSurfaces, ActionsSettingsV1 } from '@piggercode/protocol';
 
 import { normalizeActionsSettings } from './normalizeActionsSettings';
 import { getActionSettingsTargetDefinition, type ActionSettingsTargetId } from './actionSettingsTargetDefinitions';

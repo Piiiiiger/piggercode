@@ -12,14 +12,14 @@ import {
   type SpawnConfigOptionValue,
   type SessionAgentSpawnPolicyV1,
   type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   AGENT_IDS,
   DEFAULT_AGENT_ID,
   assertNonEscalatingPermissionMode,
   resolveAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';

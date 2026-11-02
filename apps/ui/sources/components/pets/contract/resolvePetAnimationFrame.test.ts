@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
     PET_ANIMATION_ROWS_V1,
     PET_ATLAS_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { PET_IDLE_DURATION_MULTIPLIER } from '@/components/pets/animation/petAnimationPlaybackConfig';
 

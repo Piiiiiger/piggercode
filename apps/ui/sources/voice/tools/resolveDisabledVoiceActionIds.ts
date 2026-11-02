@@ -1,4 +1,4 @@
-import { listVoiceActionBlockSpecs, listVoiceToolActionSpecs, type ActionId, type ActionSpec } from '@happier-dev/protocol';
+import { listVoiceActionBlockSpecs, listVoiceToolActionSpecs, type ActionId, type ActionSpec } from '@piggercode/protocol';
 
 import { isActionEnabledInState } from '@/sync/domains/settings/actionsSettings';
 import { isInventoryPrivacyAction } from '@/sync/domains/settings/actionSettingsPolicy';

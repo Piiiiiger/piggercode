@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeAll, beforeEach, afterEach } from 'vitest';
-import type { FeatureDecision } from '@happier-dev/protocol';
+import type { FeatureDecision } from '@piggercode/protocol';
 import { createDeferred, flushHookEffects } from '@/dev/testkit';
 import { VOICE_AGENT_GLOBAL_SESSION_ID } from '@/voice/agent/voiceAgentGlobalSessionId';
 import { installVoiceAgentCommonModuleMocks } from '@/voice/agent/voiceAgentTestHelpers';

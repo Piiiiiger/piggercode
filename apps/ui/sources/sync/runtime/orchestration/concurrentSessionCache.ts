@@ -28,7 +28,7 @@ import {
     type ManagedConnectionState,
     type ManagedConnectionTransport,
     type TransportDisconnectEvent,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 import {
     reportServerUnreachable,
     startServerReachabilitySupervisor,

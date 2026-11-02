@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { getRandomBytes } from '@/platform/cryptoRandom';
-import { stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { stringifySerializedJsonValue } from '@piggercode/protocol';
 
 import { AES256Encryption, BoxEncryption, SecretBoxEncryption } from './encryptor';
 

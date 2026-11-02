@@ -1,7 +1,7 @@
 import type { MaterializeNextPendingResult } from '@/api/session/sessionClientPort';
 import type { PendingForegroundSteerability } from '@/api/session/pendingForegroundSteerability';
 import type { PendingQueueReconcileWhenEmpty } from '@/api/session/pendingQueueReadPolicy';
-import type { SessionPendingQueueDeliveryTiming } from '@happier-dev/protocol';
+import type { SessionPendingQueueDeliveryTiming } from '@piggercode/protocol';
 
 export type MessageBatch<Mode, Message> = {
   message: Message;
@@ -15,7 +15,7 @@ export type MessageBatch<Mode, Message> = {
   /** Exact current-vs-old custody marker; not a selectable materialization policy. */
   providerAcceptancePending?: boolean;
   pendingProviderAction?: import('@/agent/runtime/modeMessageQueue').PendingProviderAction;
-  pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+  pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 };
 
 export type PendingMaterializationReconcileWhenEmpty = PendingQueueReconcileWhenEmpty;

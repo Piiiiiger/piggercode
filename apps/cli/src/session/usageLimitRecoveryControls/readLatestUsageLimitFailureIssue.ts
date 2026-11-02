@@ -1,7 +1,7 @@
 import {
   SessionRuntimeIssueV1Schema,
   type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { RawSessionRecord } from '@/session/transport/http/sessionsHttp';
 

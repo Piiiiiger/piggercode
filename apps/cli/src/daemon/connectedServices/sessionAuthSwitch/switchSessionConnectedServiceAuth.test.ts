@@ -5,7 +5,7 @@ import {
   ConnectedServiceMaterializationIdentityV1Schema,
   type ConnectedServiceAuthGroupV1,
   type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 import { createCodexConnectedServiceRuntimeAuthAdapter } from '@/backends/codex/connectedServices/createCodexConnectedServiceRuntimeAuthAdapter';

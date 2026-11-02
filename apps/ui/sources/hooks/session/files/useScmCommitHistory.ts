@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { ScmLogEntry } from '@happier-dev/protocol';
+import type { ScmLogEntry } from '@piggercode/protocol';
 
 import { sessionScmLogList } from '@/sync/ops';
 

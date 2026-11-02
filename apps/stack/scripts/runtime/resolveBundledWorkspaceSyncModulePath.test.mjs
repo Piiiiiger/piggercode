@@ -12,7 +12,7 @@ test('resolveBundledWorkspaceSyncModulePath resolves the monorepo helper from ap
 });
 
 test('resolveBundledWorkspaceSyncModulePath stays disabled for packaged installs without the helper', () => {
-  const resolved = resolveBundledWorkspaceSyncModulePath('/usr/local/lib/node_modules/@happier-dev/stack', {
+  const resolved = resolveBundledWorkspaceSyncModulePath('/usr/local/lib/node_modules/@piggercode/stack', {
     existsSync: () => false,
   });
 

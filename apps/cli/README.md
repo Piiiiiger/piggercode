@@ -7,7 +7,7 @@ Free. Open source. Code anywhere.
 ## Installation
 
 ```bash
-npm install -g @happier-dev/cli
+npm install -g @piggercode/cli
 ```
 
 ## Testing

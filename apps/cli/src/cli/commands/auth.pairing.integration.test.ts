@@ -3,7 +3,7 @@ import fastify from 'fastify';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
-import { deriveAccountMachineKeyFromRecoverySecret } from '@happier-dev/protocol';
+import { deriveAccountMachineKeyFromRecoverySecret } from '@piggercode/protocol';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';

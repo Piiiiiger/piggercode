@@ -1,4 +1,4 @@
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import type { AgentEvent } from '@/sync/typesRaw';
 
 export const SESSION_INTENTIONAL_RESTART_FAILSAFE_MS = 30_000;

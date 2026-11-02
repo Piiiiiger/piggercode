@@ -106,7 +106,7 @@ async function main() {
   const runtimeDir = getRuntimeDir();
   const workspaceDir = getWorkspaceDir(rootDir);
   const updateCachePath = join(homeDir, 'cache', 'update.json');
-  const runtimePkgJson = join(runtimeDir, 'node_modules', '@happier-dev', 'stack', 'package.json');
+  const runtimePkgJson = join(runtimeDir, 'node_modules', '@piggercode', 'stack', 'package.json');
   const runtimeVersion = await readPackageJsonVersion(runtimePkgJson);
   const updateCache = await readJsonIfExists(updateCachePath, { defaultValue: null });
 

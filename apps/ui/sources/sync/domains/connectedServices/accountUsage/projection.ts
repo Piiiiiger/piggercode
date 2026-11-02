@@ -5,7 +5,7 @@ import {
   projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1,
   type ConnectedServiceQuotaSnapshotV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore, isAgentId, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 

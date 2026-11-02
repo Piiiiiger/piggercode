@@ -1,6 +1,6 @@
 import { createSessionScopedSocket } from '@/api/session/sockets';
 import { randomUUID } from 'node:crypto';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { encryptSessionPayload, decryptSessionPayload, type SessionEncryptionContext, type SessionStoredContentEncryptionMode } from '@/session/transport/encryption/sessionEncryptionContext';
 import { waitForSocketConnect } from '@/session/transport/socket/waitForSocketConnect';
 import { resolveSessionControlSocketConnectTimeoutMs } from '@/session/transport/shared/sessionTimeouts';

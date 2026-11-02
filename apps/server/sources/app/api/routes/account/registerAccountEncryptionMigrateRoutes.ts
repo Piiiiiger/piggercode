@@ -1,4 +1,4 @@
-import { verifyAccountContentPublicKeyBinding } from "@happier-dev/protocol";
+import { verifyAccountContentPublicKeyBinding } from "@piggercode/protocol";
 import { type Fastify } from "../../types";
 import { afterTx, inTx } from "@/storage/inTx";
 import { isServerFeatureEnabledForRequest } from "@/app/features/catalog/serverFeatureGate";
@@ -13,7 +13,7 @@ import {
     AccountEncryptionMigrateInternalResponseSchema,
     AccountEncryptionMigrateInvalidParamsReasonSchema,
     assertConnectedServiceCredentialRecordBinding,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { storePlainAccountSettingsDbValue } from "@/app/encryption/accountSettingsStorage";
 import * as privacyKit from "privacy-kit";
 import tweetnacl from "tweetnacl";

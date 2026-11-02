@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceRuntimeRefreshTarget } from '@/daemon/connectedServices/runtimeRegistry/registry';
 import type { ConnectedServiceMaterializedHomeStalenessInput } from '@/daemon/connectedServices/credentials/lifecycleTypes';

@@ -1,6 +1,6 @@
 import type { Credentials } from '@/persistence';
 
-import { measureHappierReplayDialogLineChars } from '@happier-dev/agents';
+import { measureHappierReplayDialogLineChars } from '@piggercode/agents';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import { findTranscriptEncryptedMessageByLocalId } from '@/api/session/transcriptMessageLookup';

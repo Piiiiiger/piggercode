@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import { AIBackendProfileSchema } from '@/sync/domains/profiles/profileCompatibility';
 import { settingsDefaults as testSettingsDefaults } from '@/sync/domains/settings/settings';
 import type { Session } from '@/sync/domains/state/storageTypes';
@@ -243,7 +243,7 @@ vi.mock('@/sync/sync', () => ({
             _metaOverrides?: Record<string, unknown>,
             options?: Readonly<{
                 localId?: string | null;
-                requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1;
+                requestedAction: import('@piggercode/protocol').PendingRequestedActionV1;
             }>,
         ) => ({
             localId: options?.localId ?? 'pending-local-id',

@@ -1,10 +1,10 @@
 import { configuration } from '@/configuration';
-import { AGENTS_CORE, buildCodexSpawnRuntimeAffinityCompatFields } from '@happier-dev/agents';
+import { AGENTS_CORE, buildCodexSpawnRuntimeAffinityCompatFields } from '@piggercode/agents';
 import {
   ConnectedServiceIdSchema,
   type ConnectedServiceBindingsV1,
   type DirectSessionsSource,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createPollingDirectSessionFollowLease } from '@/api/directSessions/backgroundFollow/createPollingDirectSessionFollowLease';
 import {

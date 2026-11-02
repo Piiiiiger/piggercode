@@ -2,8 +2,8 @@ import {
     isConnectedServiceAccountGroupConfigurationSupported,
     isConnectedServiceRuntimeFallbackSupported,
     resolveConnectedServiceRuntimeFallbackCapability,
-} from '@happier-dev/agents';
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export function resolveConnectedServiceRuntimeGroupCapability(serviceId: ConnectedServiceId) {
     return resolveConnectedServiceRuntimeFallbackCapability(serviceId);

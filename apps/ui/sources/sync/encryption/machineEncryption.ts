@@ -1,6 +1,6 @@
 import { createRpcCallError } from '@/sync/runtime/rpcErrors';
 import { t } from '@/text';
-import { decodePlainMachineStoredContent, encodePlainMachineStoredContent } from '@happier-dev/protocol';
+import { decodePlainMachineStoredContent, encodePlainMachineStoredContent } from '@piggercode/protocol';
 import { decodeBase64, encodeBase64 } from '@/encryption/base64';
 import { MachineMetadata, MachineMetadataSchema } from '../domains/state/storageTypes';
 import { EncryptionCache } from './encryptionCache';

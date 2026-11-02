@@ -4,7 +4,7 @@ import { ApiClient } from '@/api/api';
 import type { CloudConnectTarget, CloudConnectTargetStatus } from '@/cloud/connectTypes';
 import { AGENTS } from '@/backends/catalog';
 import { promptInput } from '@/terminal/prompts/promptInput';
-import { buildConnectedServiceCredentialRecord, supportsConnectedServiceOperation, type ConnectedServiceId } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, supportsConnectedServiceOperation, type ConnectedServiceId } from '@piggercode/protocol';
 
 import type { CommandContext } from '@/cli/commandRegistry';
 import { buildConnectedAccountOauthCredentialRecord } from '@/daemon/connectedServices/descriptors/buildConnectedAccountCredentialRecord';
@@ -16,7 +16,7 @@ import { storeConnectedServiceCredentialForAccount } from '@/cloud/connectedServ
 import { runConnectedServiceImport } from '@/cloud/connectedServices/connectedServiceImport';
 import { observeServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
-import { fail, info, neutral, ok, sectionTitle, warn } from '@happier-dev/cli-common/output';
+import { fail, info, neutral, ok, sectionTitle, warn } from '@piggercode/cli-common/output';
 
 /**
  * Handle connect subcommand.

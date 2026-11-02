@@ -31,7 +31,7 @@ import {
   type ProviderAccountSubscriptionV1,
   type ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 import { ConnectedServiceAuthGroupRuntimeStateRevisionConflictError } from '@/api/connectedServices/connectedServiceCredentialApi';

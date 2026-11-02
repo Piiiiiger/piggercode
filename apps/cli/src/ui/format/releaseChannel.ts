@@ -6,8 +6,8 @@ import {
   type PublicReleaseRingId,
   type PublicReleaseRingLabel,
   type ReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
-import { ACCENT_HEX } from '@happier-dev/cli-common/output';
+} from '@piggercode/release-runtime/releaseRings';
+import { ACCENT_HEX } from '@piggercode/cli-common/output';
 
 /**
  * Canonical label color palette for public release channels.

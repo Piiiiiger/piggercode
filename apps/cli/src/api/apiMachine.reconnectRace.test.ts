@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Machine } from '@/api/types';
 import { createApiSessionSocketStub, type ApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { logger } from '@/ui/logger';
 
 const {
@@ -267,7 +267,7 @@ vi.mock('@/api/connection/createLoopbackReadinessProbe', () => ({
 vi.mock('@/api/machine/connection/createMachineSocketTransport', () => ({
     createMachineSocketTransport: createMachineSocketTransportMock,
 }));
-vi.mock('@happier-dev/connection-supervisor', () => ({
+vi.mock('@piggercode/connection-supervisor', () => ({
     DEFAULT_MANAGED_CONNECTION_POLICY: {
         initialFastRetryDelayMs: 0,
         maxFastRetries: 0,

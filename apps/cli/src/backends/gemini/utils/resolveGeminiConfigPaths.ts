@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 
 type EnvLike = Readonly<Record<string, string | undefined>>;
 

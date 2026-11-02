@@ -1,5 +1,5 @@
 import type { Message } from '../../domains/messages/messageTypes';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import type { DiscardedPendingMessage, PendingMessage } from '../../domains/state/storageTypes';
 import { shouldPreservePendingProjectionAfterCommittedUserLocalId } from '../../domains/pending/pendingTranscriptProjection';
 

@@ -1,4 +1,4 @@
-import { ConnectedServiceBindingsV1Schema, RELEASED_CONNECTED_SERVICE_IDS, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { ConnectedServiceBindingsV1Schema, RELEASED_CONNECTED_SERVICE_IDS, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { machineCapabilitiesInvoke } from './capabilities';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';

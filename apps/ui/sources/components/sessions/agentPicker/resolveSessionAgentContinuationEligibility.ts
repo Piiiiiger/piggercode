@@ -2,7 +2,7 @@ import {
     resolveSessionContinuationUnavailablePresentationV1,
     type SessionContinuationMachinePresenceV1,
     type SessionContinuationUnavailablePresentationV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ResolvedBackendCatalogEntry } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import type { SessionStorageKind } from '@/sync/domains/session/sessionStorageKind';

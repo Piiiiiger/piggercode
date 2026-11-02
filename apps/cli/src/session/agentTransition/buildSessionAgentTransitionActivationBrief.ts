@@ -3,14 +3,14 @@ import { stat } from 'node:fs/promises';
 import {
   HappierReplayWritableMaxSeedCharsSchema,
   readDisplayableSessionWorkStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   AGENT_IDS,
   getProviderCliRuntimeSpec,
   resolveAgentNativeTranscriptPathFromSessionMetadata,
   resolveVendorResumeIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { resolveAgentNativeSessionLogPathThroughCatalog } from '@/backends/catalog';
 

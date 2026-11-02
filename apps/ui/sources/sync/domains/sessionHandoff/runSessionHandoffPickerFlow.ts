@@ -1,4 +1,4 @@
-import type { ActionExecutorContext, ActionUiPlacement } from '@happier-dev/protocol';
+import type { ActionExecutorContext, ActionUiPlacement } from '@piggercode/protocol';
 
 import { openSessionHandoffPicker } from '@/components/sessions/handoff/openSessionHandoffPicker';
 import type { SessionHandoffPickerResult } from '@/components/sessions/handoff/openSessionHandoffPicker';

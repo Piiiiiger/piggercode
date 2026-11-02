@@ -1,4 +1,4 @@
-import { computeNextModelOverrideMetadataV1 } from '@happier-dev/agents';
+import { computeNextModelOverrideMetadataV1 } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 

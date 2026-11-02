@@ -1,4 +1,4 @@
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 
 export type ScmDiffCacheKey = Readonly<{
     sessionId: string;

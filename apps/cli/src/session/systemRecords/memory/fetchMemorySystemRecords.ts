@@ -2,7 +2,7 @@ import type {
   SessionSummaryShardV1,
   SessionSynopsisV1,
   SessionSystemRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   SessionEncryptionContext,

@@ -34,7 +34,7 @@ import {
     resolveCodingPromptBehaviorV1,
     type CodingPromptBehaviorModeV1,
     type CodingPromptSessionTitleUpdatesModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { supportsDirectTranscriptStorageForNewSession } from '@/components/sessions/new/modules/newSessionTranscriptStorage';
 import { readAccountTranscriptStorageDefaults, type SessionTranscriptStorageMode } from '@/sync/domains/session/transcriptStorageDefaults';
 import { MachinePreviewModal } from './MachinePreviewModal';

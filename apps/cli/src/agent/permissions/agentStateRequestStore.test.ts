@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import {
     CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
     CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import type { AgentState } from '@/api/types';
 import { AgentStateRequestStore } from './agentStateRequestStore';
 

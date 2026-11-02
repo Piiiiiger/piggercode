@@ -1,7 +1,7 @@
 import { readdir, realpath } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { defaultScmBackendRegistry } from '../defaultRegistry';
 import type { ScmBackendRegistry } from '../registry';

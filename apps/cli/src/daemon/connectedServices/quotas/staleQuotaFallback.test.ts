@@ -10,7 +10,7 @@
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
 import { ConnectedServiceQuotaFetchError, type ConnectedServiceQuotaFetcher } from './types';

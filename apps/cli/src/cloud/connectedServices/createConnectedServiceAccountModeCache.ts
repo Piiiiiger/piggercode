@@ -1,4 +1,4 @@
-import { AsyncTtlCache } from '@happier-dev/protocol';
+import { AsyncTtlCache } from '@piggercode/protocol';
 
 export type ConnectedServiceAccountMode = 'e2ee' | 'plain' | 'unknown';
 

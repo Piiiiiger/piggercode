@@ -1,7 +1,7 @@
 import {
     PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS,
     PUSH_NOTIFICATION_CATEGORY_IDS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 import {
     createActivityNotificationTextModuleMock,

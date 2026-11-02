@@ -1,4 +1,4 @@
-import type { SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import type { SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 import { hasSameUsageLimitRecoveryIdentity } from '@/session/usageLimitRecoveryControls/mergeUsageLimitRecoveryIntent';
 
 import {

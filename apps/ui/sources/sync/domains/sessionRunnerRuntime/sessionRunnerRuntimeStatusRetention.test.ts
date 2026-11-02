@@ -1,4 +1,4 @@
-import type { SessionRunnerRuntimeStateV1 } from '@happier-dev/protocol';
+import type { SessionRunnerRuntimeStateV1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import {

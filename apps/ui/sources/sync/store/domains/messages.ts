@@ -1,6 +1,6 @@
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 
 import { createReducer, reducer, type ReducerState } from '../../reducer/reducer';
 import type { Message } from '../../domains/messages/messageTypes';

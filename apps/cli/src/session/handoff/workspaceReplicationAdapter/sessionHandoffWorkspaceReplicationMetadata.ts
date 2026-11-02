@@ -1,4 +1,4 @@
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { ScmSourceControllerWorkspaceExportArtifacts } from '@/scm/sourceController/workspaceExportArtifacts';
 import type { ScmSourceControllerWorkspaceTransferMetadata } from '@/scm/sourceController/workspaceTransfer';

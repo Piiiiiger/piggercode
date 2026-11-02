@@ -7,7 +7,7 @@ import {
   type BugReportCommandDependencies,
   type BugReportCommandResult,
 } from '@/diagnostics/bugReportCommandCore';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 async function handleBugReportCommand(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {

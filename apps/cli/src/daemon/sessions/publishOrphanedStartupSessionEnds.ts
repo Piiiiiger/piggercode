@@ -1,4 +1,4 @@
-import type { ExactSessionTurnEndMutationV1 } from '@happier-dev/protocol';
+import type { ExactSessionTurnEndMutationV1 } from '@piggercode/protocol';
 
 import { removeSessionMarker } from '../sessionRegistry';
 import { stageObservedExit } from './stageObservedExit';

@@ -1,4 +1,4 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
 import {
   buildProviderAccountUsageRecordId,
   ConnectedServiceQuotaConfidenceV1Schema,
@@ -8,8 +8,8 @@ import {
   type ProviderAccountUsageRecordKeyV1,
   type ProviderAccountUsageSourceV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
-import { ProviderAccountUsageSnapshotV1Schema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { ProviderAccountUsageSnapshotV1Schema } from '@piggercode/protocol';
 import { getConnectedAccountDescriptor } from '../descriptors/connectedAccountDescriptors';
 
 function mapQuotaSourceToUsageSource(source: ConnectedServiceQuotaSnapshotV1['source']): ProviderAccountUsageSourceV1 {

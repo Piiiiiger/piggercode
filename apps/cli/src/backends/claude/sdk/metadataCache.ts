@@ -11,7 +11,7 @@ import {
 import { mkdir, rename, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process'
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process'
 
 import { configuration } from '@/configuration'
 import { resolveConfiguredClaudeConfigDir } from '@/backends/claude/utils/resolveConfiguredClaudeConfigDir'

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { listVoiceActionBlockSpecs, listVoiceToolActionSpecs } from '@happier-dev/protocol';
+import { listVoiceActionBlockSpecs, listVoiceToolActionSpecs } from '@piggercode/protocol';
 
 import { buildElevenLabsVoiceAgentPrompt, buildLocalVoiceAgentSystemPrompt } from './voiceAgentPrompt.js';
 

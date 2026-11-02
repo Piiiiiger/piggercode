@@ -6,7 +6,7 @@ import {
   ConnectedServiceErrorCodeSchema,
   ConnectedServiceIdSchema,
   type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import {
   ConnectedServiceOauthExchangeError,

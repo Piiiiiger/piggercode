@@ -1,4 +1,4 @@
-import { isHiddenSystemSession } from '@happier-dev/protocol';
+import { isHiddenSystemSession } from '@piggercode/protocol';
 
 type UserFacingSessionCandidate = Readonly<{
     metadata?: unknown;

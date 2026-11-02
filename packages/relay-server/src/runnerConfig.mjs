@@ -1,7 +1,7 @@
 import {
   getReleaseRingCatalogEntry,
   normalizePublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 function parseArgs(argv) {
   const kv = new Map();

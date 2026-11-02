@@ -4,7 +4,7 @@ import {
     type ScmPullRequestOpenOrReuseRequest,
     type ScmPullRequestOpenOrReuseResponse,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import {

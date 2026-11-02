@@ -1,4 +1,4 @@
-import { isNonSteerablePromptPayload, type PendingRequestedActionV1 } from '@happier-dev/protocol';
+import { isNonSteerablePromptPayload, type PendingRequestedActionV1 } from '@piggercode/protocol';
 
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { getVersionSupportState, MINIMUM_CLI_PENDING_QUEUE_V2_VERSION } from '@/utils/system/versionUtils';

@@ -4,7 +4,7 @@ import Fastify from "fastify";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { encodeV2SessionListCursorV2 } from "@happier-dev/protocol";
+import { encodeV2SessionListCursorV2 } from "@piggercode/protocol";
 import { auth } from "@/app/auth/auth";
 import { enableAuthentication } from "@/app/api/utils/enableAuthentication";
 import { db } from "@/storage/db";

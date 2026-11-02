@@ -2,7 +2,7 @@ import {
   SessionUsageLimitRecoveryOperationResultV1Schema,
   normalizeSessionUsageLimitRecoveryOperationResultV1,
   type SessionUsageLimitRecoveryOperationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type NormalizeCliSessionUsageLimitRecoveryOperationResultParams = Readonly<{
   sessionId: string;

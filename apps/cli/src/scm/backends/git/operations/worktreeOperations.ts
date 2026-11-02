@@ -5,14 +5,14 @@ import type {
     ScmWorktreePruneResponse,
     ScmWorktreeRemoveRequest,
     ScmWorktreeRemoveResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     SCM_OPERATION_ERROR_CODES,
     WORKTREE_RELATIVE_PARENT_DIR,
     buildWorktreeRelativePath,
     hasForbiddenGitRefName,
     normalizeWorktreeDisplayName,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { mkdir } from 'node:fs/promises';
 
 import type { ScmBackendContext } from '../../../types';

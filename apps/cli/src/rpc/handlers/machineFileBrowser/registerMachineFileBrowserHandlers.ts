@@ -6,8 +6,8 @@ import {
   type FilesystemAccessPolicy,
   resolveFilesystemAccessPolicy,
 } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy'
-import type { MachineFileBrowserRoot } from '@happier-dev/protocol'
-import { RPC_METHODS } from '@happier-dev/protocol/rpc'
+import type { MachineFileBrowserRoot } from '@piggercode/protocol'
+import { RPC_METHODS } from '@piggercode/protocol/rpc'
 
 import { resolveMachineFileBrowserConfig } from './machineFileBrowserConfig'
 import { listMachineBrowseDirectory } from './listMachineBrowseDirectory'

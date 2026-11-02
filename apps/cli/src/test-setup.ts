@@ -51,7 +51,7 @@ function readJson(path: string): unknown {
 }
 
 function resolveBundledProtocolPackageDir(projectRoot: string): string {
-  return join(projectRoot, 'node_modules', '@happier-dev', 'protocol')
+  return join(projectRoot, 'node_modules', '@piggercode', 'protocol')
 }
 
 function resolveProtocolSourcePackageJsonPath(projectRoot: string): string {
@@ -71,7 +71,7 @@ function resolveExternalProtocolRuntimeDependencyNames(projectRoot: string): str
   for (const fields of [packageJson.dependencies, packageJson.optionalDependencies]) {
     if (!fields) continue
     for (const dependencyName of Object.keys(fields)) {
-      if (dependencyName.startsWith('@happier-dev/')) continue
+      if (dependencyName.startsWith('@piggercode/')) continue
       externalDependencyNames.add(dependencyName)
     }
   }

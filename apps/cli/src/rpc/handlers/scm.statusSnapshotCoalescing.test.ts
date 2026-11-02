@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { RpcHandler, RpcHandlerRegistrar } from '@/api/rpc/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const { runScmProvisioningRouteMock, runScmRouteMock } = vi.hoisted(() => ({
   runScmProvisioningRouteMock: vi.fn(),

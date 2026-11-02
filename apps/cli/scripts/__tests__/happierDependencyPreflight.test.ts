@@ -31,7 +31,7 @@ describe('happier bin preflight', () => {
       // - protocol is present as a bundled workspace package
       // - protocol runtime deps are vendored under protocol/node_modules
       writeProtocolBundleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol'),
       });
       writeNodeModuleStub({
         packageDir: resolve(tempRoot, 'node_modules', 'tweetnacl'),
@@ -41,14 +41,14 @@ describe('happier bin preflight', () => {
         },
       });
       writeNodeModuleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'base64-js'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'base64-js'),
         manifest: { name: 'base64-js', version: '0.0.0', main: 'index.js' },
         files: {
           'index.js': 'module.exports = {};\n',
         },
       });
       writeNodeModuleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes'),
         manifest: { name: '@noble/hashes', version: '0.0.0', main: 'index.js' },
         files: {
           'hmac.js': 'export {};\n',
@@ -86,7 +86,7 @@ describe('happier bin preflight', () => {
       copyCliBinRuntimeFiles({ repoRoot, binDir });
 
       writeProtocolBundleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol'),
       });
 
       const result = runHappierBin({
@@ -119,7 +119,7 @@ describe('happier bin preflight', () => {
       copyCliBinRuntimeFiles({ repoRoot, binDir });
 
       writeProtocolBundleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol'),
       });
       writeNodeModuleStub({
         packageDir: resolve(tempRoot, 'node_modules', 'tweetnacl'),
@@ -159,7 +159,7 @@ describe('happier bin preflight', () => {
       copyCliBinRuntimeFiles({ repoRoot, binDir });
 
       writeProtocolBundleStub({
-        packageDir: resolve(tempRoot, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: resolve(tempRoot, 'node_modules', '@piggercode', 'protocol'),
       });
       writeNodeModuleStub({
         packageDir: resolve(tempRoot, 'node_modules', 'tweetnacl'),

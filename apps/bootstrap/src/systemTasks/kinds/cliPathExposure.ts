@@ -1,10 +1,10 @@
-import { systemTasks } from '@happier-dev/cli-common';
+import { systemTasks } from '@piggercode/cli-common';
 import {
   ensureHappierCliPathExposure,
   removeHappierCliPathExposure,
   resolveFirstPartyInstallLayout,
   type HappierCliPathExposureResult,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 import { parseDaemonServiceParams } from './daemonService.js';
 

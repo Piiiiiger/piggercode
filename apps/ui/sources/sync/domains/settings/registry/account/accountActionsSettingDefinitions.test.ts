@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
     DEFAULT_SESSION_AGENT_SPAWN_POLICY_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { settingsDefaults, settingsParse } from '@/sync/domains/settings/settings';
 
 import { ACCOUNT_ACTIONS_SETTING_DEFINITIONS } from './accountActionsSettingDefinitions';

@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync, watch } from 'node:fs';
 import { mkdir, rename, rm, writeFile } from 'node:fs/promises';
 
-import { CliUpdateLastResultSchema, type CliUpdateLastResult } from '@happier-dev/protocol';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { CliUpdateLastResultSchema, type CliUpdateLastResult } from '@piggercode/protocol';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { joinPathForPathShape } from '../path/pathShape.js';
 import type { FirstPartyAcquisitionOptions } from './acquisitionProgress.js';

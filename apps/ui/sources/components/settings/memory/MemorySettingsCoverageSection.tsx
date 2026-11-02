@@ -5,7 +5,7 @@ import { DropdownMenu } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { t } from '@/text';
 
-import type { MemorySettingsV1 } from '@happier-dev/protocol';
+import type { MemorySettingsV1 } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
 import {
     readMemoryCoveragePolicy,

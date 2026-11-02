@@ -1,4 +1,4 @@
-import { type SessionUsageLimitRecoveryResumePromptModeV1 } from '@happier-dev/protocol';
+import { type SessionUsageLimitRecoveryResumePromptModeV1 } from '@piggercode/protocol';
 import { sanitizeConnectedServiceRuntimeFailureClassification } from './sanitizeConnectedServiceRuntimeFailureClassification';
 
 type StableRuntimeAuthFailureClassificationIdentity = Readonly<{

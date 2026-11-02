@@ -73,7 +73,7 @@ import {
 } from './utils/server/effective_db_provider.mjs';
 import { resolveLocalhostHost, preferStackLocalhostUrl } from './utils/paths/localhost_host.mjs';
 import { openUrlInBrowser } from './utils/ui/browser.mjs';
-import { buildConfigureServerLinks } from '@happier-dev/cli-common/links';
+import { buildConfigureServerLinks } from '@piggercode/cli-common/links';
 import { bold, cyan, dim, green, yellow } from './utils/ui/ansi.mjs';
 import { bullets, sectionTitle } from './utils/ui/layout.mjs';
 import { findAnyCredentialPathInCliHome } from './utils/auth/credentials_paths.mjs';
@@ -96,7 +96,7 @@ import { normalizeStackNameOrNull } from './utils/stack/names.mjs';
 import { runOrchestratedGuidedAuthFlow } from './utils/auth/orchestrated_stack_auth_flow.mjs';
 import { assertExpoWebappBundlesOrThrow } from './utils/auth/stack_guided_login.mjs';
 import { applyAuthForceEnv, resolveAuthForceFlag } from './utils/auth/auth_force_flag.mjs';
-import { createStepPrinter } from '@happier-dev/cli-common/output';
+import { createStepPrinter } from '@piggercode/cli-common/output';
 import { getVerbosityLevel } from './utils/cli/verbosity.mjs';
 import { applyBindModeToEnv, resolveBindModeFromArgs } from './utils/net/bind_mode.mjs';
 import { getTodayYmd } from './utils/time/get_today_ymd.mjs';

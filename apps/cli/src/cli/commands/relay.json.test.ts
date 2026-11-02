@@ -563,7 +563,7 @@ describe('happier relay --json', () => {
 
         const relayUrl = 'http://127.0.0.1:3005';
         vi.resetModules();
-        vi.doMock('@happier-dev/cli-common/relayHost', () => ({
+        vi.doMock('@piggercode/cli-common/relayHost', () => ({
             createRelayHostEngine: () => ({
                 readStatus: async () => ({
                     installed: true,
@@ -621,7 +621,7 @@ describe('happier relay --json', () => {
         } finally {
             currentOutput.restore();
             process.exitCode = currentPrevExitCode;
-            vi.unmock('@happier-dev/cli-common/relayHost');
+            vi.unmock('@piggercode/cli-common/relayHost');
             vi.resetModules();
         }
         await removeTempDir(payloadRoot);
@@ -641,7 +641,7 @@ describe('happier relay --json', () => {
         vi.resetModules();
         const { getActiveServerProfile, listServerProfiles } = await import('@/server/serverProfiles');
         const activeBeforeInstall = await getActiveServerProfile();
-        vi.doMock('@happier-dev/cli-common/relayHost', () => ({
+        vi.doMock('@piggercode/cli-common/relayHost', () => ({
             createRelayHostEngine: () => ({
                 readStatus: async () => ({
                     installed: true,
@@ -687,7 +687,7 @@ describe('happier relay --json', () => {
         const profiles = await listServerProfiles();
         expect(profiles.some((profile) => profile.id !== activeBeforeInstall.id && profile.serverUrl === relayUrl)).toBe(true);
 
-        vi.unmock('@happier-dev/cli-common/relayHost');
+        vi.unmock('@piggercode/cli-common/relayHost');
         vi.resetModules();
         await removeTempDir(payloadRoot);
     });
@@ -723,7 +723,7 @@ describe('happier relay --json', () => {
         });
 
         vi.resetModules();
-        vi.doMock('@happier-dev/cli-common/relayHost', () => ({
+        vi.doMock('@piggercode/cli-common/relayHost', () => ({
             createRelayHostEngine: () => ({
                 readStatus: async () => ({
                     installed: true,
@@ -759,7 +759,7 @@ describe('happier relay --json', () => {
         } finally {
             installOutput.restore();
             process.exitCode = prevExitCode;
-            vi.unmock('@happier-dev/cli-common/relayHost');
+            vi.unmock('@piggercode/cli-common/relayHost');
         }
 
         const { getActiveServerProfile } = await import('@/server/serverProfiles');

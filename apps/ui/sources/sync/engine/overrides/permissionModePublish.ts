@@ -1,6 +1,6 @@
 import type { Metadata } from '@/sync/domains/state/storageTypes';
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
-import { computeNextPermissionIntentMetadata } from '@happier-dev/agents';
+import { computeNextPermissionIntentMetadata } from '@piggercode/agents';
 
 export function computeNextPermissionModeMetadata(params: {
     metadata: Metadata;

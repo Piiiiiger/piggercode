@@ -7,7 +7,7 @@ import {
   deriveSettingsSecretsKeyV1,
   encryptSecretStringV1,
   getBuiltInBackendProfile,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function makeCredentials(): Credentials {
   return {

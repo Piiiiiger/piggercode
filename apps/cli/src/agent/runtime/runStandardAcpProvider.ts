@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto';
 
 import { render } from 'ink';
 import React from 'react';
-import { resolveAgentIdFromFlavor } from '@happier-dev/agents';
-import { readPendingLocalId, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { resolveAgentIdFromFlavor } from '@piggercode/agents';
+import { readPendingLocalId, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import type {

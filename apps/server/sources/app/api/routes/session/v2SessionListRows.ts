@@ -6,7 +6,7 @@ import {
     type ConnectedServiceId,
     type SessionRuntimeIssueV1,
     type V2SessionRecord,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { normalizeStoredSessionRuntimeActivityProjection } from "@/app/session/runtimeActivity/projection";
 import { mapPendingActivationAuthorization } from "@/app/session/pending/pendingActivationAuthorization";
 import {

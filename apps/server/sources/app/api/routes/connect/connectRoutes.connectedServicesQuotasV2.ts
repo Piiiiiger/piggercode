@@ -8,7 +8,7 @@ import {
     ConnectedServiceIdSchema,
     SealedConnectedServiceQuotaSnapshotV1Schema,
     type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { NotFoundSchema } from "../../schemas/notFoundSchema";
 import { ConnectedServiceProfileIdSchema } from "./connectedServicesV2/profileIdSchema";
 import { registerProviderAccountUsageRoutesV2 } from "./providerAccountUsageRoutesV2";

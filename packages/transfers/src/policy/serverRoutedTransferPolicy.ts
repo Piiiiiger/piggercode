@@ -3,7 +3,7 @@ import {
     normalizeMachineTransferServerRoutedMaxBytes,
     readMachineTransferServerRoutedMaxBytes,
     type FeaturesResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 // Server-routed transfers must be bounded even when the env/capability is missing. The server
 // advertises a default capability, but CLI/daemon processes may also need a safe fallback.

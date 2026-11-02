@@ -1,5 +1,5 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@happier-dev/protocol';
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import { readCredentialAccountIdentity } from '../quotas/coordinator/support';
 import { getConnectedAccountDescriptor } from '../descriptors/connectedAccountDescriptors';

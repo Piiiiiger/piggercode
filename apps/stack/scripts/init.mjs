@@ -282,15 +282,15 @@ async function main() {
   if (installRuntime) {
     const cliPkg = await readJsonIfExists(join(cliRootDir, 'package.json'));
     const cliVersion = String(cliPkg?.version ?? '').trim() || 'latest';
-    const spec = cliVersion === '0.0.0' ? '@happier-dev/stack@latest' : `@happier-dev/stack@${cliVersion}`;
+    const spec = cliVersion === '0.0.0' ? '@piggercode/stack@latest' : `@piggercode/stack@${cliVersion}`;
 
-    const runtimePkgPath = join(runtimeDir, 'node_modules', '@happier-dev', 'stack', 'package.json');
+    const runtimePkgPath = join(runtimeDir, 'node_modules', '@piggercode', 'stack', 'package.json');
     const runtimePkg = await readJsonIfExists(runtimePkgPath);
     const runtimeVersion = String(runtimePkg?.version ?? '').trim();
     const sameVersionInstalled = Boolean(cliVersion && cliVersion !== '0.0.0' && runtimeVersion && runtimeVersion === cliVersion);
 
     if (!forceRuntime && sameVersionInstalled) {
-      console.log(`${green('✓')} runtime already installed ${dim('(')}${cyan(runtimeDir)}${dim(')')} ${dim('@happier-dev/stack@')}${cyan(runtimeVersion)}`);
+      console.log(`${green('✓')} runtime already installed ${dim('(')}${cyan(runtimeDir)}${dim(')')} ${dim('@piggercode/stack@')}${cyan(runtimeVersion)}`);
     } else {
       console.log(`${yellow('!')} installing runtime into ${cyan(runtimeDir)} ${dim('(')}${cyan(spec)}${dim(')')}...`);
       const installInvocation = resolveCommandInvocation({
@@ -397,7 +397,7 @@ async function main() {
     '  fi',
     'fi',
     'RUNTIME_DIR="${HAPPIER_STACK_RUNTIME_DIR:-$HOME_DIR/runtime}"',
-    'ENTRY="$RUNTIME_DIR/node_modules/@happier-dev/stack/bin/hstack.mjs"',
+    'ENTRY="$RUNTIME_DIR/node_modules/@piggercode/stack/bin/hstack.mjs"',
     'if [[ -f "$ENTRY" ]]; then',
     '  if [[ -z "$NODE_BIN" ]]; then',
     '    echo "[hstack] missing node runtime; install node on PATH or set HAPPIER_STACK_NODE." >&2',

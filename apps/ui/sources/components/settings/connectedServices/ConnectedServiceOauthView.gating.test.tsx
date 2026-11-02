@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderScreen } from '@/dev/testkit';
 import { act } from 'react-test-renderer';
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 import { createRootLayoutFeaturesResponse } from '@/dev/testkit/fixtures/featureFixtures';
 import { installConnectedServicesCommonModuleMocks, connectedServicesModuleState } from './connectedServicesTestHelpers';
 

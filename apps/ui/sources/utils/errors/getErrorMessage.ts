@@ -1,4 +1,4 @@
-import { isRpcMethodNotAvailableError } from '@happier-dev/protocol/rpcErrors';
+import { isRpcMethodNotAvailableError } from '@piggercode/protocol/rpcErrors';
 import { t } from '@/text';
 
 export function getErrorMessage(err: unknown): string {

@@ -3,7 +3,7 @@ import {
   GEMINI_CLI_OAUTH_CALLBACK_URL,
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_SCOPES,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export const GEMINI_OAUTH = Object.freeze({
   clientId: GEMINI_CLI_OAUTH_CLIENT_ID,

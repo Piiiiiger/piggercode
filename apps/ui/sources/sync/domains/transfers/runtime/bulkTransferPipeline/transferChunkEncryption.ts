@@ -3,7 +3,7 @@ import {
     deriveBoxPublicKeyFromSeed,
     openEncryptedDataKeyEnvelopeV1,
     sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { gcm } from '@noble/ciphers/aes.js';
 
 import { decodeBase64, encodeBase64 } from '@/encryption/base64';

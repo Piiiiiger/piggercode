@@ -22,7 +22,7 @@ import {
     type PendingRequestedActionV1,
     type SessionPendingQueueDeliveryTiming,
     type SessionMessageRole,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { SessionMessageContentSchema, type SessionMessageContent } from '../types';
 import { readKnownPendingQueueState, type KnownPendingQueueState } from './pendingQueueState';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';

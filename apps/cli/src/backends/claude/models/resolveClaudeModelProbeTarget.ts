@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import type { ConnectedServiceBindingsV1, ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1, ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import {
   createConnectedServiceCredentialApi,

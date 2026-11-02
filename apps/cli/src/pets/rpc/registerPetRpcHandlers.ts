@@ -1,5 +1,5 @@
-import { PET_DAEMON_RPC_METHODS } from '@happier-dev/protocol';
-import type { AccountPetCreateRequestV1, AccountPetCreateResponseV1 } from '@happier-dev/protocol';
+import { PET_DAEMON_RPC_METHODS } from '@piggercode/protocol';
+import type { AccountPetCreateRequestV1, AccountPetCreateResponseV1 } from '@piggercode/protocol';
 
 import type { RpcHandlerManager } from '@/api/rpc/RpcHandlerManager';
 

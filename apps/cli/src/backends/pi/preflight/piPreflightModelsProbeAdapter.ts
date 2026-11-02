@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 
 import type { PreflightSessionCatalogsRaw, PreflightSessionControlsProbeAdapter, PreflightSessionControlsProbeParams } from '@/capabilities/probes/preflightSessionControlsProbeAdapterTypes';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { createPiModelCatalogEntry, type PiModelCatalogEntry } from '@/backends/pi/models/piModelCatalog';
 import { materializePiModelDiscoveryExtension, parsePiModelDiscoveryLine } from '@/backends/pi/models/piModelDiscoveryExtension';

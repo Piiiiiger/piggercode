@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 import { installSessionSettingsCommonModuleMocks } from './sessionSettingsViewTestHelpers';
 

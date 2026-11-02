@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 
 import type { AgentInputExtraActionChip, AgentInputExtraActionChipRenderContext } from '@/components/sessions/agentInput/agentInputContracts';
 import type { SelectionListStep } from '@/components/ui/selectionList';

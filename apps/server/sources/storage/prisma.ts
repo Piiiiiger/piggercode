@@ -6,7 +6,7 @@ import { mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, isAbsolute, join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { readPrismaSqliteConnectionParams } from "@happier-dev/cli-common/firstPartyRuntime";
+import { readPrismaSqliteConnectionParams } from "@piggercode/cli-common/firstPartyRuntime";
 import { resolveLightDataDir, resolveLightDatabaseDir } from "@/flavors/light/env";
 import { resolveLightSqliteBusyTimeoutMsFromEnv } from "@/flavors/light/sqliteConnectionConfig";
 import { log, warn } from "@/utils/logging/log";

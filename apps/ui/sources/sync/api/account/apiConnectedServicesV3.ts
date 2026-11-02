@@ -15,7 +15,7 @@ import {
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ConnectedServiceCredentialPlainWriteRevisionBoundary =
   | Readonly<{

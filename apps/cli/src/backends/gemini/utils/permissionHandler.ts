@@ -10,7 +10,7 @@ import {
   type PendingRequest,
   type PermissionResult,
 } from '@/agent/permissions/CodexLikePermissionHandler';
-import { isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import { isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 
 export type { PermissionResult, PendingRequest };
 

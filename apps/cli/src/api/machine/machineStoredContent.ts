@@ -1,4 +1,4 @@
-import { decodePlainMachineStoredContent, encodePlainMachineStoredContent } from '@happier-dev/protocol';
+import { decodePlainMachineStoredContent, encodePlainMachineStoredContent } from '@piggercode/protocol';
 import { decodeBase64, decrypt, encodeBase64, encrypt } from '@/api/encryption';
 import type { Machine } from '@/api/types';
 

@@ -1,4 +1,4 @@
-import { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
+import { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';
 import type { SessionSubagent } from './types';
 import { shouldIgnoreProviderActivityPreviewText } from '@/sync/domains/session/providers/sessionProviderBehaviorRegistry';
 

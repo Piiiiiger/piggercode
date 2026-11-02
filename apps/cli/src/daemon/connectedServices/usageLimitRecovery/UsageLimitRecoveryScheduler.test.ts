@@ -4,7 +4,7 @@ import {
   SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
   SESSION_USAGE_LIMIT_RECOVERY_STATE_FIELD_ID,
   SessionUsageLimitRecoveryV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   METADATA_SESSION_USAGE_LIMIT_RECOVERY_V1_KEY,

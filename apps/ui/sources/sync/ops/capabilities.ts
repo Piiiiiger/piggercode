@@ -3,7 +3,7 @@
  */
 
 import { isPlainObject } from './_shared';
-import { RPC_METHODS, isRpcMethodNotFoundResult } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS, isRpcMethodNotFoundResult } from '@piggercode/protocol/rpc';
 import {
     parseCapabilitiesDescribeResponse,
     parseCapabilitiesDetectResponse,

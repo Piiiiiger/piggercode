@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createSessionMessageMetaSchema } from '@happier-dev/protocol';
+import { createSessionMessageMetaSchema } from '@piggercode/protocol';
 
 const DANGEROUS_META_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 

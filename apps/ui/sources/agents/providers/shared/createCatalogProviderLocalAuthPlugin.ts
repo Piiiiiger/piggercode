@@ -1,5 +1,5 @@
 import type { AgentId } from '@/agents/catalog/catalog';
-import { getAgentLocalCliConfig, getProviderCliInstallGuideUrl, getProviderCliRuntimeSpec } from '@happier-dev/agents';
+import { getAgentLocalCliConfig, getProviderCliInstallGuideUrl, getProviderCliRuntimeSpec } from '@piggercode/agents';
 
 import { createStaticProviderLocalAuthPlugin } from './createStaticProviderLocalAuthPlugin';
 import type { ProviderLocalAuthPlugin } from './providerLocalAuthPlugin';

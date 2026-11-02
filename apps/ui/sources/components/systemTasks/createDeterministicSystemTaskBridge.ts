@@ -3,7 +3,7 @@ import {
     SYSTEM_TASK_PROTOCOL_VERSION,
     type SystemTaskResult,
     type SystemTaskSpec,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createServerUrlComparableKey } from '@/sync/domains/server/url/serverUrlCanonical';
 import { getActiveServerAccountScope } from '@/sync/domains/scope/activeServerAccountScope';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';

@@ -4,7 +4,7 @@ import {
     isBuiltInAgentTarget,
     type BackendTargetRefV1,
     type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import { resolveProviderAgentIdForBackendTarget } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';

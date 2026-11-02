@@ -1,7 +1,7 @@
 import type { CapabilitiesDetectRequest, CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { AGENT_IDS } from '@/agents/catalog/catalog';
-import { isAgentAuthProbeSafeForBackgroundChecks } from '@happier-dev/agents';
-import { CHECKLIST_IDS } from '@happier-dev/protocol/checklists';
+import { isAgentAuthProbeSafeForBackgroundChecks } from '@piggercode/agents';
+import { CHECKLIST_IDS } from '@piggercode/protocol/checklists';
 import { buildAgentCliCapabilityId } from './agentCliCapabilityId';
 import { getInstallablesRegistryEntries } from './installablesRegistry';
 

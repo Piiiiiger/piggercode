@@ -4,7 +4,7 @@ import {
     SessionMcpSelectionV1Schema,
     WindowsRemoteSessionLaunchModeSchema,
     WindowsTerminalWindowNameSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AutomationTemplate } from './automationTypes';
 

@@ -1,4 +1,4 @@
-import type { ScmPullRequestReference } from '@happier-dev/protocol';
+import type { ScmPullRequestReference } from '@piggercode/protocol';
 
 function parsePositiveInt(value: string): number | null {
     if (!/^[1-9][0-9]*$/.test(value)) return null;

@@ -1,4 +1,4 @@
-import { mergeTurnChangeSets, type SessionChangeSet, type TurnChangeSet } from '@happier-dev/protocol';
+import { mergeTurnChangeSets, type SessionChangeSet, type TurnChangeSet } from '@piggercode/protocol';
 
 export function deriveLatestTurnScopedChangeSet(params: Readonly<{
     sessionId: string;

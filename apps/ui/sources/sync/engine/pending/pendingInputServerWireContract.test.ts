@@ -4,7 +4,7 @@ import {
     PENDING_INPUT_PROTOCOL_VERSION_V1,
     PENDING_INPUT_PROTOCOL_VERSION_V2,
     type FeaturesResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { parseReleasedServerV021Features } from '@/dev/testkit';
 import { buildServerFeaturesResponse } from '@/hooks/server/serverFeaturesTestUtils';
 import type { ServerFeaturesSnapshot } from '@/sync/api/capabilities/serverFeaturesClient';

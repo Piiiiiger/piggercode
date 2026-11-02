@@ -5,10 +5,10 @@ import { decodeBase64, decrypt, encodeBase64, encrypt } from '@/api/encryption';
 import type { Credentials } from '@/persistence';
 import { waitForSocketConnect } from '@/session/transport/socket/waitForSocketConnect';
 import { resolveSessionControlSocketConnectTimeoutMs } from '@/session/transport/shared/sessionTimeouts';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { isRpcMethodNotAvailableError } from '@happier-dev/protocol/rpcErrors';
-import { resolveCanonicalMachineId } from '@happier-dev/protocol';
-import type { SocketRpcAuthorizationContext } from '@happier-dev/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { isRpcMethodNotAvailableError } from '@piggercode/protocol/rpcErrors';
+import { resolveCanonicalMachineId } from '@piggercode/protocol';
+import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 import { randomUUID } from 'node:crypto';
 import {
   createSocketRpcDisconnectGuard,

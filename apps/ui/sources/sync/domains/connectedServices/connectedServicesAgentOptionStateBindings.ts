@@ -1,7 +1,7 @@
 import {
     ConnectedServiceBindingsV1Schema,
     type ConnectedServiceBindingSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServicesServiceBinding = ConnectedServiceBindingSelectionV1;
 

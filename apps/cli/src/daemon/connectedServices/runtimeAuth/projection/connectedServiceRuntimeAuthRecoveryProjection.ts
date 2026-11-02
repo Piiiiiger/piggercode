@@ -6,7 +6,7 @@ import {
   normalizeConnectedServiceUxDiagnosticV1,
   type ConnectedServiceUxDiagnosticV1,
   type TranscriptRawAgentEventV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildConnectedServiceUxDiagnostic } from '../../diagnostics/connectedServiceUxDiagnostics';
 import type { ConnectedServiceRuntimeFailureClassification } from '../types';

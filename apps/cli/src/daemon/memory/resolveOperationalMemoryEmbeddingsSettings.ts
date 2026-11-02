@@ -4,7 +4,7 @@ import {
   type MemoryEmbeddingsMode,
   type MemoryEmbeddingsPresetId,
   type MemorySettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type OperationalMemoryEmbeddingsDiagnostics = Readonly<{
   mode: MemoryEmbeddingsMode;

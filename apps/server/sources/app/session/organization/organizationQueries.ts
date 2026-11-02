@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import {
     type SessionOrganizationSnapshotRequest,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { createV2SessionListVisibilityWhere } from "@/app/api/routes/session/v2SessionListRows";

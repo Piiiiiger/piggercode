@@ -19,10 +19,10 @@ async function createSourceCliFixture(t, options = {}) {
   const repoRoot = join(fixture.root, 'repo');
   await mkdir(join(repoRoot, 'apps', 'ui'), { recursive: true });
   await mkdir(join(repoRoot, 'apps', 'server'), { recursive: true });
-  await writeFile(join(repoRoot, 'apps', 'ui', 'package.json'), '{ "name": "@happier-dev/app" }\n', 'utf8');
-  await writeFile(join(repoRoot, 'apps', 'server', 'package.json'), '{ "name": "@happier-dev/server" }\n', 'utf8');
+  await writeFile(join(repoRoot, 'apps', 'ui', 'package.json'), '{ "name": "@piggercode/app" }\n', 'utf8');
+  await writeFile(join(repoRoot, 'apps', 'server', 'package.json'), '{ "name": "@piggercode/server" }\n', 'utf8');
   await writeStubHappierCliFiles(repoRoot, {
-    packageJsonContent: '{ "name": "@happier-dev/cli" }\n',
+    packageJsonContent: '{ "name": "@piggercode/cli" }\n',
     distIndexScript: options.cliSource ?? 'process.stdout.write(JSON.stringify(process.argv.slice(2)) + "\\n");\n',
   });
   return { repoRoot };

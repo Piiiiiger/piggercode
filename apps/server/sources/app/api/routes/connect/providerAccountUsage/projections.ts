@@ -1,4 +1,4 @@
-import { ConnectedServiceUsageSourceV1Schema, projectProviderAccountUsageToConnectedServiceQuotaSnapshot } from "@happier-dev/protocol";
+import { ConnectedServiceUsageSourceV1Schema, projectProviderAccountUsageToConnectedServiceQuotaSnapshot } from "@piggercode/protocol";
 
 import { readProviderAccountUsageRecord } from "./recordStorage";
 import { readConnectedServiceUsageSource } from "./sourceStorage";

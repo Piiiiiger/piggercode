@@ -6,7 +6,7 @@ vi.mock('@/daemon/controlClient', () => ({
     notifyDaemonConnectedServiceQuotaSnapshot(body),
 }));
 
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import { deliverConnectedServiceQuotaSnapshotToDaemon } from './deliverConnectedServiceQuotaSnapshotToDaemon';
 import { createCodexQuotaSnapshotDeliveryOutboxForNotify } from '@/backends/codex/connectedServices/reportCodexRateLimitSnapshotToDaemon';

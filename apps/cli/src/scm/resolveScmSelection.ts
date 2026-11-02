@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-import type { ScmBackendPreference } from '@happier-dev/protocol';
+import type { ScmBackendPreference } from '@piggercode/protocol';
 
 import type { ScmBackendSelection } from './registry';
 import type { ScmBackendContext, ScmConnectedAccountCredentialResolver } from './types';

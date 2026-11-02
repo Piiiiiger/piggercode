@@ -6,7 +6,7 @@ import {
     buildWorktreeRelativePath,
     hasForbiddenGitRefName,
     normalizeWorktreeDisplayName,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { normalizeCommitRef, runScmCommand } from '../../../runtime';
 import { buildScmNonInteractiveEnv } from '../../shared/nonInteractiveEnv';

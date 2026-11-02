@@ -28,14 +28,14 @@ describe('optionalWorkspaceBundleLock', () => {
         'apps',
         'cli',
         'node_modules',
-        '@happier-dev',
+        '@piggercode',
         'cli-common',
       );
       mkdirSync(resolve(staleBundledPackageDir, 'dist'), { recursive: true });
       writeFileSync(
         resolve(staleBundledPackageDir, 'package.json'),
         `${JSON.stringify({
-          name: '@happier-dev/cli-common',
+          name: '@piggercode/cli-common',
           version: '0.0.0',
           type: 'module',
           exports: { '.': './dist/index.js' },

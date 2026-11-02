@@ -4,7 +4,7 @@ import type {
   ConnectedServiceQuotaRecoveryCreditConsumeReceiptStatusV1,
   ConnectedServiceQuotaSnapshotV1,
   ProviderAccountSubscriptionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceSubscriptionFetcher = Readonly<{
   serviceId: ConnectedServiceId;

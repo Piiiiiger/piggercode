@@ -1,4 +1,4 @@
-import type { ConnectedServiceUxDiagnosticV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceUxDiagnosticV1 } from '@piggercode/protocol';
 
 import {
     resolveConnectedServiceUxDiagnosticPresentation,

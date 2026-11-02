@@ -6,7 +6,7 @@ import { Typography } from '@/constants/Typography';
 import { DropdownMenu } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Icon } from '@/components/ui/icons/Icon';
 
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 
 export function ChangedFilesReviewDiffAreaSelector(props: Readonly<{
     theme: Readonly<{ colors: { border: { default: string }; surface: { inset: string; base?: string }; text: { primary: string } } }>;

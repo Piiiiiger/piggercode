@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { resolveLatestPermissionIntent } from '@happier-dev/agents';
-import type { SessionEncryptionMode } from '@happier-dev/protocol';
+import { resolveLatestPermissionIntent } from '@piggercode/agents';
+import type { SessionEncryptionMode } from '@piggercode/protocol';
 
 import { logger } from '@/ui/logger';
 import { isAuthenticationError } from '../client/httpStatusError';

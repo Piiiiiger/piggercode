@@ -5,7 +5,7 @@ import {
     AGENT_IDS as SHARED_AGENT_IDS,
     getAgentModelConfig,
     getProviderCliInstallGuideUrl,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import {
     resolveAgentIdFromCliDetectKey,
@@ -204,13 +204,13 @@ describe('agents/registryCore', () => {
         }
     });
 
-    it('surfaces shared tools delivery config from @happier-dev/agents', () => {
+    it('surfaces shared tools delivery config from @piggercode/agents', () => {
         for (const agentId of AGENT_IDS) {
             expect(buildAgentToolsUiConfig({ agentId })).toEqual(SHARED_AGENTS_CORE[agentId].tools);
         }
     });
 
-    it('surfaces shared connected-services compatibility from @happier-dev/agents', () => {
+    it('surfaces shared connected-services compatibility from @piggercode/agents', () => {
         for (const agentId of AGENT_IDS) {
             expect(getAgentCore(agentId)).toMatchObject({
                 connectedServices: SHARED_AGENTS_CORE[agentId].connectedServices ?? null,
@@ -236,7 +236,7 @@ describe('agents/registryCore', () => {
         });
     });
 
-    it('reads model selection config from @happier-dev/agents', () => {
+    it('reads model selection config from @piggercode/agents', () => {
         const claude = getAgentModelConfig('claude');
         expect(claude.supportsSelection).toBe(true);
         expect(claude.nonAcpApplyScope).toBe('next_prompt');

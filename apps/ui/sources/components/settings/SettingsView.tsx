@@ -28,7 +28,7 @@ import { fireAndForget } from '@/utils/system/fireAndForget';
 import { useAutomationsSupport } from '@/hooks/server/useAutomationsSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useScannedAuthUrlProcessor } from '@/hooks/auth/useScannedAuthUrlProcessor';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 import { isRunningOnMac } from '@/utils/platform/platform';
 import { isWebMobileLikeQrScannerHost } from '@/utils/platform/webMobileHeuristics';

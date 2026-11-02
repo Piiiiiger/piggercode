@@ -6,7 +6,7 @@ import {
   openEncryptedDataKeyEnvelopeV1,
   sealEncryptedDataKeyEnvelopeV1,
   type ApprovalRequestV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 import {
@@ -177,9 +177,9 @@ async function updateArtifact(params: Readonly<{
 }
 
 export function createCliApprovalsArtifactStore(params: Readonly<{ credentials: Credentials }>): Readonly<{
-  approvalsCreate: NonNullable<import('@happier-dev/protocol').ActionExecutorDeps['approvalsCreate']>;
-  approvalsGet: NonNullable<import('@happier-dev/protocol').ActionExecutorDeps['approvalsGet']>;
-  approvalsUpdate: NonNullable<import('@happier-dev/protocol').ActionExecutorDeps['approvalsUpdate']>;
+  approvalsCreate: NonNullable<import('@piggercode/protocol').ActionExecutorDeps['approvalsCreate']>;
+  approvalsGet: NonNullable<import('@piggercode/protocol').ActionExecutorDeps['approvalsGet']>;
+  approvalsUpdate: NonNullable<import('@piggercode/protocol').ActionExecutorDeps['approvalsUpdate']>;
 }> {
   return {
     approvalsCreate: async ({ request, serverId }) => {

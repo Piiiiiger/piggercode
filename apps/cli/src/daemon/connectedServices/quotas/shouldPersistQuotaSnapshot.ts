@@ -2,7 +2,7 @@ import {
   compareConnectedServiceQuotaObservationRecency,
   isConnectedServiceQuotaObservationAtOrBeforeNow,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ShouldPersistQuotaSnapshotStatus = 'ok' | 'unavailable' | 'estimated' | 'error';
 

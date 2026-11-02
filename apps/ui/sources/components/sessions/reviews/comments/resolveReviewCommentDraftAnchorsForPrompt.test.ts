@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { WorkspaceAnchorsResolveResponseV1 } from '@happier-dev/protocol';
+import type { WorkspaceAnchorsResolveResponseV1 } from '@piggercode/protocol';
 
 import type { ReviewCommentDraft } from '@/sync/domains/input/reviewComments/reviewCommentTypes';
 

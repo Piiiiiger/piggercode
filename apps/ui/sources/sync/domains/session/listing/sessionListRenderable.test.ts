@@ -20,7 +20,7 @@ import type { Session } from '@/sync/domains/state/storageTypes';
 // The entry id is asked of the protocol owner, not spelled here. This projection joins the
 // published headline by id, so a hand-written literal is a copy of the wire format that keeps
 // passing after the real one moves.
-import { buildAgentActivityEntryId } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId } from '@piggercode/protocol';
 import { EMPTY_AGENT_ACTIVITY_COUNTS } from '@/sync/domains/session/agentActivity/deriveAgentActivityCounts';
 import { createSessionFixture } from '@/dev/testkit';
 

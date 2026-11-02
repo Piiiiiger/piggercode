@@ -3,7 +3,7 @@ import { normalizeContextWindowTokens } from '@/backends/modelCapabilities/conte
 import {
     providers,
     readNewestSessionModelsMetadataStateV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { reconcileClaudeSessionModelsState } from '../sessionModels/reconcileClaudeSessionModelsState';
 

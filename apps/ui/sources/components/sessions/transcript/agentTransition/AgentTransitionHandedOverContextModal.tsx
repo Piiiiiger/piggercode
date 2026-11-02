@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import type { BackendTargetRefV1, SessionAgentTransitionBriefPreviewV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, SessionAgentTransitionBriefPreviewV1 } from '@piggercode/protocol';
 
 import { announceAccessibilityMessage } from '@/components/ui/accessibility/announceAccessibilityMessage';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';

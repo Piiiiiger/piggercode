@@ -3,7 +3,7 @@ import {
     defineSettingDefinitions,
     HappierReplayRecentMessagesCountSchema,
     HappierReplayWritableMaxSeedCharsSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 function bucketCount(value: number, smallMax: number, mediumMax: number): 'small' | 'medium' | 'large' {

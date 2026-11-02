@@ -6,7 +6,7 @@ import {
     DEFAULT_CONNECTED_SERVICES_PROVIDER_STATE_SHARING_SETTINGS_V1,
     buildSettingArtifacts,
     defineSettingDefinitions,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 function objectKeyCount(value: unknown): number {

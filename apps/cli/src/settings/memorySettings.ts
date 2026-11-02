@@ -6,7 +6,7 @@ import {
   sealSecretsDeepV1,
   unsealSecretsDeepWithKeysV1,
   type MemorySettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readCredentials, readSettings, updateSettings } from '@/persistence';
 import {
@@ -18,7 +18,7 @@ export {
   DEFAULT_MEMORY_SETTINGS,
   normalizeMemorySettings,
   type MemorySettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function normalizeEnabledAtMs(value: unknown): number {
   const raw = typeof value === 'number' ? value : Number(value);

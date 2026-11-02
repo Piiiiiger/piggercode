@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import Fastify from 'fastify';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { ConnectedServiceBindingsV1, ConnectedServiceMaterializationIdentityV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1, ConnectedServiceMaterializationIdentityV1 } from '@piggercode/protocol';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
 import type { DaemonSessionMarker } from '@/daemon/sessionRegistry';
 import type { Credentials } from '@/persistence';

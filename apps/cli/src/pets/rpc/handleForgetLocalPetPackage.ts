@@ -1,7 +1,7 @@
 import {
   DaemonPetForgetLocalPackageRequestV1Schema,
   type DaemonPetForgetLocalPackageResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PetPackageDiscoveryCache } from '../discovery/petPackageDiscoveryCache';
 import { forgetManagedLocalPetSource } from '../storage/managedLocalPetRegistry';

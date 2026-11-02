@@ -2,7 +2,7 @@ import {
     parseSetupPairingPromptData,
     type SetupPairingPromptPayload,
     type SystemTaskEvent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { authApprove, AuthApproveUnsupportedResponseError, type AuthApproveResult } from '@/auth/flows/approve';
 import { TokenStorage } from '@/auth/storage/tokenStorage';
@@ -62,7 +62,7 @@ import {
 
 /**
  * The prompt as this app reads it: the shared wire payload plus the task it belongs to. The shape,
- * the kind and the parsing live in `@happier-dev/protocol`'s setup task contract, which the
+ * the kind and the parsing live in `@piggercode/protocol`'s setup task contract, which the
  * executor in `apps/bootstrap` builds through — one definition, not a transcription.
  */
 export type SetupPairingPrompt = SetupPairingPromptPayload & Readonly<{ taskId: string }>;

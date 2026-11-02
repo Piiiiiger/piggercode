@@ -18,4 +18,4 @@ export {
     findMachineInCollection,
     type MachineCollection,
     type MachineIdentityRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';

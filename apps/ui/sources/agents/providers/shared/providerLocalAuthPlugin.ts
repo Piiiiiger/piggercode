@@ -1,5 +1,5 @@
 import type { AgentId } from '@/agents/catalog/catalog';
-import type { DaemonTerminalLaunchIntent } from '@happier-dev/protocol';
+import type { DaemonTerminalLaunchIntent } from '@piggercode/protocol';
 
 export type ProviderLocalAuthSupport = 'login_terminal' | 'status_only' | 'manual_only' | 'unsupported';
 

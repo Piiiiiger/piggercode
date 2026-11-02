@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { AgentBackend } from '@/agent/core';
 import type { AcpPermissionHandler } from '@/agent/acp/AcpBackend';

@@ -17,7 +17,7 @@ import {
     type ScmRepositoryRemoveIndexLockRequest,
     type ScmRepositoryRemoveIndexLockResponse,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import { defaultScmHostingProviderRegistry } from '../../../hostingProviders/registry';

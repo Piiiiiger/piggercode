@@ -1,7 +1,7 @@
 import type { StreamedTranscriptWriterSession } from '@/api/session/streamedTranscriptWriter';
 import type { ACPMessageData, ACPProvider } from '@/api/session/sessionMessageTypes';
 import type { EphemeralSendResult } from '@/api/session/ephemeralSendOutcome';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 
 type StreamedTranscriptEphemeralOptions = Readonly<{
   localId: string;

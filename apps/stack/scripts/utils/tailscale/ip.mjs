@@ -4,7 +4,7 @@
  * Provides functions to detect the local Tailscale IPv4 address for port forwarding.
  */
 
-import { resolveTailscaleBin, sanitizeTailscaleEnv } from '@happier-dev/cli-common/tailscale';
+import { resolveTailscaleBin, sanitizeTailscaleEnv } from '@piggercode/cli-common/tailscale';
 import { runCaptureResult } from '../proc/proc.mjs';
 
 const TAILSCALE_TIMEOUT_MS = 3000;

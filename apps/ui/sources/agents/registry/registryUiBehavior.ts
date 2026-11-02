@@ -6,7 +6,7 @@ import type {
     DirectSessionLinkEnsureRequest,
     DirectSessionsSource,
     PendingDeliveryDetailV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { DetailsTab } from '@/components/appShell/panes/model/appPaneReducer';
 import type { AgentId } from './registryCore';
 import { AGENT_IDS, getAgentCore, resolveAgentIdFromFlavor } from './registryCore';
@@ -26,7 +26,7 @@ import { PI_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/pi/uiBehavior';
 import { AGY_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/agy/uiBehavior';
 import { CUSTOM_ACP_UI_BEHAVIOR_OVERRIDE } from '@/agents/providers/customAcp/uiBehavior';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput';
-import { isAcpSessionListingDeclared, resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { isAcpSessionListingDeclared, resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import type { PendingInputServerWireMode } from '@/sync/engine/pending/pendingInputServerWireContract';
 import { resolveSessionGoalExecutionCapabilities } from '@/sync/domains/session/control/sessionGoalExecutionCapabilities';
 

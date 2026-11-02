@@ -1,8 +1,8 @@
 import { logger } from '@/ui/logger';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import type { PendingProviderAction } from '@happier-dev/protocol';
+import type { PendingProviderAction } from '@piggercode/protocol';
 
-export type { PendingProviderAction } from '@happier-dev/protocol';
+export type { PendingProviderAction } from '@piggercode/protocol';
 
 export type MessageQueueBatch<Mode, Message> = {
   message: Message;
@@ -18,7 +18,7 @@ export type MessageQueueBatch<Mode, Message> = {
   userMessageLocalIds: string[];
   providerAcceptancePending?: boolean;
   pendingProviderAction?: PendingProviderAction;
-  pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+  pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 };
 
 type QueueItem<Mode, Message> = {
@@ -30,7 +30,7 @@ type QueueItem<Mode, Message> = {
   userMessageLocalIds: string[];
   providerAcceptancePending: boolean;
   pendingProviderAction?: PendingProviderAction;
-  pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+  pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 };
 
 type MessageBatcher<Message> = (messages: Message[]) => Message;
@@ -105,7 +105,7 @@ export class MessageQueue2<Mode, Message = string> {
       userMessageLocalIds?: readonly string[] | null;
       providerAcceptancePending?: boolean | null;
       pendingProviderAction?: PendingProviderAction;
-      pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+      pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     },
   ): void {
     if (this.closed) {
@@ -150,7 +150,7 @@ export class MessageQueue2<Mode, Message = string> {
       userMessageLocalIds?: readonly string[] | null;
       providerAcceptancePending?: boolean | null;
       pendingProviderAction?: PendingProviderAction;
-      pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+      pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     },
   ): void {
     if (this.closed) {
@@ -192,7 +192,7 @@ export class MessageQueue2<Mode, Message = string> {
       userMessageLocalIds?: readonly string[] | null;
       providerAcceptancePending?: boolean | null;
       pendingProviderAction?: PendingProviderAction;
-      pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+      pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     },
   ): void {
     if (this.closed) {

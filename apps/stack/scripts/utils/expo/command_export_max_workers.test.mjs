@@ -72,9 +72,9 @@ async function writeMinimalRepo({ root }) {
   await mkdir(join(root, 'apps', 'server'), { recursive: true });
   await writeJson(join(root, 'package.json'), { name: 'repo', private: true });
   await writeFile(join(root, 'yarn.lock'), '# lock\n', 'utf-8');
-  await writeJson(join(root, 'apps', 'ui', 'package.json'), { name: '@happier-dev/app', private: true });
-  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@happier-dev/cli', private: true });
-  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@happier-dev/server', private: true });
+  await writeJson(join(root, 'apps', 'ui', 'package.json'), { name: '@piggercode/app', private: true });
+  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@piggercode/cli', private: true });
+  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@piggercode/server', private: true });
   await writeWorkspacePackageBuildOwnerStub(root);
 }
 

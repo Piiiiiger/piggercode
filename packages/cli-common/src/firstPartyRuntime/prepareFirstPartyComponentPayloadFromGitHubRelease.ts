@@ -2,11 +2,11 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
-import { resolveReleaseAssetBundle } from '@happier-dev/release-runtime/assets';
-import { fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
-import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@happier-dev/release-runtime/minisign';
-import { downloadVerifiedReleaseAssetBundle } from '@happier-dev/release-runtime/verifiedDownload';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import { resolveReleaseAssetBundle } from '@piggercode/release-runtime/assets';
+import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
+import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@piggercode/release-runtime/minisign';
+import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
 import {
@@ -15,7 +15,7 @@ import {
 } from './componentCatalog.js';
 import { extractReleasePayloadRootFromArchive } from './extractReleasePayloadRootFromArchive.js';
 import { FirstPartyAcquisitionError, readAcquisitionFailureCause, type FirstPartyAcquisitionOptions } from './acquisitionProgress.js';
-import type { CliAcquisitionProgress } from '@happier-dev/protocol';
+import type { CliAcquisitionProgress } from '@piggercode/protocol';
 
 export interface PreparedFirstPartyComponentPayload {
   componentId: FirstPartyComponentId;

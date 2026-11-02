@@ -100,7 +100,7 @@ type ParkedUnifiedTerminalMessage = Readonly<{
   userMessageLocalIds: readonly string[];
   providerAcceptancePending?: boolean;
   pendingProviderAction?: import('@/agent/runtime/modeMessageQueue').PendingProviderAction;
-  pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+  pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
 }>;
 
 type InFlightStartupMessage = Readonly<{

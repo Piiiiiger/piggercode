@@ -17,9 +17,9 @@ import { resolveClaudeConfigDirOverride } from "./utils/resolveClaudeConfigDirOv
 import { resolveClaudeConfigDirEnvOverlay } from "./utils/resolveClaudeConfigDirEnvOverlay";
 import { buildMissingJavaScriptRuntimeMessage } from "@/runtime/js/buildMissingJavaScriptRuntimeMessage";
 import { isEmbeddedBunBundlePath } from "@/runtime/js/isEmbeddedBunBundlePath";
-import { resolveWindowsCommandInvocation, type CommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation, type CommandInvocation } from '@piggercode/cli-common/process';
 import { resolveCliRuntimeAssetPath } from '@/runtime/assets/resolveCliRuntimeAssetPath';
-import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@happier-dev/protocol';
+import { HAPPIER_BASE_SYSTEM_PROMPT_V1 } from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 import { isNativeProcessExited, isProviderInLauncher } from '../../../scripts/native_process_exit.cjs';
 import { logClaudeRuntimeAuthEnvDiagnostic } from './spawn/logClaudeRuntimeAuthEnvDiagnostic';

@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';

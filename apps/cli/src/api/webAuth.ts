@@ -1,6 +1,6 @@
 import { encodeBase64 } from './encryption';
 import { configuration } from '@/configuration';
-import { buildTerminalConnectLinks } from '@happier-dev/cli-common/links';
+import { buildTerminalConnectLinks } from '@piggercode/cli-common/links';
 
 /**
  * Generate a URL for web authentication

@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 
-import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1 } from '@happier-dev/protocol';
+import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1 } from '@piggercode/protocol';
 import { resolveConfiguredCodexConfigTomlPath } from '../utils/resolveConfiguredCodexHome';
 
 export type DetectCodexMcpServersResult = Readonly<{

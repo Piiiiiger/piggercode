@@ -18,12 +18,12 @@ import {
   type SessionAgentTransitionResultV1,
   type SessionAgentTransitionSourceUntouched,
   type SessionStoredMessageContent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   projectCurrentAgentSessionView,
   resolveAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';

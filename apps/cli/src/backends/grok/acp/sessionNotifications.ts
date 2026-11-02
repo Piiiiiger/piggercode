@@ -6,7 +6,7 @@ import {
   type SessionWorkflowAgentStatusV1,
   type SessionWorkflowRunSnapshotV1,
   type SessionWorkflowRunStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AcpExtensionHandlerContext } from '@/agent/acp/AcpBackend';
 

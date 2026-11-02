@@ -6,7 +6,7 @@ import { installRealtimeCommonModuleMocks } from '../realtimeTestHelpers';
 
 vi.mock('react-native-reanimated', () => ({}));
 vi.mock('react-native-typography', () => ({ iOSUIKit: { title3: {} } }));
-vi.mock('@happier-dev/agents', () => ({
+vi.mock('@piggercode/agents', () => ({
   buildElevenLabsVoiceAgentPrompt: vi.fn(
     () => 'Claude Code prompt with {{initialConversationContext}} and {{sessionId}}',
   ),

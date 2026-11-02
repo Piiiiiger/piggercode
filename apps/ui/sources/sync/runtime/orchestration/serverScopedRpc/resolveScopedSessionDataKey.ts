@@ -1,4 +1,4 @@
-import { type V2SessionByIdResponse, V2SessionByIdResponseSchema } from '@happier-dev/protocol';
+import { type V2SessionByIdResponse, V2SessionByIdResponseSchema } from '@piggercode/protocol';
 import { runtimeFetchWithServerReachability } from '@/sync/runtime/connectivity/serverReachabilityRuntimeFetch';
 import {
   createNotAuthenticatedError,

@@ -1,4 +1,4 @@
-import { AcpCatalogSettingsV1Schema, BackendTargetRefSchema, LlmTaskRunnerConfigV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { AcpCatalogSettingsV1Schema, BackendTargetRefSchema, LlmTaskRunnerConfigV1Schema, buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 import { isAgentId } from '@/agents/registry/registryCore';
 

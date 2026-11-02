@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { buildWorkflowAgentSidechainId } from '@happier-dev/protocol';
+import { buildWorkflowAgentSidechainId } from '@piggercode/protocol';
 
 import type { RawJSONLines } from '@/backends/claude/types';
 import { ClaudeRemoteSubagentFileCollector } from '@/backends/claude/remote/sidechains/claudeRemoteSubagentFileCollector';

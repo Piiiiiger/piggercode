@@ -16,7 +16,7 @@ import {
     SessionSystemRecordPageResponseSchema,
     SessionSystemRecordUpsertRequestSchema,
     SessionSystemRecordUpsertResponseSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { type Fastify } from "../../types";
 
 export function registerSessionSystemRecordRoutes(app: Fastify) {

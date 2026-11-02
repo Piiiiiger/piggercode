@@ -1,8 +1,8 @@
 import { lstat, mkdir, readFile, readdir, realpath, utimes, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
-import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL } from '@happier-dev/agents';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
+import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL } from '@piggercode/agents';
 import { materializeConnectedServicesForSpawn } from '@/daemon/connectedServices/materialize/materializeConnectedServicesForSpawn';
 import { resolveConnectedServiceHomeDir } from '@/daemon/connectedServices/homes/resolveConnectedServiceHomeDir';
 import { withTempDir } from '@/testkit/fs/tempDir';

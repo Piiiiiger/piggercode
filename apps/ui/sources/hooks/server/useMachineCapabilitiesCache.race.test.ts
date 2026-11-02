@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { CHECKLIST_IDS } from '@happier-dev/protocol/checklists';
+import { CHECKLIST_IDS } from '@piggercode/protocol/checklists';
 import type { CapabilitiesDetectRequest } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { flushHookEffects, renderHook } from '@/dev/testkit';
 

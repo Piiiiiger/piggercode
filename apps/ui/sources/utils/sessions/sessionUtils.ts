@@ -29,7 +29,7 @@ import { t } from '@/text';
 import { getCachedIntlDateTimeFormat } from '@/utils/datetime/cachedIntlFormatters';
 import { formatPathRelativeToHome } from './formatPathRelativeToHome';
 import { useUnistyles } from 'react-native-unistyles';
-import { resolveTerminalControlServiceabilityPolicy } from '@happier-dev/protocol';
+import { resolveTerminalControlServiceabilityPolicy } from '@piggercode/protocol';
 export { formatPathRelativeToHome } from './formatPathRelativeToHome';
 export {
     SESSION_RESUMING_PRESENTATION_TIMEOUT_MS,

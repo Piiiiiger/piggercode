@@ -23,8 +23,8 @@ import {
   type BackendTargetRefV1,
   getActionSpec,
   isActionSpecSurfacedOn,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   createMcpActionApprovalRequirement,
   createMcpActionEnablement,

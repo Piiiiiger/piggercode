@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-import { renderSystemdServiceUnit } from '@happier-dev/cli-common/service';
+import { renderSystemdServiceUnit } from '@piggercode/cli-common/service';
 import { describe, expect, it } from 'vitest';
 
 import { reloadConfiguration } from '@/configuration';

@@ -1,4 +1,4 @@
-import { getActionSpec } from '@happier-dev/protocol';
+import { getActionSpec } from '@piggercode/protocol';
 
 import { buildHappierToolsShellBridgeCommand } from './buildHappierToolsShellBridgeCommand';
 import { resolveAgentToolsDelivery } from './resolveAgentToolsDelivery';

@@ -4,7 +4,7 @@ import { networkInterfaces } from 'node:os';
 import {
   runTailscaleStatusJson,
   type TailscaleStatusSnapshot,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 
 import { tailscaleServeHttpsUrlForInternalServerUrl } from '@/integrations/tailscale/tailscaleServe';
 

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   buildConnectedServiceCredentialRecord,
   sealAccountScopedBlobCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';

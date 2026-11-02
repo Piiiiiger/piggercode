@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, useInput, Box } from 'ink';
-import { ACCENT_HEX } from '@happier-dev/cli-common/output';
+import { ACCENT_HEX } from '@piggercode/cli-common/output';
 import { resolveAuthSelectorInput, type AuthMethod } from './authSelectorInput';
 
 export type { AuthMethod } from './authSelectorInput';

@@ -7,7 +7,7 @@ import {
   PET_PACKAGE_LIMITS_V1,
   type PetPackageValidationIssueV1,
   type PetPackageValidationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { splitSafePetSpritesheetRelativePath, validatePetManifestBytes } from './validatePetManifest';
 import { type PetImageInfoDecoder, validatePetAtlasBytes } from './validatePetAtlas';

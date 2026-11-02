@@ -8,7 +8,7 @@ import {
 import { parseRawJsonLinesObject } from '../utils/parseRawJsonLines';
 import { readClaudeTaskLifecycleEnvelope } from '../taskNotifications/claudeTaskLifecycleEnvelope';
 import { normalizeClaudeUnifiedPromptIdentityText } from './promptIdentity';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 type AcceptedPrompt = Readonly<{
   id: string;

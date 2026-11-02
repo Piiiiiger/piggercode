@@ -2,7 +2,7 @@ import {
     readPendingLocalId,
     withSessionUserMessageDeliveryIntentMeta,
     type PendingRequestedActionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { getPendingQueueWakeResumeOptions } from '@/sync/domains/pending/pendingQueueWake';
 import {
     canDirectSubmitUserMessageNow,

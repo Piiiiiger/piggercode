@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@happier-dev/protocol';
+import type { SessionSummaryShardV1, SessionSynopsisV1 } from '@piggercode/protocol';
 
 import {
   decryptSessionPayload,

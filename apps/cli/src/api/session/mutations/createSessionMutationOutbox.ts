@@ -2,7 +2,7 @@ import { logger } from '@/ui/logger';
 import type {
     SessionRuntimeActivityProjection,
     SessionRuntimeActivitySnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import { isAuthenticationError } from '@/api/client/httpStatusError';

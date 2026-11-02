@@ -11,7 +11,7 @@ import {
     type SessionDraftRecordV1,
     type SessionDraftStoredContentEnvelopeV1,
     type AccountEncryptionMigrateSessionDraftsDirective,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { markAccountChanged } from '@/app/changes/markAccountChanged';
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from '@/app/encryption/accountEncryptionMode';

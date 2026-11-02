@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import type { AgentId } from '@/agents/catalog/catalog';
 import type { CliAuthStatusData } from '@/sync/api/capabilities/capabilitiesProtocol';
 

@@ -3,7 +3,7 @@ import {
     resolveSessionMutationMaxAttempts,
 } from './sessionMutationBackoff';
 import { createSessionMutationDeadLetterEntry } from './sessionMutationPersistence';
-import type { SessionRuntimeActivityProjection } from '@happier-dev/protocol';
+import type { SessionRuntimeActivityProjection } from '@piggercode/protocol';
 import type { QueuedSessionMutation } from './sessionMutationTypes';
 import type { SessionMutationDeadLetterEntry } from './sessionMutationPersistence';
 import { isAuthoritativeSessionMutation } from './sessionMutationDurabilityPolicy';

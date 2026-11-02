@@ -1,4 +1,4 @@
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 import type { ConnectedServiceChildSelection } from '../connectedServiceChildEnvironment';
 import type { ConnectedServiceRuntimeTarget } from '../runtimeRegistry/registry';
 

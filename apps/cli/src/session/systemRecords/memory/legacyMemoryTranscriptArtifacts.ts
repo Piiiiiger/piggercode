@@ -1,4 +1,4 @@
-import { SessionSummaryShardV1Schema, type SessionSummaryShardV1 } from '@happier-dev/protocol';
+import { SessionSummaryShardV1Schema, type SessionSummaryShardV1 } from '@piggercode/protocol';
 
 import type { DecryptedTranscriptRow } from '@/session/replay/decryptTranscriptRows';
 

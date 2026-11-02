@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RpcError } from '@/sync/runtime/rpcErrors';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 import { storage } from '@/sync/domains/state/storage';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
 import { createActionOperationFixture } from '@/dev/testkit/fixtures/actionOperationFixtures';

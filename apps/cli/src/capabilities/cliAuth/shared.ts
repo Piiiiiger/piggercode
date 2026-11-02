@@ -3,8 +3,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
-import { providerCliPathRequiresJavaScriptRuntime, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { providerCliPathRequiresJavaScriptRuntime, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import { ensureJavaScriptRuntimeExecutable } from '@/runtime/js/ensureJavaScriptRuntimeExecutable';
 
 const execFileAsync = promisify(execFile);

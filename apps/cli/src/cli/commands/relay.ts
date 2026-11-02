@@ -5,7 +5,7 @@ import { mapUnknownErrorToControlError } from '@/cli/control/controlErrorMapping
 
 import { showRelayHelp } from './relay/help';
 import { runRelaySubcommand } from './relay/subcommands';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 /**
  * Decide whether a failure is an argument-parsing error (where showing the

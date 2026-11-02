@@ -5,8 +5,8 @@ import {
     SYSTEM_TASK_PROTOCOL_VERSION,
     type SetupCliChoicePromptPayload,
     type SystemTaskSpec,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -1254,8 +1254,8 @@ describe('useDesktopLocalSetupGate — override-CLI approval is attended, never 
             command: '/usr/local/bin/happier',
             version: '0.2.13',
             origin: 'npm',
-            removalCommand: 'npm uninstall -g @happier-dev/cli',
-            updateCommand: 'npm install -g @happier-dev/cli@latest',
+            removalCommand: 'npm uninstall -g @piggercode/cli',
+            updateCommand: 'npm install -g @piggercode/cli@latest',
             belowSetupFloor: false,
             missing: false,
             keepBlockedBy: null,

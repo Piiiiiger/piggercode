@@ -5,7 +5,7 @@ import {
 import {
   SessionContinuationResumePromptModeV1Schema,
   type SessionContinuationResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   ConnectedServiceRuntimeAuthFailureKindSchema,
   type ConnectedServiceRuntimeAuthFailureKind,

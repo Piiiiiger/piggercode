@@ -1,4 +1,4 @@
-import type { AccountProfile } from '@happier-dev/protocol';
+import type { AccountProfile } from '@piggercode/protocol';
 
 import type { DirectBrowseSourceOption } from '@/agents/registry/registryUiBehavior';
 import { resolveConnectedServiceDisplayName } from '@/components/settings/connectedServices/model/resolveConnectedServiceDisplayName';

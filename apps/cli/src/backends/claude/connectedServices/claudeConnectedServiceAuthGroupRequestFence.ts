@@ -1,4 +1,4 @@
-import type { SessionConnectedServiceAuthCurrentGroupTruthV1 } from '@happier-dev/protocol';
+import type { SessionConnectedServiceAuthCurrentGroupTruthV1 } from '@piggercode/protocol';
 
 export class ClaudeConnectedServiceAuthGroupRequestFence {
   private currentTruth: SessionConnectedServiceAuthCurrentGroupTruthV1 | null = null;

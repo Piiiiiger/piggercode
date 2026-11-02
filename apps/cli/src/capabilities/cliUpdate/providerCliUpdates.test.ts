@@ -3,8 +3,8 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { runCommandCapture } from '@happier-dev/cli-common/process';
-import { installProviderCli } from '@happier-dev/cli-common/providers';
+import type { runCommandCapture } from '@piggercode/cli-common/process';
+import { installProviderCli } from '@piggercode/cli-common/providers';
 
 import type { Capability } from '@/capabilities/service';
 import { createTempDirSync, removeTempDirSync } from '@/testkit/fs/tempDir';

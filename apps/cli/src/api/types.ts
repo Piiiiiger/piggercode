@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { UsageSchema } from '@/api/usage'
-import { SOCKET_RPC_EVENTS, type SocketRpcRequestPayload as ProtocolSocketRpcRequestPayload } from '@happier-dev/protocol/socketRpc'
-import { CliUpdateFactsSchema, SentFromSchema } from '@happier-dev/protocol'
-import type { ExecutionRunPublicState } from '@happier-dev/protocol'
+import { SOCKET_RPC_EVENTS, type SocketRpcRequestPayload as ProtocolSocketRpcRequestPayload } from '@piggercode/protocol/socketRpc'
+import { CliUpdateFactsSchema, SentFromSchema } from '@piggercode/protocol'
+import type { ExecutionRunPublicState } from '@piggercode/protocol'
 import type {
   AcpConfigOptionOverridesV1,
   AcceptedPendingSettlementRequestV1,
@@ -26,15 +26,15 @@ import type {
   SessionTranscriptObservationAckV1,
   SessionTranscriptObservationCapabilityAckV1,
   SessionWorkspaceLocationV1,
-} from '@happier-dev/protocol'
+} from '@piggercode/protocol'
 import {
   ContentPublicKeyFingerprintSchema,
   MachineInstallationPublicKeySchema,
   MachineInstallationProofV1Schema,
   MachineReplacementReasonSchema,
-} from '@happier-dev/protocol'
-import { SESSION_PERMISSION_MODES, createSessionPermissionModeSchema } from '@happier-dev/protocol'
-import { SessionStoredMessageContentSchema, type SessionStoredMessageContent } from '@happier-dev/protocol'
+} from '@piggercode/protocol'
+import { SESSION_PERMISSION_MODES, createSessionPermissionModeSchema } from '@piggercode/protocol'
+import { SessionStoredMessageContentSchema, type SessionStoredMessageContent } from '@piggercode/protocol'
 
 export {
   EphemeralUpdateSchema,
@@ -42,13 +42,13 @@ export {
   SessionEndAckResponseSchema,
   UpdateMetadataAckResponseSchema,
   UpdateStateAckResponseSchema,
-} from '@happier-dev/protocol/updates'
+} from '@piggercode/protocol/updates'
 
 import {
   SessionBroadcastContainerSchema,
   UpdateBodySchema as ProtocolUpdateBodySchema,
   UpdateContainerSchema as ProtocolUpdateContainerSchema,
-} from '@happier-dev/protocol/updates'
+} from '@piggercode/protocol/updates'
 import type {
   EphemeralUpdate,
   MessageAckResponse,
@@ -58,7 +58,7 @@ import type {
   UpdateContainer as ProtocolUpdateContainer,
   UpdateMetadataAckResponse,
   UpdateStateAckResponse,
-} from '@happier-dev/protocol/updates'
+} from '@piggercode/protocol/updates'
 
 /**
  * Permission mode values - includes both Claude and Codex modes

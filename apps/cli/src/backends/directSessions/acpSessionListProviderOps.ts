@@ -1,5 +1,5 @@
-import { isAcpSessionListingDeclared, type AgentId } from '@happier-dev/agents';
-import type { DirectSessionCandidateV1 } from '@happier-dev/protocol';
+import { isAcpSessionListingDeclared, type AgentId } from '@piggercode/agents';
+import type { DirectSessionCandidateV1 } from '@piggercode/protocol';
 
 import {
   AcpSessionCapabilityNotNegotiatedError,

@@ -168,7 +168,7 @@ describe('core e2e: Claude local→remote switch drains pending UI message', () 
         args: [
           '-s',
           'workspace',
-          '@happier-dev/cli',
+          '@piggercode/cli',
           'dev',
           'claude',
           '--existing-session',

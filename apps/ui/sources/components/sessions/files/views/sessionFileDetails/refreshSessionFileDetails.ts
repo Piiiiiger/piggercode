@@ -3,7 +3,7 @@ import { config } from '@/config';
 import { sessionReadFile, sessionStatFile } from '@/sync/ops';
 import { resolveSessionPathState } from '@/hooks/session/files/sessionPathState';
 import { getImageMimeTypeFromPath, getVideoMimeTypeFromPath, isBinaryContent, isKnownBinaryPath } from '@/scm/utils/filePresentation';
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 import type { FileDiffMode } from '@/components/sessions/files/file/FileActionToolbar';
 import type { ScmEntryKind } from '@/sync/domains/state/storageTypes';
 import { decodeUtf8Base64 } from '@/scm/diff/fallbackUnifiedDiff';

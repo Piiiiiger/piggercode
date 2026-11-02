@@ -1,5 +1,5 @@
-import { splitUnifiedDiffByFile, type ChangeConfidence, type ChangeEvidenceSource, type FileChangeEvidence, type TurnChangeSet } from '@happier-dev/protocol';
-import { deriveCanonicalPatchFileDiffs } from '@happier-dev/protocol/tools/v2';
+import { splitUnifiedDiffByFile, type ChangeConfidence, type ChangeEvidenceSource, type FileChangeEvidence, type TurnChangeSet } from '@piggercode/protocol';
+import { deriveCanonicalPatchFileDiffs } from '@piggercode/protocol/tools/v2';
 
 import { TurnDiffEmitter } from './turnDiffEmitter';
 

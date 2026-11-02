@@ -1,4 +1,4 @@
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import type { Credentials } from '@/persistence';

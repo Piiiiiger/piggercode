@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {
   AccountEncryptionModeResponseSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { fetchServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 import { assertSessionEncryptionModeAllowedByEffectiveClientRequirement } from '@/settings/accountSettings/resolveEffectiveClientEncryptionRequirement';

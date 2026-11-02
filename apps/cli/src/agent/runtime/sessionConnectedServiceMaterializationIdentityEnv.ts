@@ -1,7 +1,7 @@
 import {
     ConnectedServiceMaterializationIdentityV1Schema,
     type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY =
     'HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_V1_JSON' as const;

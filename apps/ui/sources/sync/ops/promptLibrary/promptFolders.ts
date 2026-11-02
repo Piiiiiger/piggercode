@@ -1,4 +1,4 @@
-import type { PromptFolderEntryV1, PromptFoldersV1 } from '@happier-dev/protocol';
+import type { PromptFolderEntryV1, PromptFoldersV1 } from '@piggercode/protocol';
 
 import { randomUUID } from '@/platform/randomUUID';
 

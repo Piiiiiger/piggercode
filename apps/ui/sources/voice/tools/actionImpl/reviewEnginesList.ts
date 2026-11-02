@@ -1,7 +1,7 @@
 import { AGENT_IDS } from '@/agents/catalog/catalog';
 import { isAgentEnabled, isAgentOffered } from '@/agents/catalog/enabled';
 import { resolveBuiltInAgentTitle } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import { getMachineCapabilitiesSnapshot } from '@/hooks/server/useMachineCapabilitiesCache';
 import { extractExecutionRunsBackendsFromMachineCapabilitiesState } from '@/sync/domains/executionRuns/extractExecutionRunsBackendsFromMachineCapabilities';
 import { storage } from '@/sync/domains/state/storage';

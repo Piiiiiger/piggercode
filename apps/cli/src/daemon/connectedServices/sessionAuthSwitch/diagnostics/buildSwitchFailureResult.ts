@@ -1,7 +1,7 @@
 import {
   CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES,
   type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceResumeContinuityDiagnostics } from '@/backends/types';
 

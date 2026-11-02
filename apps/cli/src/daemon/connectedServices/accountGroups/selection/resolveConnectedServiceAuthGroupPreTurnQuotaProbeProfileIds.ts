@@ -3,7 +3,7 @@ import type {
   ConnectedServiceAuthGroupMemberRuntimeState,
   ConnectedServiceAuthGroupPolicyV1,
 } from './selectConnectedServiceAuthGroupCandidate';
-import { isConnectedServiceQuotaObservationFresh } from '@happier-dev/protocol';
+import { isConnectedServiceQuotaObservationFresh } from '@piggercode/protocol';
 
 function normalizeProfileId(value: unknown): string | null {
   return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;

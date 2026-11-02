@@ -1,4 +1,4 @@
-import { AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS } from '@piggercode/agents';
 import {
     ExecutionRunPublicStateSchema,
     ExecutionRunLaunchOriginSchema,
@@ -6,7 +6,7 @@ import {
     type ExecutionRunRequestedConfiguration,
     type ExecutionRunLaunchOrigin,
     type ExecutionRunPublicState,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { RawHistoryRow } from './getSessionHistory';
 

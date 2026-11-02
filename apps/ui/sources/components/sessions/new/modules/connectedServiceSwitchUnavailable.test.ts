@@ -6,7 +6,7 @@ import {
     SPAWN_SESSION_ERROR_CODES,
     SPAWN_SESSION_ERROR_DETAIL_KINDS,
     type SpawnSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveConnectedServiceSwitchUnavailablePresentation } from './connectedServiceSwitchUnavailable';
 

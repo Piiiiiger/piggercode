@@ -3,8 +3,8 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { compareVersions } from '@happier-dev/cli-common/update';
-import { getReleaseRingCatalogEntry, getReleaseRingPublicLabel, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { compareVersions } from '@piggercode/cli-common/update';
+import { getReleaseRingCatalogEntry, getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { ensureJavaScriptRuntimeExecutable } from '../../../runtime/js/ensureJavaScriptRuntimeExecutable';
 import { isBun } from '../../../utils/runtime';
 

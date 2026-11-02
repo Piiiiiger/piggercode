@@ -1,4 +1,4 @@
-import type { SessionHandoffWorkspaceTransfer } from '@happier-dev/protocol';
+import type { SessionHandoffWorkspaceTransfer } from '@piggercode/protocol';
 
 function toLiteralGitPathspec(relativePath: string): string {
   return `:(literal)${relativePath}`;

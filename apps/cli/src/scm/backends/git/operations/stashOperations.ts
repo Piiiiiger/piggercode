@@ -11,8 +11,8 @@ import type {
     ScmStashPopResponse,
     ScmStashShowRequest,
     ScmStashShowResponse,
-} from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import { runScmCommand } from '../../../runtime';

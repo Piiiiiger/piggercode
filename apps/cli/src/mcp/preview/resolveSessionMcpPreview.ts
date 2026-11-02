@@ -5,7 +5,7 @@ import type {
   DetectedMcpServerV1,
   McpServersSettingsV1,
   SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveManagedSessionMcpSelectionForDirectory } from '@/mcp/servers/resolveManagedSessionMcpSelectionForDirectory';
 

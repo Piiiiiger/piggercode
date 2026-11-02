@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialHealthV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialHealthV1 } from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';

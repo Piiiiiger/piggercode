@@ -12,8 +12,8 @@ import {
     SCM_COMMIT_PATCH_MAX_COUNT,
     SCM_COMMIT_PATCH_MAX_LENGTH,
     SCM_OPERATION_ERROR_CODES,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 export function git(cwd: string, args: string[], env?: Record<string, string | undefined>): string {
     return execFileSync('git', args, {

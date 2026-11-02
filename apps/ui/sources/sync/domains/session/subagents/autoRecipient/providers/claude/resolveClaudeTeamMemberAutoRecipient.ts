@@ -5,7 +5,7 @@ import {
     deriveClaudeSpawnedTeammateFromTaskToolResult,
 } from '@/sync/domains/session/participants/providers/claude/deriveClaudeTeamParticipants';
 import { deriveClaudeTeamHintFromParticipantMessages, messagesContainClaudeTeamToolSignal } from '@/sync/domains/session/subagents/providers/claude/deriveClaudeTeamHints';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
 
 import { findMatchingSessionSubagentForTool } from '../../../findMatchingSessionSubagentForTool';
 import type { SessionSubagentAutoRecipientResolver } from '../../types';

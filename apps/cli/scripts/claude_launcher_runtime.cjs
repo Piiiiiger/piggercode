@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
-const { expandHomeDirPath } = require('@happier-dev/cli-common/expandHomeDirPath');
+const { expandHomeDirPath } = require('@piggercode/cli-common/expandHomeDirPath');
 const { withWindowsHide } = require('./childProcessOptions.cjs');
 const { reportNativeProcessExited, reportProviderInLauncher } = require('./native_process_exit.cjs');
 

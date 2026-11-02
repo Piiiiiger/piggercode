@@ -7,7 +7,7 @@ import {
     type PromptAssetReadRequest,
     type PromptAssetReadResponseV1,
     type PromptAssetWriteRequest,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     deleteDaemonPromptAsset,

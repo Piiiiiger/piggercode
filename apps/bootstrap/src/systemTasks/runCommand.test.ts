@@ -2,7 +2,7 @@ import {
   SystemTaskEventSchema,
   SystemTaskResultSchema,
   type SystemTaskResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { runHsetupCli } from '../bin/hsetup.js';

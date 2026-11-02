@@ -1,5 +1,5 @@
-import { ConnectedServiceImportRequestV1Schema, type ConnectedServiceImportResponseV1 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { ConnectedServiceImportRequestV1Schema, type ConnectedServiceImportResponseV1 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { runConnectedServiceImport, type ConnectedServiceImportAccount } from '@/cloud/connectedServices/connectedServiceImport';
 import type { RpcHandlerContext, RpcHandlerRegistrar } from '../rpc/types';
 

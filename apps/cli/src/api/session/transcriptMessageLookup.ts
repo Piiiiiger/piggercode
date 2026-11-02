@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
 
@@ -10,7 +10,7 @@ import { SessionMessageContentSchema, type SessionMessageContent } from '../type
 import { readAuthenticationStatus, readHttpStatus } from '@/api/client/httpStatusError';
 import { TranscriptRecoveryCoordinator, type TranscriptRecoveryResult } from './recovery/TranscriptRecoveryCoordinator';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 const KEEP_ALIVE_HTTP_AGENT = new HttpAgent({ keepAlive: true, maxSockets: 16 });
 const KEEP_ALIVE_HTTPS_AGENT = new HttpsAgent({ keepAlive: true, maxSockets: 16 });

@@ -1,8 +1,8 @@
 import type { AgentBackend, McpServerConfig } from '@/agent/core/AgentBackend';
 import type { AcpPermissionHandler } from '@/agent/acp/AcpBackend';
 import type { AgentPromptPayload } from '@/agent/core/AgentPromptPayload';
-import type { AgentId } from '@happier-dev/agents';
-import type { AcpConfigOptionOverridesV1, BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { AgentId } from '@piggercode/agents';
+import type { AcpConfigOptionOverridesV1, BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { sendAgentPromptPayload, sendAgentSteerPromptPayload } from '@/agent/core/AgentPromptPayload';
 import { createConfiguredAcpBackend } from '@/agent/acp/catalog/configured/createConfiguredAcpBackend';

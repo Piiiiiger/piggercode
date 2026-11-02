@@ -3,7 +3,7 @@ import { z } from 'zod';
 import {
   decryptSecretValueWithKeysV1,
   type MemoryEmbeddingsOpenAiCompatibleConfig,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { withAbortTimeout } from '@/diagnostics/httpClient';

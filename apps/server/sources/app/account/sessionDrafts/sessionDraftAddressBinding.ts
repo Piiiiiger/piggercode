@@ -1,8 +1,8 @@
 import type {
     SessionDraftAddressV1,
     SessionDraftStoredContentEnvelopeV1,
-} from '@happier-dev/protocol';
-import { canonicalSessionDraftAddressV1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { canonicalSessionDraftAddressV1 } from '@piggercode/protocol';
 
 export function sessionDraftContentMatchesAddress(
     content: SessionDraftStoredContentEnvelopeV1 | null,

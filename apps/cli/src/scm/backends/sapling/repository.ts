@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type {
     ScmWorkingEntry,
     ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ScmRepoDetection } from '../../types';
 import { runScmCommand } from '../../runtime';
 import { readUntrackedFileStats } from '../../readUntrackedFileStats';

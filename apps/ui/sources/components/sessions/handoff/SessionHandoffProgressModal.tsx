@@ -10,7 +10,7 @@ import {
     type ActionOperationSnapshotV1,
     type SessionHandoffProgressCheckpoint,
     type SessionHandoffStatus,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CustomModalInjectedProps } from '@/modal';
 import { useModalCardChrome } from '@/modal/components/card/useModalCardChrome';

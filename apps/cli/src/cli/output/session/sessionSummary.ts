@@ -1,11 +1,11 @@
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';
 import type { RawSessionListRow, RawSessionRecord } from '@/session/transport/http/sessionsHttp';
-import { resolvePermissionIntentFromSessionMetadata } from '@happier-dev/agents';
+import { resolvePermissionIntentFromSessionMetadata } from '@piggercode/agents';
 import {
   readSystemSessionMetadataFromMetadata,
   type SessionSummary as ProtocolSessionSummary,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionSummary = Readonly<ProtocolSessionSummary>;
 

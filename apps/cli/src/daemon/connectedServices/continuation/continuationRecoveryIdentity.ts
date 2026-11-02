@@ -2,7 +2,7 @@ import type {
   ConnectedServiceBindingSelectionV1,
   ConnectedServiceBindingsV1,
   SessionContinuationRecoveryIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceRuntimeBindingIdentity } from '../runtimeRegistry/target';
 

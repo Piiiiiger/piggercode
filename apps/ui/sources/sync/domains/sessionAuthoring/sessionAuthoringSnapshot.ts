@@ -3,7 +3,7 @@ import type {
     SessionAuthoringCodexBackendMode,
     SessionAuthoringTerminalV1,
     SessionAuthoringValueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionAuthoringSnapshot = Readonly<{
     directory: string;

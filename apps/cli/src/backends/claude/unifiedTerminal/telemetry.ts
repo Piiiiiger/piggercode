@@ -1,7 +1,7 @@
 import type {
   TerminalHostKind,
   TerminalInputInjectionResult,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import type { TerminalHostLiveness } from '@/integrations/terminalHost/_types';
 
 import { logger as defaultLogger } from '@/ui/logger';

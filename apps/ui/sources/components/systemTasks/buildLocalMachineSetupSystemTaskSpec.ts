@@ -1,4 +1,4 @@
-import { SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskSpec } from '@happier-dev/protocol';
+import { SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskSpec } from '@piggercode/protocol';
 
 /** The executor's release ring, in the bootstrap channel vocabulary (`publicdev` is spelled `dev`). */
 export type LocalMachineSetupChannel = 'stable' | 'preview' | 'dev';

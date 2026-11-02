@@ -1,4 +1,4 @@
-import { ServerRetentionPolicyV2Schema } from '@happier-dev/protocol';
+import { ServerRetentionPolicyV2Schema } from '@piggercode/protocol';
 import { type Fastify } from '../../types';
 
 import { featuresSchema } from '@/app/features/types';

@@ -6,7 +6,7 @@ import { PassThrough, Writable } from 'node:stream';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { resolveOpenCodeConnectedConfigHomeDir } from '@/backends/opencode/brokerPlugin';
 import { buildPiBrokerMarker } from '@/backends/pi/brokerExtension';
 import { materializeConnectedServicesForSpawn } from './materializeConnectedServicesForSpawn';

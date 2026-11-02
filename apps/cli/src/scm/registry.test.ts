@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ScmBackendPreference, ScmRepoMode } from '@happier-dev/protocol';
+import type { ScmBackendPreference, ScmRepoMode } from '@piggercode/protocol';
 
 import {
     createScmBackendRegistry,

@@ -24,13 +24,13 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.happier.dev',
       publicServerUrl: 'https://api.happier.dev',
       nodePath: '/opt/homebrew/bin/node',
-      entryPath: '/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/Users/test/Library/LaunchAgents/com.happier.cli.daemon.cloud.plist');
     expect(plan.files[0]?.content).toContain('<string>/opt/homebrew/bin/node</string>');
-    expect(plan.files[0]?.content).toContain('<string>/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs</string>');
+    expect(plan.files[0]?.content).toContain('<string>/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs</string>');
     expect(plan.files[0]?.content).toContain('<string>daemon</string>');
     expect(plan.files[0]?.content).toContain('<string>start-sync</string>');
     expect(plan.files[0]?.content).toContain('<key>HAPPIER_HOME_DIR</key>');
@@ -68,7 +68,7 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.happier.dev',
       publicServerUrl: 'https://api.happier.dev',
       nodePath: '/opt/homebrew/bin/node',
-      entryPath: '/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     const enableIndex = plan.commands.findIndex((command) =>
@@ -97,7 +97,7 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.happier.dev',
       publicServerUrl: 'https://api.happier.dev',
       nodePath: '/opt/homebrew/bin/node',
-      entryPath: '/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files).toHaveLength(1);
@@ -119,7 +119,7 @@ describe('daemon service install plan', () => {
       webappUrl: 'http://happier-macos-v0210.localhost:53510',
       publicServerUrl: 'http://localhost:53510',
       nodePath: '/opt/homebrew/bin/node',
-      entryPath: '/usr/local/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/local/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files[0]?.path).toBe(
@@ -146,12 +146,12 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.happier.dev',
       publicServerUrl: 'https://api.happier.dev',
       nodePath: '/usr/bin/node',
-      entryPath: '/usr/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files).toHaveLength(1);
     expect(plan.files[0]?.path).toBe('/home/test/.config/systemd/user/happier-daemon.cloud.service');
-    expect(plan.files[0]?.content).toContain('ExecStart=/usr/bin/node /usr/lib/node_modules/@happier-dev/cli/dist/index.mjs daemon start-sync');
+    expect(plan.files[0]?.content).toContain('ExecStart=/usr/bin/node /usr/lib/node_modules/@piggercode/cli/dist/index.mjs daemon start-sync');
     expect(plan.files[0]?.content).toContain('Environment=HAPPIER_HOME_DIR=/home/test/.happier');
     expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_STARTUP_SOURCE=background-service');
     expect(plan.files[0]?.content).toContain('Environment=HAPPIER_DAEMON_SERVICE_LABEL=com.happier.cli.daemon.cloud');
@@ -189,7 +189,7 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.company.example.test',
       publicServerUrl: 'https://company.example.test',
       nodePath: '/usr/bin/node',
-      entryPath: '/usr/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files).toHaveLength(1);
@@ -219,7 +219,7 @@ describe('daemon service install plan', () => {
       webappUrl: 'https://app.happier.dev',
       publicServerUrl: 'https://api.happier.dev',
       nodePath: '/usr/bin/node',
-      entryPath: '/usr/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/lib/node_modules/@piggercode/cli/dist/index.mjs',
     });
 
     expect(plan.files).toHaveLength(1);
@@ -353,7 +353,7 @@ describe('daemon service install plan', () => {
       userHomeDir: '/home/test',
       happierHomeDir: '/home/test/.happier',
       nodePath: '/usr/bin/node',
-      entryPath: '/usr/lib/node_modules/@happier-dev/cli/dist/index.mjs',
+      entryPath: '/usr/lib/node_modules/@piggercode/cli/dist/index.mjs',
       serverUrl: 'https://company.example.test',
       webappUrl: 'https://app.company.example.test',
       publicServerUrl: 'https://company.example.test',

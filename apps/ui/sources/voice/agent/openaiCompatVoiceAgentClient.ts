@@ -6,8 +6,8 @@ import {
   extractVoiceActionsFromAssistantText,
   type ExecutionRunUserTranscriptDirective,
   type VoiceAssistantAction,
-} from '@happier-dev/protocol';
-import { buildLocalVoiceAgentSystemPrompt } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { buildLocalVoiceAgentSystemPrompt } from '@piggercode/agents';
 import { resolveDisabledVoiceActionIdsFromState } from '@/voice/tools/resolveDisabledVoiceActionIds';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { resolveUiMemoryRecallGuidanceEnabled } from '@/sync/domains/memory/resolveUiMemoryRecallGuidanceEnabled';

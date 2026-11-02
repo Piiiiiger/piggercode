@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceId,
   ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceResolvedSelection } from '../materialize/materializeConnectedServicesForSpawn';
 import type { ResolvedConnectedServiceCredential } from '@/cloud/connectedServices/resolveConnectedServiceCredentials';

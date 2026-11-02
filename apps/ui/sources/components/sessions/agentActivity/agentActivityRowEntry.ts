@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
 
 /**
  * What a row needs to draw one unit of agent work — and nothing else.

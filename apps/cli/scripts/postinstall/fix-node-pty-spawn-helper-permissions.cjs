@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { fixNodePtySpawnHelperPermissions } = require('@happier-dev/cli-common/nodePtySpawnHelperPermissions');
+const { fixNodePtySpawnHelperPermissions } = require('@piggercode/cli-common/nodePtySpawnHelperPermissions');
 
 module.exports = {
   fixNodePtySpawnHelperPermissions,

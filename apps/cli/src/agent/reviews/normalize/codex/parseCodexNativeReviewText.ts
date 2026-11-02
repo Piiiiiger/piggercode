@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import type { ReviewFinding } from '@happier-dev/protocol';
+import type { ReviewFinding } from '@piggercode/protocol';
 
 type ParsedCodexNativeReview = {
   summary: string;

@@ -214,7 +214,7 @@ if [[ "$MENUBAR_MODE" == "selfhost" ]]; then
     echo "--Update hstack runtime | bash=$hstack_BIN param1=self param2=update dir=$hstack_ROOT_DIR terminal=false refresh=true"
     echo "--Doctor | bash=$hstack_BIN param1=doctor dir=$hstack_ROOT_DIR terminal=false refresh=true"
   else
-    echo "--⚠️ hstack not found (run: npx @happier-dev/stack@latest init)" 
+    echo "--⚠️ hstack not found (run: npx @piggercode/stack@latest init)" 
   fi
 else
   echo "Stacks | sfimage=server.rack"
@@ -277,7 +277,7 @@ else
 
   echo "Worktrees | sfimage=arrow.triangle.branch"
   if [[ -z "$hstack_BIN" ]]; then
-    echo "--⚠️ hstack not found (run: npx @happier-dev/stack@latest init)"
+    echo "--⚠️ hstack not found (run: npx @piggercode/stack@latest init)"
   else
     echo "--Use (interactive) | bash=$hstack_TERM param1=wt param2=use param3=--interactive dir=$hstack_ROOT_DIR terminal=false refresh=true"
     echo "--New (interactive) | bash=$hstack_TERM param1=wt param2=new param3=--interactive dir=$hstack_ROOT_DIR terminal=false refresh=true"
@@ -290,7 +290,7 @@ else
   echo "---"
   echo "Setup / Tools"
   if [[ -z "$hstack_BIN" ]]; then
-    echo "--⚠️ hstack not found (run: npx @happier-dev/stack@latest init)"
+    echo "--⚠️ hstack not found (run: npx @piggercode/stack@latest init)"
   else
     echo "--Setup (guided) | bash=$hstack_TERM param1=setup dir=$hstack_ROOT_DIR terminal=false refresh=true"
     echo "--Bootstrap (clone/install) | bash=$hstack_TERM param1=bootstrap dir=$hstack_ROOT_DIR terminal=false refresh=true"

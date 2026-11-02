@@ -6,8 +6,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AgentBackend, AgentMessage, AgentMessageHandler, SessionId } from '@/agent/core/AgentBackend';
 import type { ACPMessageData } from '@/api/session/sessionMessageTypes';
-import { FeaturesResponseSchema, type ExecutionRunPublicState, type ExecutionRunStartResponse } from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { FeaturesResponseSchema, type ExecutionRunPublicState, type ExecutionRunStartResponse } from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { CliServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 import type {
   SessionRuntimeActivityContribution,
@@ -19,7 +19,7 @@ import { registerExecutionRunHandlers as registerExecutionRunHandlersBase } from
 import { ExecutionBudgetRegistry } from '@/daemon/executionBudget/ExecutionBudgetRegistry';
 import { runGit } from '@/scm/rpc/__tests__/testRpcHarness';
 import { reloadConfiguration } from '@/configuration';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import type { Socket } from 'socket.io-client';
 
 function createRpcSocketBoundary() {

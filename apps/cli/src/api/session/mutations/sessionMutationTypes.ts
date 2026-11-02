@@ -3,7 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import {
     SessionRuntimeActivitySnapshotSchema,
     SessionTranscriptObservationProvenanceV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
     SessionRuntimeActivitySnapshot,
     SessionRuntimeIssueV1,
@@ -13,12 +13,12 @@ import type {
     SessionTurnTranscriptAnchorsV1,
     SessionTurnMutationV1,
     SessionTranscriptObservationProvenanceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type {
     SessionTurnMutationActionV1,
     SessionTurnMutationV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function resolveLegacyDaemonObservedExitMutationId(params: Readonly<{
     sessionId: string;

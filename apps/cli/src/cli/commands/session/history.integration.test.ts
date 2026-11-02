@@ -7,7 +7,7 @@ import { captureConsoleJsonOutput } from '@/testkit/logger/captureOutput';
 import {
   deriveBoxPublicKeyFromSeed,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 describe('happier session history (integration)', () => {
   const envKeys = ['HAPPIER_SERVER_URL', 'HAPPIER_WEBAPP_URL', 'HAPPIER_HOME_DIR'] as const;

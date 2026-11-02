@@ -6,8 +6,8 @@ import {
   inferAgentIdFromSessionMetadata,
   resolveProviderSessionIdForBackendTarget,
   resolveVendorResumeIdFromSessionMetadata,
-} from '@happier-dev/agents';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+} from '@piggercode/agents';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 import { execFileSync } from 'node:child_process';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 import { readCredentials } from '@/persistence';

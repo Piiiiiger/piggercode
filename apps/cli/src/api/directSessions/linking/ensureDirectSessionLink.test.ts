@@ -1,13 +1,13 @@
 import { createHash } from 'node:crypto';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CodexBackendMode } from '@happier-dev/agents';
-import { buildCodexAgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
-import { buildOpenCodeAgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
+import { buildCodexAgentRuntimeDescriptorV1 } from '@piggercode/protocol';
+import { buildOpenCodeAgentRuntimeDescriptorV1 } from '@piggercode/protocol';
 import type {
   ConnectedServiceBindingsV1,
   ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const fetchSessionsPageMock = vi.fn();
 const fetchSessionByIdMock = vi.fn();

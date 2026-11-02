@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import { decodeBase64, encodeBase64, encrypt } from '@/api/encryption';
 import { enqueuePendingQueueV2MessageViaHttp } from '@/api/session/pendingQueueV2Transport';
 

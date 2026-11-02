@@ -1,4 +1,4 @@
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 export function createActionOperationFixture(overrides: Partial<ActionOperationSnapshotV1> = {}): ActionOperationSnapshotV1 {
     return {

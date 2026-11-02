@@ -10,7 +10,7 @@ import {
     type SessionMcpSelectionV1,
     type AcpConfigOptionOverridesV1,
     type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { RememberedEngineSelectionV1 } from '@/sync/domains/sessionAuthoring/rememberedEngineSelections';
 import {
     readNonBlankSessionControlIdentifier,

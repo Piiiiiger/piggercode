@@ -1,8 +1,8 @@
 import type { AgentId } from '@/agents/catalog/catalog';
 import { getAgentCore } from '@/agents/catalog/catalog';
 import type { Metadata } from '@/sync/domains/state/storageTypes';
-import { getBuiltInAcpConfig, parsePermissionIntentAlias } from '@happier-dev/agents';
-import { resolveRequestedSessionModeId } from '@happier-dev/protocol';
+import { getBuiltInAcpConfig, parsePermissionIntentAlias } from '@piggercode/agents';
+import { resolveRequestedSessionModeId } from '@piggercode/protocol';
 import { tLoose } from '@/text';
 
 import { matchesSessionControlProvider, readSessionModeOverrideState, readSessionModesState } from './readSessionControlMetadata';

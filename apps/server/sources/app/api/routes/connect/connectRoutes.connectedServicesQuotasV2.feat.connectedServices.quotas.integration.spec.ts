@@ -5,7 +5,7 @@ import {
     openSealedProviderAccountUsageSnapshot,
     ProviderAccountUsageSnapshotV1Schema,
     sealProviderAccountUsageSnapshot,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { connectRoutes } from "./connectRoutes";

@@ -22,7 +22,7 @@ import {
   isSafeFirstPartyHappierActionToolCall,
 } from '@/agent/tools/happierTools/resolveHappierActionForMcpToolName';
 import type { ToolTraceProtocol } from '@/agent/tools/trace/toolTrace';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import { isDefaultWriteLikeToolName } from './writeLikeToolNameHeuristics';
 import { isTrustedAlwaysAutoApproveToolName } from './alwaysAutoApproveToolName';
 import { extractShellCommand } from './permissionToolIdentifier';

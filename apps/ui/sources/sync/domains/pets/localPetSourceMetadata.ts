@@ -2,7 +2,7 @@ import type {
     DiscoveredPetPackageV1,
     ImportedLocalPetPackageV1,
     PetAssetMediaTypeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type LocalPetDaemonTarget = Readonly<{
     machineId: string;

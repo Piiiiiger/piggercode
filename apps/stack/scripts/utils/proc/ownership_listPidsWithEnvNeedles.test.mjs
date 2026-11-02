@@ -20,13 +20,13 @@ test('listPsPidsForEnvQueries resolves multiple ownership queries from one macOS
   let captures = 0;
   const output = [
     '101 cmd HAPPIER_STACK_ENV_FILE=/tmp/a/env HAPPIER_STACK_PROCESS_KIND=infra',
-    '102 cmd HAPPIER_STACK_ENV_FILE=/tmp/a/env npm_package_name=@happier-dev/server npm_lifecycle_event=dev',
+    '102 cmd HAPPIER_STACK_ENV_FILE=/tmp/a/env npm_package_name=@piggercode/server npm_lifecycle_event=dev',
   ].join('\n');
 
   const result = await listPsPidsForEnvQueries([
     { needles: ['HAPPIER_STACK_ENV_FILE=/tmp/a/env', 'HAPPIER_STACK_PROCESS_KIND=infra'] },
     {
-      needles: ['HAPPIER_STACK_ENV_FILE=/tmp/a/env', 'npm_package_name=@happier-dev/server'],
+      needles: ['HAPPIER_STACK_ENV_FILE=/tmp/a/env', 'npm_package_name=@piggercode/server'],
       bindingNames: ['npm_lifecycle_event'],
     },
   ], {
@@ -170,17 +170,17 @@ test('textContainsNeedle matches exact environment bindings in nul-delimited pro
 
 test('parsePsPidCommandOutputForNeedlesAndEnvBindingNames requires binding names without pinning values', () => {
   const output = [
-    '401 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event=dev:light npm_package_name=@happier-dev/server',
-    '402 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_package_name=@happier-dev/server',
-    '403 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event= npm_package_name=@happier-dev/server',
-    '404 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env-extra npm_lifecycle_event=dev:light npm_package_name=@happier-dev/server',
+    '401 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
+    '402 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_package_name=@piggercode/server',
+    '403 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env npm_lifecycle_event= npm_package_name=@piggercode/server',
+    '404 cmd HAPPIER_STACK_ENV_FILE=/tmp/stack/env-extra npm_lifecycle_event=dev:light npm_package_name=@piggercode/server',
   ].join('\n');
 
   assert.deepEqual(parsePsPidCommandOutputForNeedlesAndEnvBindingNames(
     output,
     [
       'HAPPIER_STACK_ENV_FILE=/tmp/stack/env',
-      'npm_package_name=@happier-dev/server',
+      'npm_package_name=@piggercode/server',
     ],
     ['npm_lifecycle_event']
   ), [401, 403]);
@@ -248,7 +248,7 @@ test('listPidsWithEnvNeedlesAndEnvBindingNames finds real processes with present
       HAPPIER_STACK_STACK: 'test-stack',
       HAPPIER_STACK_ENV_FILE: envPath,
       npm_lifecycle_event: 'dev:light',
-      npm_package_name: '@happier-dev/server',
+      npm_package_name: '@piggercode/server',
     },
     stdio: 'ignore',
   });
@@ -263,7 +263,7 @@ test('listPidsWithEnvNeedlesAndEnvBindingNames finds real processes with present
       // eslint-disable-next-line no-await-in-loop
       found = await listPidsWithEnvNeedlesAndEnvBindingNames([
         `HAPPIER_STACK_ENV_FILE=${envPath}`,
-        'npm_package_name=@happier-dev/server',
+        'npm_package_name=@piggercode/server',
       ], ['npm_lifecycle_event']);
       if (found.includes(childPid)) break;
       // eslint-disable-next-line no-await-in-loop

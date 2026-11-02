@@ -1,5 +1,5 @@
 import type { AgentEvent, NormalizedMessage } from '../../typesRaw';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import type { ReducerState } from '../reducer';
 import { parseMessageAsEvent } from '../messageToEvent';
 import { setThinkingMergeCursor } from '../helpers/mergeCursors';

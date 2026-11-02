@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 
-import type { DirectSessionsSource } from '@happier-dev/protocol';
-import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import type { DirectSessionsSource } from '@piggercode/protocol';
+import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 
 import { resolveConfiguredClaudeConfigDir } from '../utils/resolveConfiguredClaudeConfigDir';
 

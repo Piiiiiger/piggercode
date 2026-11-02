@@ -9,7 +9,7 @@ import {
   type SessionSystemRecord,
   type SessionWorkflowActivityHeadlineV1,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
@@ -209,7 +209,7 @@ describe('core e2e: Claude Dynamic Workflow activity roundtrip', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',

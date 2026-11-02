@@ -3,7 +3,7 @@ import {
   PendingActivationFailureRequestV1Schema,
   PendingActivationFailureResponseV1Schema,
   type PendingActivationFailureCodeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { resolveServerHttpBaseUrl } from '@/session/transport/http/serverHttpBaseUrl';

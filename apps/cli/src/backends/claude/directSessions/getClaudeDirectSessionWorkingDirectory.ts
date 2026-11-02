@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 
 import { resolveClaudeDirectSessionFile } from './resolveClaudeDirectSessionFile';
 

@@ -6,7 +6,7 @@
  * - If Claude emits `Agent` tool_use blocks for teammate creation, validates the observed input shape.
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @happier-dev/tests test:providers claude.agentTeams.agentToolInputShape.realProbe.test.ts
+ *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.agentToolInputShape.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';

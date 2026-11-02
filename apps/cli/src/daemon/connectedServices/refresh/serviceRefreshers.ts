@@ -1,7 +1,7 @@
 import { URLSearchParams } from 'node:url';
 
-import type { ConnectedServiceId } from '@happier-dev/protocol';
-import type { ConnectedServiceOauthCredentialRawMetadata } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
+import type { ConnectedServiceOauthCredentialRawMetadata } from '@piggercode/protocol';
 
 import { readSafeOauthProviderErrorCode } from '@/cloud/safeOauthProviderError';
 import { resolveConnectedAccountOauthConfig } from '@/daemon/connectedServices/descriptors/connectedAccountDescriptors';

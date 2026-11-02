@@ -1,4 +1,4 @@
-import { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
+import { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';
 import * as React from 'react';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';

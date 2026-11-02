@@ -1,4 +1,4 @@
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { encodeBase64 } from '@/encryption/base64';
 import { digest } from '@/platform/digest';

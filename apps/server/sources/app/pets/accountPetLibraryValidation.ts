@@ -8,7 +8,7 @@ import {
     PET_PACKAGE_LIMITS_V1,
     type AccountPetCreateRequestV1,
     type PetAssetMediaTypeV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { loadSharp } from "../../storage/blob/sharpRuntime";
 
 export type PetAtlasInspection = Readonly<{

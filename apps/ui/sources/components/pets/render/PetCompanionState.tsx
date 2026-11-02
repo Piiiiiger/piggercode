@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 type PetCompanionStateDataProps = ViewProps & Readonly<{
     dataSet: Readonly<{ petState: PetAnimationStateV1 }>;

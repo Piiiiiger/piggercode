@@ -2,7 +2,7 @@ import {
   ConnectedServiceCredentialRevisionV1Schema,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   ConnectedServiceProviderRuntimeAuthAdapter,

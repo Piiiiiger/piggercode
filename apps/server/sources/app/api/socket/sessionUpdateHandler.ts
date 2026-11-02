@@ -43,11 +43,11 @@ import {
     isSessionAgentTransitionDividerLocalId,
     SessionTranscriptObservationV1Schema,
     SessionTurnMutationV1Schema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import {
     TranscriptStreamSegmentDeltaEphemeralMessageSchema,
     TranscriptStreamSegmentEphemeralMessageSchema,
-} from "@happier-dev/protocol/updates";
+} from "@piggercode/protocol/updates";
 import { refreshSessionParticipantBadgePushes } from "@/app/activity/refreshAccountActivityBadgePushes";
 import { didSessionActivityBadgeContributionChange } from "@/app/activity/accountActivityBadge";
 import { authorizeSessionRelayPublish } from "./sessionRelayAuthCache";

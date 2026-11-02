@@ -1,6 +1,6 @@
-import { excludeRolledBackTurns, mergeTurnChangeSets, readSessionRollbackRangesV1FromMetadata } from '@happier-dev/protocol';
+import { excludeRolledBackTurns, mergeTurnChangeSets, readSessionRollbackRangesV1FromMetadata } from '@piggercode/protocol';
 
-import type { TurnChangeSet } from '@happier-dev/protocol';
+import type { TurnChangeSet } from '@piggercode/protocol';
 
 export function deriveSessionChangeSet(params: Readonly<{
     sessionId: string;

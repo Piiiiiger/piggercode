@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import tweetnacl from "tweetnacl";
 
-import { decodeBase64, encodeBase64, openBoxBundle } from "@happier-dev/protocol";
+import { decodeBase64, encodeBase64, openBoxBundle } from "@piggercode/protocol";
 
 import {
   OPENAI_CODEX_DEVICE_REDIRECT_URI,

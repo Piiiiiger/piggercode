@@ -1,4 +1,4 @@
-import type { ScmWorktree } from '@happier-dev/protocol';
+import type { ScmWorktree } from '@piggercode/protocol';
 
 /**
  * Parser for `git worktree list --porcelain -z` output.

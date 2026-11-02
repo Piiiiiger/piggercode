@@ -1,4 +1,4 @@
-import type { ScmBackendDescribeResponse } from '@happier-dev/protocol';
+import type { ScmBackendDescribeResponse } from '@piggercode/protocol';
 
 import { classifyGitDirectoryIgnores } from './directoryIgnores';
 import type { ScmBackend } from '../../types';

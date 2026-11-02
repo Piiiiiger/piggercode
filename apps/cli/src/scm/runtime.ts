@@ -3,7 +3,7 @@ import { isAbsolute, relative, sep } from 'path';
 import path from 'node:path';
 import { realpathSync } from 'node:fs';
 
-import { createScmCapabilities, type ScmWorkingSnapshot } from '@happier-dev/protocol';
+import { createScmCapabilities, type ScmWorkingSnapshot } from '@piggercode/protocol';
 
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemPathAuthorization';

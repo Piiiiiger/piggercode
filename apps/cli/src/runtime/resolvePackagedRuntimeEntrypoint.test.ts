@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { existsSync } from 'node:fs';
 
-import type { InstalledFirstPartyComponentPaths } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { InstalledFirstPartyComponentPaths } from '@piggercode/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { resolvePackagedRuntimeEntrypoint } from './resolvePackagedRuntimeEntrypoint';
 
@@ -44,8 +44,8 @@ vi.mock('node:fs', async (importOriginal) => {
     };
 });
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@happier-dev/cli-common/firstPartyRuntime')>();
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@piggercode/cli-common/firstPartyRuntime')>();
     return {
         ...actual,
         readDefaultManagedReleaseChannelSync: readDefaultManagedReleaseChannelSyncMock,

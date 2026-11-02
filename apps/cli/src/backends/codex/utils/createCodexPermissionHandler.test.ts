@@ -4,7 +4,7 @@ import {
   accountSettingsParse,
   deriveSettingsSecretsKeyV1,
   encryptSecretStringV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { CodexPermissionHandler } from '@/backends/codex/utils/permissionHandler';
 import { createCodexPermissionHandler } from './createCodexPermissionHandler';

@@ -2,7 +2,7 @@ import type {
     DaemonPetImportLocalPackageRequestV1,
     DiscoveredPetPackageV1,
     ImportedLocalPetPackageV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { LocalPetSourceMetadata } from '@/sync/domains/pets/localPetSourceMetadata';
 

@@ -1,5 +1,5 @@
 import { DEFAULT_AGENT_ID, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import { sessionExecutionRunStop } from '@/sync/ops/sessionExecutionRuns';
 import { supportsEffectiveLocalControlForSession } from '@/sync/domains/session/control/effectiveRuntimeControlSurface';
 import { storage } from '@/sync/domains/state/storage';

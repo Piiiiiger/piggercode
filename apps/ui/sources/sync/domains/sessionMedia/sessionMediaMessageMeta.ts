@@ -2,7 +2,7 @@ import { AttachmentsMessageMetaV1Schema, type AttachmentsMessageMetaV1 } from '@
 import {
     SessionMediaItemV1Schema,
     SessionMediaMessageMetaEnvelopeV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type HappierMetaEnvelope = Readonly<{
     kind: string;

@@ -23,7 +23,7 @@ import {
   applyCliRuntimeLaunchProvenanceEnv,
   resolveCliRuntimeLaunchSpec,
 } from './runtime/launch/resolveCliRuntimeLaunchSpec.mjs';
-import { resolveJavaScriptRuntimeCommand } from '@happier-dev/cli-common/providers/managedJavaScriptRuntime';
+import { resolveJavaScriptRuntimeCommand } from '@piggercode/cli-common/providers/managedJavaScriptRuntime';
 import {
   assertStackServerProfileReconciled,
   buildStackServerProfileSetArgs,

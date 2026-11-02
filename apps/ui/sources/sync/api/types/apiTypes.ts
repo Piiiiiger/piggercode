@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { ChangeEntrySchema, ChangesResponseSchema } from '@happier-dev/protocol/changes';
+import { ChangeEntrySchema, ChangesResponseSchema } from '@piggercode/protocol/changes';
 import {
     SessionMessageAttentionImpactSchema,
     SessionMessageDeliveryResolutionV1Schema,
     SessionMessageRoleSchema,
     SessionStoredMessageContentSchema,
     SessionTranscriptObservationProvenanceV1Schema,
-} from '@happier-dev/protocol';
-import { EphemeralUpdateSchema, type EphemeralUpdate, UpdateBodySchema, UpdateContainerSchema } from '@happier-dev/protocol/updates';
+} from '@piggercode/protocol';
+import { EphemeralUpdateSchema, type EphemeralUpdate, UpdateBodySchema, UpdateContainerSchema } from '@piggercode/protocol/updates';
 
 //
 // Session message

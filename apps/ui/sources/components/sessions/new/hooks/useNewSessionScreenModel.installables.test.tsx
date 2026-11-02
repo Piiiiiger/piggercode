@@ -1,7 +1,7 @@
 import * as React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildBackendTargetKey, type AcpCatalogSettingsV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type AcpCatalogSettingsV1 } from '@piggercode/protocol';
 import {
     flushHookEffects,
     renderHook,

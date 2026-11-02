@@ -10,7 +10,7 @@ import { handleAuthPairRemote } from './auth/pairRemote';
 import { handleAuthRequest } from './auth/request';
 import { handleAuthStatus } from './auth/status';
 import { handleAuthWait } from './auth/wait';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 export async function handleAuthCommand(args: string[]): Promise<void> {
   const subcommand = args[0];

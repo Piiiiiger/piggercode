@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ConnectedServiceIdSchema } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema } from "@piggercode/protocol";
 
 import { resolveConnectedServicesFeature } from "./connectedServicesFeature";
 

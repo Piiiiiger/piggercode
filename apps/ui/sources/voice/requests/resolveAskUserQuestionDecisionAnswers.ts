@@ -2,7 +2,7 @@ import type { PendingPermissionRequest } from '@/utils/sessions/sessionUtils';
 import {
     isAskUserQuestionToolName,
     normalizeStructuredQuestionDescriptors,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type DirectPermissionDecision = 'allow' | 'deny';
 

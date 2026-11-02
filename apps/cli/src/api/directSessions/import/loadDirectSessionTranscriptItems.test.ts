@@ -1,4 +1,4 @@
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { loadDirectSessionTranscriptItems } from './loadDirectSessionTranscriptItems';

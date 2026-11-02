@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRecordV1, ConnectedServiceQuotaMeterV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1, ConnectedServiceQuotaMeterV1 } from '@piggercode/protocol';
 
 import { mapCodexRateLimitResetCreditsToQuotaRecoveryCredits } from '@/backends/codex/quota/codexQuotaRecoveryCredits';
 import {

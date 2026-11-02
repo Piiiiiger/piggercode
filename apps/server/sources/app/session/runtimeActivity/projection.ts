@@ -3,7 +3,7 @@ import {
     SessionRuntimeActivitySnapshotSchema,
     type SessionRuntimeActivityProjection,
     type SessionRuntimeActivitySnapshot,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export interface StoredSessionRuntimeActivityProjectionFields {
     runtimeActivityState: unknown;

@@ -1,4 +1,4 @@
-import { CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY, readConnectedServiceReaderSupport, type FeatureId } from "@happier-dev/protocol";
+import { CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY, readConnectedServiceReaderSupport, type FeatureId } from "@piggercode/protocol";
 import {
     MoveSessionFolderAssignmentsRequestSchema,
     MoveSessionFolderAssignmentsResponseSchema,
@@ -8,7 +8,7 @@ import {
     SessionFolderAssignmentListResponseSchema,
     SetSessionFolderAssignmentRequestSchema,
     SetSessionFolderAssignmentResponseSchema,
-} from "@happier-dev/protocol/sessionFolders";
+} from "@piggercode/protocol/sessionFolders";
 import { z } from "zod";
 
 import { createServerFeatureGatedRouteApp } from "@/app/features/catalog/serverFeatureGate";

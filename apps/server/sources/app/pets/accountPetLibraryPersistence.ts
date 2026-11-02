@@ -6,7 +6,7 @@ import {
     PetAssetMediaTypeV1Schema,
     PetPackageManifestV1Schema,
     type AccountPetLibraryEntryV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { markAccountChanged } from "@/app/changes/markAccountChanged";
 import { db } from "@/storage/db";

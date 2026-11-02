@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ActionsSettingsV1Schema } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema } from '@piggercode/protocol';
 
 import { listBuiltInHappierTools } from './listBuiltInHappierTools';
 import { dispatchBuiltInHappierTool } from './dispatchBuiltInHappierTool';

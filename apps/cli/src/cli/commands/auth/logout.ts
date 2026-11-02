@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { existsSync, rmSync } from 'node:fs';
 
-import { cmd, neutral, ok, warn } from '@happier-dev/cli-common/output';
+import { cmd, neutral, ok, warn } from '@piggercode/cli-common/output';
 
 import {
   clearCredentials,

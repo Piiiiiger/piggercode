@@ -24,7 +24,7 @@ import {
     SessionConnectedServiceAuthCurrentGroupTruthV1Schema,
     type SessionConnectedServiceAuthApplyGenerationRequestV1,
     type SessionConnectedServiceAuthApplyGenerationResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveConfiguredClaudeConfigDir } from './utils/resolveConfiguredClaudeConfigDir';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
 import { resolveSessionCriticalMetadataDrainTimeoutMs } from '@/session/transport/shared/sessionTimeouts';

@@ -693,7 +693,7 @@ await parallel([
     // Real bytes: run wf_a9ea832c-768, agent ac8fa4bd7271c50e3. 14 of 3 671 real journal results
     // declare a `result.lane` longer than a title (max observed 2 266 chars) — and RULING-13 gives
     // the journal the HIGHEST authority, so an unbounded one overwrites the bounded prompt title.
-    const lane = 'protocol/actions approval SSOT + apps/cli plugin-trust consolidation + protocol surface-registry routing + coverage-matrix executor closure (read-only recon; TDD: each fix is a behavior change, write the closure test RED first). Validation lanes: `yarn workspace @happier-dev/protocol test` (approval + surfaceRegistry + coverageMatrix closure), `yarn workspace @happier-dev/cli typecheck` + targeted `apps/cli/src/plugins/projection/registry/ui` and `apps/cli/src/rpc/handlers` test slices.';
+    const lane = 'protocol/actions approval SSOT + apps/cli plugin-trust consolidation + protocol surface-registry routing + coverage-matrix executor closure (read-only recon; TDD: each fix is a behavior change, write the closure test RED first). Validation lanes: `yarn workspace @piggercode/protocol test` (approval + surfaceRegistry + coverageMatrix closure), `yarn workspace @piggercode/cli typecheck` + targeted `apps/cli/src/plugins/projection/registry/ui` and `apps/cli/src/rpc/handlers` test slices.';
 
     const fact = parseClaudeWorkflowFact({
       type: 'happier_workflow_journal',

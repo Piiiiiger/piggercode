@@ -1,4 +1,4 @@
-import { verifyAccountContentPublicKeyBinding } from "@happier-dev/protocol";
+import { verifyAccountContentPublicKeyBinding } from "@piggercode/protocol";
 import { eventRouter } from "@/app/events/eventRouter";
 import { Fastify } from "../../types";
 import { z } from "zod";
@@ -32,7 +32,7 @@ import {
     serializeMachineRow,
 } from "@/app/machines/machineSerialization";
 import { registerMachineReplacementRoutes } from "./registerMachineReplacementRoutes";
-import { isPlainMachineDataKeyMarker, machineStoredContentMatchesAccountMode } from "@happier-dev/protocol";
+import { isPlainMachineDataKeyMarker, machineStoredContentMatchesAccountMode } from "@piggercode/protocol";
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from "@/app/encryption/accountEncryptionMode";
 import { registerMachineContentKeyTransitionRoutes } from "./registerMachineContentKeyTransitionRoutes";
 import { isServerFeatureEnabledForRequest } from "@/app/features/catalog/serverFeatureGate";

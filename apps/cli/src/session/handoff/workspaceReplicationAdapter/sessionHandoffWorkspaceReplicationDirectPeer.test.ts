@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { DirectPeerOnDemandTransferScope } from '@/machines/transfer/directPeerTransport';
 import { disposeTransferPayloadSource } from '@/machines/transfer/transferPayloadSource';

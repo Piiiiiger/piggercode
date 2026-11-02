@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { VoiceAgentError, type VoiceAgentManager } from '@/agent/voice/agent/VoiceAgentManager';
 import type { ExecutionRunState } from '@/agent/executionRuns/runtime/executionRunTypes';
 import type { ExecutionRunController, ExecutionRunVoiceAgentController } from '@/agent/executionRuns/controllers/types';
-import type { ExecutionRunUserTranscriptDirective } from '@happier-dev/protocol';
+import type { ExecutionRunUserTranscriptDirective } from '@piggercode/protocol';
 
 type VoiceAgentUserTranscriptWriter = Readonly<{
   appendUserText: (text: string, meta: Record<string, unknown>) => void | Promise<void>;

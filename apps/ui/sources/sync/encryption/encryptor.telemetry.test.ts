@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
 import { encodeBase64 } from '@/encryption/base64';
 import { encodeUTF8 } from '@/encryption/text';
-import { stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { stringifySerializedJsonValue } from '@piggercode/protocol';
 import { createDeferred } from '@/dev/testkit';
 
 import { AES256Encryption, SecretBoxEncryption } from './encryptor';

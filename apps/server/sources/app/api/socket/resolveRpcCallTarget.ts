@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { db } from "@/storage/db";
 import { canApprovePermissions } from "@/app/share/accessControl";
 import { log } from "@/utils/logging/log";
-import { isDelegatedSessionApprovalRpcMethod } from '@happier-dev/protocol/rpc';
+import { isDelegatedSessionApprovalRpcMethod } from '@piggercode/protocol/rpc';
 
 export type RpcCallTargetResolution =
     | {

@@ -6,7 +6,7 @@ import {
     createSetupServiceConsentPromptData,
     SYSTEM_TASK_PROTOCOL_VERSION,
     type SystemTaskSpec,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { encodeBase64 } from '@/encryption/base64';
 import { renderHook } from '@/dev/testkit';
@@ -443,8 +443,8 @@ describe('useThisComputerSetupTask one-CLI question (R12)', () => {
                             command: '/usr/local/bin/happier',
                             version: '0.2.13',
                             origin: 'npm',
-                            removalCommand: 'npm uninstall -g @happier-dev/cli',
-                            updateCommand: 'npm install -g @happier-dev/cli@latest',
+                            removalCommand: 'npm uninstall -g @piggercode/cli',
+                            updateCommand: 'npm install -g @piggercode/cli@latest',
                             belowSetupFloor: false,
                             missing: false,
                             keepBlockedBy: null,

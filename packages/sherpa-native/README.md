@@ -1,4 +1,4 @@
-# @happier-dev/sherpa-native
+# @piggercode/sherpa-native
 
 Expo native module for on-device Kokoro TTS and streaming STT (mobile), backed by the sherpa-onnx C API.
 

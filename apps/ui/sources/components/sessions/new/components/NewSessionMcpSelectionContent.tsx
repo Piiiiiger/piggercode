@@ -6,7 +6,7 @@ import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 import type {
     DaemonMcpServersPreviewResponse,
     SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/catalog/catalog';
 import { SelectionList, resolvePopoverSelectionListHeightBehavior } from '@/components/ui/selectionList';

@@ -1,4 +1,4 @@
-import type { ExpoPushNotificationChannelV1 } from '@happier-dev/protocol';
+import type { ExpoPushNotificationChannelV1 } from '@piggercode/protocol';
 
 import type { ActivityNotificationEvent } from './activityNotificationEvent';
 import { buildActivityNotificationContent } from './buildActivityNotificationContent';

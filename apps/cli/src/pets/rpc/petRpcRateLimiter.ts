@@ -1,4 +1,4 @@
-import { PET_DAEMON_RPC_DEBOUNCE_LIMITS_V1 } from '@happier-dev/protocol';
+import { PET_DAEMON_RPC_DEBOUNCE_LIMITS_V1 } from '@piggercode/protocol';
 
 export type PetRpcRateLimitOperation =
   | 'discoverPackages'

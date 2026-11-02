@@ -1,4 +1,4 @@
-import { resolvePersistedCodexRuntimeIdentity, resolvePersistedCodexVendorSessionId } from '@happier-dev/agents';
+import { resolvePersistedCodexRuntimeIdentity, resolvePersistedCodexVendorSessionId } from '@piggercode/agents';
 
 import type { Session } from '@/sync/domains/state/storageTypes';
 

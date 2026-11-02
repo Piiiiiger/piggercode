@@ -1,4 +1,4 @@
-import type { SessionForkPoint } from '@happier-dev/protocol';
+import type { SessionForkPoint } from '@piggercode/protocol';
 
 import { buildNewSessionSourceContextNavigation } from '@/components/sessions/new/navigation/newSessionSourceContextNavigation';
 import { storage } from '@/sync/domains/state/storage';

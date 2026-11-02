@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 
-import { buildBackendTargetKey, type AcpCatalogSettingsV1, type BackendTargetRefV1, type LlmTaskRunnerConfigV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type AcpCatalogSettingsV1, type BackendTargetRefV1, type LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
 import { getResolvedBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { DEFAULT_AGENT_ID } from '@/agents/catalog/catalog';

@@ -5,7 +5,7 @@ import type { Metadata } from '../state/storageTypes';
 import { normalizeSessionConfigOptionsArray, type SessionConfigOption } from '@/sync/domains/sessionControl/configOptionsControl';
 import {
     getAgentStaticModels,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { readNonBlankSessionControlIdentifier } from '@/sync/domains/sessionControl/opaqueIdentifiers';
 import { matchesSessionControlProvider, readSessionModelsState } from '@/sync/domains/sessionControl/readSessionControlMetadata';
 

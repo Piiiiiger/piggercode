@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
-import type { DirectSessionCandidateDeleteResponse, DirectSessionsCandidatesListResponse } from '@happier-dev/protocol';
+import type { DirectSessionCandidateDeleteResponse, DirectSessionsCandidatesListResponse } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushHookEffects, renderScreen } from '@/dev/testkit';
 import { createPassThroughModule } from '@/dev/testkit/mocks/components';

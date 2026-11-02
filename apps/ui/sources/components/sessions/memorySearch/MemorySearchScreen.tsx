@@ -16,7 +16,7 @@ import { searchDaemonMemory } from '@/sync/domains/memory/searchDaemonMemory';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { DropdownMenu } from '@/components/ui/forms/dropdown/DropdownMenu';
 
-import { type MemorySearchHitV1, type MemoryStatusV1 } from '@happier-dev/protocol';
+import { type MemorySearchHitV1, type MemoryStatusV1 } from '@piggercode/protocol';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { t } from '@/text';
 import { getSessionName } from '@/utils/sessions/sessionUtils';

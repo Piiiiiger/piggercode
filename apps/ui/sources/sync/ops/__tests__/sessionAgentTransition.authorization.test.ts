@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { RPC_METHODS, SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS, SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS } from '@piggercode/protocol/rpc';
 
 const { mockMachineRpcWithServerScope } = vi.hoisted(() => ({
     mockMachineRpcWithServerScope: vi.fn(),

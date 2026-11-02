@@ -1,4 +1,4 @@
-import type { PromptInvocationBehaviorV1 } from '@happier-dev/protocol';
+import type { PromptInvocationBehaviorV1 } from '@piggercode/protocol';
 
 import { expandPromptTemplateInvocation } from './expandPromptTemplateInvocation';
 import { shouldInsertPromptInvocationOnAutocompleteSelect } from './promptInvocationBehavior';

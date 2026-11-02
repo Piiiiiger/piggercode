@@ -3,7 +3,7 @@ import {
   OPENAI_CODEX_OAUTH_CALLBACK_URL,
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_SCOPE,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export const OPENAI_CODEX_OAUTH = Object.freeze({
   clientId: OPENAI_CODEX_OAUTH_CLIENT_ID,

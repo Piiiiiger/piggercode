@@ -2,7 +2,7 @@ import {
   PromptRegistryFetchItemRequestV1Schema,
   RPC_METHODS,
   type PromptRegistryFetchItemRequestV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PromptRegistryRegistry } from '@/promptRegistries/createPromptRegistryAdapterRegistry';
 import { type TransferSessionStore } from '@/transfers/core/transferSessionStore';

@@ -10,7 +10,7 @@ import {
   SESSION_TRANSCRIPT_OBSERVATION_CAPABILITY_EVENT_V1,
   SESSION_TRANSCRIPT_OBSERVATION_CAPABILITY_V1,
   SESSION_TRANSCRIPT_OBSERVATION_EVENT_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createPlainSessionFixture, createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';
 import {
@@ -116,8 +116,8 @@ vi.mock('./connection/createSessionSocketTransport', () => ({
   },
 }));
 
-vi.mock('@happier-dev/connection-supervisor', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/connection-supervisor')>();
+vi.mock('@piggercode/connection-supervisor', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/connection-supervisor')>();
   return {
     DEFAULT_MANAGED_CONNECTION_POLICY: actual.DEFAULT_MANAGED_CONNECTION_POLICY,
     createManagedConnectionSupervisor: (params: Parameters<typeof actual.createManagedConnectionSupervisor>[0]) => {
@@ -292,7 +292,7 @@ describe('ApiSessionClient durable mutation outbox', () => {
     userSocketStub = createApiSessionSocketStub({ connected: true, emitWithAckResult: { ok: true } });
     const { ApiSessionClient } = await import('./sessionClient');
     const { ProviderEnforcedPermissionHandler } = await import('@/agent/permissions/ProviderEnforcedPermissionHandler');
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol');
     const oldClient = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's-before-reconnect' }));
     const newClient = new ApiSessionClient('tok', createPlainSessionFixture({ id: 's-after-reconnect' }));
     const handler = new ProviderEnforcedPermissionHandler(oldClient, { logPrefix: '[ReconnectTest]' });
@@ -338,7 +338,7 @@ describe('ApiSessionClient durable mutation outbox', () => {
     userSocketStub = createApiSessionSocketStub({ connected: true, emitWithAckResult: { ok: true } });
     const { ApiSessionClient } = await import('./sessionClient');
     const { ProviderEnforcedPermissionHandler } = await import('@/agent/permissions/ProviderEnforcedPermissionHandler');
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol');
     const client = new ApiSessionClient(token, createPlainSessionFixture({ id: 's-real-reset-routing' }));
     const handler = new ProviderEnforcedPermissionHandler(client, { logPrefix: '[ResetTest]' });
     const enteredDiskAdmission = createDeferred<void>();

@@ -1,4 +1,4 @@
-import { banner, dim, helpFormatter, sectionTitle } from '@happier-dev/cli-common/output';
+import { banner, dim, helpFormatter, sectionTitle } from '@piggercode/cli-common/output';
 
 import { listRootHelpCommands } from './commandSurfaceManifest';
 

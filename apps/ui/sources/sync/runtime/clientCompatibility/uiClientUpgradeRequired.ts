@@ -2,7 +2,7 @@ import {
     ClientUpgradeRequiredV1Schema,
     ClientVersionCheckResponseV1Schema,
     type ClientUpgradeRequiredV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { storage } from '@/sync/domains/state/storage';
 import type { NativeUpdateStatus } from '@/sync/store/domains/realtime';

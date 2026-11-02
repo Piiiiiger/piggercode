@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { computeMonotonicUpdatedAt } from '@happier-dev/agents';
+import { computeMonotonicUpdatedAt } from '@piggercode/agents';
 
 describe('computeMonotonicUpdatedAt', () => {
   it('returns desiredUpdatedAt when it is newer', () => {

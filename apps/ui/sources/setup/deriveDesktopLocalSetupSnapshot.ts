@@ -111,7 +111,7 @@ export function readKeptCliUpdateCommand(facts: DesktopLocalReadinessFacts): str
     return facts.cliChoice.mode === 'own' ? facts.cliChoice.otherCli?.updateCommand ?? null : null;
 }
 
-/** The public release channels a managed CLI can belong to (`@happier-dev/release-runtime`). */
+/** The public release channels a managed CLI can belong to (`@piggercode/release-runtime`). */
 export type DesktopCliChannel = 'stable' | 'preview' | 'publicdev';
 
 export type DesktopCliUpdateFacts = Readonly<{

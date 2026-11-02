@@ -22,31 +22,31 @@ test('resolveBundledWorkspaceDependencyBuildOrder walks internal workspace depen
   await mkdir(join(repoRoot, 'apps', 'cli'), { recursive: true });
   await writeJson(join(repoRoot, 'apps', 'cli', 'package.json'), {
     bundledDependencies: [
-      '@happier-dev/cli-common',
-      '@happier-dev/release-runtime',
-      '@happier-dev/agents',
-      '@happier-dev/protocol',
+      '@piggercode/cli-common',
+      '@piggercode/release-runtime',
+      '@piggercode/agents',
+      '@piggercode/protocol',
     ],
   });
 
   const packages = {
     protocol: {
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
     },
     agents: {
-      name: '@happier-dev/agents',
+      name: '@piggercode/agents',
       dependencies: {
-        '@happier-dev/protocol': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
       },
     },
     'release-runtime': {
-      name: '@happier-dev/release-runtime',
+      name: '@piggercode/release-runtime',
     },
     'cli-common': {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       dependencies: {
-        '@happier-dev/agents': '0.0.0',
-        '@happier-dev/release-runtime': '0.0.0',
+        '@piggercode/agents': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
       },
     },
   };
@@ -74,22 +74,22 @@ test('resolveWorkspaceDependencyBuildOrder deduplicates shared internal dependen
 
   const packages = {
     protocol: {
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
     },
     agents: {
-      name: '@happier-dev/agents',
+      name: '@piggercode/agents',
       dependencies: {
-        '@happier-dev/protocol': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
       },
     },
     'release-runtime': {
-      name: '@happier-dev/release-runtime',
+      name: '@piggercode/release-runtime',
     },
     'cli-common': {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       dependencies: {
-        '@happier-dev/agents': '0.0.0',
-        '@happier-dev/release-runtime': '0.0.0',
+        '@piggercode/agents': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
       },
     },
   };
@@ -101,7 +101,7 @@ test('resolveWorkspaceDependencyBuildOrder deduplicates shared internal dependen
 
   const ordered = resolveWorkspaceDependencyBuildOrder({
     repoRoot,
-    seedPackageNames: ['@happier-dev/agents', '@happier-dev/cli-common'],
+    seedPackageNames: ['@piggercode/agents', '@piggercode/cli-common'],
   });
 
   assert.deepEqual(ordered, ['protocol', 'agents', 'release-runtime', 'cli-common']);

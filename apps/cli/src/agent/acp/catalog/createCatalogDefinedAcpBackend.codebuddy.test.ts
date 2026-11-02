@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
-import { AGENT_IDS, getBuiltInAcpConfig } from '@happier-dev/agents';
+import { AGENT_IDS, getBuiltInAcpConfig } from '@piggercode/agents';
 
 import type { PermissionMode } from '@/api/types';
 import type { SessionId } from '@/agent/core';

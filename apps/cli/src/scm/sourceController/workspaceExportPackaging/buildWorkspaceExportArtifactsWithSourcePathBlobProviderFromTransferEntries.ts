@@ -1,6 +1,6 @@
 import { lstat, readlink } from 'node:fs/promises';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { WorkspaceExportBlobProvider } from '../workspaceExportStaging/stageWorkspaceEntries';
 

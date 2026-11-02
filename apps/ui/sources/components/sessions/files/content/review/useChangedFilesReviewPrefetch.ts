@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 
 import type { ScmFileStatus } from '@/scm/scmStatusFiles';
 import { useSetting } from '@/sync/domains/state/storage';

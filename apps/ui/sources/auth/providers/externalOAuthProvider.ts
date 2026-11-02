@@ -5,7 +5,7 @@ import { serverFetch } from '@/sync/http/client';
 import { t } from '@/text';
 
 import type { AuthProvider } from '@/auth/providers/types';
-import type { AuthProviderId } from '@happier-dev/protocol';
+import type { AuthProviderId } from '@piggercode/protocol';
 
 const OAUTH_NOT_CONFIGURED_ERROR = 'oauth_not_configured';
 

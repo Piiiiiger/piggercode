@@ -1,4 +1,4 @@
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 
 export const SCM_GIT_REPO_BACKEND_OPTIONS = ['git', 'sapling'] as const;
 export type ScmGitRepoPreferredBackend = (typeof SCM_GIT_REPO_BACKEND_OPTIONS)[number];

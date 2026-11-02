@@ -1,4 +1,4 @@
-import { resolveCodexSessionBackendMode } from '@happier-dev/agents';
+import { resolveCodexSessionBackendMode } from '@piggercode/agents';
 
 import { withCodexAppServerClient } from '../client/withCodexAppServerClient';
 import type { CodexAppServerClient } from '../client/createCodexAppServerClient';

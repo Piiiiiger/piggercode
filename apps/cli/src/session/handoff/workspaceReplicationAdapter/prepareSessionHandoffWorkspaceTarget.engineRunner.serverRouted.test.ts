@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import type { MachineTransferReceiveEnvelope, MachineTransferSendEnvelope, WorkspaceManifest } from '@happier-dev/protocol';
+import type { MachineTransferReceiveEnvelope, MachineTransferSendEnvelope, WorkspaceManifest } from '@piggercode/protocol';
 
 import { createWorkspaceReplicationCasStore } from '@/workspaces/replication/cas/workspaceReplicationCasStore';
 

@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";
-import { SESSION_MESSAGE_NO_USER_ATTENTION_IMPACT } from "@happier-dev/protocol";
+import { SESSION_MESSAGE_NO_USER_ATTENTION_IMPACT } from "@piggercode/protocol";
 
 import { applySessionReadCursorOperation, createSessionMessage } from "@/app/session/sessionWriteService";
 import { createV2SessionListInitialPage } from "@/app/api/routes/session/v2SessionListInitialPage";

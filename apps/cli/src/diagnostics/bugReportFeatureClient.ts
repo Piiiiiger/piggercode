@@ -1,7 +1,7 @@
 import {
   DEFAULT_BUG_REPORTS_CAPABILITIES,
   type BugReportsCapabilities,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveCliFeatureDecision } from '@/features/featureDecisionService';
 import { fetchServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 

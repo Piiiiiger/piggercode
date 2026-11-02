@@ -1,5 +1,5 @@
-import type { ReviewFinding, ReviewFollowUpV1 } from '@happier-dev/protocol';
-import { ReviewFollowUpV1Schema as ReviewFollowUpSchema } from '@happier-dev/protocol';
+import type { ReviewFinding, ReviewFollowUpV1 } from '@piggercode/protocol';
+import { ReviewFollowUpV1Schema as ReviewFollowUpSchema } from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { parseHappierMetaEnvelope } from '@/components/sessions/transcript/structured/happierMetaEnvelope';

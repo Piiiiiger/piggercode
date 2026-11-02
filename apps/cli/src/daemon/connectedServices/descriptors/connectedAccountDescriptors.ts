@@ -17,7 +17,7 @@ import {
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_TOKEN_URL,
   normalizeClaudeOauthProfileEntitlement,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   ConnectedServiceIdSchema,
   type ConnectedServiceId,
@@ -25,7 +25,7 @@ import {
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceOauthCredentialRawMetadata,
   readConnectedServiceCredentialOrganizationId as readCredentialOrganizationId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   extractOpenAiCodexAccountId,

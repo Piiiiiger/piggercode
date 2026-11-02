@@ -9,8 +9,8 @@ import {
   type ProviderCliKnownCommandCandidate,
   type ProviderCliManagedInstallSpec,
   type ProviderCliSourcePreference,
-} from '@happier-dev/agents';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 
 import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '../path/expandHomeDirPath.js';
 import { resolveWindowsCommandOnPath, resolveWindowsCommandPath } from '../process/index.js';

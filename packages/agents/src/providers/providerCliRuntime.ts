@@ -1,5 +1,5 @@
 import type { AgentId } from '../types.js';
-import { parseBooleanEnv } from '@happier-dev/protocol';
+import { parseBooleanEnv } from '@piggercode/protocol';
 
 export type ProviderCliSourcePreference = 'system-first' | 'managed-first';
 export type ProviderCliManualInstallKind = 'command' | 'vendor_recipe' | 'none';

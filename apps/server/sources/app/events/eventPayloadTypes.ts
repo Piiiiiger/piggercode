@@ -10,7 +10,7 @@ import type {
     SessionRuntimeIssueV1,
     SessionDraftSocketUpdateV1,
     SessionStoredMessageContent,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 // === CONNECTION TYPES ===
 
@@ -133,7 +133,7 @@ export type UpdateEvent = {
     pendingBlockedCount?: number;
     meaningfulActivityAt?: number;
     changedByAccountId?: string;
-    pendingActivationAuthorization?: import('@happier-dev/protocol').PendingActivationAuthorizationV1 | null;
+    pendingActivationAuthorization?: import('@piggercode/protocol').PendingActivationAuthorizationV1 | null;
 } | {
     type: 'automation-upsert';
     automationId: string;

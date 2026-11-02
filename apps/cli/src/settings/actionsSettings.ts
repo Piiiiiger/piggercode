@@ -7,7 +7,7 @@ import {
   type ActionsSettingsV1,
   type ActionSurfaces,
   type ActionUiPlacement,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const ENV_KEY = 'HAPPIER_ACTIONS_SETTINGS_V1';
 const EMPTY_ACTIONS_SETTINGS = ActionsSettingsV1Schema.parse({ v: 1, actions: {} });

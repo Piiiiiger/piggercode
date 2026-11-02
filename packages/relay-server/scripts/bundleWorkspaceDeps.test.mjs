@@ -38,12 +38,12 @@ export function resolveWorkspaceBundlesFromPackageJson({ repoRoot, hostPackageDi
   const bundled = Array.isArray(pkg.bundledDependencies) ? pkg.bundledDependencies : [];
   const bundles = [];
   for (const name of bundled) {
-    if (typeof name !== 'string' || !name.startsWith('@happier-dev/')) continue;
-    const short = name.slice('@happier-dev/'.length);
+    if (typeof name !== 'string' || !name.startsWith('@piggercode/')) continue;
+    const short = name.slice('@piggercode/'.length);
     bundles.push({
       name,
       srcDir: resolve(repoRoot, 'packages', short),
-      destDir: resolve(hostPackageDir, 'node_modules', '@happier-dev', short),
+      destDir: resolve(hostPackageDir, 'node_modules', '@piggercode', short),
     });
   }
   return bundles;
@@ -99,7 +99,7 @@ export function vendorBundledPackageRuntimeDependencies({ srcPackageJsonPath, de
   mkdirSync(destNodeModulesDir, { recursive: true });
   const seen = new Set();
   for (const name of Object.keys(deps)) {
-    if (name.startsWith('@happier-dev/')) continue;
+    if (name.startsWith('@piggercode/')) continue;
     vendorOne({ repoRoot, name, destNodeModulesDir, seen });
   }
 }
@@ -133,13 +133,13 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
     mkdirSync(resolve(releaseRuntimeDir, 'dist'), { recursive: true });
 
     writeJson(resolve(relayDir, 'package.json'), {
-      name: '@happier-dev/relay-server',
+      name: '@piggercode/relay-server',
       private: true,
-      bundledDependencies: ['@happier-dev/release-runtime'],
-      dependencies: { '@happier-dev/release-runtime': '0.0.0' },
+      bundledDependencies: ['@piggercode/release-runtime'],
+      dependencies: { '@piggercode/release-runtime': '0.0.0' },
     });
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -148,7 +148,7 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
     writeFileSync(resolve(cliCommonDir, 'dist', 'index.js'), 'export {};\n', 'utf8');
     writeCliCommonWorkspacesStub(cliCommonDir);
     writeJson(resolve(releaseRuntimeDir, 'package.json'), {
-      name: '@happier-dev/release-runtime',
+      name: '@piggercode/release-runtime',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -172,18 +172,18 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
         admittedPackageNames = packageNames;
         admissionEnv = options?.env;
         writeFileSync(distPath, 'export const generation = "new";\n', 'utf8');
-        return { ok: true, built: ['@happier-dev/release-runtime'], skipped: [] };
+        return { ok: true, built: ['@piggercode/release-runtime'], skipped: [] };
       },
     });
 
     assert.equal(
       readFileSync(
-        resolve(relayDir, 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'index.js'),
+        resolve(relayDir, 'node_modules', '@piggercode', 'release-runtime', 'dist', 'index.js'),
         'utf8',
       ),
       'export const generation = "new";\n',
     );
-    assert.deepEqual(admittedPackageNames, ['@happier-dev/release-runtime']);
+    assert.deepEqual(admittedPackageNames, ['@piggercode/release-runtime']);
     assert.match(String(admissionEnv?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD ?? ''), /"path"/);
     assert.equal(admissionEnv?.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR, undefined);
   } finally {
@@ -204,13 +204,13 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
     const depADir = resolve(tempRoot, 'node_modules', 'dep-a');
     const depBDir = resolve(tempRoot, 'node_modules', 'dep-b');
 
-    mkdirSync(resolve(relayDir, 'node_modules', '@happier-dev', 'release-runtime'), { recursive: true });
+    mkdirSync(resolve(relayDir, 'node_modules', '@piggercode', 'release-runtime'), { recursive: true });
     writeJson(resolve(relayDir, 'package.json'), {
-      name: '@happier-dev/relay-server',
+      name: '@piggercode/relay-server',
       private: true,
-      bundledDependencies: ['@happier-dev/release-runtime'],
+      bundledDependencies: ['@piggercode/release-runtime'],
       dependencies: {
-        '@happier-dev/release-runtime': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
       },
     });
     mkdirSync(resolve(cliCommonDir, 'dist'), { recursive: true });
@@ -219,21 +219,21 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
     mkdirSync(depBDir, { recursive: true });
 
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
       types: './dist/index.d.ts',
       exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
       dependencies: {
-        '@happier-dev/release-runtime': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
       },
     });
     writeFileSync(resolve(cliCommonDir, 'dist', 'index.js'), 'export const common = 1;\n', 'utf8');
     writeCliCommonWorkspacesStub(cliCommonDir);
 
     writeJson(resolve(releaseRuntimeDir, 'package.json'), {
-      name: '@happier-dev/release-runtime',
+      name: '@piggercode/release-runtime',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -260,7 +260,7 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
 
     await bundleWorkspaceDeps({ repoRoot: tempRoot, relayDir });
 
-    const bundledRuntimeDir = resolve(relayDir, 'node_modules', '@happier-dev', 'release-runtime');
+    const bundledRuntimeDir = resolve(relayDir, 'node_modules', '@piggercode', 'release-runtime');
     assert.equal(existsSync(resolve(bundledRuntimeDir, 'node_modules', 'dep-a', 'package.json')), true);
     assert.equal(
       existsSync(resolve(bundledRuntimeDir, 'node_modules', 'dep-a', 'node_modules', 'dep-b', 'package.json')),

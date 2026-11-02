@@ -8,9 +8,9 @@ import { captureConsoleJsonOutput } from '@/testkit/logger/captureOutput';
 import {
   deriveBoxPublicKeyFromSeed,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 
 const { mockIo } = vi.hoisted(() => ({
   mockIo: vi.fn(),

@@ -21,7 +21,7 @@ import {
     updatePendingMessage,
     updatePendingRequestedAction,
 } from "./pendingMessageService";
-import type { PendingRequestedActionV1 } from "@happier-dev/protocol";
+import type { PendingRequestedActionV1 } from "@piggercode/protocol";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";
 import { reconcileSessionPendingQueueState } from "./reconcileSessionPendingQueueState";
 import { createSessionPublisherPresence } from "@/app/presence/sessionPublisherPresence";

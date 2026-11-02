@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createServer, type Server } from 'node:http';
-import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 
 import { bindApiSessionSocketPairMock, createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
 import { createMockSession } from '@/testkit/backends/sessionFixtures';

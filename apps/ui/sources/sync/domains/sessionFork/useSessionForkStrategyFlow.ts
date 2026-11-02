@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { LlmTaskRunnerConfigV1, SessionForkPoint } from '@happier-dev/protocol';
+import type { LlmTaskRunnerConfigV1, SessionForkPoint } from '@piggercode/protocol';
 
 import { completeSessionForkNavigation } from '@/components/sessions/transcript/forkContext/completeSessionForkNavigation';
 import { forkSession } from '@/sync/ops';

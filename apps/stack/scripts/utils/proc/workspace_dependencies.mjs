@@ -12,7 +12,7 @@ export function collectInternalWorkspaceDependencyNames(
     for (const name of Object.keys(source)) {
       const isInternalWorkspace = knownWorkspacePackageNames
         ? knownWorkspacePackageNames.has(name)
-        : name.startsWith('@happier-dev/');
+        : name.startsWith('@piggercode/');
       if (!isInternalWorkspace || name === currentPkgName) continue;
       names.add(name);
     }

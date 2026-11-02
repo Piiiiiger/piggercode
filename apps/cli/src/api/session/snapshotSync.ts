@@ -1,5 +1,5 @@
 import type { AgentState, Metadata } from '../types';
-import { normalizeSessionMetadataForRead } from '@happier-dev/protocol';
+import { normalizeSessionMetadataForRead } from '@piggercode/protocol';
 import { decodeBase64, decrypt } from '../encryption';
 import { fetchSessionByIdCompat } from '@/session/transport/http/sessionsHttp';
 import { isDeepStrictEqual } from 'node:util';

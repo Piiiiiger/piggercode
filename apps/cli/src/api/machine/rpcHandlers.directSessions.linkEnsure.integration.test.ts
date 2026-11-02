@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createServer, type Server } from 'node:http';
 
-import { deriveBoxPublicKeyFromSeed } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { deriveBoxPublicKeyFromSeed } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { z } from 'zod';
 
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';

@@ -3,7 +3,7 @@ import { createReadStream, existsSync } from 'node:fs';
 import { chmod, lstat, mkdir, open, readFile, readdir, rename, rm } from 'node:fs/promises';
 import { basename, isAbsolute, join, relative, resolve } from 'node:path';
 
-import { extractReleasePayloadRootFromArchive } from '@happier-dev/cli-common/firstPartyRuntime';
+import { extractReleasePayloadRootFromArchive } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { waitForOkHealth } from '../http';
 import { reserveAvailablePort } from '../network/reserveAvailablePort';

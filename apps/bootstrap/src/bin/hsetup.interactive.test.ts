@@ -1,4 +1,4 @@
-import { parseSetupPairingPromptData } from '@happier-dev/protocol';
+import { parseSetupPairingPromptData } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { createSetupThisComputerKind } from '../systemTasks/kinds/setupThisComputer.js';

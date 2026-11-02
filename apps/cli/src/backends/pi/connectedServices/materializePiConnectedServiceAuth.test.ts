@@ -4,7 +4,7 @@ import { join, win32 } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import {
   PI_BROKER_STATE_PATH_ENV,

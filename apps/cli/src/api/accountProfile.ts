@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AccountProfileResponseSchema, type AccountProfileResponse, withConnectedServiceReaderSupport } from '@happier-dev/protocol';
+import { AccountProfileResponseSchema, type AccountProfileResponse, withConnectedServiceReaderSupport } from '@piggercode/protocol';
 
 import {
   createAuthenticationHttpStatusError,

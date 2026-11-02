@@ -2,7 +2,7 @@ import type {
   ActionExecuteResult,
   ActionExecutorContext,
   SessionHandoffWorkspaceTransfer,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ExecuteAction = (actionId: 'session.handoff', input: unknown, context?: ActionExecutorContext) => Promise<ActionExecuteResult>;
 

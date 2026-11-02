@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AccessibilityInfo, Platform, Pressable, View, findNodeHandle } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { Icon, ICON_SIZE } from '@/components/ui/icons/Icon';
 import { ActivitySpinner, iconMatchedSpinnerSize } from '@/components/ui/feedback/ActivitySpinner';

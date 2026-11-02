@@ -1,5 +1,5 @@
 import type { PermissionMode } from '@/api/types';
-import type { StructuredQuestionAnswersV1 } from '@happier-dev/protocol';
+import type { StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 
 export type SessionPermissionRpcPayload = {
   id: string;

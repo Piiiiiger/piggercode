@@ -1,5 +1,5 @@
-import { normalizeVoiceAgentTurnTranscriptText, type HappierReplayDialogItem } from '@happier-dev/agents';
-import { SessionSynopsisV1Schema, VoiceAgentTurnV1Schema } from '@happier-dev/protocol';
+import { normalizeVoiceAgentTurnTranscriptText, type HappierReplayDialogItem } from '@piggercode/agents';
+import { SessionSynopsisV1Schema, VoiceAgentTurnV1Schema } from '@piggercode/protocol';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import type { Credentials } from '@/persistence';

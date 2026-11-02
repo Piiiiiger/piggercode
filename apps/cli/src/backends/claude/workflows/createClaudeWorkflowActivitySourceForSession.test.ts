@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
-import { buildSessionWorkflowActivityHeadline, type SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import { buildSessionWorkflowActivityHeadline, type SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 import type { Session } from '../session';
 import { createClaudeProviderActivityLedger } from '../providerActivity/createClaudeProviderActivityLedger';

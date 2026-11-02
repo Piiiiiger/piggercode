@@ -1,8 +1,8 @@
 import {
   inferAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+} from '@piggercode/agents';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { getSessionCatalogControlAdapter } from '@/backends/catalog';
 import type { Credentials } from '@/persistence';

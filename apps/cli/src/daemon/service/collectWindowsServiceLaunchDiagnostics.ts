@@ -1,9 +1,9 @@
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import {
   buildReadWindowsScheduledTaskStatusPowerShellCommand,
   parseWindowsScheduledTaskStatusPowerShellJson,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 
 /**
  * Collect post-mortem diagnostics for a Windows scheduled-task daemon launch

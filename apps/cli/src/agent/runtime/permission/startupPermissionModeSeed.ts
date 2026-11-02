@@ -1,5 +1,5 @@
 import type { Metadata, PermissionMode } from '@/api/types';
-import { resolveLatestPermissionIntent } from '@happier-dev/agents';
+import { resolveLatestPermissionIntent } from '@piggercode/agents';
 import { normalizePermissionModeToIntent } from './permissionModeCanonical';
 
 export async function resolveStartupPermissionModeFromSession(opts: {

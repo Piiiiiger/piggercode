@@ -2,7 +2,7 @@ import type {
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceCredentialRevisionBoundaryV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import type { ConnectedServicesMaterializationDiagnostic } from '../materialize/providerMaterializerTypes';

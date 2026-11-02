@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import type { Credentials } from '@/persistence';
 import {
   ExecutionRunStatusSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/jsonEnvelope';
 import { hasFlag, readCommandPositionals, readFlagValue, readIntFlagValue } from '@/cli/commands/shared/argvFlags';
@@ -15,7 +15,7 @@ import {
   formatProtocolEnumUsage,
   parseProtocolEnumFlag,
 } from '@/cli/commands/shared/parseProtocolEnumFlag';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 const EXECUTION_RUN_STATUS_USAGE = formatProtocolEnumUsage(ExecutionRunStatusSchema);
 

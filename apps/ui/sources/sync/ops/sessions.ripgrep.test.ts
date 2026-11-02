@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createRpcCallError } from '../runtime/rpcErrors';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 type SessionRipgrepRpcResponse =
     | Readonly<{ success: boolean; stdout: string; stderr?: string; exitCode?: number }>

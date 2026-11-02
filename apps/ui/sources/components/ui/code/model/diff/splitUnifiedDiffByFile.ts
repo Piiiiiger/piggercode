@@ -1,1 +1,1 @@
-export { splitUnifiedDiffByFile } from '@happier-dev/protocol';
+export { splitUnifiedDiffByFile } from '@piggercode/protocol';

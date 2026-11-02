@@ -1,4 +1,4 @@
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 
 import type { ScmBackendRegistry } from '@/scm/registry';

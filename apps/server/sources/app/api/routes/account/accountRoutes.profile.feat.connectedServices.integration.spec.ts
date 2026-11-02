@@ -10,7 +10,7 @@ import {
     stringifyConnectedServiceAuthGroupPolicy,
 } from "../connect/connectedServicesV3/authGroupPolicy";
 import { resolveConnectedServiceCredentialRevision } from "../connect/credentials/credentialRevision";
-import { AccountProfileSchema as ReleasedAccountProfileSchema } from "@happier-dev/protocol/testing/releasedV0215AccountProfile";
+import { AccountProfileSchema as ReleasedAccountProfileSchema } from "@piggercode/protocol/testing/releasedV0215AccountProfile";
 
 describe("Account profile (integration)", () => {
     let harness: LightSqliteHarness;

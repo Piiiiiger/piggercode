@@ -1,4 +1,4 @@
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';
 import {

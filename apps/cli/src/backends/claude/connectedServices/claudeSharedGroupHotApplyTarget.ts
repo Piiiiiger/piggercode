@@ -2,7 +2,7 @@ import {
   ConnectedServiceCredentialRecordV1Schema,
   ConnectedServiceCredentialRevisionV1Schema,
   type ConnectedServiceCredentialRevisionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ClaudeSubscriptionNativeAuthSelectionDescriptor } from './nativeAuth/materializeClaudeCodeNativeAuth';
 import {

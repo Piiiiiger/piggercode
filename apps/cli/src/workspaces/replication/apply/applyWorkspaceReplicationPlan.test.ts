@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 function createSha256Digest(payload: Buffer): string {
   return `sha256:${createHash('sha256').update(payload).digest('hex')}`;

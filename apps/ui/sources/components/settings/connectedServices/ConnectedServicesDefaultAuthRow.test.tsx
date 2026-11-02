@@ -3,8 +3,8 @@ import renderer, { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderScreen } from '@/dev/testkit';
 import { installConnectedServicesCommonModuleMocks } from './connectedServicesTestHelpers';
-import { AGENTS_CORE } from '@happier-dev/agents';
-import type { ConnectedServiceId, ConnectedServicesDefaultAuthByAgentIdV1 } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import type { ConnectedServiceId, ConnectedServicesDefaultAuthByAgentIdV1 } from '@piggercode/protocol';
 import type { ConnectedServicesServiceBinding } from '@/sync/domains/connectedServices/connectedServicesAgentOptionStateBindings';
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;

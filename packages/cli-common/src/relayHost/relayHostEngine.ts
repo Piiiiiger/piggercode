@@ -6,7 +6,7 @@ import { createConnection } from 'node:net';
 import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 
-import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import {
   applyServicePlan,

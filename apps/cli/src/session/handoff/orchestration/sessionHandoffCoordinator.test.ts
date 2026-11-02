@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode, RpcError } from '@happier-dev/protocol/rpcErrors';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode, RpcError } from '@piggercode/protocol/rpcErrors';
 
 import { createSessionHandoffCoordinator } from './sessionHandoffCoordinator';
 

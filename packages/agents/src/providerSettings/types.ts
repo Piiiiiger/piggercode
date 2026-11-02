@@ -1,4 +1,4 @@
-import type { SettingDefinitionMap } from '@happier-dev/protocol';
+import type { SettingDefinitionMap } from '@piggercode/protocol';
 
 import type { AgentId } from '../types.js';
 

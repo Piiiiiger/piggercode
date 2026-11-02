@@ -8,8 +8,8 @@ import type { SessionClientPort } from '@/api/session/sessionClientPort';
 import type { AgentState, Metadata } from '@/api/types';
 import { createSessionRuntimeActivity } from '@/session/runtimeActivity/createSessionRuntimeActivity';
 import type { SessionRuntimeActivityContributionHandle } from '@/session/runtimeActivity/types';
-import type { SessionRuntimeActivitySnapshot } from '@happier-dev/protocol';
-import { AccountSettingsSchema } from '@happier-dev/protocol';
+import type { SessionRuntimeActivitySnapshot } from '@piggercode/protocol';
+import { AccountSettingsSchema } from '@piggercode/protocol';
 
 import type { EnhancedMode } from './loop';
 import { claudeRemoteLauncher } from './claudeRemoteLauncher';
@@ -17,7 +17,7 @@ import { hashClaudeEnhancedModeForQueue } from './remote/modeHash';
 import { Session } from './session';
 import { logger } from '@/ui/logger';
 import { completedNativeChildTranscript } from './workflows/claudeWorkflowActivitySource.testkit';
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 import type { Query } from '@anthropic-ai/claude-agent-sdk';
 import type { SessionHookData } from './utils/startHookServer';
 

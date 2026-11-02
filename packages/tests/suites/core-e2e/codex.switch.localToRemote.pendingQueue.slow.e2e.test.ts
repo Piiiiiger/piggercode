@@ -234,7 +234,7 @@ setInterval(() => {}, 1000);
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'codex',
         '--existing-session',

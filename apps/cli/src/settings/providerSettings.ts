@@ -1,6 +1,6 @@
-import type { AgentId } from '@happier-dev/agents';
-import { getProviderSettingsDefinition } from '@happier-dev/agents';
-import { normalizeCodexBackendMode, type CodexBackendMode } from '@happier-dev/protocol';
+import type { AgentId } from '@piggercode/agents';
+import { getProviderSettingsDefinition } from '@piggercode/agents';
+import { normalizeCodexBackendMode, type CodexBackendMode } from '@piggercode/protocol';
 
 export function resolveProviderOutgoingMessageMetaExtras(params: Readonly<{
   agentId: AgentId;

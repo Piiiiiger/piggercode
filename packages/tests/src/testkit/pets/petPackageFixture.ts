@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 
-import { AccountPetCreateRequestV1Schema, type AccountPetCreateRequestV1, type AccountPetOriginV1 } from '@happier-dev/protocol';
+import { AccountPetCreateRequestV1Schema, type AccountPetCreateRequestV1, type AccountPetOriginV1 } from '@piggercode/protocol';
 
 export const minimalPetPngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 const atlasColumns = 8;

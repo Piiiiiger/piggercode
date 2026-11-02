@@ -10,7 +10,7 @@ function getSchema(name: 'SessionFoldersV1Schema' | 'SessionFolderV1Schema') {
 
 describe('session folder settings schemas', () => {
   it('exports the session folders subpath for package consumers', async () => {
-    const sessionFolders = await import('@happier-dev/protocol/sessionFolders');
+    const sessionFolders = await import('@piggercode/protocol/sessionFolders');
 
     expect(typeof sessionFolders.SessionFoldersV1Schema.safeParse).toBe('function');
     expect(typeof sessionFolders.SetSessionFolderAssignmentRequestSchema.safeParse).toBe('function');

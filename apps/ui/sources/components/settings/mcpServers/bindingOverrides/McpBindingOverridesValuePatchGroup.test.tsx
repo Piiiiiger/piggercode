@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { McpValueRefV1 } from '@happier-dev/protocol';
+import type { McpValueRefV1 } from '@piggercode/protocol';
 import { renderSettingsView } from '@/dev/testkit';
 
 

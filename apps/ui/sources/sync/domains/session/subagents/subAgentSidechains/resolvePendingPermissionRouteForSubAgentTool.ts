@@ -1,6 +1,6 @@
 import { buildToolCallMessageRouteId } from '@/sync/domains/messages/messageRouteIds';
 import type { Message, ToolCallMessage } from '@/sync/domains/messages/messageTypes';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
 
 function readNonEmptyString(value: unknown): string | null {
     return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;

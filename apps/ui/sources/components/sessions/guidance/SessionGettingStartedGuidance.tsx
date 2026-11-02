@@ -13,7 +13,7 @@ import { useResolvedActiveServerSelection } from '@/hooks/server/useEffectiveSer
 import { useMachineListByServerId, useMachineListStatusByServerId, useSetting } from '@/sync/domains/state/storage';
 import { listServerProfiles } from '@/sync/domains/server/serverProfiles';
 import { useConnectTerminal } from '@/hooks/session/useConnectTerminal';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 import { config } from '@/config';
 import {

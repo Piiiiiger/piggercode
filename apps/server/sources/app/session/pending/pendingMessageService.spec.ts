@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createEnvPatcher } from "@/testkit/env";
-import { buildSessionAgentTransitionDividerLocalId } from "@happier-dev/protocol";
+import { buildSessionAgentTransitionDividerLocalId } from "@piggercode/protocol";
 
 let currentTx: any;
 

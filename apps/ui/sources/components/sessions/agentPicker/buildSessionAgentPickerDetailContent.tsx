@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { NewSessionEngineOptionDetail } from '@/components/sessions/new/components/NewSessionEngineOptionDetail';
 import { resolveNewSessionCapabilityProbeContext } from '@/components/sessions/new/modules/newSessionCapabilityProbeContext';

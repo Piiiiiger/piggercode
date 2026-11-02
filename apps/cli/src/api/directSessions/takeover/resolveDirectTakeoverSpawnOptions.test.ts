@@ -11,7 +11,7 @@ import type { Credentials } from '@/persistence';
 import type {
   ConnectedServiceBindingsV1,
   ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { LoadedLinkedDirectSession } from './loadLinkedDirectSession';
 import { resolveDirectTakeoverSpawnOptions } from './resolveDirectTakeoverSpawnOptions';
 

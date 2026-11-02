@@ -1,4 +1,4 @@
-import type { SessionAgentTransitionResultV1 } from '@happier-dev/protocol';
+import type { SessionAgentTransitionResultV1 } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { t } from '@/text';

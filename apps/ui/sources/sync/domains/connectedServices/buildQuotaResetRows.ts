@@ -3,7 +3,7 @@ import type {
     ConnectedServiceQuotaRecoveryCreditsV1,
     ConnectedServiceQuotaRecoveryCreditDetailsV1,
     ConnectedServiceQuotaRecoveryCreditDetailsByIdV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { formatResetCountdownDays, type ResetCountdownDaysFormatter } from './formatResetCountdown';
 import { isAvailableRecoveryCredit } from './connectedServiceQuotaRecoveryCreditSummary';

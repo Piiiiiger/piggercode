@@ -28,7 +28,7 @@ vi.mock('@/configuration', () => ({
     memoryMaxTranscriptWindowMessages: 500,
   },
 }));
-vi.mock('@happier-dev/release-runtime/http', async (importOriginal) => {
+vi.mock('@piggercode/release-runtime/http', async (importOriginal) => {
   const actual = await importOriginal<Record<string, unknown>>();
   return {
     ...actual,
@@ -40,8 +40,8 @@ vi.mock('@happier-dev/release-runtime/http', async (importOriginal) => {
     },
   };
 });
-vi.mock('@happier-dev/release-runtime/minisign', async (importOriginal) => ({
-  ...await importOriginal<typeof import('@happier-dev/release-runtime/minisign')>(),
+vi.mock('@piggercode/release-runtime/minisign', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@piggercode/release-runtime/minisign')>(),
   get DEFAULT_MINISIGN_PUBLIC_KEY() { return boundary.publicKey; },
 }));
 vi.mock('node:fs', async (importOriginal) => {
@@ -60,7 +60,7 @@ import { installableDepCapabilities } from '@/capabilities/registry/installableD
 import { createFeatureExtractionPipelineWithFallback } from '@/daemon/memory/deepIndex/embeddings/createLocalTransformersEmbeddingsProvider';
 import { registerDifftasticHandler } from '@/rpc/handlers/difftastic';
 import { setActiveAccountSettingsSnapshot, resetActiveAccountSettingsSnapshotForTests } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 import { resolveEmbeddingsProvider } from '@/daemon/memory/deepIndex/embeddings/resolveEmbeddingsProvider';
 import { resolveOperationalMemoryEmbeddingsSettings } from '@/daemon/memory/resolveOperationalMemoryEmbeddingsSettings';
 
@@ -232,7 +232,7 @@ describe('optional runtime installation through capabilities', () => {
     vi.doMock('@huggingface/transformers', async () => {
       const { access } = await import('node:fs/promises');
       const { join } = await import('node:path');
-      const { resolveFirstPartyVersionInstallPath } = await import('@happier-dev/cli-common/firstPartyRuntime');
+      const { resolveFirstPartyVersionInstallPath } = await import('@piggercode/cli-common/firstPartyRuntime');
       return {
         env: {},
         pipeline: async () => {

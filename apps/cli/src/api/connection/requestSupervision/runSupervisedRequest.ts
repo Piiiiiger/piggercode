@@ -1,4 +1,4 @@
-import type { ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 
 import { assertManagedConnectionReadyForRequest } from './assertManagedConnectionReadyForRequest';
 import type { RequestPurpose } from './_purpose';

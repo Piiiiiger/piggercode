@@ -1,4 +1,4 @@
-import type { SessionRuntimeActivitySnapshot } from '@happier-dev/protocol';
+import type { SessionRuntimeActivitySnapshot } from '@piggercode/protocol';
 
 import { aggregateSessionRuntimeActivityContributions } from './aggregate';
 import {

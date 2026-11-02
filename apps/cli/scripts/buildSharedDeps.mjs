@@ -49,7 +49,7 @@ async function loadCliCommonWorkspacesModule(options = {}) {
   const modulePath = resolve(repoRoot, 'packages', 'cli-common', 'dist', 'workspaces', 'index.js');
 
   if (!existsSync(modulePath)) {
-    await ensureWorkspacePackagesBuiltByName(repoRoot, ['@happier-dev/cli-common'], {
+    await ensureWorkspacePackagesBuiltByName(repoRoot, ['@piggercode/cli-common'], {
       quiet: options.quiet === true,
       env: options.env ?? process.env,
     });
@@ -98,7 +98,7 @@ function resolveWorkspaceDeclarationPaths(packageDir, readFile = readFileSync) {
 function isBundledDeclarationCopyStale({ root, packageDir, workspaceName, fsOps = {} }) {
   const exists = fsOps.exists ?? existsSync;
   const stat = fsOps.stat ?? statSync;
-  const destPackageDir = resolve(root, 'apps', 'cli', 'node_modules', '@happier-dev', workspaceName);
+  const destPackageDir = resolve(root, 'apps', 'cli', 'node_modules', '@piggercode', workspaceName);
   if (!exists(resolve(destPackageDir, 'package.json'))) return true;
   for (const sourcePath of resolveWorkspaceDeclarationPaths(packageDir, fsOps.readFile ?? readFileSync)) {
     const relativePath = sourcePath.slice(packageDir.length + 1);
@@ -236,7 +236,7 @@ export function main(options = {}) {
 
     const protocolDist = resolve(repoRoot, 'packages', 'protocol', 'dist', 'index.js');
     if (!existsSync(protocolDist)) {
-      throw new Error(`Expected @happier-dev/protocol build output missing: ${protocolDist}`);
+      throw new Error(`Expected @piggercode/protocol build output missing: ${protocolDist}`);
     }
 
     // If the CLI currently has bundled workspace deps under apps/cli/node_modules,

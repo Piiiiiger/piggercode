@@ -3,7 +3,7 @@ import { normalizeRawMessage } from '@/sync/typesRaw';
 import { computeNextSessionSeqFromUpdate } from '@/sync/domains/session/sequence/realtimeSessionSeq';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { ApiMessage } from '@/sync/api/types/apiTypes';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import { readStoredSessionMessage } from '@/sync/runtime/readStoredSessionContent';
 import { markStreamingMessagesAppliedForSessionUiTelemetry } from '@/sync/runtime/performance/sessionUiTelemetry';
 import { recordRealtimeFanoutSocketMessageRoute } from '@/sync/runtime/performance/realtimeFanoutTelemetry';

@@ -1,5 +1,5 @@
 import type { SocketRpcCallPayload, SocketRpcCallResponse, SocketRpcRequestPayload, Update } from '../types';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import type {
   DirectSessionTranscriptDeltaEphemeral,
   ActionOperationRevisionEphemeralV1,
@@ -7,7 +7,7 @@ import type {
   MachineUpdateMetadataResponse,
   MachineTransferReceiveEnvelope,
   MachineTransferSendEnvelope,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export interface ServerToDaemonEvents {
   update: (data: Update) => void;

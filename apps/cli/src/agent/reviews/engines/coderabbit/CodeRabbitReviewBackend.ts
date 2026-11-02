@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 
 import type { AgentBackend, AgentMessageHandler, SessionId } from '@/agent/core/AgentBackend';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { readCodeRabbitReviewConfigFromEnv } from './readCodeRabbitReviewConfig.js';
 import { buildCodeRabbitEnv } from './buildCodeRabbitEnv.js';

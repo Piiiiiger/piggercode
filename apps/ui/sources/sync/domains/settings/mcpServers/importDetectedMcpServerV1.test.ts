@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { DetectedMcpServerV1, McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { DetectedMcpServerV1, McpServersSettingsV1 } from '@piggercode/protocol';
 
 import { buildImportedMcpServerFromDetectedV1, resolveImportedMcpServerFromDetectedV1 } from './importDetectedMcpServerV1';
 

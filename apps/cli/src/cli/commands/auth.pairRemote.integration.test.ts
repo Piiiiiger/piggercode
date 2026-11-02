@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import fastify from 'fastify';
 import tweetnacl from 'tweetnacl';
-import { deriveAccountMachineKeyFromRecoverySecret } from '@happier-dev/protocol';
+import { deriveAccountMachineKeyFromRecoverySecret } from '@piggercode/protocol';
 
 import { decodeBase64 } from '@/api/encryption';
 import { createEnvKeyScope } from '@/testkit/env/envScope';

@@ -1,4 +1,4 @@
-import type { ConnectedServiceAuthGroupV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceAuthGroupV1 } from '@piggercode/protocol';
 
 type ProjectedGroup = Readonly<{
   groupId?: string;

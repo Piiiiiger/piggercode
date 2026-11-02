@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
-import { SessionTranscriptObservationV1Schema, SessionTurnMutationV1Schema } from '@happier-dev/protocol';
+import { SessionTranscriptObservationV1Schema, SessionTurnMutationV1Schema } from '@piggercode/protocol';
 
 import { createSessionMutationJournal } from '@/api/session/mutations/createSessionMutationOutbox';
 import { parseQueuedSessionMutation, resolveSessionMutationJournalPaths } from '@/api/session/mutations/sessionMutationPersistence';

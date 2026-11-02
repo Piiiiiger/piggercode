@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { openAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 import {
   buildTrackedSessionRespawnEnvironmentVariables,

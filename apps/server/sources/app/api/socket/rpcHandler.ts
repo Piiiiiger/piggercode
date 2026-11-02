@@ -9,14 +9,14 @@ import {
     RPC_ERROR_CODES,
     RPC_ERROR_MESSAGES,
     type SocketRpcAuthorizationContext,
-} from "@happier-dev/protocol/rpc";
+} from "@piggercode/protocol/rpc";
 import {
     SOCKET_RPC_EVENTS,
     SocketRpcCancellationPayloadSchema,
     SocketRpcRequestIdSchema,
     SOCKET_RPC_TRANSPORT_RESPONSE_ENVELOPE_VERSION_V1,
     SocketRpcTransportResponseEnvelopeV1Schema,
-} from "@happier-dev/protocol/socketRpc";
+} from "@piggercode/protocol/socketRpc";
 import { checkSessionAccess, requireAccessLevel } from "@/app/share/accessControl";
 import { resolveRpcForwardTimeoutMs } from "./rpcForwardTimeout";
 import { resolveRpcMethodAvailabilityGraceMs, resolveRpcMethodAvailabilityPollMs } from "./rpcMethodAvailabilityGrace";

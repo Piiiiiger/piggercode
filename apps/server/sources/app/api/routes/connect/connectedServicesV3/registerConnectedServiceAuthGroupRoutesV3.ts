@@ -3,7 +3,7 @@ import {
     isConnectedServiceAccountGroupConfigurationSupported,
     isConnectedServiceRuntimeFallbackSupported,
     resolveConnectedServiceRuntimeFallbackCapability,
-} from "@happier-dev/agents";
+} from "@piggercode/agents";
 import {
     ConnectedServiceIdSchema,
     CONNECTED_SERVICE_AUTO_QUOTA_RESET_HEADER,
@@ -17,7 +17,7 @@ import {
     type ConnectedServiceAuthGroupReaderCapabilitiesQueryV1,
     readConnectedServiceManualActiveProfileRuntimeBlocker,
     type ConnectedServiceManualActiveProfileRuntimeBlocker,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import type { Fastify } from "../../../types";
 import { db } from "@/storage/db";

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 import { createClaudeWorkflowActivitySource as createProductionClaudeWorkflowActivitySource } from './claudeWorkflowActivitySource';
 function createClaudeWorkflowActivitySource(params: Parameters<typeof createProductionClaudeWorkflowActivitySource>[0]) {

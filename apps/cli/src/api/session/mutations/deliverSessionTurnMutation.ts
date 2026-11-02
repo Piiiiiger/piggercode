@@ -13,7 +13,7 @@ import {
     isExactSessionTurnMutationPositiveReceiptV1,
     type ExactSessionTurnEndMutationV1,
     type SessionTurnMutationDecisionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SessionTurnMutationV1 } from './sessionMutationTypes';
 

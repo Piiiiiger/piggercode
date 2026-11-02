@@ -1,5 +1,5 @@
 import { isClaudeSidechainRuntimeEvidence } from '../utils/sessionHookAttribution';
-import type { ConnectedServiceLimitCategoryV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceLimitCategoryV1 } from '@piggercode/protocol';
 
 import { parseProviderResetAt, parseProviderTimestampMs } from '@/daemon/connectedServices/quotas/normalization';
 

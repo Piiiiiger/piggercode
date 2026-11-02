@@ -1,4 +1,4 @@
-import { buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 import { DEFAULT_TRANSCRIPT_TOOL_CALLS_COLLAPSED_PREVIEW_COUNT } from '@/sync/domains/settings/transcriptToolCallsCollapsedPreviewCount';
 

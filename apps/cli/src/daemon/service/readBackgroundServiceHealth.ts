@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 
-import { buildServiceCommandEnv } from '@happier-dev/cli-common/service';
+import { buildServiceCommandEnv } from '@piggercode/cli-common/service';
 
 import type { DaemonServiceMode } from './plan';
 

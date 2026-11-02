@@ -7,7 +7,7 @@ import type { TerminalHostHandle } from '@/integrations/terminalHost/_types';
 import { TerminalHostStartupError } from '@/integrations/terminalHost/errors';
 import { ZellijActionTimeoutError } from '@/integrations/zellij/actions';
 import type { TerminalAttachmentInfo } from '@/terminal/attachment/terminalAttachmentInfo';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 
 import type { Session } from '../session';

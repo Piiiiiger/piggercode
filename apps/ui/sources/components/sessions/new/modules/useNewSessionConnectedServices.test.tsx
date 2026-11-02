@@ -1,7 +1,7 @@
 import { act } from 'react-test-renderer';
 import { renderHook } from '@/dev/testkit';
 import type { AgentInputExtraActionChip } from '@/components/sessions/agentInput/agentInputContracts';
-import type { ConnectedServicesDefaultAuthByAgentIdV1 } from '@happier-dev/protocol';
+import type { ConnectedServicesDefaultAuthByAgentIdV1 } from '@piggercode/protocol';
 import * as React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { installNewSessionModulesCommonModuleMocks } from './newSessionModulesTestHelpers';

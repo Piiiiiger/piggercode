@@ -15,7 +15,7 @@ import { createClaudeUnifiedTranscriptBridge } from './createClaudeUnifiedTransc
 import { createReplayableHookSubscription } from './createReplayableHookSubscription';
 import { createClaudeWorkflowActivitySource } from '../workflows/claudeWorkflowActivitySource';
 import { completedNativeChildTranscript } from '../workflows/claudeWorkflowActivitySource.testkit';
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 import { createClaudeProviderActivityLedger } from '../providerActivity/createClaudeProviderActivityLedger';
 import { createClaudeProviderRuntimeActivityAdapter } from '../providerActivity/createClaudeProviderRuntimeActivityAdapter';
 import { createClaudeUnifiedInputArbiter } from './createClaudeUnifiedInputArbiter';

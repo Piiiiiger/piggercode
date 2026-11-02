@@ -2,7 +2,7 @@ import {
     type AccountSettings,
     DEFAULT_NOTIFICATIONS_SETTINGS_V1,
     NotificationsSettingsV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
 

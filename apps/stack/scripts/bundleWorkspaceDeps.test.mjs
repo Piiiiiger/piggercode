@@ -16,19 +16,19 @@ test('bundleWorkspaceDeps refreshes package-root imports targets through the rea
     const stackDir = resolve(root, 'apps/stack');
     const commonDir = resolve(root, 'packages/cli-common');
     const sourceDir = resolve(root, 'packages/fixture');
-    const destinationDir = resolve(stackDir, 'node_modules/@happier-dev/fixture');
+    const destinationDir = resolve(stackDir, 'node_modules/@piggercode/fixture');
     mkdirSync(stackDir, { recursive: true });
     mkdirSync(resolve(commonDir, 'dist/workspaces'), { recursive: true });
     mkdirSync(resolve(sourceDir, 'dist'), { recursive: true });
     mkdirSync(resolve(sourceDir, 'runtime'), { recursive: true });
     writeJson(resolve(root, 'package.json'), { name: 'fixture-root', private: true });
     writeFileSync(resolve(root, 'yarn.lock'), '');
-    writeJson(resolve(stackDir, 'package.json'), { bundledDependencies: ['@happier-dev/fixture'] });
-    writeJson(resolve(commonDir, 'package.json'), { name: '@happier-dev/cli-common', type: 'module' });
+    writeJson(resolve(stackDir, 'package.json'), { bundledDependencies: ['@piggercode/fixture'] });
+    writeJson(resolve(commonDir, 'package.json'), { name: '@piggercode/cli-common', type: 'module' });
     // Exercise the real current source owner, not the older internal copier stub.
     writeFileSync(resolve(commonDir, 'dist/workspaces/index.js'), `export * from ${JSON.stringify(new URL('../../../packages/cli-common/src/workspaces/index.ts', import.meta.url).href)};\n`);
     writeJson(resolve(sourceDir, 'package.json'), {
-      name: '@happier-dev/fixture', version: '0.0.0', type: 'module',
+      name: '@piggercode/fixture', version: '0.0.0', type: 'module',
       exports: { '.': './dist/connect.js' },
       imports: { '#http': { node: './runtime/node.js', default: './dist/fetch.js' }, '#fs': 'fs', '#disabled': null },
     });
@@ -41,7 +41,7 @@ test('bundleWorkspaceDeps refreshes package-root imports targets through the rea
     // present and forward to real source, so no compiler or repository publisher runs.
     const options = { repoRoot: root, stackDir, ensureWorkspacePackagesBuiltByName: async () => {} };
     await bundleWorkspaceDeps(options);
-    const manifest = JSON.parse(readFileSync(resolve(stackDir, 'node_modules/@happier-dev/.workspace-bundle-manifest.json'), 'utf8'));
+    const manifest = JSON.parse(readFileSync(resolve(stackDir, 'node_modules/@piggercode/.workspace-bundle-manifest.json'), 'utf8'));
     assert.deepEqual(manifest.bundles[0].expectedRootFiles.map(({ relativePath }) => relativePath), ['runtime/node.js']);
     writeFileSync(target, 'export const transport = "updated";\n');
     await bundleWorkspaceDeps(options);
@@ -99,12 +99,12 @@ export function resolveWorkspaceBundlesFromPackageJson({ repoRoot, hostPackageDi
   const bundled = Array.isArray(pkg.bundledDependencies) ? pkg.bundledDependencies : [];
   const bundles = [];
   for (const name of bundled) {
-    if (typeof name !== 'string' || !name.startsWith('@happier-dev/')) continue;
-    const short = name.slice('@happier-dev/'.length);
+    if (typeof name !== 'string' || !name.startsWith('@piggercode/')) continue;
+    const short = name.slice('@piggercode/'.length);
     bundles.push({
       packageName: name,
       srcDir: resolve(repoRoot, 'packages', short),
-      destDir: resolve(hostPackageDir, 'node_modules', '@happier-dev', short),
+      destDir: resolve(hostPackageDir, 'node_modules', '@piggercode', short),
     });
   }
   return bundles;
@@ -186,7 +186,7 @@ export function vendorBundledPackageRuntimeDependencies({ srcPackageJsonPath, de
   mkdirSync(destNodeModulesDir, { recursive: true });
   const seen = new Set();
   for (const name of Object.keys(deps)) {
-    if (name.startsWith('@happier-dev/')) continue;
+    if (name.startsWith('@piggercode/')) continue;
     vendorOne({ name, resolveFromPackageJsonPath: srcPackageJsonPath, destNodeModulesDir, seen });
   }
 }
@@ -200,9 +200,9 @@ test('bundledDependencies are declared in dependencies', () => {
   const deps = stackPackageJson.dependencies ?? {};
 
   assert.equal(
-    bundled.includes('@happier-dev/connection-supervisor'),
+    bundled.includes('@piggercode/connection-supervisor'),
     true,
-    'Expected @happier-dev/connection-supervisor to be bundled with @happier-dev/stack',
+    'Expected @piggercode/connection-supervisor to be bundled with @piggercode/stack',
   );
 
   for (const name of bundled) {
@@ -227,35 +227,35 @@ function createBundleFixture(prefix = 'happy-stack-bundle-workspace-deps-') {
   mkdirSync(resolve(releaseRuntimeDir, 'dist'), { recursive: true });
   mkdirSync(stackDir, { recursive: true });
   writeJson(resolve(stackDir, 'package.json'), {
-    name: '@happier-dev/stack',
+    name: '@piggercode/stack',
     private: true,
     bundledDependencies: [
-      '@happier-dev/agents',
-      '@happier-dev/cli-common',
-      '@happier-dev/connection-supervisor',
-      '@happier-dev/protocol',
-      '@happier-dev/release-runtime',
+      '@piggercode/agents',
+      '@piggercode/cli-common',
+      '@piggercode/connection-supervisor',
+      '@piggercode/protocol',
+      '@piggercode/release-runtime',
     ],
     dependencies: {
-      '@happier-dev/agents': '0.0.0',
-      '@happier-dev/cli-common': '0.0.0',
-      '@happier-dev/connection-supervisor': '0.0.0',
-      '@happier-dev/protocol': '0.0.0',
-      '@happier-dev/release-runtime': '0.0.0',
+      '@piggercode/agents': '0.0.0',
+      '@piggercode/cli-common': '0.0.0',
+      '@piggercode/connection-supervisor': '0.0.0',
+      '@piggercode/protocol': '0.0.0',
+      '@piggercode/release-runtime': '0.0.0',
     },
   });
 
-  // bundleWorkspaceDeps also bundles @happier-dev/release-runtime. Keep a minimal, build-like
+  // bundleWorkspaceDeps also bundles @piggercode/release-runtime. Keep a minimal, build-like
   // workspace package present so these tests focus on bundling behavior instead of fixture setup.
   writeJson(resolve(cliCommonDir, 'package.json'), {
-    name: '@happier-dev/cli-common',
+    name: '@piggercode/cli-common',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
     types: './dist/index.d.ts',
     exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
     dependencies: {
-      '@happier-dev/agents': '0.0.0',
+      '@piggercode/agents': '0.0.0',
     },
   });
   writeFileSync(resolve(cliCommonDir, 'dist', 'index.js'), 'export const common = 1;\n', 'utf8');
@@ -263,7 +263,7 @@ function createBundleFixture(prefix = 'happy-stack-bundle-workspace-deps-') {
   writeCliCommonWorkspacesStub(cliCommonDir);
 
   writeJson(resolve(agentsDir, 'package.json'), {
-    name: '@happier-dev/agents',
+    name: '@piggercode/agents',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
@@ -271,14 +271,14 @@ function createBundleFixture(prefix = 'happy-stack-bundle-workspace-deps-') {
     exports: { '.': { default: './dist/index.js', types: './dist/index.d.ts' } },
     scripts: { postinstall: 'echo should-not-run' },
     dependencies: {
-      '@happier-dev/protocol': '0.0.0',
+      '@piggercode/protocol': '0.0.0',
     },
   });
   writeFileSync(resolve(agentsDir, 'dist', 'index.js'), 'export const agents = 1;\n', 'utf8');
   writeFileSync(resolve(agentsDir, 'dist', 'index.d.ts'), 'export declare const agents: number;\n', 'utf8');
 
   writeJson(resolve(protocolDir, 'package.json'), {
-    name: '@happier-dev/protocol',
+    name: '@piggercode/protocol',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
@@ -290,7 +290,7 @@ function createBundleFixture(prefix = 'happy-stack-bundle-workspace-deps-') {
   writeFileSync(resolve(protocolDir, 'dist', 'index.d.ts'), 'export declare const protocol: number;\n', 'utf8');
 
   writeJson(resolve(connectionSupervisorDir, 'package.json'), {
-    name: '@happier-dev/connection-supervisor',
+    name: '@piggercode/connection-supervisor',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
@@ -302,7 +302,7 @@ function createBundleFixture(prefix = 'happy-stack-bundle-workspace-deps-') {
   writeFileSync(resolve(connectionSupervisorDir, 'dist', 'index.d.ts'), 'export declare const supervisor: number;\n', 'utf8');
 
   writeJson(resolve(releaseRuntimeDir, 'package.json'), {
-    name: '@happier-dev/release-runtime',
+    name: '@piggercode/release-runtime',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
@@ -328,7 +328,7 @@ test('bundleWorkspaceDeps copies dist + writes a sanitized package.json without 
   const { repoRoot, stackDir, cliCommonDir } = createBundleFixture();
   try {
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -341,13 +341,13 @@ test('bundleWorkspaceDeps copies dist + writes a sanitized package.json without 
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
     const bundledPkgJson = JSON.parse(
-      readFileSync(resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'package.json'), 'utf8'),
+      readFileSync(resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'package.json'), 'utf8'),
     );
     assert.equal(bundledPkgJson.scripts, undefined);
-    assert.equal(bundledPkgJson.name, '@happier-dev/cli-common');
+    assert.equal(bundledPkgJson.name, '@piggercode/cli-common');
     assert.equal(bundledPkgJson.private, true);
 
-    const bundledDistPath = resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js');
+    const bundledDistPath = resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js');
     assert.ok(existsSync(bundledDistPath), 'dist/index.js should be copied to bundled location');
   } finally {
     rmSync(repoRoot, { recursive: true, force: true });
@@ -359,9 +359,9 @@ test('bundleWorkspaceDeps bundles internal deps required by the stack host packa
   try {
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js')));
-    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@happier-dev', 'connection-supervisor', 'dist', 'index.js')));
-    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@happier-dev', 'protocol', 'dist', 'index.js')));
+    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@piggercode', 'agents', 'dist', 'index.js')));
+    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@piggercode', 'connection-supervisor', 'dist', 'index.js')));
+    assert.ok(existsSync(resolve(stackDir, 'node_modules', '@piggercode', 'protocol', 'dist', 'index.js')));
   } finally {
     rmSync(repoRoot, { recursive: true, force: true });
   }
@@ -373,17 +373,17 @@ test('bundleWorkspaceDeps records bundled workspace package names in the freshne
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
     const manifest = JSON.parse(
-      readFileSync(resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json'), 'utf8'),
+      readFileSync(resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json'), 'utf8'),
     );
 
     assert.deepEqual(
       manifest.bundles.map((bundle) => bundle.packageName),
       [
-        '@happier-dev/agents',
-        '@happier-dev/cli-common',
-        '@happier-dev/connection-supervisor',
-        '@happier-dev/protocol',
-        '@happier-dev/release-runtime',
+        '@piggercode/agents',
+        '@piggercode/cli-common',
+        '@piggercode/connection-supervisor',
+        '@piggercode/protocol',
+        '@piggercode/release-runtime',
       ],
     );
   } finally {
@@ -417,23 +417,23 @@ test('bundleWorkspaceDeps admits resolved workspace bundles before copying sourc
         admittedPackageNames = packageNames;
         admissionEnv = options?.env;
         writeFileSync(distPath, 'export const generation = "new";\n', 'utf8');
-        return { ok: true, built: ['@happier-dev/release-runtime'], skipped: [] };
+        return { ok: true, built: ['@piggercode/release-runtime'], skipped: [] };
       },
     });
 
     assert.equal(
       readFileSync(
-        resolve(stackDir, 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'index.js'),
+        resolve(stackDir, 'node_modules', '@piggercode', 'release-runtime', 'dist', 'index.js'),
         'utf8',
       ),
       'export const generation = "new";\n',
     );
     assert.deepEqual(admittedPackageNames, [
-      '@happier-dev/agents',
-      '@happier-dev/cli-common',
-      '@happier-dev/connection-supervisor',
-      '@happier-dev/protocol',
-      '@happier-dev/release-runtime',
+      '@piggercode/agents',
+      '@piggercode/cli-common',
+      '@piggercode/connection-supervisor',
+      '@piggercode/protocol',
+      '@piggercode/release-runtime',
     ]);
     assert.match(String(admissionEnv?.HAPPIER_WORKSPACE_DIST_BUILD_LOCK_HELD ?? ''), /"path"/);
     assert.equal(admissionEnv?.HAPPIER_WORKSPACE_DIST_OUTPUT_DIR, undefined);
@@ -447,11 +447,11 @@ test('bundleWorkspaceDeps throws when cli-common dist/ is missing', async () => 
   try {
     rmSync(resolve(cliCommonDir, 'dist'), { recursive: true, force: true });
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       main: './dist/index.js',
     });
-    await assert.rejects(bundleWorkspaceDeps({ repoRoot, stackDir }), /Missing dist\/ for @happier-dev\/cli-common/);
+    await assert.rejects(bundleWorkspaceDeps({ repoRoot, stackDir }), /Missing dist\/ for @piggercode\/cli-common/);
   } finally {
     rmSync(repoRoot, { recursive: true, force: true });
   }
@@ -460,7 +460,7 @@ test('bundleWorkspaceDeps throws when cli-common dist/ is missing', async () => 
 test('bundleWorkspaceDeps throws when cli-common package.json is malformed', async () => {
   const { repoRoot, stackDir, cliCommonDir } = createBundleFixture('happy-stack-bundle-workspace-deps-bad-json-');
   try {
-    writeFileSync(resolve(cliCommonDir, 'package.json'), '{"name":"@happier-dev/cli-common"', 'utf8');
+    writeFileSync(resolve(cliCommonDir, 'package.json'), '{"name":"@piggercode/cli-common"', 'utf8');
     await assert.rejects(bundleWorkspaceDeps({ repoRoot, stackDir }), SyntaxError);
   } finally {
     rmSync(repoRoot, { recursive: true, force: true });
@@ -476,7 +476,7 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
     mkdirSync(depBDir, { recursive: true });
 
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -506,7 +506,7 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
     assert.equal(
       JSON.parse(
         readFileSync(
-          resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'node_modules', 'dep-a', 'package.json'),
+          resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'node_modules', 'dep-a', 'package.json'),
           'utf8',
         ),
       ).name,
@@ -518,7 +518,7 @@ test('bundleWorkspaceDeps vendors external runtime dependency trees for bundled 
           resolve(
             stackDir,
             'node_modules',
-            '@happier-dev',
+            '@piggercode',
             'cli-common',
             'node_modules',
             'dep-a',
@@ -543,7 +543,7 @@ test('bundleWorkspaceDeps refreshes the bundle when a vendored runtime dependenc
     mkdirSync(depADir, { recursive: true });
 
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -563,8 +563,8 @@ test('bundleWorkspaceDeps refreshes the bundle when a vendored runtime dependenc
 
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
-    const vendoredEntryPath = resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'node_modules', 'dep-a', 'index.js');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
+    const vendoredEntryPath = resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'node_modules', 'dep-a', 'index.js');
     const firstMtimeMs = statSync(manifestPath).mtimeMs;
 
     unlinkSync(vendoredEntryPath);
@@ -588,13 +588,13 @@ test('bundleWorkspaceDeps refreshes the bundle when a package-local runtime depe
     mkdirSync(depLocalDir, { recursive: true });
 
     writeJson(resolve(agentsDir, 'package.json'), {
-      name: '@happier-dev/agents',
+      name: '@piggercode/agents',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
       exports: { '.': { default: './dist/index.js' } },
       dependencies: {
-        '@happier-dev/protocol': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
         'dep-local': '^1.0.0',
       },
     });
@@ -609,11 +609,11 @@ test('bundleWorkspaceDeps refreshes the bundle when a package-local runtime depe
 
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
     const vendoredEntryPath = resolve(
       stackDir,
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'node_modules',
       'dep-local',
@@ -640,7 +640,7 @@ test('bundleWorkspaceDeps refreshes the bundle when a vendored runtime dependenc
     mkdirSync(resolve(depADir, 'lib'), { recursive: true });
 
     writeJson(resolve(cliCommonDir, 'package.json'), {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',
@@ -662,11 +662,11 @@ test('bundleWorkspaceDeps refreshes the bundle when a vendored runtime dependenc
 
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
     const vendoredInternalPath = resolve(
       stackDir,
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'cli-common',
       'node_modules',
       'dep-a',
@@ -692,7 +692,7 @@ test('bundleWorkspaceDeps skips rebundling when the existing bundle is already f
   try {
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
     const firstMtimeMs = statSync(manifestPath).mtimeMs;
 
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 20));
@@ -709,8 +709,8 @@ test('bundleWorkspaceDeps refreshes the bundle when the source dist changes', as
   try {
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
-    const bundledCliCommonIndexPath = resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
+    const bundledCliCommonIndexPath = resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js');
     const firstMtimeMs = statSync(manifestPath).mtimeMs;
 
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 20));
@@ -733,7 +733,7 @@ test('bundleWorkspaceDeps refreshes the bundle when an exported package-root fil
     packageJson.exports['./workspaceBundleLock'] = { default: './workspaceBundleLock.mjs' };
     writeJson(packageJsonPath, packageJson);
     const sourcePath = resolve(cliCommonDir, 'workspaceBundleLock.mjs');
-    const bundledPath = resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'workspaceBundleLock.mjs');
+    const bundledPath = resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'workspaceBundleLock.mjs');
     const fixedSourceTime = new Date('2020-01-02T03:04:05.000Z');
     writeFileSync(sourcePath, 'export const lockVersion = 1;\n', 'utf8');
     utimesSync(sourcePath, fixedSourceTime, fixedSourceTime);
@@ -760,8 +760,8 @@ test('bundleWorkspaceDeps refreshes the bundle when the existing bundled dist is
   try {
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
-    const bundledCliCommonIndexPath = resolve(stackDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
+    const bundledCliCommonIndexPath = resolve(stackDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js');
     const firstMtimeMs = statSync(manifestPath).mtimeMs;
 
     unlinkSync(bundledCliCommonIndexPath);
@@ -793,11 +793,11 @@ test('bundleWorkspaceDeps refreshes the bundle when a bundled workspace is missi
 
     await bundleWorkspaceDeps({ repoRoot, stackDir });
 
-    const manifestPath = resolve(stackDir, 'node_modules', '@happier-dev', '.workspace-bundle-manifest.json');
+    const manifestPath = resolve(stackDir, 'node_modules', '@piggercode', '.workspace-bundle-manifest.json');
     const bundledRuntimeFilePath = resolve(
       stackDir,
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'dist',
       'providers',

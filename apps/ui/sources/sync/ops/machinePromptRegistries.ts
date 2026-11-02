@@ -8,7 +8,7 @@ import {
     type PromptRegistryListSourcesResponseV1,
     type PromptRegistryScanSourceRequestV1,
     type PromptRegistryScanSourceResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     downloadDaemonPromptRegistryItem,

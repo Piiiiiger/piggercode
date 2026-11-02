@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const canonicalHomePathRuntime = require('@happier-dev/cli-common/expandHomeDirPath') as {
+const canonicalHomePathRuntime = require('@piggercode/cli-common/expandHomeDirPath') as {
   expandHomeDirPath(
     value: string,
     processEnv?: NodeJS.ProcessEnv,

@@ -12,7 +12,7 @@ import {
 
 import type { TerminalAttachmentInfo } from './terminalAttachmentInfo';
 import { createTerminalAttachPlan } from './terminalAttachPlan';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 async function bestEffortFocusPaneBeforeAttach(params: Readonly<{
   actions: ZellijAttachActions;

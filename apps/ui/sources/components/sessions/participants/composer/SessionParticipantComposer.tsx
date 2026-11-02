@@ -1,4 +1,4 @@
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 import * as React from 'react';
 
 import type { ComposerSuggestionKindId } from '@/components/autocomplete/composerSuggestionKinds';

@@ -20,7 +20,7 @@ import {
     type ConnectedServiceCredentialHealthStatusV1,
     type ConnectedServiceAuthGroupQuotaLimitSelectionV1,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { t } from '@/text';
 
 import { resolveAccountCapacityView, resolveAccountUsageRows } from './accountBlockModel';

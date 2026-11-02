@@ -9,7 +9,7 @@ import {
     type AcpCatalogAuthParserV1,
     type AcpCatalogAuthSupportV1,
     type AcpCatalogSupportHintV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { McpValueRefMapEditor } from '@/components/settings/mcpServers/McpValueRefMapEditor';
 import { DropdownMenu, type DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';

@@ -3,7 +3,7 @@ import * as React from 'react';
 import type {
     SessionAgentTransitionSelectionV1,
     SessionContinuationMachinePresenceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { inspectSessionContinuationsOnMachine } from '@/sync/ops/sessionContinuationInspection';
 

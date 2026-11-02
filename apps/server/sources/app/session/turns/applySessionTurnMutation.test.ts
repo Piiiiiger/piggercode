@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { SessionRuntimeIssueV1, SessionTurnV1 } from "@happier-dev/protocol";
+import type { SessionRuntimeIssueV1, SessionTurnV1 } from "@piggercode/protocol";
 
 import { applySessionTurnMutationToTurns } from "./applySessionTurnMutation";
 

@@ -1,4 +1,4 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
 import {
   ConnectedServiceCredentialRevisionV1Schema,
   type AccountSettings,
@@ -6,7 +6,7 @@ import {
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceExecutionAuthorityV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { isDeepStrictEqual } from 'node:util';
 
 import type { ApiClient } from '@/api/api';

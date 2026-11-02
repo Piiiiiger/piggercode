@@ -3,7 +3,7 @@ import {
     PUSH_NOTIFICATION_CATEGORY_IDS,
     buildReadyNotificationContent,
     summarizeToolInputForNotification,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import type { Session } from '@/sync/domains/state/storageTypes';

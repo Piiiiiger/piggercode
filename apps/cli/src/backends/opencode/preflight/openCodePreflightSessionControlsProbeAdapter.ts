@@ -1,5 +1,5 @@
-import { normalizeOpenCodeAppSkills } from '@happier-dev/protocol';
-import { resolveOpenCodeSessionBackendMode } from '@happier-dev/agents';
+import { normalizeOpenCodeAppSkills } from '@piggercode/protocol';
+import { resolveOpenCodeSessionBackendMode } from '@piggercode/agents';
 
 import type { PreflightSessionControlsProbeAdapter } from '@/capabilities/probes/preflightSessionControlsProbeAdapterTypes';
 import { probeAcpCatalogs } from '@/capabilities/probes/probeAcpCatalogs';

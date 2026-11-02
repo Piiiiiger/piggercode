@@ -65,17 +65,17 @@ async function createCliBuildFixture(t) {
   await mkdir(binDir, { recursive: true });
   await writeFile(join(root, 'package.json'), '{"private":true}\n');
   await writeFile(join(root, 'yarn.lock'), '# yarn\n');
-  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{"name":"@happier-dev/ui"}\n');
-  await writeFile(join(root, 'apps', 'server', 'package.json'), '{"name":"@happier-dev/server"}\n');
+  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{"name":"@piggercode/ui"}\n');
+  await writeFile(join(root, 'apps', 'server', 'package.json'), '{"name":"@piggercode/server"}\n');
   await writeFile(join(cliDir, 'src', 'index.ts'), 'export const cli = true;\n');
   await writeFile(join(cliDir, 'package.json'), JSON.stringify({
-    name: '@happier-dev/cli',
-    dependencies: { '@happier-dev/agents': '0.0.0' },
+    name: '@piggercode/cli',
+    dependencies: { '@piggercode/agents': '0.0.0' },
   }));
   await writeFile(join(cliDir, 'node_modules', '.yarn-integrity'), 'ok\n');
   await writeFile(join(agentsDir, 'src', 'index.ts'), 'export const version = 1;\n');
   await writeFile(join(agentsDir, 'package.json'), JSON.stringify({
-    name: '@happier-dev/agents',
+    name: '@piggercode/agents',
     main: './dist/index.js',
     exports: { '.': './dist/index.js' },
     scripts: { build: 'node scripts/build.mjs' },

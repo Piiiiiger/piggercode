@@ -4,7 +4,7 @@ import {
     type SessionWorkflowActivityHeadlineV1,
     type SessionWorkflowRunHeadlineV1,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function makeSessionWorkflowRunHeadline(
     overrides: Partial<SessionWorkflowRunHeadlineV1> & { runId: string },

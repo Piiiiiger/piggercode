@@ -8,7 +8,7 @@ import { ClaudeLocalPermissionBridge } from './localPermissionBridge';
 import {
   CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
   CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 describe('ClaudeLocalPermissionBridge', () => {
   it('disposes a live hook after durable cancellation admission while the acknowledgement transport is offline', async () => {

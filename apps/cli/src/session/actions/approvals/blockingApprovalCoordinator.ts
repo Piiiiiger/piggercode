@@ -1,4 +1,4 @@
-import type { ApprovalRequestV1 } from '@happier-dev/protocol';
+import type { ApprovalRequestV1 } from '@piggercode/protocol';
 
 import { delay } from '@/utils/time';
 

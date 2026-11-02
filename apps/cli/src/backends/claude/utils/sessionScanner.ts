@@ -16,7 +16,7 @@ import { createEventShapeLoggerForLog } from '@/diagnostics/eventShapeForLog';
 import { buildClaudeJsonlMessageKey } from './claudeJsonlMessageKey';
 import { createJsonlFollowController, type JsonlFollowController } from '@/agent/localControl/jsonlFollowController';
 import type { JsonlFollowerMetricEvent } from '@/agent/localControl/jsonlFollowMetrics';
-import { providers } from '@happier-dev/agents';
+import { providers } from '@piggercode/agents';
 import { parseRawJsonLinesObject } from './parseRawJsonLines';
 import { isClaudeInternalTranscriptMessage } from './isClaudeInternalTranscriptMessage';
 import {

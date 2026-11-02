@@ -4,7 +4,7 @@ import type {
     SessionWorkflowRunHeadlineV1,
     SessionWorkflowRunSnapshotV1,
     SessionWorkflowRunStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * UI view-model layer for workflow activity (UIW1). These types are derived ENTIRELY from the

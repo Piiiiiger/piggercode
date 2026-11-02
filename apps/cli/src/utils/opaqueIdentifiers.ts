@@ -1,1 +1,1 @@
-export { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
+export { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';

@@ -1,5 +1,5 @@
-import { readSessionHandoffError, SessionHandoffCapabilityV2Schema, type SessionHandoffCapabilityV2 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { readSessionHandoffError, SessionHandoffCapabilityV2Schema, type SessionHandoffCapabilityV2 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { createRpcCallError, isRpcMethodNotFoundError, readRpcErrorCode } from '@/sync/runtime/rpcErrors';

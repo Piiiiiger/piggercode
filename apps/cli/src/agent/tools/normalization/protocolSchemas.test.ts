@@ -5,7 +5,7 @@ import {
     ToolHappierMetaV2Schema,
     getToolInputSchemaV2,
     getToolResultSchemaV2,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 describe('protocol tool v2 schemas', () => {
     it('exports known canonical tool names (includes core + structured tools)', () => {

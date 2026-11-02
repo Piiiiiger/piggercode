@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 
-import type { ActionId, BackendTargetRefV1, WindowsRemoteSessionLaunchMode } from '@happier-dev/protocol';
+import type { ActionId, BackendTargetRefV1, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 import type { Router } from 'expo-router';
 
 import type { AutomationSettingsValue } from '@/components/automations/editor/AutomationSettingsForm';

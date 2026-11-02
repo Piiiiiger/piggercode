@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { randomUUID } from 'node:crypto';
 
-import type { AgentId, CodexBackendMode } from '@happier-dev/agents';
+import type { AgentId, CodexBackendMode } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import { readCredentials } from '@/persistence';
@@ -36,7 +36,7 @@ import {
 } from '@/cli/connectedServices/resolveDirectConnectedServiceEnvironment';
 import { resolveDirectCliConnectedServiceBindings } from '@/cli/connectedServices/resolveDirectCliConnectedServiceBindings';
 import { HAPPIER_SESSION_CONNECTED_SERVICES_BINDINGS_ENV_KEY } from '@/agent/runtime/sessionConnectedServicesBindingsEnv';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 type CommonBackendRunOptions = ParsedSessionStartArgs & {
   credentials: Credentials;

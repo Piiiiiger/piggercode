@@ -3,7 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { renderPrismaCompatibleSqliteDatabaseUrl } from "@happier-dev/cli-common/firstPartyRuntime";
+import { renderPrismaCompatibleSqliteDatabaseUrl } from "@piggercode/cli-common/firstPartyRuntime";
 
 import { applyLightDefaultEnv, ensureHandyMasterSecret } from "@/flavors/light/env";
 import { resolveLightSqliteDatabaseUrlOptionsFromEnv } from "@/flavors/light/sqliteConnectionConfig";

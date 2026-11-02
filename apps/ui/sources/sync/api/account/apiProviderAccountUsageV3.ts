@@ -10,7 +10,7 @@ import {
   StoredJsonContentEnvelopeSchema,
   type ProviderAccountUsageRecordId,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 function extractErrorCode(json: unknown): string | null {

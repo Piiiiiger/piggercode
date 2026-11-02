@@ -4,7 +4,7 @@ import { act } from 'react-test-renderer';
 import type { PermissionMode, ModelMode } from '@/sync/domains/permissions/permissionTypes';
 import type { Settings } from '@/sync/domains/settings/settings';
 import type { UseMachineEnvPresenceResult } from '@/hooks/machine/useMachineEnvPresence';
-import { SPAWN_SESSION_ERROR_CODES, type SpawnSessionErrorDetail } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_CODES, type SpawnSessionErrorDetail } from '@piggercode/protocol';
 import { flushHookEffects, renderHook } from '@/dev/testkit';
 import { createStorageModuleStub } from '@/dev/testkit/mocks/storage';
 import { createTextModuleMock } from '@/dev/testkit/mocks/text';

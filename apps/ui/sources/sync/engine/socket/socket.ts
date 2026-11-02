@@ -1,8 +1,8 @@
 import type { ApiEphemeralActivityUpdate, ApiMessage, ApiUpdateContainer } from '@/sync/api/types/apiTypes';
 import type { Encryption } from '@/sync/encryption/encryption';
 import type { NormalizedMessage } from '@/sync/typesRaw';
-import type { EphemeralUpdate } from '@happier-dev/protocol/updates';
-import { isPlainMachineDataKeyMarker, type ActionOperationRevisionEphemeralV1 } from '@happier-dev/protocol';
+import type { EphemeralUpdate } from '@piggercode/protocol/updates';
+import { isPlainMachineDataKeyMarker, type ActionOperationRevisionEphemeralV1 } from '@piggercode/protocol';
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
 import type { Machine } from '@/sync/domains/state/storageTypes';
 import { buildPendingChangedSessionPatch } from './pendingChangedSessionPatch';

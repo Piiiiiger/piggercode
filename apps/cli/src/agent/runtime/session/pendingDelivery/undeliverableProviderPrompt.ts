@@ -1,6 +1,6 @@
 import type { PendingQueueDeliveryBlockedReason } from '@/api/session/pendingQueueV2Transport';
 import { logger } from '@/ui/logger';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 export type PendingDeliveryBlocker = (params: Readonly<{
   localIds: readonly string[] | null | undefined;

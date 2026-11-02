@@ -18,7 +18,7 @@ import {
     SESSION_TRANSCRIPT_OBSERVATION_CAPABILITY_V1,
     SESSION_TRANSCRIPT_OBSERVATION_EVENT_V1,
     type SessionTranscriptObservationProvenanceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 vi.mock('axios');
 

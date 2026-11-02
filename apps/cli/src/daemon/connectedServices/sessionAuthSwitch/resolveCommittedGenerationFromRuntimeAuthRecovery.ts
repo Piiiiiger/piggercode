@@ -1,7 +1,7 @@
 import {
   ConnectedServiceCredentialRevisionV1Schema,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   buildConnectedServiceAuthGroupCommittedGenerationFact,

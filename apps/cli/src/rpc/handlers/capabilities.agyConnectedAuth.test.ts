@@ -4,8 +4,8 @@ import { chmod, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promis
 import { join } from 'node:path';
 import axios, { type AxiosAdapter } from 'axios';
 import { describe, expect, it, vi } from 'vitest';
-import { AGY_ACP_SERVER_VERSION, buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { AGY_ACP_SERVER_VERSION, buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { configuration } from '@/configuration';
 import { resolveAgyAcpReleaseAsset } from '@/runtime/managedTools/providers/agyAcpRelease';
 import { resetInMemoryAccountSettingsContextForTests } from '@/settings/accountSettings/bootstrapAccountSettingsContext';

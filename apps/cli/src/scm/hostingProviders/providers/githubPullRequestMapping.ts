@@ -1,4 +1,4 @@
-import type { ScmHostingProvider, ScmPullRequestState, ScmPullRequestSummary } from '@happier-dev/protocol';
+import type { ScmHostingProvider, ScmPullRequestState, ScmPullRequestSummary } from '@piggercode/protocol';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return Boolean(value) && typeof value === 'object' && !Array.isArray(value);

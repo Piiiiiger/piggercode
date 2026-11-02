@@ -2,10 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { RpcHandlerManager } from './RpcHandlerManager';
 import { logger } from '@/ui/logger';
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@happier-dev/protocol/rpc';
-import { PublicRpcHandlerError, RpcError, isSocketRpcTargetFailureV1 } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
+import { PublicRpcHandlerError, RpcError, isSocketRpcTargetFailureV1 } from '@piggercode/protocol/rpcErrors';
 import { decodeBase64, encodeBase64, encrypt, decrypt } from '@/api/encryption';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import type { Socket } from 'socket.io-client';
 
 function createDeferredVoid(): { promise: Promise<void>; resolve: () => void } {

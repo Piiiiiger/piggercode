@@ -1,4 +1,4 @@
-import { defineSettingDefinitions } from '@happier-dev/protocol';
+import { defineSettingDefinitions } from '@piggercode/protocol';
 
 import { DEFAULT_ELEVENLABS_VOICE_ID } from '@/realtime/elevenlabs/defaults';
 import { VoiceSettingsSchema, voiceSettingsDefaults, type VoiceSettings } from '@/sync/domains/settings/voiceSettings';

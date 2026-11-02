@@ -1,4 +1,4 @@
-import type { SessionBackgroundTaskRecordV1 } from '@happier-dev/protocol';
+import type { SessionBackgroundTaskRecordV1 } from '@piggercode/protocol';
 
 import type { AgentActivityLocalEntry } from '../types';
 

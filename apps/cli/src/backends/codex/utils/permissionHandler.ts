@@ -24,7 +24,7 @@ import {
 } from '@/agent/permissions/CodexLikePermissionHandler';
 import type { ToolTraceProtocol } from '@/agent/tools/trace/toolTrace';
 import type { PermissionRequestPushSender } from '@/agent/permissions/BasePermissionHandler';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 export type { PermissionResult, PendingRequest };
 

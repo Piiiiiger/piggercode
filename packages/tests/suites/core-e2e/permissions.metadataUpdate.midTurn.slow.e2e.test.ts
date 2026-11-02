@@ -185,7 +185,7 @@ await connection.closed;
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'codex',
         '--existing-session',

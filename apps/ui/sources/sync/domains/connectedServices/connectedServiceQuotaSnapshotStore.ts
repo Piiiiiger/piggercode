@@ -10,7 +10,7 @@ import {
     openConnectedServiceCredentialCiphertext,
     type ProviderAccountUsageOrganizationContext,
     type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     getConnectedServiceQuotaSnapshotSealed,
     requestConnectedServiceQuotaSnapshotRefresh,
@@ -31,7 +31,7 @@ import type {
     ConnectedServiceId,
     ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1,
     ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { t } from '@/text';
 
 export type CredentialScopedAccountMode = 'plain' | 'e2ee';

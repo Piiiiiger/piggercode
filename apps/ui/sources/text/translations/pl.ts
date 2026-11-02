@@ -10647,7 +10647,7 @@ settingsSession: {
     detectedCliDetected: "Wykryto",
     detectedCliNotDetected: "Nie wykryto",
     detectedCliUnknown: "Nieznane",
-    detectedCliNotSupported: "Nieobsługiwane (zaktualizuj @happier-dev/cli)",
+    detectedCliNotSupported: "Nieobsługiwane (zaktualizuj @piggercode/cli)",
     untitledSession: "Sesja bez nazwy",
     back: "Wstecz",
     notFound: "Nie znaleziono maszyny",

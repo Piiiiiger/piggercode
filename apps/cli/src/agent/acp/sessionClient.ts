@@ -1,7 +1,7 @@
 import type { ACPMessageData, ACPProvider, SessionEventMessage } from '@/api/session/sessionMessageTypes';
 import type { Metadata } from '@/api/types';
 import type { SessionTurnLifecycle } from '@/agent/runtime/session/turn/types';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 
 /**
  * Minimal session client surface required by ACP runtimes + replay importers.

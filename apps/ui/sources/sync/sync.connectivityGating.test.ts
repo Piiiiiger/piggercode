@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ManagedEndpointSupervisor, ManagedEndpointSupervisorState } from '@happier-dev/connection-supervisor';
+import type { ManagedEndpointSupervisor, ManagedEndpointSupervisorState } from '@piggercode/connection-supervisor';
 
 import { PauseController } from '@/utils/timing/pauseController';
 import { InvalidateSync } from '@/utils/sessions/sync';

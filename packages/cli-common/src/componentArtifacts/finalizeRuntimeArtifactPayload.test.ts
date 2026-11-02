@@ -288,17 +288,17 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
     const marker = new Uint8Array([0, 255, 17, 0, 128]);
     const pairs = [
       {
-        duplicate: 'node_modules/@happier-dev/agents/node_modules/zod',
+        duplicate: 'node_modules/@piggercode/agents/node_modules/zod',
         survivor: 'node_modules/zod',
         packageName: 'zod',
       },
       {
-        duplicate: 'node_modules/@happier-dev/protocol/node_modules/zod',
+        duplicate: 'node_modules/@piggercode/protocol/node_modules/zod',
         survivor: 'node_modules/zod',
         packageName: 'zod',
       },
       {
-        duplicate: 'node_modules/@happier-dev/protocol/node_modules/zod-to-json-schema/node_modules/zod',
+        duplicate: 'node_modules/@piggercode/protocol/node_modules/zod-to-json-schema/node_modules/zod',
         survivor: 'node_modules/zod',
         packageName: 'zod',
       },
@@ -308,7 +308,7 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
         packageName: 'zod',
       },
       {
-        duplicate: 'node_modules/@happier-dev/release-runtime/node_modules/tar',
+        duplicate: 'node_modules/@piggercode/release-runtime/node_modules/tar',
         survivor: 'node_modules/tar',
         packageName: 'tar',
       },
@@ -367,8 +367,8 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
 
   it('retains an equal nested copy when a divergent intermediate ancestor shadows the audited survivor', async () => {
     const root = await fixtureRoot();
-    const duplicate = 'node_modules/@happier-dev/protocol/node_modules/zod-to-json-schema/node_modules/zod';
-    const intermediate = 'node_modules/@happier-dev/protocol/node_modules/zod';
+    const duplicate = 'node_modules/@piggercode/protocol/node_modules/zod-to-json-schema/node_modules/zod';
+    const intermediate = 'node_modules/@piggercode/protocol/node_modules/zod';
     await putPackage(root, 'node_modules/zod', 'zod', new Uint8Array([1]));
     await putPackage(root, duplicate, 'zod', new Uint8Array([1]));
     await putPackage(root, intermediate, 'zod', new Uint8Array([2]));
@@ -376,7 +376,7 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
     await finalizeRuntimeArtifactPayload(root, CLI_BINARY_TARGETS[0]);
 
     await expect(readFile(join(root, duplicate, 'assets/runtime.bin'))).resolves.toEqual(Buffer.from([1]));
-    const resolver = createRequire(join(root, 'node_modules/@happier-dev/protocol/node_modules/zod-to-json-schema/index.js'));
+    const resolver = createRequire(join(root, 'node_modules/@piggercode/protocol/node_modules/zod-to-json-schema/index.js'));
     expect(resolver.resolve('zod')).toBe(join(root, duplicate, 'index.js'));
   });
 
@@ -411,14 +411,14 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
 
   it.skipIf(process.platform === 'win32')('retains equal link text when the nested and ancestor links resolve to different bytes', async () => {
     const root = await fixtureRoot();
-    const duplicate = 'node_modules/@happier-dev/agents/node_modules/zod';
+    const duplicate = 'node_modules/@piggercode/agents/node_modules/zod';
     const survivor = 'node_modules/zod';
     for (const path of [duplicate, survivor]) {
       await putPackage(root, path, 'zod', new Uint8Array([1]));
       await symlink('../runtime.bin', join(root, path, 'external.bin'));
     }
     await put(root, 'node_modules/runtime.bin', new Uint8Array([1]));
-    await put(root, 'node_modules/@happier-dev/agents/node_modules/runtime.bin', new Uint8Array([2]));
+    await put(root, 'node_modules/@piggercode/agents/node_modules/runtime.bin', new Uint8Array([2]));
 
     await finalizeRuntimeArtifactPayload(root, CLI_BINARY_TARGETS[0]);
 
@@ -427,7 +427,7 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
 
   it.skipIf(process.platform === 'win32')('retains nested copies with different executable permissions', async () => {
     const root = await fixtureRoot();
-    const duplicate = 'node_modules/@happier-dev/agents/node_modules/zod';
+    const duplicate = 'node_modules/@piggercode/agents/node_modules/zod';
     for (const path of [duplicate, 'node_modules/zod']) {
       await putPackage(root, path, 'zod', new Uint8Array([1]));
     }
@@ -443,10 +443,10 @@ describe('finalizeRuntimeArtifactPayload native target projection', () => {
     const root = await fixtureRoot();
     const marker = new Uint8Array([0, 255, 17, 0, 128]);
     const changedMarker = new Uint8Array([0, 255, 17, 0, 129]);
-    const missingSurvivor = 'node_modules/@happier-dev/release-runtime/node_modules/tar';
+    const missingSurvivor = 'node_modules/@piggercode/release-runtime/node_modules/tar';
     await putPackage(root, missingSurvivor, 'tar', marker);
 
-    const divergentZod = 'node_modules/@happier-dev/agents/node_modules/zod';
+    const divergentZod = 'node_modules/@piggercode/agents/node_modules/zod';
     await putPackage(root, 'node_modules/zod', 'zod', marker);
     await putPackage(root, divergentZod, 'zod', changedMarker);
 

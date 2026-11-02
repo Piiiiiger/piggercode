@@ -1,4 +1,4 @@
-export { normalizeClaudeOauthProfileEntitlement, type ClaudeOauthEntitlementMetadata } from '@happier-dev/protocol';
+export { normalizeClaudeOauthProfileEntitlement, type ClaudeOauthEntitlementMetadata } from '@piggercode/protocol';
 
 export const CLAUDE_OAUTH_CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
 export const CLAUDE_OAUTH_AUTHORIZE_URL = 'https://claude.com/cai/oauth/authorize';

@@ -1,4 +1,4 @@
-import { sanitizeDoctorSnapshotUrls, type DoctorSnapshot } from '@happier-dev/protocol';
+import { sanitizeDoctorSnapshotUrls, type DoctorSnapshot } from '@piggercode/protocol';
 import { createDiagnosticServerUrlKey as normalizeUrl } from '@/sync/domains/server/url/serverUrlCanonical';
 
 export type DiagnosisFindingSeverity = 'info' | 'warning' | 'error';

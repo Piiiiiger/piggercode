@@ -7,9 +7,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import tweetnacl from 'tweetnacl';
 import axios from 'axios';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { sealEncryptedDataKeyEnvelopeV1, SPAWN_SESSION_ERROR_CODES, SPAWN_SESSION_ERROR_DETAIL_KINDS } from '@happier-dev/protocol';
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { sealEncryptedDataKeyEnvelopeV1, SPAWN_SESSION_ERROR_CODES, SPAWN_SESSION_ERROR_DETAIL_KINDS } from '@piggercode/protocol';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import { encrypt, encodeBase64 } from '@/api/encryption';
 import type { HttpStatusErrorWithCode } from '@/api/client/httpStatusError';
 import { collectBugReportMachineDiagnosticsSnapshot } from '@/diagnostics/bugReportMachineDiagnostics';

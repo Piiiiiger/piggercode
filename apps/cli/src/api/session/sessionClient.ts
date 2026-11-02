@@ -14,8 +14,8 @@ import {
     projectSessionMetadataForWire,
     readPendingLocalId,
     redactBugReportSensitiveText,
-} from '@happier-dev/protocol';
-import { inferAgentIdFromSessionMetadata } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { inferAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { configuration } from '@/configuration';
 import type { RawJSONLines } from '@/backends/claude/types';
 import {
@@ -60,14 +60,14 @@ import type { PermissionRequestPushSender } from '@/agent/permissions/BasePermis
 import { SessionPermissionRpcRouter } from '@/agent/permissions/sessionPermissionRpcRouter';
 import { ExecutionBudgetRegistry } from '@/daemon/executionBudget/ExecutionBudgetRegistry';
 import { readCredentials, readAccountChangesCursor } from '@/persistence';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
 import {
     applyAccountSettingsV2Update,
     bootstrapAccountSettingsContext,
     refreshActiveAccountSettingsFromServer,
 } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
-import { AccountSettingsV2GetResponseSchema } from '@happier-dev/protocol';
+import { AccountSettingsV2GetResponseSchema } from '@piggercode/protocol';
 import {
     getActiveAccountSettingsSnapshot,
     subscribeActiveAccountSettingsSnapshot,
@@ -161,7 +161,7 @@ import {
     updateSessionMetadataWithAck,
     updateSessionMetadataWithAckResult,
 } from './stateUpdates';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import {
     SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
     SessionUsageLimitRecoveryV1Schema,
@@ -169,7 +169,7 @@ import {
     SessionRuntimeActivityCloseAckSchema,
     SessionRuntimeActivityCloseRequestSchema,
     SessionTranscriptObservationProvenanceV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     readSessionRuntimeActivityProjectionBoundary,
     type SessionRuntimeActivityProjectionBoundary,
@@ -186,7 +186,7 @@ import type {
     SessionSystemRecordUpsertRequest,
     SessionTranscriptObservationProvenanceV1,
     SessionTurnsProjectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { calculateCost } from '@/utils/pricing';
 import { buildAcpAgentMessageEnvelope, shouldTraceAcpMessageType } from './acpMessageEnvelope';
 import { normalizeAcpSessionMessageBody, normalizeCodexSessionMessageBody } from './sessionOutboundMessageNormalization';
@@ -263,7 +263,7 @@ import {
     type ManagedConnectionState,
     type ManagedConnectionSupervisor,
     type ReadinessProbeResult,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 import { createLoopbackReadinessProbe } from '@/api/connection/createLoopbackReadinessProbe';
 import { createSessionSocketTransport } from './connection/createSessionSocketTransport';
 import { ensureSessionConnectionSupervisionActive } from './connection/ensureSessionConnectionSupervisionActive';
@@ -641,7 +641,7 @@ export class ApiSessionClient extends EventEmitter {
     private readonly canonicalPendingDeliveryByLocalId = new Map<string, Readonly<{
         state: PendingMaterializationDeliveryState;
         requestedAction?: PendingRequestedActionV1;
-        providerAction?: import('@happier-dev/protocol').PendingProviderAction;
+        providerAction?: import('@piggercode/protocol').PendingProviderAction;
     }>>();
     // Generic reversible provider-path blocks retain identity so exact late provider evidence can
     // still settle the row. A proven pre-provider lifecycle failure retires it after durable block.

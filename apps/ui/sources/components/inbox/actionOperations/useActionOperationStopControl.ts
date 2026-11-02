@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { isActionOperationCancellationRequested } from '@/sync/domains/actionOperations/actionOperationSelectors';
 import { requestActionOperationStop } from './requestActionOperationStop';

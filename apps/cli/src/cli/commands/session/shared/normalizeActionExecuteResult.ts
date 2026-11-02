@@ -1,4 +1,4 @@
-import type { ActionExecuteResult } from '@happier-dev/protocol';
+import type { ActionExecuteResult } from '@piggercode/protocol';
 
 export type NormalizedCliActionExecuteResult =
   | Readonly<{

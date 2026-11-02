@@ -2,7 +2,7 @@ import {
     DEFAULT_SERVER_LIGHT_SQLITE_CONNECTION_LIMIT,
     type PrismaSqliteDatabaseUrlOptions,
     resolveServerLightSqliteDatabaseUrlOptionsFromEnv,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 export const DEFAULT_LIGHT_SQLITE_CONNECTION_LIMIT = DEFAULT_SERVER_LIGHT_SQLITE_CONNECTION_LIMIT;
 

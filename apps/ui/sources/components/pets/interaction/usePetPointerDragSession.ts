@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Platform, type View } from 'react-native';
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 import { resolvePointerClientPoint } from '@/components/ui/panels/resolvePointerClientPoint';
 import { resolvePointerScreenPoint } from '@/components/ui/panels/resolvePointerScreenPoint';

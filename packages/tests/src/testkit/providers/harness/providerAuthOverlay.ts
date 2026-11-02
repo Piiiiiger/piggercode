@@ -1,4 +1,4 @@
-import type { E2eCliProviderSpecV1 } from '@happier-dev/protocol';
+import type { E2eCliProviderSpecV1 } from '@piggercode/protocol';
 
 type ProviderAuth = NonNullable<E2eCliProviderSpecV1['auth']>;
 type AuthOverlay = NonNullable<ProviderAuth['env'] | ProviderAuth['host']>;

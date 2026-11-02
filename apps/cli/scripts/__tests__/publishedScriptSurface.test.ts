@@ -20,7 +20,7 @@ function copyCliScriptFixture(options: {
 
 function copyBundledCliCommonLockSurface(packageRoot: string) {
   const sourcePackageRoot = resolve(process.cwd(), '..', '..', 'packages', 'cli-common');
-  const bundledPackageRoot = resolve(packageRoot, 'node_modules', '@happier-dev', 'cli-common');
+  const bundledPackageRoot = resolve(packageRoot, 'node_modules', '@piggercode', 'cli-common');
   mkdirSync(bundledPackageRoot, { recursive: true });
   for (const relativePath of [
     'package.json',
@@ -39,7 +39,7 @@ describe('apps/cli published script surface', () => {
     try {
       writeFileSync(
         join(packageRoot, 'package.json'),
-        `${JSON.stringify({ name: '@happier-dev/cli', version: '0.0.0', type: 'module' }, null, 2)}\n`,
+        `${JSON.stringify({ name: '@piggercode/cli', version: '0.0.0', type: 'module' }, null, 2)}\n`,
         'utf8',
       );
 

@@ -3,7 +3,7 @@ import {
   type ActionsSettingsV1,
   type ApprovalRequestOriginV1,
   type ResolvedActionOption,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createActionToolNameToIdMap } from './actionToolCatalog';
 import { bindContextualActionToolInput } from './contextualActionToolInput';
 import { normalizeExecutionRunToolResult } from './normalizeExecutionRunToolResult';

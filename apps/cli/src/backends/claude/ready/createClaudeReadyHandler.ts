@@ -4,7 +4,7 @@ import { resolveReadyNotificationAssistantText } from '@/agent/runtime/readyNoti
 import type { ReadyNotificationTurnContext } from '@/agent/runtime/runPermissionModePromptLoop';
 import { sendReadyWithPushNotification } from '@/agent/runtime/sendReadyWithPushNotification';
 import type { TurnAssistantPreviewTracker } from '@/agent/runtime/turnAssistantPreviewTracker';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 type ClaudeReadySession = Readonly<{
     sessionId: string;

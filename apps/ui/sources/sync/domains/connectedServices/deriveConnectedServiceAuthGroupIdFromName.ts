@@ -1,4 +1,4 @@
-import { ConnectedServiceAuthGroupIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceAuthGroupIdSchema } from '@piggercode/protocol';
 
 function slugifyGroupName(name: string): string {
     return name

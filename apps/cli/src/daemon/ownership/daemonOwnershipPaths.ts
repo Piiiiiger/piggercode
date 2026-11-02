@@ -5,7 +5,7 @@ import { resolveDaemonStateBasenameForRing } from '@/cli/runtime/publicReleaseCh
 import {
   PUBLIC_RELEASE_RING_IDS,
   type PublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 export const CANONICAL_DAEMON_STATE_BASENAME = 'daemon.state.json';
 

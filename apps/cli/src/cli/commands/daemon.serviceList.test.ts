@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import type { SpawnSyncReturns } from 'node:child_process';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 
 const osHomeOverrides = vi.hoisted(() => ({
   homeDir: null as string | null,

@@ -2,7 +2,7 @@ import { spawnSync, spawn } from 'node:child_process';
 import { closeSync, mkdirSync, openSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 
-import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { resolveWindowsCommandInvocation } from '../process/index.js';
 

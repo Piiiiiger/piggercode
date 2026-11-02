@@ -2,7 +2,7 @@ import type { DetailsTab } from '@/components/appShell/panes/model/appPaneReduce
 import { resolveExecutionRunAvailableBackends, type ExecutionRunBackendCapabilityMap } from '@/sync/domains/executionRuns/resolveExecutionRunAvailableBackends';
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import { t } from '@/text';
-import { ExecutionRunIntentSchema } from '@happier-dev/protocol';
+import { ExecutionRunIntentSchema } from '@piggercode/protocol';
 
 export const EXECUTION_RUN_LAUNCH_INTENTS = ['review', 'plan', 'delegate'] as const;
 

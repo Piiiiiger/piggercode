@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deriveBoxPublicKeyFromSeed } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed } from '@piggercode/protocol';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
 import { configuration, reloadConfiguration } from '@/configuration';

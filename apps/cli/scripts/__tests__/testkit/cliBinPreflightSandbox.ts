@@ -49,9 +49,9 @@ export function copyCliBinRuntimeFiles(options: {
   // sandbox focused on the preflight behavior under test instead of relying on
   // whichever workspace node_modules happens to surround the temporary tree.
   writeSandboxPackage({
-    packageDir: resolve(options.binDir, '..', 'node_modules', '@happier-dev', 'cli-common'),
+    packageDir: resolve(options.binDir, '..', 'node_modules', '@piggercode', 'cli-common'),
     manifest: {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       exports: {
@@ -119,7 +119,7 @@ export function writeCliProjectFixture(options: {
 
   ensureDirectorySync(binDir);
   ensureDirectorySync(join(options.projectRoot, options.entrypointDir));
-  writeSandboxJsonFile(join(options.projectRoot, 'package.json'), { name: '@happier-dev/cli' });
+  writeSandboxJsonFile(join(options.projectRoot, 'package.json'), { name: '@piggercode/cli' });
   writeSandboxTextFile(join(options.projectRoot, options.entrypointDir, 'index.mjs'), options.entrypointContent);
 
   return { binDir };
@@ -133,7 +133,7 @@ export function writeProtocolBundleStub(options: {
   writeSandboxPackage({
     packageDir: options.packageDir,
     manifest: {
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
       version: '0.0.0',
       type: 'module',
       main: './dist/index.js',

@@ -1,4 +1,4 @@
-import type { AccountProfile, DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
+import type { AccountProfile, DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
 
 import { AGENT_IDS, getAgentBehavior, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import { isAgentOffered } from '@/agents/catalog/enabled';

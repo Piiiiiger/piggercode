@@ -1,5 +1,5 @@
 import * as privacyKit from "privacy-kit";
-import { isPlainMachineDataKeyMarker, machineStoredContentMatchesAccountMode, type AccountEncryptionMigrateMachinesDirective } from "@happier-dev/protocol";
+import { isPlainMachineDataKeyMarker, machineStoredContentMatchesAccountMode, type AccountEncryptionMigrateMachinesDirective } from "@piggercode/protocol";
 import { markAccountChanged } from "@/app/changes/markAccountChanged";
 import { afterTx, type Tx } from "@/storage/inTx";
 import { buildUpdateMachineUpdate, eventRouter } from "@/app/events/eventRouter";

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { DelegateOutputV1Schema, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { DelegateOutputV1Schema, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type {
   ExecutionRunIntentProfile,

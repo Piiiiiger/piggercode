@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY,

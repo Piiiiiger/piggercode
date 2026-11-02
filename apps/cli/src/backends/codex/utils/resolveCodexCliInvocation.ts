@@ -1,8 +1,8 @@
 import { accessSync, constants as fsConstants, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { expandHomeDirPath, providerCliPathRequiresJavaScriptRuntime, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandPath } from '@happier-dev/cli-common/process';
+import { expandHomeDirPath, providerCliPathRequiresJavaScriptRuntime, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandPath } from '@piggercode/cli-common/process';
 
 import { requireJavaScriptRuntimeExecutable } from '@/runtime/js/requireJavaScriptRuntimeExecutable';
 import { requireProviderCliCommand } from '@/runtime/managedTools/requireProviderCliCommand';

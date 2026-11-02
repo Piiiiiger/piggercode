@@ -1,6 +1,6 @@
 import { AGENTS } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';
-import { AsyncTtlCache, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { AsyncTtlCache, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { buildAgentProbeCacheKey } from './buildAgentProbeCacheKey';
 import { resolveAgentProbeVariant } from './resolveAgentProbeVariant';

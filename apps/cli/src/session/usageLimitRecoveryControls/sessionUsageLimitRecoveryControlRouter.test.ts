@@ -1,10 +1,10 @@
 import { createClaudeUsageLimitRecoveryControlAdapter } from '@/backends/claude/connectedServices/claudeUsageLimitRecoveryControlAdapter';
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import {
   SessionUsageLimitRecoveryOperationResultV1Schema,
   buildUsageLimitIssueFingerprint,
   type SessionUsageLimitRecoveryOperationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import type { Credentials } from '@/persistence';

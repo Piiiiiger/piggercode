@@ -8,7 +8,7 @@ import {
   type SessionSystemRecordNamespace,
   type SessionSummaryShardV1,
   type SessionSynopsisV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   decryptSessionPayload,

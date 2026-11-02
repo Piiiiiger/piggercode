@@ -1,5 +1,5 @@
 import type { Message, ToolCallMessage } from '@/sync/domains/messages/messageTypes';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
 
 export type ClaudeParticipantMessageTeamHint = Readonly<{
     teamId: string;

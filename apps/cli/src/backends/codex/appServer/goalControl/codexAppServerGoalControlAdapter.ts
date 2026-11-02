@@ -1,8 +1,8 @@
 import {
     readSessionMetadataRuntimeDescriptor,
     resolvePersistedCodexVendorSessionId,
-} from '@happier-dev/agents';
-import { readDisplayableSessionWorkStateV1, type SessionWorkStateStatusV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { readDisplayableSessionWorkStateV1, type SessionWorkStateStatusV1 } from '@piggercode/protocol';
 
 import type { SessionGoalControlAdapter as GenericSessionGoalControlAdapter } from '@/session/goalControls/sessionGoalControlTypes';
 import {

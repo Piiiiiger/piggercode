@@ -5,7 +5,7 @@ import {
   CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES,
   SPAWN_SESSION_ERROR_CODES,
   SPAWN_SESSION_ERROR_DETAIL_KINDS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';

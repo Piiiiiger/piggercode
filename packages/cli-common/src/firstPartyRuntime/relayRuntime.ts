@@ -1,4 +1,4 @@
-import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { expandHomeDirPath } from '../path/expandHomeDirPath.js';
 
 type RelayRuntimeMode = 'user' | 'system';

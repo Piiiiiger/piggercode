@@ -1,4 +1,4 @@
-import { ExecutionRunIntentSchema } from '@happier-dev/protocol';
+import { ExecutionRunIntentSchema } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import type { Message, ToolCallMessage } from '@/sync/domains/messages/messageTypes';

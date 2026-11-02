@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@happier-dev/agents';
+import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@piggercode/agents';
 
 function buildJwt(payload: Record<string, unknown>): string {
   return [
@@ -111,7 +111,7 @@ describe('connected account descriptors', () => {
 
   it('keeps Claude subscription OAuth scopes aligned with the shared Claude Code scope source', async () => {
     const mod = await import('./connectedAccountDescriptors');
-    const agents = await import('@happier-dev/agents');
+    const agents = await import('@piggercode/agents');
 
     expect(mod.CLAUDE_SUBSCRIPTION_OAUTH_SCOPES).toEqual(agents.CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPES);
     expect(mod.CLAUDE_SUBSCRIPTION_OAUTH_SCOPE).toBe(agents.CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE);

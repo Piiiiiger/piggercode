@@ -1,5 +1,5 @@
 import { realpathSync } from 'node:fs';
-import { resolveProviderCliCommand } from '@happier-dev/cli-common/providers';
+import { resolveProviderCliCommand } from '@piggercode/cli-common/providers';
 import { ProviderCliNotFoundError } from '@/runtime/managedTools/requireProviderCliCommand';
 
 let cachedResolvedClaudeCliPath: string | null = null;

@@ -6,7 +6,7 @@ import {
     agentEventAttentionImpact,
     isRecoveredHistoryTranscriptObservationProvenance,
     type SessionMessageAttentionImpact,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Message } from './messageTypes';
 

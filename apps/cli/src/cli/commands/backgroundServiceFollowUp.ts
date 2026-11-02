@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { resolveServingThisComputerService } from '@happier-dev/cli-common/service';
+import { resolveServingThisComputerService } from '@piggercode/cli-common/service';
 import type { DaemonServiceListEntry } from '@/daemon/service/cli';
 import { resolveDaemonServiceCliRuntimeFromEnv } from '@/daemon/service/cli';
 import { resolveInstalledDaemonServiceInventoryForCurrentRelay } from '@/daemon/ownership/daemonServiceInventory';

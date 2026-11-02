@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceId,
   ConnectedServiceUsageSourceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ConnectedServiceCurrentSourceHydrationConflictError } from './currentSourceHydration';
 

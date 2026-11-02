@@ -6,7 +6,7 @@ import { join, resolve } from "node:path";
 import { resolveUiConfig } from "@/app/api/uiConfig";
 import { captureFastifyExceptionForSentry } from "@/app/monitoring/sentry";
 import { isServerApiRequestPath } from "./serverApiPath";
-import { redactPublicShareCapabilityUrl } from "@happier-dev/protocol";
+import { redactPublicShareCapabilityUrl } from "@piggercode/protocol";
 
 function sendGlobalErrorResponse(
     reply: FastifyReply,

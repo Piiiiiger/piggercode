@@ -11,7 +11,7 @@ import { t } from '@/text';
 import { useAuth } from '@/auth/context/AuthContext';
 import { useSettings } from '@/sync/domains/state/storage';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
-import { isExpoPushNotificationChannelEnabled } from '@happier-dev/protocol';
+import { isExpoPushNotificationChannelEnabled } from '@piggercode/protocol';
 import { deletePushToken, fetchPushTokens, type PushToken } from '@/sync/api/session/apiPush';
 import { loadLastRegisteredExpoPushToken } from '@/sync/domains/state/pushTokenRegistration';
 import {

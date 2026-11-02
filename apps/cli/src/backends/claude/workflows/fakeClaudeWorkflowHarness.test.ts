@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 // The T2 fake-Claude workflow scenario builder lives in the shared tests package next to the
 // fake-Claude CLI harness. Importing it HERE (where the real CWF2 tracker + CWF3 source live) proves

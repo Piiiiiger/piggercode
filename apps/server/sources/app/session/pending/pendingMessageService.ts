@@ -30,7 +30,7 @@ import {
     type PendingRequestedActionV1,
     type PendingDeliveryBlockedReason,
     type SessionStoredContentKind,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveEncryptionWriteRejectionCode, type EncryptionPolicyRejectionCode } from "@/app/session/encryptionRejectionCodes";
 import { reserveNextPendingQueuePosition } from "@/app/session/pending/reserveNextPendingQueuePosition";
 import { parseSessionMessageRole, resolveSessionMessageRole } from "@/app/session/messageRole/resolveSessionMessageRole";
@@ -58,7 +58,7 @@ import {
     reconcilePendingActivationAuthorizationForRemovedRequestInTx,
     shouldArmPendingActivationAuthorization,
 } from "@/app/session/pending/pendingActivationAuthorization";
-import type { PendingActivationFailureCodeV1 } from "@happier-dev/protocol";
+import type { PendingActivationFailureCodeV1 } from "@piggercode/protocol";
 
 type ParticipantCursor = SessionParticipantCursor;
 type PendingServiceTx = Parameters<Parameters<typeof inTx>[0]>[0];

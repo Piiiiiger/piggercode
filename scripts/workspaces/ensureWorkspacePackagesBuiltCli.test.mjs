@@ -9,12 +9,12 @@ import {
 test('parses package names and component-owned workspace admission without duplicating either owner', () => {
   assert.deepEqual(
     parseWorkspaceBuildArgs([
-      '@happier-dev/cli-common',
-      '@happier-dev/cli-common',
+      '@piggercode/cli-common',
+      '@piggercode/cli-common',
       '--for-component=apps/ui',
     ]),
     {
-      packageNames: ['@happier-dev/cli-common', '@happier-dev/cli-common'],
+      packageNames: ['@piggercode/cli-common', '@piggercode/cli-common'],
       componentDirs: ['apps/ui'],
     },
   );
@@ -26,7 +26,7 @@ test('delegates de-duplicated requests to the existing workspace build owners', 
   const calls = [];
   const result = await runWorkspacePackageBuild({
     repoRoot: '/repo',
-    packageNames: ['@happier-dev/cli-common', '@happier-dev/cli-common'],
+    packageNames: ['@piggercode/cli-common', '@piggercode/cli-common'],
     componentDirs: ['apps/ui', 'apps/ui'],
     ensureWorkspacePackagesBuiltByNameImpl: async (root, names) => {
       calls.push(['packages', root, names]);
@@ -39,7 +39,7 @@ test('delegates de-duplicated requests to the existing workspace build owners', 
   });
 
   assert.deepEqual(calls, [
-    ['packages', '/repo', ['@happier-dev/cli-common']],
+    ['packages', '/repo', ['@piggercode/cli-common']],
     ['component', '/repo/apps/ui'],
   ]);
   assert.deepEqual(result, { ok: true, built: ['cli-common', 'brand'], skipped: [] });

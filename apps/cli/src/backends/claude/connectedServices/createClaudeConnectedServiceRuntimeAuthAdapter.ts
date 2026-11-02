@@ -21,7 +21,7 @@ import type {
   ConnectedServiceRuntimeFailureInput,
   ConnectedServiceRuntimeAuthTargetInput,
 } from '@/daemon/connectedServices/runtimeAuth/types';
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 function readRecord(value: unknown): Record<string, unknown> | null {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null;

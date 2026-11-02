@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION } from "@happier-dev/protocol";
+import { SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION } from "@piggercode/protocol";
 import { createEnvPatcher } from "@/testkit/env";
 import { createDbMocks, installDbModuleMock } from "../../api/testkit/dbMocks";
 

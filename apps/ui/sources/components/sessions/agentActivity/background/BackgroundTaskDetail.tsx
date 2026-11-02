@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import type { SessionBackgroundTaskRecordV1 } from '@happier-dev/protocol';
+import type { SessionBackgroundTaskRecordV1 } from '@piggercode/protocol';
 
 import { Icon } from '@/components/ui/icons/Icon';
 import { Text } from '@/components/ui/text/Text';

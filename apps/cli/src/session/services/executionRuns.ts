@@ -7,12 +7,12 @@ import {
     ExecutionRunStartRequestSchema,
     type ExecutionRunListRequest,
     type ExecutionRunPublicState,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
     isRpcMethodNotAvailableError,
     isRpcMethodNotFoundError,
-} from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol/rpcErrors';
 
 import { configuration } from '@/configuration';
 import { listExecutionRunMarkers } from '@/daemon/executionRunRegistry';

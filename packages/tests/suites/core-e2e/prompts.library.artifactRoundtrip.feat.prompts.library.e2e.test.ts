@@ -6,7 +6,7 @@ import {
   PromptDocArtifactHeaderV1Schema,
   PromptDocBodyV1Schema,
   validatePromptBundleBodyV1AgainstSchemaId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

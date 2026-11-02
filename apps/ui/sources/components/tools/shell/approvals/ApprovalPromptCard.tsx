@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
-import { getActionSpec, type ActionId, type ApprovalRequestV1 } from '@happier-dev/protocol';
+import { getActionSpec, type ActionId, type ApprovalRequestV1 } from '@piggercode/protocol';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 

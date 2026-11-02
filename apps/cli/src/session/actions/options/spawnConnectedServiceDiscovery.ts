@@ -7,8 +7,8 @@ import {
   resolveConnectedServiceDefaultProfileId,
   type AgentCore,
   type ConnectedServiceId,
-} from '@happier-dev/agents';
-import type { AccountProfileResponse, AccountSettings } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { AccountProfileResponse, AccountSettings } from '@piggercode/protocol';
 
 import { normalizeActionOptionLimit } from './actionOptionInputNormalization';
 

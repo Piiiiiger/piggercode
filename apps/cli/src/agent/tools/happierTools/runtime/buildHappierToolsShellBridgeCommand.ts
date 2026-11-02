@@ -3,7 +3,7 @@ import { buildPosixShellCommand, buildPosixShellEnvironmentAssignments } from '@
 import {
   parseHappierToolsShellBridgeCommand,
   type HappierToolsShellBridgeCommand,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveHappierToolsShellBridgeContextEnv } from './resolveHappierToolsShellBridgeContextEnv';
 
 /**

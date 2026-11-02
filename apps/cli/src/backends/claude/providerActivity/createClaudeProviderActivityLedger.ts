@@ -1,4 +1,4 @@
-import { normalizeClaudeAgentSdkProviderTaskId } from '@happier-dev/protocol';
+import { normalizeClaudeAgentSdkProviderTaskId } from '@piggercode/protocol';
 import { readClaudeTaskLifecycleEnvelope } from '../taskNotifications/claudeTaskLifecycleEnvelope';
 
 import {
@@ -12,7 +12,7 @@ export {
     normalizeClaudeAgentSdkProviderTaskId,
     normalizeClaudeAgentSdkProviderTaskStatus,
     readClaudeAgentSdkProviderTaskStatus,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const CLAUDE_RUNTIME_ACTIVITY_PROVIDER_ID = 'claude';
 

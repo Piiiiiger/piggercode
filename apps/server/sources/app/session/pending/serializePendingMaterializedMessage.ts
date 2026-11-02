@@ -1,5 +1,5 @@
 import type { MaterializeNextPendingMessageResult } from "@/app/session/pending/materializeNextPendingMessage";
-import type { SessionMessageDeliveryResolutionV1 } from "@happier-dev/protocol";
+import type { SessionMessageDeliveryResolutionV1 } from "@piggercode/protocol";
 
 type MaterializedPendingMessage = Extract<
     MaterializeNextPendingMessageResult,

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ActionsSettingsV1Schema } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema } from '@piggercode/protocol';
 
 const env = process.env;
 

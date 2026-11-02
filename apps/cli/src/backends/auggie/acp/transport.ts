@@ -12,7 +12,7 @@ import type {
   ToolNameContext,
 } from '@/agent/transport/TransportHandler';
 import type { AgentMessage } from '@/agent/core';
-import { CHANGE_TITLE_TOOL_NAME_ALIASES } from '@happier-dev/protocol/tools/v2';
+import { CHANGE_TITLE_TOOL_NAME_ALIASES } from '@piggercode/protocol/tools/v2';
 import { filterJsonObjectOrArrayLine } from '@/agent/transport/utils/jsonStdoutFilter';
 import { classifyProviderOutputFailure } from '@/agent/runtime/classifyProviderOutputFailure';
 import {

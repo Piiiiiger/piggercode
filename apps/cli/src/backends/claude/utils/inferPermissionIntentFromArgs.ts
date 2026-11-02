@@ -1,5 +1,5 @@
-import type { PermissionIntent } from '@happier-dev/agents';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import type { PermissionIntent } from '@piggercode/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 /**
  * Infer the canonical permission intent from Claude Code CLI args.

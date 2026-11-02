@@ -1,4 +1,4 @@
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 import type { CodexRolloutAction } from '../localControl/rolloutMapper';
 import { projectCodexRolloutActions, type CodexProjectedRolloutEvent } from '../rollout/projectCodexRolloutActions';

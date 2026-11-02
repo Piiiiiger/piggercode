@@ -3,7 +3,7 @@ import { View, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { type ActionId, type ActionsSettingsV1 } from '@happier-dev/protocol';
+import { type ActionId, type ActionsSettingsV1 } from '@piggercode/protocol';
 
 import { SearchHeader } from '@/components/ui/forms/SearchHeader';
 import { Switch } from '@/components/ui/forms/Switch';

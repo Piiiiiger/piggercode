@@ -1,4 +1,4 @@
-import type { MachineInstallationProofPayloadV1 } from '@happier-dev/protocol';
+import type { MachineInstallationProofPayloadV1 } from '@piggercode/protocol';
 
 import type { MachineRegistrationIdentity } from '@/api/types';
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';

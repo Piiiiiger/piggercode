@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { CliUpdateFactsSchema } from '@happier-dev/protocol';
+import { CliUpdateFactsSchema } from '@piggercode/protocol';
 
 import { readCliUpdateFacts } from './cliUpdateFacts';
 
@@ -40,7 +40,7 @@ describe('readCliUpdateFacts (K5)', () => {
       execPath,
       invokedPath: execPath,
       platform: 'linux',
-      npmPackageName: '@happier-dev/cli',
+      npmPackageName: '@piggercode/cli',
     });
 
     expect(CliUpdateFactsSchema.parse(facts)).toEqual({
@@ -57,14 +57,14 @@ describe('readCliUpdateFacts (K5)', () => {
   it('does not offer a remote update on Windows', () => {
     const execPath = installManaged('cli', '0.2.13');
     expect(readCliUpdateFacts({
-      homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath, invokedPath: execPath, platform: 'win32', npmPackageName: '@happier-dev/cli',
+      homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath, invokedPath: execPath, platform: 'win32', npmPackageName: '@piggercode/cli',
     })).toMatchObject({ installSource: 'managed', canUpdateRemotely: false, updateCommand: 'happier self update' });
   });
 
   it('names the package manager\'s command for an npm install and never offers a remote update', () => {
-    const packageRoot = join(homeDir, 'global', 'node_modules', '@happier-dev', 'cli');
+    const packageRoot = join(homeDir, 'global', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
-    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli' }));
+    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }));
     writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '');
 
     expect(readCliUpdateFacts({
@@ -74,10 +74,10 @@ describe('readCliUpdateFacts (K5)', () => {
       execPath: '/usr/bin/node',
       invokedPath: join(packageRoot, 'bin', 'happier.mjs'),
       platform: 'linux',
-      npmPackageName: '@happier-dev/cli',
+      npmPackageName: '@piggercode/cli',
     })).toMatchObject({
       installSource: 'npm',
-      updateCommand: 'npm install -g @happier-dev/cli@latest',
+      updateCommand: 'npm install -g @piggercode/cli@latest',
       canUpdateRemotely: false,
       lastUpdate: null,
       latestVersion: null,
@@ -92,20 +92,20 @@ describe('readCliUpdateFacts (K5)', () => {
     writeFileSync(nodeKeg, 'binary');
     mkdirSync(join(homeDir, 'homebrew', 'opt'), { recursive: true });
     symlinkSync(join('..', 'Cellar', 'node', '22.9.0'), join(homeDir, 'homebrew', 'opt', 'node'));
-    const packageRoot = join(homeDir, 'homebrew', 'lib', 'node_modules', '@happier-dev', 'cli');
+    const packageRoot = join(homeDir, 'homebrew', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
-    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli' }));
+    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }));
     writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '');
     const checkout = join(homeDir, 'src', 'happier', 'apps', 'cli', 'dist', 'index.mjs');
     mkdirSync(join(checkout, '..'), { recursive: true });
     writeFileSync(checkout, '');
 
     const read = (invokedPath: string) => readCliUpdateFacts({
-      homeDir, publicReleaseRing: 'stable', currentVersion: '1.0.0', execPath: nodeKeg, invokedPath, platform: 'darwin', npmPackageName: '@happier-dev/cli',
+      homeDir, publicReleaseRing: 'stable', currentVersion: '1.0.0', execPath: nodeKeg, invokedPath, platform: 'darwin', npmPackageName: '@piggercode/cli',
     });
     expect(read(join(packageRoot, 'bin', 'happier.mjs'))).toMatchObject({
       installSource: 'npm',
-      updateCommand: 'npm install -g @happier-dev/cli@latest',
+      updateCommand: 'npm install -g @piggercode/cli@latest',
     });
     expect(read(checkout)).toMatchObject({ installSource: 'other', updateCommand: null });
   });
@@ -116,7 +116,7 @@ describe('readCliUpdateFacts (K5)', () => {
     writeFileSync(stray, 'binary');
     installManaged('cli', '0.2.13');
     expect(readCliUpdateFacts({
-      homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath: stray, invokedPath: stray, platform: 'linux', npmPackageName: '@happier-dev/cli',
+      homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath: stray, invokedPath: stray, platform: 'linux', npmPackageName: '@piggercode/cli',
     })).toMatchObject({ installSource: 'other', updateCommand: null, canUpdateRemotely: false });
   });
 });

@@ -1,5 +1,5 @@
-import type { ScmBackendDescribeResponse } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmBackendDescribeResponse } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { ScmBackend } from '../../types';
 import { createSaplingCapabilities } from './capabilities';

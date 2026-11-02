@@ -1,13 +1,13 @@
 import {
   inferAgentIdFromSessionMetadata,
   resolveVendorResumeIdFromSessionMetadata,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   ConnectedServiceBindingsV1Schema,
   ConnectedServiceMaterializationIdentityV1Schema,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveCatalogAgentId } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';

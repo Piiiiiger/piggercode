@@ -1,7 +1,7 @@
 import type {
     DiscoveredPetPackageV1,
     ImportedLocalPetPackageV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SelectedPetPackageSource } from '@/components/pets/source/resolveSelectedPetPackage';
 

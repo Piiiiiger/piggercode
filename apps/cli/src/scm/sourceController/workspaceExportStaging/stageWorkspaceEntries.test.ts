@@ -2,7 +2,7 @@ import { access, mkdtemp, readFile, readlink, rm, writeFile } from 'node:fs/prom
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { hashWorkspaceFile } from '../workspaceExportPackaging/hashWorkspaceFile';

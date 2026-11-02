@@ -2,7 +2,7 @@ import {
     FeaturesResponseSchema,
     PENDING_INPUT_PROTOCOL_VERSION_V1,
     SESSION_SYNC_PROTOCOL_VERSION_RUNTIME_ACTIVITY,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { observeServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 

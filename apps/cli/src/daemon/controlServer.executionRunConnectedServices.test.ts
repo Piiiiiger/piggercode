@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 
 import {
   deriveConnectedServiceBrokerRefreshToken,

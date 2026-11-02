@@ -1,4 +1,4 @@
-import { AGENT_MODEL_CONFIG, providers as agentProviders } from '@happier-dev/agents';
+import { AGENT_MODEL_CONFIG, providers as agentProviders } from '@piggercode/agents';
 
 export type ClaudeEffortLevel = 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 

@@ -17,7 +17,7 @@ import {
   PermissionRequestCoordinator,
   type PermissionRequestCoordinatorStore,
 } from '@/agent/permissions/permissionRequestCoordinator';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol';
 
 import {
   GROK_ASK_USER_QUESTION_METHODS,

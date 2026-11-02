@@ -1,4 +1,4 @@
-import { providers } from '@happier-dev/agents';
+import { providers } from '@piggercode/agents';
 
 import type { OpenCodeModelRef } from './types';
 import { asRecord, normalizeString } from './openCodeParsing';

@@ -1,5 +1,5 @@
 import type { Message } from '@/sync/domains/messages/messageTypes';
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 
 export function shouldEnableExecutionRunPolling(params: Readonly<{
     executionRunsFeatureEnabled: boolean;

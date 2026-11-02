@@ -55,7 +55,7 @@ function stripInternalWorkspaceDeps(pkgJson) {
   if (!deps) return pkgJson;
 
   for (const key of Object.keys(deps)) {
-    if (key.startsWith('@happier-dev/')) {
+    if (key.startsWith('@piggercode/')) {
       delete deps[key];
     }
   }
@@ -73,7 +73,7 @@ const CLI_PUBLISHED_BIN_CONTRACT = Object.freeze({
 });
 
 function restoreCliPublishedBinContract(pkgJson) {
-  if (pkgJson?.name !== '@happier-dev/cli') {
+  if (pkgJson?.name !== '@piggercode/cli') {
     return pkgJson;
   }
 

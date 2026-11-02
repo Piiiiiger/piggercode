@@ -4,7 +4,7 @@ import { buildMachineActivityEphemeral, ClientConnection, eventRouter } from "@/
 import {
     buildMachineOwnerConflictSocketPayload,
     readMachineDaemonOwnershipMetadataFromSocketAuth,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { Server, Socket } from "socket.io";
 import { log } from "@/utils/logging/log";
 import { auth } from "@/app/auth/auth";
@@ -19,7 +19,7 @@ import { machineTransferHandler } from "./socket/machineTransferHandler";
 import { artifactUpdateHandler } from "./socket/artifactUpdateHandler";
 import { accessKeyHandler } from "./socket/accessKeyHandler";
 import { getSocketRooms } from "./socketRooms";
-import { CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD, readConnectedServiceReaderSupport } from "@happier-dev/protocol";
+import { CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD, readConnectedServiceReaderSupport } from "@piggercode/protocol";
 import { createAdapter } from "@socket.io/redis-streams-adapter";
 import { getRedisClient } from "@/storage/redis/redis";
 import { randomUUID } from "node:crypto";

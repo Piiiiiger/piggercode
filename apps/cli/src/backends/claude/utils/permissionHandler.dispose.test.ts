@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE, CLAUDE_UNIFIED_TERMINAL_DIALOG_CHOICE_REQUEST_SOURCE } from '@happier-dev/agents';
+import { CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE, CLAUDE_UNIFIED_TERMINAL_DIALOG_CHOICE_REQUEST_SOURCE } from '@piggercode/agents';
 
 import { PermissionHandler } from './permissionHandler';
 import { CodexLikePermissionHandler } from '@/agent/permissions/CodexLikePermissionHandler';

@@ -1,4 +1,4 @@
-import { compareVersions } from '@happier-dev/cli-common/update';
+import { compareVersions } from '@piggercode/cli-common/update';
 
 /**
  * Strict "is a an older version than b" semver check.

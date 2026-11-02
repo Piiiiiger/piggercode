@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { deriveBoxPublicKeyFromSeed } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed } from '@piggercode/protocol';
 import { configuration, reloadConfiguration } from '@/configuration';
 import { readCredentials, readSettings, updateSettings, writeCredentialsDataKey } from '@/persistence';
 import { applyEphemeralServerSelectionFromPrefixArgs } from '@/server/serverSelection';

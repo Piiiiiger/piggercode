@@ -8,7 +8,7 @@ let cached: string | null = null;
 export function resolveServerAppWorkspaceName(): string {
   if (cached) return cached;
 
-  const fallback = '@happier-dev/server';
+  const fallback = '@piggercode/server';
   try {
     const pkgPath = resolve(repoRootDir(), 'apps', 'server', 'package.json');
     const raw = readFileSync(pkgPath, 'utf8');

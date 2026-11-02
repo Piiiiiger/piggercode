@@ -14,7 +14,7 @@ const { resolveWindowsCommandInvocationMock, resolveOpenCodeCliLaunchSpecMock } 
   resolveOpenCodeCliLaunchSpecMock: vi.fn(),
 }));
 
-vi.mock('@happier-dev/cli-common/process', () => ({
+vi.mock('@piggercode/cli-common/process', () => ({
   resolveWindowsCommandInvocation: resolveWindowsCommandInvocationMock,
 }));
 

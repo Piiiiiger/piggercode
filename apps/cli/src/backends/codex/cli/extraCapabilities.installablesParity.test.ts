@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 
 import { capabilities } from './extraCapabilities';
 

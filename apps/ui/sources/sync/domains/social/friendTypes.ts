@@ -1,4 +1,4 @@
-import type { RelationshipStatus, UserProfile } from '@happier-dev/protocol';
+import type { RelationshipStatus, UserProfile } from '@piggercode/protocol';
 
 export {
     RelationshipStatusSchema,
@@ -13,7 +13,7 @@ export {
     type UsersSearchResponse,
     RelationshipUpdatedEventSchema,
     type RelationshipUpdatedEvent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 //
 // Utility functions

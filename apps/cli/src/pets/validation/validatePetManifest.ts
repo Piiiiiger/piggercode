@@ -4,7 +4,7 @@ import {
   PetPackageManifestV1Schema,
   type PetPackageManifestV1,
   type PetPackageValidationIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PetManifestValidationResult =
   | Readonly<{ ok: true; manifest: PetPackageManifestV1 }>

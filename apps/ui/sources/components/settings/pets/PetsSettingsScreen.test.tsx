@@ -8,7 +8,7 @@ import {
     type DiscoveredPetPackageV1,
     type ImportedLocalPetPackageV1,
     type PetPackageManifestV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { StoreApi, UseBoundStore } from 'zustand';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 

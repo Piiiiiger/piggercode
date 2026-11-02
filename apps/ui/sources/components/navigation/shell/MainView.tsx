@@ -41,7 +41,7 @@ import { useInboxAvailable } from '@/hooks/inbox/useInboxAvailable';
 import { useTabState } from '@/hooks/ui/useTabState';
 import { Text } from '@/components/ui/text/Text';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
 import {
     shouldForceFreshNewSessionEntryFromPressEvent,

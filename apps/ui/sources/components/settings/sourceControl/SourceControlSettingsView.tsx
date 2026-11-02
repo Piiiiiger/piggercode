@@ -11,7 +11,7 @@ import { useSettingMutable } from '@/sync/domains/state/storage';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
 import { scmBackendSettingsRegistry } from '@/scm/settings/scmBackendSettingsRegistry';
 import type { ScmCommitStrategy } from '@/scm/settings/commitStrategy';
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 import { Modal } from '@/modal';
 import { t, type TranslationKey } from '@/text';
 import { useUnistyles } from 'react-native-unistyles';

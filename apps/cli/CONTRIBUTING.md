@@ -31,7 +31,7 @@ This creates a `happier-dev` command in your PATH pointing to your local build, 
 
 | Command | Runs |
 |---------|------|
-| `happier` | Stable npm version (from `npm install -g @happier-dev/cli`) |
+| `happier` | Stable npm version (from `npm install -g @piggercode/cli`) |
 | `happy` | Stable npm version (legacy alias) |
 | `happier-dev` | Local development version (from this repo) |
 | `happy-dev` | Local development version (legacy alias) |
@@ -258,7 +258,7 @@ Profile synchronization ensures AI backend configurations created in the Happier
 
 ### Profile Schema Validation (Single Source of Truth)
 
-Backend profile schema + built-in catalog are canonicalized in `@happier-dev/protocol`:
+Backend profile schema + built-in catalog are canonicalized in `@piggercode/protocol`:
 - `packages/protocol/src/profiles/backendProfileSchema.ts`
 - `packages/protocol/src/profiles/builtInBackendProfiles.ts`
 - `packages/protocol/src/profiles/profileCompatibility.ts`

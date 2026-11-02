@@ -42,7 +42,7 @@ import {
 import { Switch } from '@/components/ui/forms/Switch';
 import { CAPABILITIES_REQUEST_MACHINE_DETAILS } from '@/capabilities/requests';
 import { setActiveServerAndSwitch } from '@/sync/domains/server/activeServerSwitch';
-import type { DaemonExecutionRunEntry } from '@happier-dev/protocol';
+import type { DaemonExecutionRunEntry } from '@piggercode/protocol';
 import { ExecutionRunRow } from '@/components/sessions/runs/ExecutionRunRow';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { useMountedShouldContinue } from '@/hooks/ui/useMountedShouldContinue';

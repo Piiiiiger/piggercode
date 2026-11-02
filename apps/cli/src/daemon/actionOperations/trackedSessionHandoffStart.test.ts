@@ -16,7 +16,7 @@ const request = {
 
 describe('createTrackedSessionHandoffStart', () => {
   it('returns the historical start receipt while one correlated parent operation owns all phases', async () => {
-    const snapshots: import('@happier-dev/protocol').ActionOperationSnapshotV1[] = [];
+    const snapshots: import('@piggercode/protocol').ActionOperationSnapshotV1[] = [];
     const store = createActionOperationStore({ onRevision: (snapshot) => snapshots.push(snapshot) });
     const runner = createActionOperationRunner({ store, createOperationId: () => 'operation-1' });
     let release!: () => void;

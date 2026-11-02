@@ -52,7 +52,7 @@ export function useLocalNeuralKokoroVoiceCatalog(params: {
 
         try {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
-          const pkg = require('@happier-dev/sherpa-native') as any;
+          const pkg = require('@piggercode/sherpa-native') as any;
           const native =
             typeof pkg?.getOptionalHappierSherpaNativeModule === 'function' ? pkg.getOptionalHappierSherpaNativeModule() : null;
 

@@ -1,7 +1,7 @@
 import pino from 'pino';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
-import { redactPublicShareCapabilityUrl } from '@happier-dev/protocol';
+import { redactPublicShareCapabilityUrl } from '@piggercode/protocol';
 import { isBunRuntime } from '../runtime/isBunRuntime';
 
 // Single log file name created once at startup

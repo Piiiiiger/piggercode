@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   computeContentPublicKeyFingerprint,
   MachineInstallationProofV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   buildMachineInstallationProof,

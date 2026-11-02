@@ -1,7 +1,7 @@
 import { createSharedProviderLocalControl } from '@/agent/localControl/createSharedProviderLocalControl';
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
-import type { SessionProviderCliAttachPrepareRequestV1, SessionProviderCliAttachPrepareResultV1 } from '@happier-dev/protocol';
+import type { SessionProviderCliAttachPrepareRequestV1, SessionProviderCliAttachPrepareResultV1 } from '@piggercode/protocol';
 
 import {
   createCodexSharedTuiSupervisor,

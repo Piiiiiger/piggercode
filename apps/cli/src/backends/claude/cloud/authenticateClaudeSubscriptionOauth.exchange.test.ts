@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CLAUDE_OAUTH_AUTHORIZE_URL } from '@happier-dev/agents';
+import { CLAUDE_OAUTH_AUTHORIZE_URL } from '@piggercode/agents';
 
 import {
   buildClaudeSubscriptionAuthorizationUrl,

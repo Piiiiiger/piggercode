@@ -1,4 +1,4 @@
-import type { ActionId } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
 
 const INVENTORY_PRIVACY_ACTION_IDS = new Set<ActionId>([
     'paths.list_recent',

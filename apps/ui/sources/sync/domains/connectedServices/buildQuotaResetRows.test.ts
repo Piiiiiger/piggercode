@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ConnectedServiceQuotaRecoveryCreditsV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaRecoveryCreditsV1Schema } from '@piggercode/protocol';
 
 import { buildQuotaResetRows } from './buildQuotaResetRows';
 import type { ResetCountdownDaysFormatter } from './formatResetCountdown';

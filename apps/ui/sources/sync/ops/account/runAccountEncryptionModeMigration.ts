@@ -2,8 +2,8 @@ import type {
   AccountEncryptionMigrateRequest,
   AccountEncryptionMigrateSuccessResponse,
   SessionDraftRecordV1,
-} from '@happier-dev/protocol';
-import { canonicalSessionDraftAddressV1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { canonicalSessionDraftAddressV1 } from '@piggercode/protocol';
 
 type Params = Readonly<{
   request: AccountEncryptionMigrateRequest;

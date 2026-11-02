@@ -123,12 +123,12 @@ export function collectPolicyFindings(files: readonly InventoryFile[]): PolicyFi
       });
     }
 
-    if (!testFile && hasPattern(file.content, /@happier-dev\/tests\//)) {
+    if (!testFile && hasPattern(file.content, /@piggercode\/tests\//)) {
       findings.push({
         ruleId: 'no-testkit-imports-in-runtime',
         mode: 'enforce',
         filePath: file.filePath,
-        message: 'Non-test source must not import @happier-dev/tests internals.',
+        message: 'Non-test source must not import @piggercode/tests internals.',
       });
     }
 

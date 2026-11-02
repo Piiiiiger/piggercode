@@ -4,11 +4,11 @@ import {
     PendingRequestedActionV1Schema,
     type PendingRequestedActionV1,
     type PendingDeliveryStatusV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export type PendingMessageRow = {
     localId: string;
-    messageRole: import("@happier-dev/protocol").SessionMessageRole | null;
+    messageRole: import("@piggercode/protocol").SessionMessageRole | null;
     content: PrismaJson.SessionPendingMessageContent;
     requestedAction?: PendingRequestedActionV1;
     requestedActionMalformed?: true;

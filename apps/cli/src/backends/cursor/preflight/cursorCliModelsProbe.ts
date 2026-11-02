@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 import type { ProbedAgentModel } from '@/capabilities/probes/agentModelsProbe';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import {
   formatModelOptionChoiceLabel,

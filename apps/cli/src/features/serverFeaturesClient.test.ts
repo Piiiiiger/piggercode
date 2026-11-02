@@ -1,4 +1,4 @@
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 import { createServer } from 'node:http';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 

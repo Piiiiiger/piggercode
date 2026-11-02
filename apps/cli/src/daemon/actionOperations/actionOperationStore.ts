@@ -3,7 +3,7 @@ import {
   type ActionOperationListV1Request,
   type ActionOperationListV1Response,
   type ActionOperationSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ActionOperationAccessScope } from './actionOperationTypes';
 

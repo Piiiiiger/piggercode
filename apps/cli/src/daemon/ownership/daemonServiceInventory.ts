@@ -1,4 +1,4 @@
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 
 import { readSettings } from '@/persistence';
 import { happierHomeDirsMatch } from './happierHomeDirComparableKey';

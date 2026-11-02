@@ -1,5 +1,5 @@
 {
-  "name": "@happier-dev/audio-stream-native",
+  "name": "@piggercode/audio-stream-native",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",

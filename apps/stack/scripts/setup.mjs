@@ -24,7 +24,7 @@ import { readServerPortFromEnvFile, resolveServerPortFromEnv } from './utils/ser
 import { runOrchestratedGuidedAuthFlow } from './utils/auth/orchestrated_stack_auth_flow.mjs';
 import { buildSetupChildEnv } from './utils/setup/child_env.mjs';
 import { getVerbosityLevel } from './utils/cli/verbosity.mjs';
-import { runCommandLogged } from '@happier-dev/cli-common/output';
+import { runCommandLogged } from '@piggercode/cli-common/output';
 import { bold, cyan, dim, green, yellow } from './utils/ui/ansi.mjs';
 import { expandHome } from './utils/paths/canonical_home.mjs';
 import { listAllStackNames, stackExistsSync } from './utils/stack/stacks.mjs';
@@ -1138,10 +1138,10 @@ async function cmdSetup({ rootDir, argv }) {
               'hstack'
             )} from any terminal.`
           )}\n` +
-          `${dim(`If you skip this, you can always run commands via ${cyan('npx --yes -p @happier-dev/stack hstack ...')}.`)}`,
+          `${dim(`If you skip this, you can always run commands via ${cyan('npx --yes -p @piggercode/stack hstack ...')}.`)}`,
         options: [
           { label: `yes (${green('recommended')}, default) — enable ${cyan('hstack')} in your terminal`, value: true },
-          { label: `no — keep using ${cyan('npx --yes -p @happier-dev/stack hstack ...')}`, value: false },
+          { label: `no — keep using ${cyan('npx --yes -p @piggercode/stack hstack ...')}`, value: false },
         ],
         defaultIndex: 0,
       });

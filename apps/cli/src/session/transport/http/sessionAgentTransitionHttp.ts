@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { z } from 'zod';
 
-import type { SessionStoredMessageContent } from '@happier-dev/protocol';
+import type { SessionStoredMessageContent } from '@piggercode/protocol';
 
 import { resolveServerHttpBaseUrl } from './serverHttpBaseUrl';
 

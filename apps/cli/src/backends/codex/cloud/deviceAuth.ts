@@ -4,7 +4,7 @@ import {
   OPENAI_CODEX_DEVICE_USER_CODE_URL,
   OPENAI_CODEX_DEVICE_VERIFICATION_URL,
   OPENAI_CODEX_OAUTH_CLIENT_ID,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import {
   exchangeCodexAuthorizationGrant,

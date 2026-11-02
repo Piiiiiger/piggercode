@@ -22,7 +22,7 @@ vi.mock('@/settings/accountSettings/activeAccountSettingsSnapshot', () => ({
   getActiveAccountSettingsSnapshot: mocks.getActiveAccountSettingsSnapshot,
 }));
 
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 import { ensureAgyAcpServerForLaunch } from './ensureAgyAcpServerForLaunch';
 
 describe('ensureAgyAcpServerForLaunch', () => {

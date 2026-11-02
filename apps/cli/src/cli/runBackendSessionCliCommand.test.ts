@@ -31,7 +31,7 @@ import * as persistenceModule from '@/persistence';
 import * as accountSettingsModule from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import * as providerSettingsModule from '@/settings/providerSettings';
 import { logger } from '@/ui/logger';
-import { AIBackendProfileSchema } from '@happier-dev/protocol';
+import { AIBackendProfileSchema } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 
 afterEach(() => {

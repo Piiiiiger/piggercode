@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
     buildConnectedServiceCredentialRecord,
     type ScmHostingProvider,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 

@@ -1,4 +1,4 @@
-import { projectCurrentAgentSessionView } from '@happier-dev/agents';
+import { projectCurrentAgentSessionView } from '@piggercode/agents';
 import type { Credentials } from '@/persistence';
 import { fetchSessionById } from '@/session/transport/http/sessionsHttp';
 import { updateSessionMetadataWithRetry } from '@/session/metadata/updateSessionMetadataWithRetry';
@@ -6,7 +6,7 @@ import type { SessionHandoffCoordinatorInput } from './sessionHandoffCoordinator
 import type {
   SessionHandoffPrepareTargetResultGetResponse,
   SessionHandoffStartResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export async function bindSessionHandoffTarget(params: Readonly<{
   credentials: Credentials;

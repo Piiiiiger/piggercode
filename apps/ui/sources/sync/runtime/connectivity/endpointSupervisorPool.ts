@@ -2,7 +2,7 @@ import {
     createManagedEndpointSupervisor,
     DEFAULT_MANAGED_CONNECTION_POLICY,
     type ManagedEndpointSupervisor,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 import { AppState } from 'react-native';
 
 import { TokenStorage } from '@/auth/storage/tokenStorage';

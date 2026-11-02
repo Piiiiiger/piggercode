@@ -22,7 +22,7 @@ PiggerCode 是 [Happier](https://github.com/happier-dev/happier) 的个人分支
 - **命令和目录**：命令 `piggercode`（与 `happier` 等价），服务器上的主目录 `~/.piggercode`。
 - **其它**：Codex 守护进程和空会话的修复、空闲会话不再显示接管横幅。
 
-为了继续兼容官方手机 App 和上游更新，内部名称保持不变：npm 包 `@happier-dev/*`、环境变量 `HAPPIER_*`、链接协议 `happier://`、项目内的 `.happier/uploads` 等。
+为了继续兼容官方手机 App 和上游更新，内部名称保持不变：npm 包 `@piggercode/*`、环境变量 `HAPPIER_*`、链接协议 `happier://`、项目内的 `.happier/uploads` 等。
 
 只维护 Linux 和 macOS。
 
@@ -48,8 +48,8 @@ APP_ENV=production HAPPIER_EMBEDDED_POLICY_ENV=production EXPO_UNSTABLE_WEB_MODA
   yarn -s expo export --platform web --output-dir dist
 
 # CLI
-yarn workspace @happier-dev/transfers build
-yarn workspace @happier-dev/cli build
+yarn workspace @piggercode/transfers build
+yarn workspace @piggercode/cli build
 ```
 
 测试和类型检查：

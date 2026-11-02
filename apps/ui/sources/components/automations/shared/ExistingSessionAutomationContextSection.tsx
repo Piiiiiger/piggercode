@@ -7,7 +7,7 @@ import { resolveExecutionRunBackendLabel } from '@/components/sessions/runs/reso
 import type { SessionAuthoringDraft } from '@/components/sessions/authoring/draft/sessionAuthoringDraft';
 import { t } from '@/text';
 import { getMachineDisplayName } from '@/utils/sessions/machineUtils';
-import { SessionMcpSelectionV1Schema } from '@happier-dev/protocol';
+import { SessionMcpSelectionV1Schema } from '@piggercode/protocol';
 
 function resolveResumeSupportSubtitle(availability: ExistingSessionAutomationAuthoringContext['availability']): string | null {
     if (availability.kind !== 'ready') {

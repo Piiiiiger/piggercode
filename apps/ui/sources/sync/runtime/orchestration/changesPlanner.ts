@@ -1,11 +1,11 @@
 import type { ApiChangeEntry } from '@/sync/api/types/apiTypes';
-import { ChangeKindSchema, type ChangeKind } from '@happier-dev/protocol/changes';
+import { ChangeKindSchema, type ChangeKind } from '@piggercode/protocol/changes';
 import {
     SessionDraftChangeHintV1Schema,
     canonicalSessionDraftAddressV1,
     type SessionDraftAddressV1,
     type SessionDraftChangeHintV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PlannedKvAction =
     | { type: 'none' }

@@ -4,7 +4,7 @@ import {
     BUILT_IN_EXPO_PUSH_NOTIFICATION_CHANNEL_ID,
     DEFAULT_NOTIFICATION_CHANNEL_TOPICS_V1,
     DEFAULT_NOTIFICATIONS_SETTINGS_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     addWebhookNotificationChannel,

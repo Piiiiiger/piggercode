@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import {
   SessionUsageLimitRecoveryResumePromptModeV1Schema,
   type SessionUsageLimitRecoveryResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { notifyDaemonConnectedServiceRuntimeAuthFailure } from '@/daemon/controlClient';
 import { logger as defaultLogger } from '@/ui/logger';
 import {

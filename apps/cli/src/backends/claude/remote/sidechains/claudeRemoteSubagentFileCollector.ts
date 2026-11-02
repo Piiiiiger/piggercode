@@ -25,8 +25,8 @@ import {
 import { realpath } from 'node:fs/promises';
 import { createJsonlFollowController, type JsonlFollowController } from '@/agent/localControl/jsonlFollowController';
 import { normalizeJsonlFollowPolicy, type JsonlFollowPolicyInput, type JsonlFollowPolicyV1 } from '@/agent/localControl/jsonlFollowPolicy';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
 import { normalizeClaudeAgentSdkProviderTaskId } from '../../providerActivity/createClaudeProviderActivityLedger';
 
 type WatchFile = (file: string, onFileChange: (file: string) => void) => () => void;

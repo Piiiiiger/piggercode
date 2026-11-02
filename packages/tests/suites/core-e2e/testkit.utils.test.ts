@@ -36,7 +36,7 @@ describe('testkit utilities', () => {
     expect(resolveYarnCommandInvocation).toBeTypeOf('function');
     if (!resolveYarnCommandInvocation) throw new Error('missing testkit Yarn invocation resolver');
 
-    const invocation = resolveYarnCommandInvocation(['-s', 'workspace', '@happier-dev/cli', 'build'], {
+    const invocation = resolveYarnCommandInvocation(['-s', 'workspace', '@piggercode/cli', 'build'], {
       platform: 'win32',
       npmExecPath: 'C:\\npm\\node_modules\\npm\\bin\\npm-cli.js',
       comspec: 'C:\\Windows\\System32\\cmd.exe',

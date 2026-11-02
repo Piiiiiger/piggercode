@@ -3,7 +3,7 @@ import {
     machineStoredContentMatchesAccountMode,
     type MachineContentKeyTransitionInputV1,
     type MachineContentKeyTransitionResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterTx, inTx } from '@/storage/inTx';
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from '@/app/encryption/accountEncryptionMode';
 import { markAccountChanged } from '@/app/changes/markAccountChanged';

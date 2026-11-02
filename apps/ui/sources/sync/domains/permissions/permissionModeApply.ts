@@ -1,5 +1,5 @@
 import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 export async function applyPermissionModeSelection(params: {
     sessionId: string;

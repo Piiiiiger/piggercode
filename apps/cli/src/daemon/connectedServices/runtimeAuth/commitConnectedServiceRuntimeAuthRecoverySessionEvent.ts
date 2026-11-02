@@ -4,7 +4,7 @@ import {
   agentEventAttentionImpact,
   buildAgentEventLocalId,
   type SessionStoredMessageContent,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { updateSessionMetadataWithRetry } from '@/session/metadata/updateSessionMetadataWithRetry';

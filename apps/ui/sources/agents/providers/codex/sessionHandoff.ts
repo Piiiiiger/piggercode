@@ -1,9 +1,9 @@
 import {
     buildCodexAgentRuntimeDescriptor,
     normalizeCodexBackendMode,
-} from '@happier-dev/agents';
-import type { AgentRuntimeDescriptorV1, DirectSessionsSource } from '@happier-dev/protocol';
-import { readCanonicalAgentRuntimeDescriptorV1ForProvider } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { AgentRuntimeDescriptorV1, DirectSessionsSource } from '@piggercode/protocol';
+import { readCanonicalAgentRuntimeDescriptorV1ForProvider } from '@piggercode/protocol';
 
 import type { AgentSessionHandoffProviderPatch } from '@/agents/registry/registryUiBehavior';
 

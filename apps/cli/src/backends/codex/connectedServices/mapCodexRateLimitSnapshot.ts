@@ -4,7 +4,7 @@ import {
   type ConnectedServiceProfileId,
   type ConnectedServiceQuotaMeterV1,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { mapCodexRateLimitResetCreditsToQuotaRecoveryCredits } from '../quota/codexQuotaRecoveryCredits';
 import { unwrapCodexRateLimitSnapshot } from '../appServer/rateLimitSnapshot';

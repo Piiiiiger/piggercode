@@ -10,8 +10,8 @@
 import chalk from 'chalk';
 
 import { isPermissionMode, type PermissionMode } from '@/api/types';
-import { parsePermissionModeAlias as parsePermissionModeAliasShared } from '@happier-dev/agents';
-import { SESSION_PERMISSION_INTENT_INPUTS } from '@happier-dev/protocol';
+import { parsePermissionModeAlias as parsePermissionModeAliasShared } from '@piggercode/agents';
+import { SESSION_PERMISSION_INTENT_INPUTS } from '@piggercode/protocol';
 
 export interface ProviderSessionArgPartitionResult {
   readonly startedBy?: 'daemon' | 'terminal';

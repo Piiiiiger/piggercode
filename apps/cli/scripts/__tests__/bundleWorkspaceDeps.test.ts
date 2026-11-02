@@ -36,19 +36,19 @@ describe('bundleWorkspaceDeps', () => {
       writeCliBundledHostPackage({
         happyCliDir,
         bundledDependencies: [
-          '@happier-dev/agents',
-          '@happier-dev/cli-common',
-          '@happier-dev/connection-supervisor',
-          '@happier-dev/protocol',
-          '@happier-dev/transfers',
-          '@happier-dev/release-runtime',
+          '@piggercode/agents',
+          '@piggercode/cli-common',
+          '@piggercode/connection-supervisor',
+          '@piggercode/protocol',
+          '@piggercode/transfers',
+          '@piggercode/release-runtime',
         ],
       });
 
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/agents',
-      packageName: '@happier-dev/agents',
+      packageName: '@piggercode/agents',
       manifestOverrides: {
         scripts: { postinstall: 'echo should-not-run' },
         devDependencies: { typescript: '^5' },
@@ -58,7 +58,7 @@ describe('bundleWorkspaceDeps', () => {
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/protocol',
-      packageName: '@happier-dev/protocol',
+      packageName: '@piggercode/protocol',
       manifestOverrides: {
         scripts: { postinstall: 'echo should-not-run' },
         dependencies: {
@@ -72,7 +72,7 @@ describe('bundleWorkspaceDeps', () => {
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/cli-common',
-      packageName: '@happier-dev/cli-common',
+      packageName: '@piggercode/cli-common',
       manifestOverrides: {
         scripts: { postinstall: 'echo should-not-run' },
         exports: {
@@ -90,18 +90,18 @@ describe('bundleWorkspaceDeps', () => {
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/connection-supervisor',
-      packageName: '@happier-dev/connection-supervisor',
+      packageName: '@piggercode/connection-supervisor',
       manifestOverrides: { scripts: { postinstall: 'echo should-not-run' } },
       files: { 'dist/index.js': 'export const q = 4;\n' },
     });
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/transfers',
-      packageName: '@happier-dev/transfers',
+      packageName: '@piggercode/transfers',
       manifestOverrides: {
         scripts: { postinstall: 'echo should-not-run' },
         dependencies: {
-          '@happier-dev/protocol': '0.0.0',
+          '@piggercode/protocol': '0.0.0',
         },
       },
       files: { 'dist/index.js': 'export const transfer = true;\n' },
@@ -109,7 +109,7 @@ describe('bundleWorkspaceDeps', () => {
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/release-runtime',
-      packageName: '@happier-dev/release-runtime',
+      packageName: '@piggercode/release-runtime',
       manifestOverrides: {
         scripts: { postinstall: 'echo should-not-run' },
         devDependencies: { typescript: '^5' },
@@ -122,17 +122,17 @@ describe('bundleWorkspaceDeps', () => {
     // Protocol runtime deps should be vendored under the bundled protocol package.
     expect(
       existsSync(
-        join(happyCliDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'base64-js', 'package.json'),
+        join(happyCliDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'base64-js', 'package.json'),
       ),
     ).toBe(true);
     expect(
       existsSync(
-        join(happyCliDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes', 'package.json'),
+        join(happyCliDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes', 'package.json'),
       ),
     ).toBe(true);
     expect(
       existsSync(
-        join(happyCliDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
+        join(happyCliDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
       ),
     ).toBe(true);
 
@@ -141,51 +141,51 @@ describe('bundleWorkspaceDeps', () => {
     expect(existsSync(join(happyCliDir, 'node_modules', '@noble'))).toBe(false);
     expect(existsSync(join(happyCliDir, 'node_modules', 'tweetnacl'))).toBe(false);
     const bundledAgentsPkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'agents', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'agents', 'package.json'), 'utf8'),
     );
     const bundledProtocolPkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'protocol', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'protocol', 'package.json'), 'utf8'),
     );
     const bundledCommonPkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'cli-common', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'cli-common', 'package.json'), 'utf8'),
     );
     const bundledConnectionSupervisorPkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'connection-supervisor', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'connection-supervisor', 'package.json'), 'utf8'),
     );
     const bundledTransfersPkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'transfers', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'transfers', 'package.json'), 'utf8'),
     );
     const bundledReleaseRuntimePkgJson = JSON.parse(
-      readFileSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'release-runtime', 'package.json'), 'utf8'),
+      readFileSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'release-runtime', 'package.json'), 'utf8'),
     );
 
     expect(bundledAgentsPkgJson.scripts).toBeUndefined();
     expect(bundledAgentsPkgJson.devDependencies).toBeUndefined();
-    expect(bundledAgentsPkgJson.name).toBe('@happier-dev/agents');
+    expect(bundledAgentsPkgJson.name).toBe('@piggercode/agents');
 
     expect(bundledProtocolPkgJson.scripts).toBeUndefined();
-    expect(bundledProtocolPkgJson.name).toBe('@happier-dev/protocol');
+    expect(bundledProtocolPkgJson.name).toBe('@piggercode/protocol');
 
     expect(bundledCommonPkgJson.scripts).toBeUndefined();
-    expect(bundledCommonPkgJson.name).toBe('@happier-dev/cli-common');
+    expect(bundledCommonPkgJson.name).toBe('@piggercode/cli-common');
     expect(
-      existsSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'cli-common', 'workspaceLockLease.mjs')),
+      existsSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'cli-common', 'workspaceLockLease.mjs')),
     ).toBe(true);
     expect(
-      existsSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'cli-common', 'workspaceBundleLock.mjs')),
+      existsSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'cli-common', 'workspaceBundleLock.mjs')),
     ).toBe(true);
 
     expect(bundledConnectionSupervisorPkgJson.scripts).toBeUndefined();
-    expect(bundledConnectionSupervisorPkgJson.name).toBe('@happier-dev/connection-supervisor');
+    expect(bundledConnectionSupervisorPkgJson.name).toBe('@piggercode/connection-supervisor');
 
     expect(bundledTransfersPkgJson.scripts).toBeUndefined();
-    expect(bundledTransfersPkgJson.name).toBe('@happier-dev/transfers');
-    expect(bundledTransfersPkgJson.dependencies?.['@happier-dev/protocol']).toBeUndefined();
+    expect(bundledTransfersPkgJson.name).toBe('@piggercode/transfers');
+    expect(bundledTransfersPkgJson.dependencies?.['@piggercode/protocol']).toBeUndefined();
     expect(bundledTransfersPkgJson.dependencies?.['base64-js']).toBeUndefined();
 
       expect(bundledReleaseRuntimePkgJson.scripts).toBeUndefined();
       expect(bundledReleaseRuntimePkgJson.devDependencies).toBeUndefined();
-      expect(bundledReleaseRuntimePkgJson.name).toBe('@happier-dev/release-runtime');
+      expect(bundledReleaseRuntimePkgJson.name).toBe('@piggercode/release-runtime');
     } finally {
       cleanup();
     }
@@ -197,13 +197,13 @@ describe('bundleWorkspaceDeps', () => {
     try {
       writeCliBundledHostPackage({
         happyCliDir,
-        bundledDependencies: ['@happier-dev/protocol', '@happier-dev/release-runtime'],
+        bundledDependencies: ['@piggercode/protocol', '@piggercode/release-runtime'],
       });
 
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/protocol',
-      packageName: '@happier-dev/protocol',
+      packageName: '@piggercode/protocol',
       manifestOverrides: {
         dependencies: {
           'dep-a': '^1.0.0',
@@ -214,7 +214,7 @@ describe('bundleWorkspaceDeps', () => {
     writeWorkspacePackageFixture({
       repoRoot,
       workspacePath: 'packages/release-runtime',
-      packageName: '@happier-dev/release-runtime',
+      packageName: '@piggercode/release-runtime',
       files: { 'dist/index.js': 'export const w = 4;\n' },
     });
 
@@ -236,9 +236,9 @@ describe('bundleWorkspaceDeps', () => {
 
     // Minimal stubs for other bundled workspace packages.
     for (const pkg of [
-      { name: '@happier-dev/agents', workspacePath: 'packages/agents' },
-      { name: '@happier-dev/cli-common', workspacePath: 'packages/cli-common' },
-      { name: '@happier-dev/transfers', workspacePath: 'packages/transfers' },
+      { name: '@piggercode/agents', workspacePath: 'packages/agents' },
+      { name: '@piggercode/cli-common', workspacePath: 'packages/cli-common' },
+      { name: '@piggercode/transfers', workspacePath: 'packages/transfers' },
     ]) {
       writeWorkspacePackageFixture({
         repoRoot,
@@ -246,7 +246,7 @@ describe('bundleWorkspaceDeps', () => {
         packageName: pkg.name,
         manifestOverrides: {
           dependencies: {
-            '@happier-dev/protocol': '0.0.0',
+            '@piggercode/protocol': '0.0.0',
           },
         },
         files: { 'dist/index.js': 'export const x = 1;\n' },
@@ -258,7 +258,7 @@ describe('bundleWorkspaceDeps', () => {
     // dep-a is vendored because protocol declares it.
     expect(() =>
       readFileSync(
-        resolve(happyCliDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'dep-a', 'package.json'),
+        resolve(happyCliDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'dep-a', 'package.json'),
         'utf8',
       ),
     ).not.toThrow();
@@ -269,7 +269,7 @@ describe('bundleWorkspaceDeps', () => {
           resolve(
             happyCliDir,
             'node_modules',
-            '@happier-dev',
+            '@piggercode',
             'protocol',
             'node_modules',
             'dep-a',
@@ -292,27 +292,27 @@ describe('bundleWorkspaceDeps', () => {
       writeWorkspacePackageFixture({
         repoRoot,
         workspacePath: 'packages/agents',
-        packageName: '@happier-dev/agents',
+        packageName: '@piggercode/agents',
         manifestOverrides: { exports: { '.': { default: './dist/index.js' } } },
         files: { 'dist/index.js': 'export const agent = true;\n' },
       });
       writeWorkspacePackageFixture({
         repoRoot,
         workspacePath: 'packages/cli-common',
-        packageName: '@happier-dev/cli-common',
+        packageName: '@piggercode/cli-common',
         manifestOverrides: { exports: { '.': { default: './dist/index.js' } } },
         files: { 'dist/index.js': 'export const cliCommon = true;\n' },
       });
 
       writeCliBundledHostPackage({
         happyCliDir,
-        bundledDependencies: ['@happier-dev/cli-common'],
+        bundledDependencies: ['@piggercode/cli-common'],
       });
 
       await bundleWorkspaceDeps({ repoRoot, happyCliDir });
 
-      expect(existsSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'cli-common', 'package.json'))).toBe(true);
-      expect(existsSync(resolve(happyCliDir, 'node_modules', '@happier-dev', 'agents', 'package.json'))).toBe(false);
+      expect(existsSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'cli-common', 'package.json'))).toBe(true);
+      expect(existsSync(resolve(happyCliDir, 'node_modules', '@piggercode', 'agents', 'package.json'))).toBe(false);
     } finally {
       cleanup();
     }

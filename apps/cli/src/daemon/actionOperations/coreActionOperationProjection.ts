@@ -1,7 +1,7 @@
 import type {
   ActionOperationDomainRefV1,
-} from '@happier-dev/protocol';
-import { SessionForkStrategySchema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SessionForkStrategySchema } from '@piggercode/protocol';
 
 function nonBlank(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined;

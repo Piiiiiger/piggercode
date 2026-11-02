@@ -11,7 +11,7 @@ import { applyServerMigrations } from '../server/server_migrations.mjs';
 import {
   renderPrismaCompatibleSqliteDatabaseUrl,
   resolveServerLightSqliteDatabaseUrlOptionsFromEnv,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 function looksLikeMissingTableError(msg) {
   const s = String(msg ?? '').toLowerCase();

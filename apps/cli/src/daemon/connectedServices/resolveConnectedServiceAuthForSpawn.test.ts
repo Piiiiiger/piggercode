@@ -14,9 +14,9 @@ import {
   type ConnectedServiceAuthGroupV1,
   type ProviderAccountUsageRecordKeyV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import type { ApiClient } from '@/api/api';
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from './accountGroups/quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';

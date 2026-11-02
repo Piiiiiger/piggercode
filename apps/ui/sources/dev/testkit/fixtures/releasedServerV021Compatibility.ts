@@ -1,7 +1,7 @@
 import {
     FeaturesResponseSchema,
     type FeaturesResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Relevant `/v1/features` bytes from immutable server-v0.2.1 commit

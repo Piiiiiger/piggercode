@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createRpcCallError } from '../runtime/rpcErrors';
-import { RPC_ERROR_CODES, RPC_METHODS } from '@happier-dev/protocol/rpc';
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS } from '@piggercode/protocol/rpc';
+import type { FeaturesResponse } from '@piggercode/protocol';
 import { createStorageModuleStub } from '@/dev/testkit/mocks/storage';
 
 type StatFileRpcResponse =

@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 import {
   __resetAgyAcpInFlightForTests,
   installAgyAcp,
@@ -40,8 +40,8 @@ describe('agy-acp-server runtime installable (EU-3)', () => {
 
   it('joins concurrent prewarm and launch ensures into one install', async () => {
     const { ensureRuntimeInstallablesForLaunch } = await import('./ensureRuntimeInstallablesForLaunch.js');
-    const { INSTALLABLE_KEYS: KEYS } = await import('@happier-dev/protocol');
-    const { accountSettingsParse } = await import('@happier-dev/protocol');
+    const { INSTALLABLE_KEYS: KEYS } = await import('@piggercode/protocol');
+    const { accountSettingsParse } = await import('@piggercode/protocol');
 
     let downloadCalls = 0;
     let extractCalls = 0;

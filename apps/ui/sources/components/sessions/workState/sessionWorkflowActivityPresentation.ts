@@ -2,7 +2,7 @@ import {
     buildAgentActivityEntryId,
     findWorkflowPhaseForAgent,
     SessionWorkflowActivityHeadlineV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
     SessionWorkflowActivityHeadlineV1,

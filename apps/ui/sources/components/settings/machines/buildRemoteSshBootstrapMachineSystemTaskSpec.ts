@@ -1,4 +1,4 @@
-import type { SystemTaskSpec } from '@happier-dev/protocol';
+import type { SystemTaskSpec } from '@piggercode/protocol';
 
 export type RemoteSshPromptResolution = Readonly<{
     hostTrust?: Readonly<{

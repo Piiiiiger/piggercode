@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import type { PermissionMode } from './permissionTypes';
 import { readAccountPermissionDefaults, resolveNewSessionDefaultPermissionMode } from './permissionDefaults';
 

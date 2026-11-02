@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import type { McpValueRefV1 } from '@happier-dev/protocol';
+import type { McpValueRefV1 } from '@piggercode/protocol';
 
 import type { CustomModalInjectedProps } from '@/modal';
 import { Modal } from '@/modal';

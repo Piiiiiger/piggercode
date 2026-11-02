@@ -10,7 +10,7 @@ import {
     encryptSecretStringV1,
     openAccountScopedBlobCiphertext,
     sealAccountScopedBlobCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const mocks = vi.hoisted(() => {
     const settingsParse = vi.fn((value: unknown) => {
@@ -470,7 +470,7 @@ describe('syncSettings account settings ciphertext', () => {
             }),
         } as unknown as Encryption;
 
-        const ciphertext = (await import('@happier-dev/protocol')).sealAccountScopedBlobCiphertext({
+        const ciphertext = (await import('@piggercode/protocol')).sealAccountScopedBlobCiphertext({
             kind: 'account_settings',
             material: { type: 'dataKey', machineKey: TEST_MACHINE_KEY },
             payload: { analyticsOptOut: true },

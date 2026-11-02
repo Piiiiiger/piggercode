@@ -11,7 +11,7 @@ import {
   TransferChunkEnvelopeSchema,
   TransferEndpointCandidateSchema,
   type TransferEndpointCandidate,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 import {
   createEncryptedTransferChunkEnvelope,

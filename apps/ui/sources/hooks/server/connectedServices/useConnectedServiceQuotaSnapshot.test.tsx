@@ -2,15 +2,15 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import {
   buildProviderAccountUsageRecordId,
   ConnectedServiceQuotaSnapshotV1Schema,
   ProviderAccountUsageSnapshotV1Schema,
   sealProviderAccountUsageSnapshotCiphertext,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type {
   getConnectedServiceQuotaSnapshotSealed,

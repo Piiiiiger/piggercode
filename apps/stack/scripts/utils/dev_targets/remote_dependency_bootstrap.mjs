@@ -88,7 +88,7 @@ export async function bootstrapRemoteDependencies({
     const { ensureWorkspacePackagesBuiltByName } = await loadWorkspaceBuildOwner(repoDir);
     await ensureWorkspacePackagesBuiltByName(
       repoDir,
-      ['@happier-dev/cli-common'],
+      ['@piggercode/cli-common'],
       { env, includeDevDependencies: false },
     );
   }

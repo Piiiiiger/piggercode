@@ -4,7 +4,7 @@ import { isPidSafeHappySessionProcess } from '@/daemon/pidSafety';
 import {
   SESSION_RUNNER_RESTART_DISABLED_REASONS,
   type SessionRunnerRestartDisabledReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { isSamePlannedRunnerRestartIntent, isRestartCancelledBeforeSignal, type RestartCompletionWaiter, type RestartCompletionWaiters } from './completionWaiters';
 import type { RestartSessionRunnerCompletion } from './restartSessionRunnerOnCurrentRuntime';

@@ -1,4 +1,4 @@
-import { AccountProfileSchema } from '@happier-dev/protocol';
+import { AccountProfileSchema } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { resolveConnectedServiceQuotaProfileRefForSession } from './resolveConnectedServiceQuotaProfileRefForSession';

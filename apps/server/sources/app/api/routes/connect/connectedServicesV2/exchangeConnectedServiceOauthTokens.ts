@@ -7,7 +7,7 @@ import {
     BOX_BUNDLE_PUBLIC_KEY_BYTES,
     type ConnectedServiceId,
     CONNECTED_SERVICE_ERROR_CODES,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import {
     AGY_OAUTH_CALLBACK_URL,
     AGY_OAUTH_SCOPES,
@@ -16,7 +16,7 @@ import {
     CLAUDE_OAUTH_PROFILE_BETA_HEADER,
     CLAUDE_OAUTH_PROFILE_URL,
     normalizeClaudeOauthProfileEntitlement,
-} from "@happier-dev/agents";
+} from "@piggercode/agents";
 import { parseIntEnv } from "@/config/env";
 import { warn } from "@/utils/logging/log";
 import { assertNonEmptyString } from "./connectValueParsers";

@@ -4,7 +4,7 @@ import {
   type ConnectedServiceBindingsV1,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getConnectedServiceRuntimeAuthAdapter, resolveCatalogAgentId } from '@/backends/catalog';
 import { CATALOG_AGENT_IDS, type CatalogAgentId } from '@/backends/types';

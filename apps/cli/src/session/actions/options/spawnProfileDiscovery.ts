@@ -3,7 +3,7 @@ import {
   parseBackendTargetKey,
   type AccountSettings,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { normalizeActionOptionLimit, normalizeActionOptionString } from './actionOptionInputNormalization';
 import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfilesFromAccountSettings';

@@ -18,7 +18,7 @@ import {
   type ProviderAccountUsageSnapshotV1,
   type ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { readConnectedServiceCredentialOrganizationId } from '../../descriptors/connectedAccountDescriptors';

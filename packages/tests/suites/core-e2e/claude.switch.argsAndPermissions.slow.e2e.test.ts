@@ -132,7 +132,7 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',
@@ -290,7 +290,7 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',
@@ -449,7 +449,7 @@ describe('core e2e: Claude switching preserves args + permissions', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',

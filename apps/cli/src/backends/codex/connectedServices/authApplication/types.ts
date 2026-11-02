@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRecordV1, ConnectedServiceCredentialRevisionV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1, ConnectedServiceCredentialRevisionV1 } from '@piggercode/protocol';
 
 export type CodexLoginStartClient = Readonly<{
   request: (method: string, params?: unknown) => Promise<unknown>;

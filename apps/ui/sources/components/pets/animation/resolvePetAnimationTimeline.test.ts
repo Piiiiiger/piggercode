@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { PET_ANIMATION_ROWS_V1 } from '@happier-dev/protocol';
+import { PET_ANIMATION_ROWS_V1 } from '@piggercode/protocol';
 
 import {
     PET_ACTION_LOOP_COUNT,

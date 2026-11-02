@@ -5,7 +5,7 @@ import type {
   SessionOrganizationSnapshotRequest,
   SessionOrganizationSnapshotResponse,
   SetSessionPinResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { fetchJson } from '../http';
 

@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import type { CommandContext } from '@/cli/commandRegistry';
 import { printJsonEnvelope, wantsJson } from '@/cli/output/jsonEnvelope';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 function usage(): string {
   return [

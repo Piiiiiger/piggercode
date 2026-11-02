@@ -113,11 +113,11 @@ module.exports = { unpackTools };
 function writeCliRuntimePackageFixture(
   repoRoot,
   bundledDependencies = [
-    '@happier-dev/agents',
-    '@happier-dev/cli-common',
-    '@happier-dev/connection-supervisor',
-    '@happier-dev/protocol',
-    '@happier-dev/release-runtime',
+    '@piggercode/agents',
+    '@piggercode/cli-common',
+    '@piggercode/connection-supervisor',
+    '@piggercode/protocol',
+    '@piggercode/release-runtime',
   ],
 ) {
   const cliDir = join(repoRoot, 'apps', 'cli');
@@ -126,7 +126,7 @@ function writeCliRuntimePackageFixture(
     join(cliDir, 'package.json'),
     JSON.stringify(
       {
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.0.0',
         dependencies: {
           sharp: '^0.35.5',
@@ -149,11 +149,11 @@ function writeCliRuntimePackageFixture(
     join(cliDir, 'scripts', 'native_process_exit.cjs'),
   );
 
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/agents', relativeDir: ['packages', 'agents'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/cli-common', relativeDir: ['packages', 'cli-common'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/connection-supervisor', relativeDir: ['packages', 'connection-supervisor'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/protocol', relativeDir: ['packages', 'protocol'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/release-runtime', relativeDir: ['packages', 'release-runtime'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/agents', relativeDir: ['packages', 'agents'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/cli-common', relativeDir: ['packages', 'cli-common'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/connection-supervisor', relativeDir: ['packages', 'connection-supervisor'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/protocol', relativeDir: ['packages', 'protocol'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/release-runtime', relativeDir: ['packages', 'release-runtime'] });
 }
 
 function writeCliDistFixture(cliDistDir, files = { 'index.mjs': 'console.log("cli");\n' }) {
@@ -428,12 +428,12 @@ test('buildCliBinaryArtifactPayload compiles the local CLI binary into the paylo
     assert.equal(JSON.parse(readFileSync(join(payloadDir, 'node_modules', '@img', 'sharp-linux-x64', 'package.json'), 'utf8')).version, '0.35.5');
     assert.equal(JSON.parse(readFileSync(join(payloadDir, 'node_modules', '@img', 'sharp-libvips-linux-x64', 'package.json'), 'utf8')).version, '1.3.4');
     assert.equal(
-      readFileSync(join(payloadDir, 'node_modules', '@happier-dev', 'protocol', 'dist', 'index.mjs'), 'utf8'),
-      'export const packageName = "@happier-dev/protocol";\n',
+      readFileSync(join(payloadDir, 'node_modules', '@piggercode', 'protocol', 'dist', 'index.mjs'), 'utf8'),
+      'export const packageName = "@piggercode/protocol";\n',
     );
     assert.equal(
-      readFileSync(join(payloadDir, 'node_modules', '@happier-dev', 'connection-supervisor', 'dist', 'index.mjs'), 'utf8'),
-      'export const packageName = "@happier-dev/connection-supervisor";\n',
+      readFileSync(join(payloadDir, 'node_modules', '@piggercode', 'connection-supervisor', 'dist', 'index.mjs'), 'utf8'),
+      'export const packageName = "@piggercode/connection-supervisor";\n',
     );
     assert.equal(readFileSync(join(payloadDir, 'node_modules', 'node-pty', 'index.js'), 'utf8'), 'module.exports = { spawn() {} };\n');
     assert.equal(
@@ -508,7 +508,7 @@ test('buildCliBinaryArtifactPayload removes compile-generated node_modules befor
       join(repoRoot, 'apps', 'cli', 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/cli',
+          name: '@piggercode/cli',
           version: '0.0.0',
           dependencies: {
             '@huggingface/transformers': '1.0.0',
@@ -517,10 +517,10 @@ test('buildCliBinaryArtifactPayload removes compile-generated node_modules befor
             tar: '7.0.0',
           },
           bundledDependencies: [
-            '@happier-dev/agents',
-            '@happier-dev/cli-common',
-            '@happier-dev/protocol',
-            '@happier-dev/release-runtime',
+            '@piggercode/agents',
+            '@piggercode/cli-common',
+            '@piggercode/protocol',
+            '@piggercode/release-runtime',
           ],
         },
         null,
@@ -739,10 +739,10 @@ test('buildCliBinaryArtifactPayload derives bundled workspace packages from apps
     mkdirSync(homebridgePtyDir, { recursive: true });
     writeFileSync(join(repoRoot, 'package.json'), JSON.stringify({ name: 'repo', private: true }, null, 2));
     writeCliRuntimePackageFixture(repoRoot, [
-      '@happier-dev/agents',
-      '@happier-dev/cli-common',
-      '@happier-dev/protocol',
-      '@happier-dev/release-runtime',
+      '@piggercode/agents',
+      '@piggercode/cli-common',
+      '@piggercode/protocol',
+      '@piggercode/release-runtime',
     ]);
     writeCliDistFixture(cliDistDir);
     writeFileSync(join(cliScriptsDir, 'childProcessOptions.cjs'), 'module.exports = { withWindowsHide: (input) => input };\n', 'utf8');
@@ -796,8 +796,8 @@ test('buildCliBinaryArtifactPayload derives bundled workspace packages from apps
       },
     });
 
-    assert.equal(existsSync(join(payloadDir, 'node_modules', '@happier-dev', 'connection-supervisor')), false);
-    assert.equal(existsSync(join(payloadDir, 'node_modules', '@happier-dev', 'protocol')), true);
+    assert.equal(existsSync(join(payloadDir, 'node_modules', '@piggercode', 'connection-supervisor')), false);
+    assert.equal(existsSync(join(payloadDir, 'node_modules', '@piggercode', 'protocol')), true);
   } finally {
     rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -1395,7 +1395,7 @@ test('buildServerBinaryArtifactPayload stages sharp native runtime sidecars for 
     // A newer workspace Sharp must not inherit the older hoisted native cohort.
     const serverPackageRoot = join(repoRoot, 'apps', 'server');
     writeFileSync(join(serverPackageRoot, 'package.json'), JSON.stringify({
-      name: '@happier-dev/server', dependencies: { sharp: '^0.35.5' },
+      name: '@piggercode/server', dependencies: { sharp: '^0.35.5' },
     }));
     writeNodePackageFixture({
       repoRoot: serverPackageRoot,

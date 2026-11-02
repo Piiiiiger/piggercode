@@ -64,10 +64,10 @@ import type {
     ScmWorktreeRemoveResponse,
     ScmWorktreesEnrichmentRequest,
     ScmWorktreesEnrichmentResponse,
-} from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
-import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError, type RpcErrorCarrier } from '@happier-dev/protocol/rpcErrors';
-import { RPC_ERROR_MESSAGES, RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
+import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError, type RpcErrorCarrier } from '@piggercode/protocol/rpcErrors';
+import { RPC_ERROR_MESSAGES, RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { storage } from '@/sync/domains/state/storage';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';

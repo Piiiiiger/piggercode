@@ -31,11 +31,11 @@ import {
   resolveDaemonServiceInstallRuntimeTarget,
 } from './resolveDaemonServiceInstallRuntimeTarget';
 import { resolveDaemonServiceDiscoveryTargets } from './resolveDaemonServiceDiscoveryTargets';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import {
   DAEMON_SERVICE_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
   resolveManagedCliReleaseChannel,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 import { doesInstalledDaemonServiceDefinitionMatchExpected } from './doesInstalledDaemonServiceDefinitionMatchExpected';
 import { describeDaemonServiceRuntimeReplacement } from './readDaemonServiceDefinitionLauncher';
 import { happierHomeDirsMatch } from '@/daemon/ownership/happierHomeDirComparableKey';

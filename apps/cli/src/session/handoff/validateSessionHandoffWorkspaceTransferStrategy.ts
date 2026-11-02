@@ -1,4 +1,4 @@
-import type { SessionHandoffTransportStrategy } from '@happier-dev/protocol';
+import type { SessionHandoffTransportStrategy } from '@piggercode/protocol';
 
 import type { SessionHandoffWorkspaceTransferInput } from './sessionHandoffWorkspaceTransferInput';
 

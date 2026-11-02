@@ -1,5 +1,5 @@
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
-import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
+import { isGenericSubAgentToolName, isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 
 import type { ReducerState } from '../reducer';
 import type { ToolCall } from '../../domains/messages/messageTypes';

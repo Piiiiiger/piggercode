@@ -1,4 +1,4 @@
-import { isSameMachineLocality, resolveCanonicalMachineId } from '@happier-dev/protocol';
+import { isSameMachineLocality, resolveCanonicalMachineId } from '@piggercode/protocol';
 
 import { fetchAccountMachineReplacements } from '@/api/machine/fetchAccountMachineReplacements';
 

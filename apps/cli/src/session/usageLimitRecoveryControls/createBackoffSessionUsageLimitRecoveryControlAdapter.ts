@@ -1,11 +1,11 @@
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import {
   SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
   readSessionUsageLimitRecoveryForIssue,
   type ConnectedServiceId,
   type SessionRuntimeIssueV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   SessionUsageLimitRecoveryControlAdapter,

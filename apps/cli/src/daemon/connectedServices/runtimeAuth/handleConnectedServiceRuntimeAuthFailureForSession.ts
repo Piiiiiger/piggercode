@@ -3,7 +3,7 @@ import {
   ConnectedServiceIdSchema,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
   ConnectedServiceCredentialRefreshResult,
   ConnectedServiceRuntimeAuthCredentialRefreshResult,

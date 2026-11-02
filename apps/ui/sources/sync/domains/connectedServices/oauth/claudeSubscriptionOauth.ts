@@ -3,7 +3,7 @@ import {
   CLAUDE_OAUTH_AUTHORIZE_URL,
   CLAUDE_OAUTH_CALLBACK_URL,
   CLAUDE_OAUTH_CLIENT_ID,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export const CLAUDE_SUBSCRIPTION_OAUTH = Object.freeze({
   clientId: CLAUDE_OAUTH_CLIENT_ID,

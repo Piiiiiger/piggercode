@@ -12,7 +12,7 @@ import {
     type ConnectedServiceAuthGroupPolicyV1,
     type ConnectedServiceAuthGroupV1,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceGroupMemberViewModel = Readonly<{
     profileId: string;

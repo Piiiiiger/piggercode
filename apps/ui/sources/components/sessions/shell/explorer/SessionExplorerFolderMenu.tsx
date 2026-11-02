@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
-import type { AgentId } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
 
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 import { getAgentCore, isAgentId } from '@/agents/registry/registryCore';

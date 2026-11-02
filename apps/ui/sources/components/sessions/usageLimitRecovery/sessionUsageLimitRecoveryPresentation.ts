@@ -5,7 +5,7 @@ import {
     type PrimaryTurnStatusV1,
     type SessionRuntimeIssueV1,
     type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentInputStatusBadgeTone } from '@/components/sessions/agentInput/agentInputContracts';
 import {

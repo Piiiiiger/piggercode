@@ -1,4 +1,4 @@
-import type { DaemonExecutionRunEntry, ExecutionRunPublicState } from '@happier-dev/protocol';
+import type { DaemonExecutionRunEntry, ExecutionRunPublicState } from '@piggercode/protocol';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 
 import { machineExecutionRunsList } from '@/sync/ops/machineExecutionRuns';

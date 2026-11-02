@@ -1,4 +1,4 @@
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 import { resolveClaudeSessionMessageRole } from '@/api/session/messageRole';
 import { isClaudeInternalTranscriptMessage } from '@/backends/claude/utils/isClaudeInternalTranscriptMessage';

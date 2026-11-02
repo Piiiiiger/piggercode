@@ -40,16 +40,16 @@ vi.mock('@/auth/terminalAuthApproval', () => ({
   approveTerminalAuthRequest,
 }));
 
-vi.mock('@happier-dev/cli-common/systemTasks', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/cli-common/systemTasks')>();
+vi.mock('@piggercode/cli-common/systemTasks', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/cli-common/systemTasks')>();
   return {
     ...actual,
     installRemoteFirstPartyComponent: installRemoteFirstPartyComponentMock,
   };
 });
 
-vi.mock('@happier-dev/cli-common/relayHost', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/cli-common/relayHost')>();
+vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/cli-common/relayHost')>();
   return {
     ...actual,
     createRelayHostEngine: (...args: Parameters<typeof actual.createRelayHostEngine>) => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENT_IDS, getAgentAdvancedModeCapabilities, type AgentId, type AgentRuntimeModeSwitchKind } from '@happier-dev/agents';
+import { AGENT_IDS, getAgentAdvancedModeCapabilities, type AgentId, type AgentRuntimeModeSwitchKind } from '@piggercode/agents';
 
 describe('getAgentAdvancedModeCapabilities', () => {
     it('matches expected capabilities for representative providers', () => {

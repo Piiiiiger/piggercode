@@ -12,7 +12,7 @@
  * freeform answer.
  */
 
-import { dim, emphasis } from '@happier-dev/cli-common/output';
+import { dim, emphasis } from '@piggercode/cli-common/output';
 
 import { promptInput } from './promptInput';
 

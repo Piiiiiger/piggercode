@@ -6,8 +6,8 @@ import { installConnectionStatusCommonModuleMocks } from './connectionStatusTest
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
-let endpointStatus: import('@happier-dev/connection-supervisor').ManagedConnectionPhase = 'online';
-let endpointReason: import('@happier-dev/connection-supervisor').ManagedConnectionReason = null;
+let endpointStatus: import('@piggercode/connection-supervisor').ManagedConnectionPhase = 'online';
+let endpointReason: import('@piggercode/connection-supervisor').ManagedConnectionReason = null;
 let socketStatus: import('./connectionHealthTypes').ConnectionSocketStatus = 'connected';
 let syncErrorKind: 'auth' | 'network' | null = null;
 let syncErrorServerId: string | null = null;

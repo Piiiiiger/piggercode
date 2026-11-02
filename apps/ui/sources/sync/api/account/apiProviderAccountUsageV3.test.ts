@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildProviderAccountUsageRecordId, PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT } from '@happier-dev/protocol';
+import { buildProviderAccountUsageRecordId, PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT } from '@piggercode/protocol';
 
 // Active server selection is an environment boundary; the HTTP adapter and parsing remain real.
 vi.mock('@/sync/domains/server/serverRuntime', () => ({

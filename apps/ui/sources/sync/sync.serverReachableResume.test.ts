@@ -2,13 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const appStateAddListener = vi.hoisted(() => vi.fn(() => ({ remove: vi.fn() })));
 const apiSocketMock = vi.hoisted(() => {
-    let connectionStateListener: ((state: import('@happier-dev/connection-supervisor').ManagedConnectionState) => void) | null = null;
+    let connectionStateListener: ((state: import('@piggercode/connection-supervisor').ManagedConnectionState) => void) | null = null;
     return {
         onMessage: vi.fn(),
         onError: vi.fn(),
         onReconnected: vi.fn(),
         onStatusChange: vi.fn(() => () => {}),
-        onConnectionStateChange: vi.fn((listener: (state: import('@happier-dev/connection-supervisor').ManagedConnectionState) => void) => {
+        onConnectionStateChange: vi.fn((listener: (state: import('@piggercode/connection-supervisor').ManagedConnectionState) => void) => {
             connectionStateListener = listener;
             return () => {
                 if (connectionStateListener === listener) {
@@ -20,7 +20,7 @@ const apiSocketMock = vi.hoisted(() => {
         disconnect: vi.fn(),
         initialize: vi.fn(),
         request: vi.fn(async () => new Response('ok', { status: 200 })),
-        publishConnectionState(state: import('@happier-dev/connection-supervisor').ManagedConnectionState) {
+        publishConnectionState(state: import('@piggercode/connection-supervisor').ManagedConnectionState) {
             if (!connectionStateListener) {
                 throw new Error('apiSocket.onConnectionStateChange was not subscribed');
             }
@@ -72,7 +72,7 @@ describe('sync server-reachable resume', () => {
 
     it('stores api socket reachability and resumes sync when the server becomes reachable again', async () => {
         const now = Date.now();
-        const offlineState: import('@happier-dev/connection-supervisor').ManagedConnectionState = {
+        const offlineState: import('@piggercode/connection-supervisor').ManagedConnectionState = {
             phase: 'offline',
             reason: 'server_unreachable',
             attempt: 2,
@@ -81,7 +81,7 @@ describe('sync server-reachable resume', () => {
             lastDisconnectedAt: now,
             lastErrorMessage: 'Network request failed',
         };
-        const onlineState: import('@happier-dev/connection-supervisor').ManagedConnectionState = {
+        const onlineState: import('@piggercode/connection-supervisor').ManagedConnectionState = {
             phase: 'online',
             reason: null,
             attempt: 2,

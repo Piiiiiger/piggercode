@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { dirname, join } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-import { renderSystemdServiceUnit } from '@happier-dev/cli-common/service';
+import { renderSystemdServiceUnit } from '@piggercode/cli-common/service';
 import type { DaemonServiceCliRuntime } from '@/daemon/service/cli';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';

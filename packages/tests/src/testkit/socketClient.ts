@@ -1,6 +1,6 @@
 import { io, type Socket } from 'socket.io-client';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import type { SocketRpcAuthorizationContext } from '@happier-dev/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 
 import { attachSocketEventCollector, SocketEventCollector, type CapturedEvent } from './socketEventCollector';
 

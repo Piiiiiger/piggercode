@@ -1,4 +1,4 @@
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 import { updateBrokerBridgeEffectiveSelection } from './brokerBridgeEffectiveSelectionRegistry';
 import { computeConnectedServiceAccessTokenFingerprint } from '../refresh/credentialFreshness/tokenFingerprint';

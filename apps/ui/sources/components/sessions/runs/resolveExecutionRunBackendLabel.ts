@@ -1,4 +1,4 @@
-import type { AcpCatalogSettingsV1, BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { AcpCatalogSettingsV1, BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { resolveBuiltInAgentTitle } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { normalizeAcpCatalogSettingsV1 } from '@/sync/domains/acpCatalog/normalizeAcpCatalogSettingsV1';

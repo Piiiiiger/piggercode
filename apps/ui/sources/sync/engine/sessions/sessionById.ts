@@ -5,7 +5,7 @@ import {
   type SessionTurnsProjectionV1,
   type V2SessionByIdResponse,
   type ClientEncryptionRequirement,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';

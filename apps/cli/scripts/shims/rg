@@ -37,7 +37,7 @@ if ((${#args[@]})); then
   done
   echo "happier: rg shim could not find a usable ripgrep binary" >&2
   echo "Missing packaged ripgrep at: $REAL_RG" >&2
-  echo "Fix: reinstall @happier-dev/cli (postinstall unpacks tools) or install ripgrep (rg) on PATH." >&2
+  echo "Fix: reinstall @piggercode/cli (postinstall unpacks tools) or install ripgrep (rg) on PATH." >&2
   exit 127
 fi
 if [[ -x "$REAL_RG" ]]; then
@@ -56,5 +56,5 @@ for entry in "${path_entries[@]}"; do
 done
 echo "happier: rg shim could not find a usable ripgrep binary" >&2
 echo "Missing packaged ripgrep at: $REAL_RG" >&2
-echo "Fix: reinstall @happier-dev/cli (postinstall unpacks tools) or install ripgrep (rg) on PATH." >&2
+echo "Fix: reinstall @piggercode/cli (postinstall unpacks tools) or install ripgrep (rg) on PATH." >&2
 exit 127

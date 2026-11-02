@@ -1,4 +1,4 @@
-import { createSaplingScmCapabilities } from '@happier-dev/protocol';
+import { createSaplingScmCapabilities } from '@piggercode/protocol';
 
 export function createSaplingCapabilities() {
     return createSaplingScmCapabilities();

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import axios from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SessionTranscriptObservationV1Schema } from '@happier-dev/protocol';
+import { SessionTranscriptObservationV1Schema } from '@piggercode/protocol';
 
 import { createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
 import { createPlainSessionFixture } from '@/testkit/backends/sessionFixtures';

@@ -3,7 +3,7 @@ import {
   ConnectedServiceIdSchema,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServiceRuntimeFailureClassification } from './types';
 import type { RuntimeAccountIdentityProbeResult } from '../quotas/identity/runtimeAccountIdentityTypes';

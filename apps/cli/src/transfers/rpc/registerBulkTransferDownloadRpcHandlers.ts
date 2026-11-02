@@ -1,7 +1,7 @@
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
 import { parseTransferRecipientPublicKeyBase64 } from '@/machines/transfer/transferChunkEncryption';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { TransferSessionStore } from '../core/transferSessionStore';
 import { resolveWorkspaceFileDownloadSource } from '../targets/resolveWorkspaceFileDownloadSource';

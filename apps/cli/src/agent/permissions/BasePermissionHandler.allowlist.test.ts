@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import { SessionPermissionRpcRouter } from './sessionPermissionRpcRouter';
 import { BasePermissionHandler, type PermissionResult } from './BasePermissionHandler';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@happier-dev/protocol/rpcErrors';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@piggercode/protocol/rpcErrors';
 
 class FakeRpcHandlerManager {
   handlers = new Map<string, (payload: any) => any>();

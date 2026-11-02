@@ -6,11 +6,11 @@ import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import {
   buildCodexAgentRuntimeDescriptor,
   resolvePersistedCodexRuntimeIdentity,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   DirectSessionsSourceSchema,
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CodexSessionBundle, ImportedSessionHandoffBundle } from '../../../session/handoff/types';
 import { copySessionHandoffFileSlice } from '../../../session/handoff/sessionHandoffProviderBundleFile';

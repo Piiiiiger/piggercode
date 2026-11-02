@@ -1,5 +1,5 @@
-import type { ScmChangeDiscardRequest, ScmChangeDiscardResponse } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmChangeDiscardRequest, ScmChangeDiscardResponse } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import { normalizePathspec, runScmCommand } from '../../../runtime';
 import type { ScmBackendContext } from '../../../types';

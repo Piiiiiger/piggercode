@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SESSION_ORGANIZATION_MAX_SCOPED_SNAPSHOT_IDS } from '@happier-dev/protocol';
+import { SESSION_ORGANIZATION_MAX_SCOPED_SNAPSHOT_IDS } from '@piggercode/protocol';
 
 const mocks = vi.hoisted(() => ({
     serverFetch: vi.fn(),

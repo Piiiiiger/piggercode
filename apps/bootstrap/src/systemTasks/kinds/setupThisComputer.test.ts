@@ -1,4 +1,4 @@
-import { createSystemTasksRunner, SystemTaskExecutionError } from '@happier-dev/cli-common/systemTasks';
+import { createSystemTasksRunner, SystemTaskExecutionError } from '@piggercode/cli-common/systemTasks';
 import {
   parseSetupAccountConsentPromptData,
   parseSetupCliChoicePromptData,
@@ -9,7 +9,7 @@ import {
   SETUP_PAIRING_PROMPT_KIND,
   SETUP_SERVICE_CONSENT_PROMPT_KIND,
   type SystemTaskJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { LocalHappierCliChoiceInspection } from '../happierCli.js';
@@ -863,8 +863,8 @@ describe('setup.thisComputer.v1 — one CLI per computer (R12)', () => {
     command: NPM_CLI,
     version: '0.2.13',
     origin: 'npm',
-    removalCommand: 'npm uninstall -g @happier-dev/cli',
-    updateCommand: 'npm install -g @happier-dev/cli@latest',
+    removalCommand: 'npm uninstall -g @piggercode/cli',
+    updateCommand: 'npm install -g @piggercode/cli@latest',
     belowSetupFloor: false,
     missing: false,
     keepBlockedBy: null,

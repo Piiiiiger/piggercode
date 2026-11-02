@@ -1,4 +1,4 @@
-import type { SessionMediaItemV1, SessionMediaUnavailableV1 } from '@happier-dev/protocol';
+import type { SessionMediaItemV1, SessionMediaUnavailableV1 } from '@piggercode/protocol';
 
 export type BoundedSessionMediaEnvelopeEntries = Readonly<{
     media: SessionMediaItemV1[];

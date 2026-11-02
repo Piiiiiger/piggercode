@@ -103,7 +103,7 @@ If you want to **develop Happier** (worktrees, multiple stacks, upstream PR work
 ### Setup (guided)
 
 ```bash
-npx --yes -p @happier-dev/stack hstack setup-from-source --profile=dev
+npx --yes -p @piggercode/stack hstack setup-from-source --profile=dev
 ```
 
 During setup, you’ll be guided through:
@@ -128,7 +128,7 @@ hstack stack wt dev -- use dev
 You can also set it non-interactively:
 
 ```bash
-npx --yes -p @happier-dev/stack hstack setup-from-source --profile=dev --workspace-dir=~/Documents/Development/happier
+npx --yes -p @piggercode/stack hstack setup-from-source --profile=dev --workspace-dir=~/Documents/Development/happier
 ```
 
 ### Why this exists
@@ -256,7 +256,7 @@ hstack stack pr pr123 --repo=123 --reuse --force
 This is the maintainer-friendly entrypoint. It is safe to re-run and will keep the PR stack wiring intact.
 
 ```bash
-npx --yes -p @happier-dev/stack hstack tools setup-pr \
+npx --yes -p @piggercode/stack hstack tools setup-pr \
   --repo=https://github.com/happier-dev/happier/pull/123 \
   --dev
 ```
@@ -264,7 +264,7 @@ npx --yes -p @happier-dev/stack hstack tools setup-pr \
 Optional: enable Expo dev-client for mobile reviewers (works with both default `--dev` and `--start`):
 
 ```bash
-npx --yes -p @happier-dev/stack hstack tools setup-pr --repo=123 --dev --mobile
+npx --yes -p @piggercode/stack hstack tools setup-pr --repo=123 --dev --mobile
 ```
 
 Optional: run it in a sandbox folder (auto-cleaned).
@@ -273,20 +273,20 @@ Note: `review-pr` uses a persistent sandbox workspace cache by default to speed 
 
 ```bash
 SANDBOX="$(mktemp -d /tmp/hstack-review-pr.XXXXXX)"
-npx --yes -p @happier-dev/stack hstack tools review-pr --repo=123 --dev --sandbox-dir "$SANDBOX"
+npx --yes -p @piggercode/stack hstack tools review-pr --repo=123 --dev --sandbox-dir "$SANDBOX"
 rm -rf "$SANDBOX"
 ```
 
 Short form (PR numbers):
 
 ```bash
-npx --yes -p @happier-dev/stack hstack tools setup-pr --repo=123 --dev
+npx --yes -p @piggercode/stack hstack tools setup-pr --repo=123 --dev
 ```
 
 Override stack name (optional):
 
 ```bash
-npx --yes -p @happier-dev/stack hstack tools setup-pr --name=pr123 --repo=123 --dev
+npx --yes -p @piggercode/stack hstack tools setup-pr --name=pr123 --repo=123 --dev
 ```
 
 Update when the PR changes:
@@ -295,8 +295,8 @@ Update when the PR changes:
 - If the PR was force-pushed, add `--force`.
 
 ```bash
-npx --yes -p @happier-dev/stack hstack tools setup-pr --repo=123 --dev
-npx --yes -p @happier-dev/stack hstack tools setup-pr --repo=123 --dev --force
+npx --yes -p @piggercode/stack hstack tools setup-pr --repo=123 --dev
+npx --yes -p @piggercode/stack hstack tools setup-pr --repo=123 --dev --force
 ```
 
 Details: `[docs/worktrees-and-forks.md](docs/worktrees-and-forks.md)`.
@@ -466,10 +466,10 @@ To fully uninstall the test run, stop the sandbox stacks and delete the sandbox 
 SANDBOX="$(mktemp -d /tmp/hstack-sandbox.XXXXXX)"
 
 # Run a PR stack (fully isolated install)
-npx --yes -p @happier-dev/stack hstack --sandbox-dir "$SANDBOX" tools setup-pr --repo=123 --dev
+npx --yes -p @piggercode/stack hstack --sandbox-dir "$SANDBOX" tools setup-pr --repo=123 --dev
 
 # Tear down + uninstall
-npx --yes -p @happier-dev/stack hstack --sandbox-dir "$SANDBOX" stop --yes --no-service
+npx --yes -p @piggercode/stack hstack --sandbox-dir "$SANDBOX" stop --yes --no-service
 rm -rf "$SANDBOX"
 ```
 

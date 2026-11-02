@@ -14,7 +14,7 @@ import {
     resolveNewSessionCapabilityProbeContext,
 } from '@/components/sessions/new/modules/newSessionCapabilityProbeContext';
 import type { Settings } from '@/sync/domains/settings/settings';
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import { computeSessionConfigOptionControlsForProvider } from '@/sync/domains/sessionControl/configOptionsControl';
 import type {
     SessionConfigOptionControl,

@@ -8,7 +8,7 @@ import {
   RemoteBootstrapMachineParams,
   RemoteHostTrustResolution,
   SystemTaskSshConnectionConfig,
-} from '@happier-dev/cli-common/systemTasks';
+} from '@piggercode/cli-common/systemTasks';
 
 import { runLocalHappierJsonCommand } from './happierCli.js';
 import { scopeProcessEnvToTargetRelay } from './localDaemonCli.js';

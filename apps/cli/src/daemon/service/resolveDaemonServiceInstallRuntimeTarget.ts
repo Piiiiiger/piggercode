@@ -7,8 +7,8 @@ import {
   readHappierCliChoiceSync,
   resolveDesiredShimTargets,
   resolveInstalledFirstPartyComponentPaths,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { PUBLIC_RELEASE_RING_IDS, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { PUBLIC_RELEASE_RING_IDS, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { resolveRunningCliPackageManagerOrigin, resolveThisCliNpmPackageName } from '@/cli/runtime/update/cliUpdateFacts';
 import { buildMissingJavaScriptRuntimeMessage } from '@/runtime/js/buildMissingJavaScriptRuntimeMessage';

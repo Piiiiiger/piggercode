@@ -7,7 +7,7 @@ import { useSessionMetadata, useSessionProjectScmStatus, useSetting } from '@/sy
 import { resolveGitTabBadge } from '@/components/ui/navigation/tabBadge/tabBadgeModel';
 import type { SessionMobileSurface } from '@/components/workspaceCockpit/session/sessionCockpitState';
 import { useSessionLateralSwipe } from '@/components/workspaceCockpit/session/SessionCockpitChromeRegistry';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 import { SessionCockpitLateralReadout } from '../lateralSwipe/SessionCockpitLateralReadout';
 import { useSessionCockpitLateralNavigation } from '../lateralSwipe/useSessionCockpitLateralNavigation';

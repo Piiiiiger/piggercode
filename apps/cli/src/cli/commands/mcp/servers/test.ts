@@ -14,7 +14,7 @@ import { redactMcpServerProbeError } from '@/mcp/servers/redactMcpServerProbeErr
 import { loadFreshMcpAccountSettingsContext } from '../loadFreshMcpAccountSettingsContext';
 
 import type { McpCommandDeps } from '../deps';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 export async function cmdMcpServersTest(
   argv: string[],

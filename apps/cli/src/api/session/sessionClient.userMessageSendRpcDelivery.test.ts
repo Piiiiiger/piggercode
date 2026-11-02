@@ -13,8 +13,8 @@ import {
 } from '@/testkit/backends/apiSessionSocketHarness';
 import { waitForCondition } from '@/testkit/async/waitFor';
 import { decodeBase64, decrypt } from '../encryption';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 import * as persistence from '@/persistence';
 import * as machineRpc from '@/session/transport/rpc/machineRpc';
 
@@ -82,7 +82,7 @@ vi.mock('./connection/createSessionSocketTransport', () => ({
   },
 }));
 
-vi.mock('@happier-dev/connection-supervisor', () => ({
+vi.mock('@piggercode/connection-supervisor', () => ({
   DEFAULT_MANAGED_CONNECTION_POLICY: {},
   createManagedConnectionSupervisor: (params: { createTransport: () => unknown; onConnected?: () => Promise<void> | void }) => ({
     start: async () => {

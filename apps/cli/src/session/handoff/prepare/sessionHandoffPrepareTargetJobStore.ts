@@ -9,7 +9,7 @@ import {
   SessionHandoffPrepareTargetResultGetResponseSchema,
   SessionHandoffStatusSchema,
   SessionHandoffTargetCleanupSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   releaseSessionHandoffPrepareTargetJobLease,

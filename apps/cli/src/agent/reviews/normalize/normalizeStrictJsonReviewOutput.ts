@@ -5,7 +5,7 @@ import {
   ReviewFindingSchema,
   ReviewQuestionSchema,
   type ReviewFinding,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   ExecutionRunProfileBoundedCompleteResult,

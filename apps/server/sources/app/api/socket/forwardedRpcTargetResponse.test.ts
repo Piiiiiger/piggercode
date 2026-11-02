@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { forwardedRpcTargetResponse } from './forwardedRpcTargetResponse';
 
 const publicFailure = {

@@ -1,4 +1,4 @@
-import { ExecutionRunStatusSchema, type ExecutionRunStatus } from '@happier-dev/protocol';
+import { ExecutionRunStatusSchema, type ExecutionRunStatus } from '@piggercode/protocol';
 
 import type { ToolCall } from '@/sync/domains/messages/messageTypes';
 

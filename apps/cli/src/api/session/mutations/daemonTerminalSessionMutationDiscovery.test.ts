@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { ExactSessionTurnEndMutationV1Schema } from '@happier-dev/protocol';
+import { ExactSessionTurnEndMutationV1Schema } from '@piggercode/protocol';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { createDaemonTerminalSessionMutationJournal } from './daemonTerminalSessionMutationOutbox';

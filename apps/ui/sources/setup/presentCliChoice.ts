@@ -1,4 +1,4 @@
-import type { SetupCliChoice, SetupCliChoicePromptPayload } from '@happier-dev/protocol';
+import type { SetupCliChoice, SetupCliChoicePromptPayload } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 import { t } from '@/text';

@@ -1,4 +1,4 @@
-import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_SCOPES } from '@happier-dev/agents';
+import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_SCOPES } from '@piggercode/agents';
 import { ConnectedServiceImportError } from '@/cloud/connectedServices/connectedServiceImportError';
 import { refreshConnectedAccountOauthTokens, ConnectedServiceOauthRefreshError } from '@/daemon/connectedServices/refresh/serviceRefreshers';
 import type { AgyAuthTokens } from './authenticate';

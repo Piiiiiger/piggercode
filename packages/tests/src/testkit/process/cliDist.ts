@@ -15,7 +15,7 @@ import {
   resolveWorkspaceBundleLockPath,
   withWorkspaceBundleLock,
   type WorkspaceBundleLockContext,
-} from '@happier-dev/cli-common/workspaceBundleLock';
+} from '@piggercode/cli-common/workspaceBundleLock';
 
 import { repoRootDir } from '../paths';
 import { sleep } from '../timing';
@@ -135,7 +135,7 @@ function resolveCliWorkspacePackageDir(rootDir: string, packageName: CliSharedDe
 }
 
 function resolveCliBundledWorkspacePackageDir(rootDir: string, packageName: CliSharedDepPackageName): string {
-  return resolve(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', packageName);
+  return resolve(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', packageName);
 }
 
 function collectPackageJsonDistPaths(value: unknown, result: Set<string>): void {
@@ -267,7 +267,7 @@ function hasCliBundledWorkspaceManifestParity(rootDir: string, packageName: CliS
   const workspaceExports = readPackageJsonField(workspacePackageJsonPath, 'exports');
   const bundledExports = readPackageJsonField(bundledPackageJsonPath, 'exports');
 
-  // When the CLI imports an internal workspace via a subpath export (e.g. `@happier-dev/cli-common/systemTasks`),
+  // When the CLI imports an internal workspace via a subpath export (e.g. `@piggercode/cli-common/systemTasks`),
   // a stale bundled `package.json#exports` can crash at runtime even if dist files exist. Treat exports parity
   // as part of the shared-deps contract so E2E snapshots rebuild when exports evolve.
   return stableJsonStringify(workspaceExports) === stableJsonStringify(bundledExports);
@@ -303,7 +303,7 @@ function repairMissingCliBundledSharedDepsOutputs(rootDir: string): void {
 }
 
 function hasCliBundledSharedDepsOutputs(rootDir: string): boolean {
-  const cliNodeModulesDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev');
+  const cliNodeModulesDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@piggercode');
   if (!existsSync(cliNodeModulesDir)) return true;
 
   return CLI_SHARED_DEP_PACKAGE_NAMES.every((packageName) => {
@@ -322,10 +322,10 @@ function collectExternalRuntimeDepNamesFromPackageJson(packageJson: any): Readon
   const optionalDeps = packageJson?.optionalDependencies ?? {};
 
   const required = Object.keys(deps)
-    .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+    .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
     .map((name) => ({ name, optional: false }));
   const optional = Object.keys(optionalDeps)
-    .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+    .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
     .map((name) => ({ name, optional: true }));
 
   return [...required, ...optional];
@@ -565,7 +565,7 @@ export function resolveCliDistBuildInvocation(params: { repoRoot?: string } = {}
   // Use the canonical workspace build script. Some E2E lanes run multiple daemons concurrently and
   // rely on hashed-chunk stability; building via pkgroll directly can leave partial dist folders.
   // The workspace build is expected to produce a fully coherent dist/ output.
-  return { command: yarnCommand(), args: ['-s', 'workspace', '@happier-dev/cli', 'build'], cwd: rootDir };
+  return { command: yarnCommand(), args: ['-s', 'workspace', '@piggercode/cli', 'build'], cwd: rootDir };
 }
 
 export async function ensureCliSharedDepsBuilt(
@@ -595,7 +595,7 @@ export async function ensureCliSharedDepsBuilt(
     for (let attempt = 1; attempt <= maxBuildAttempts; attempt += 1) {
       await runCommand({
         command: yarnCommand(),
-        args: ['-s', 'workspace', '@happier-dev/cli', 'build:shared'],
+        args: ['-s', 'workspace', '@piggercode/cli', 'build:shared'],
         cwd: rootDir,
         env: { ...process.env, ...params.env, CI: '1' },
         stdoutPath: resolve(params.testDir, 'cli.buildShared.stdout.log'),

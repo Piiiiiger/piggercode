@@ -5,7 +5,7 @@ import { homedir, tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import net from 'node:net';
 
-import { commandExistsOnPath } from '@happier-dev/cli-common/process';
+import { commandExistsOnPath } from '@piggercode/cli-common/process';
 import {
   applyServicePlan,
   buildReadWindowsScheduledTaskStatusPowerShellCommand,
@@ -15,7 +15,7 @@ import {
   resolveServiceBackend,
   type ServiceMode,
   type ServiceSpec,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 import {
   checkRelayRuntimeHealth,
   extractReleasePayloadRootFromArchive,
@@ -26,11 +26,11 @@ import {
   resolvePrismaSqliteDatabaseUrlOptionsFromEnv,
   type RelayRuntimeHealthResult,
   type RelayRuntimeNormalizedStatus,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { resolveReleaseAssetBundle } from '@happier-dev/release-runtime/assets';
-import { fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
-import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@happier-dev/release-runtime/minisign';
-import { downloadVerifiedReleaseAssetBundle } from '@happier-dev/release-runtime/verifiedDownload';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { resolveReleaseAssetBundle } from '@piggercode/release-runtime/assets';
+import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
+import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@piggercode/release-runtime/minisign';
+import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
 
 import { resolveHappierGithubRepo, resolveRelayReleaseTag } from './_releaseTagsAndRepo';
 

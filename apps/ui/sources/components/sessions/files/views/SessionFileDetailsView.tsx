@@ -33,7 +33,7 @@ import { buildScmDiffSnapshotSignature } from '@/scm/diffCache/scmDiffCacheKey';
 import { useFileScmStageActions } from '@/hooks/session/files/useFileScmStageActions';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useCodeLinesSyntaxHighlighting } from '@/components/ui/code/highlighting/useCodeLinesSyntaxHighlighting';
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 import type { ReviewCommentAnchor, ReviewCommentSource } from '@/sync/domains/input/reviewComments/reviewCommentTypes';
 import { useMountedRef } from '@/hooks/ui/useMountedRef';
 import { useSessionFileDetailsLoading } from './sessionFileDetails/useSessionFileDetailsLoading';

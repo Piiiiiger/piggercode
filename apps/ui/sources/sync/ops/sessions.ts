@@ -35,15 +35,15 @@ import type {
     SessionInitialGoalRequestV1,
     SpawnSessionResult,
     SendableAskUserQuestionAnswerPayload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { ConnectedServiceAuthSelectionUnsupportedError, machineRpcWithConnectedServiceAuthAdmission } from './connectedServiceAuthSupport';
 import {
     SessionForkRpcResultSchema,
     SessionRollbackRpcResultSchema,
     SessionAuthoringValueV1Schema,
     SPAWN_SESSION_ERROR_CODES,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { prepareAccountSettingsForDaemonSpawnIfNeeded } from './accountSettingsDaemonSpawnPreparation';
 import { normalizeSpawnSessionResult } from './_shared';
 import { isAccountSettingsScopeChangedDuringSpawnPreparationError } from '@/sync/engine/settings/accountSettingsSpawnPreparationError';
@@ -154,7 +154,7 @@ export interface ResumeSessionOptions {
     /** The directory where the session was running */
     directory: string;
     /** The backend target to resume */
-    backendTarget: import('@happier-dev/protocol').BackendTargetRefV1;
+    backendTarget: import('@piggercode/protocol').BackendTargetRefV1;
     /** Optional vendor resume id (e.g. Claude/Codex session id). */
     resume?: string;
     environmentVariables?: Record<string, string>;
@@ -190,15 +190,15 @@ export interface ResumeSessionOptions {
      * Prefer codexBackendMode for new resume callers.
      */
     experimentalCodexAcp?: boolean;
-    codexBackendMode?: import('@happier-dev/agents').CodexBackendMode;
-    agentRuntimeDescriptorV1?: import('@happier-dev/protocol').AgentRuntimeDescriptorV1;
+    codexBackendMode?: import('@piggercode/agents').CodexBackendMode;
+    agentRuntimeDescriptorV1?: import('@piggercode/protocol').AgentRuntimeDescriptorV1;
     /**
      * Transcript cursor to use when the resume request is caused by a just-committed
      * wake message. The daemon should catch up after this seq so that prompt is
      * consumed without replaying older turns.
      */
     initialTranscriptAfterSeq?: number;
-    executionAuthorization?: import('@happier-dev/protocol').SpawnSessionExecutionAuthorization;
+    executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
     /**
      * Optional native goal to apply immediately after attaching/resuming the provider session,
      * before any pending user-message queue is drained.

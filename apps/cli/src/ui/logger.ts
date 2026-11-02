@@ -14,7 +14,7 @@ import { configuration } from '@/configuration'
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { inspect } from 'node:util'
-import { redactBugReportSensitiveText } from '@happier-dev/protocol'
+import { redactBugReportSensitiveText } from '@piggercode/protocol'
 import { writeConsoleErrorBestEffort, writeConsoleLogBestEffort } from '@/utils/writeConsoleBestEffort'
 import { pruneLogsByCount } from '@/utils/logs/pruneLogsByCount'
 import {

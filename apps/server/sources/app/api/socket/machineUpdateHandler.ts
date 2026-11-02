@@ -15,7 +15,7 @@ import {
     type MachineUpdateMetadataResponse,
     machineUpdateMatchesStoredMode,
     isPlainMachineDataKeyMarker,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { validateCurrentMachineSocket } from "@/app/machines/validateCurrentMachineSocket";
 import { readHappierSocketData } from "./socketData";
 

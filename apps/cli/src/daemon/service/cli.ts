@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import { basename, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 
 import { configuration, reloadConfiguration } from '@/configuration';
 import { readCredentials, readDaemonState, readSettings } from '@/persistence';
@@ -14,7 +14,7 @@ import { resolveJavaScriptRuntimeExecutable } from '@/runtime/js/resolveJavaScri
 import { readPositiveIntEnv } from '@/utils/readPositiveIntEnv';
 import { defaultNameFromUrl, defaultWebappUrlFromServerUrl } from '@/cli/commands/server/commandUtilities';
 import { applyDaemonServiceInstallPlan, assertDaemonServiceCommandsAvailable, runDaemonServiceCommands } from './apply';
-import { buildServiceCommandEnv } from '@happier-dev/cli-common/service';
+import { buildServiceCommandEnv } from '@piggercode/cli-common/service';
 
 import { resolveCliVersionFromBinary } from './resolveCliVersionFromBinary';
 import {
@@ -47,12 +47,12 @@ import { commandExistsInPath } from './commandExistsInPath';
 import { resolveDaemonServiceRuntimeTarget } from './runtimeTarget';
 import { isManagedCliDaemonServiceLauncher, resolveDaemonServiceInstallRuntimeTarget } from './resolveDaemonServiceInstallRuntimeTarget';
 import { resolveLinuxSystemUserPaths } from './resolveLinuxSystemUserPaths';
-import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
+import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
 import {
   DAEMON_SERVICE_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
   resolveManagedCliReleaseChannelSync,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 import { stopDaemon } from '@/daemon/controlClient';
 import { restartDaemonAndWait } from '@/daemon/restartDaemonAndWait';
 import { resolveInvokerName } from '@/cli/runtime/resolveInvokerName';
@@ -67,7 +67,7 @@ import {
   readInstalledDaemonServiceManagedBy,
   readInstalledDaemonServiceTargetMode,
 } from './discoverInstalledDaemonServiceEntries';
-import { createStepPrinter } from '@happier-dev/cli-common/output';
+import { createStepPrinter } from '@piggercode/cli-common/output';
 import { resolveDaemonServiceDiscoveryTargets } from './resolveDaemonServiceDiscoveryTargets';
 import type { DaemonServiceInstallStrategy } from './daemonInstallConflict';
 import { assertDaemonServiceModeSupported } from './assertDaemonServiceModeSupported';

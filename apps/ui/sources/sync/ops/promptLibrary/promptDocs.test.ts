@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import { storage } from '@/sync/domains/state/storageStore';
-import { PromptDocBodyV1Schema } from '@happier-dev/protocol';
+import { PromptDocBodyV1Schema } from '@piggercode/protocol';
 
 const createArtifactWithHeaderMock = vi.hoisted(() =>
   vi.fn(async (_header: unknown, _body: string | null) => 'p1'),

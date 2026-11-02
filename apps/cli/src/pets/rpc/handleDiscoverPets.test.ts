@@ -71,7 +71,7 @@ async function writeManagedLocalPet(happyHomeDir: string): Promise<void> {
 }
 
 async function transparentPetAtlasWebp(): Promise<Buffer> {
-  const { PET_ANIMATION_ROWS_V1, PET_ATLAS_V1 } = await import('@happier-dev/protocol');
+  const { PET_ANIMATION_ROWS_V1, PET_ATLAS_V1 } = await import('@piggercode/protocol');
   const sharp = (await import('sharp')).default;
   const raw = Buffer.alloc(PET_ATLAS_V1.width * PET_ATLAS_V1.height * 4);
   for (const row of PET_ANIMATION_ROWS_V1) {

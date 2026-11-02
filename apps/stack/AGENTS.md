@@ -1,10 +1,10 @@
 # Happier Stack Instructions
 
-Package-specific instructions for `apps/stack` (`@happier-dev/stack`). These supplement the root constitution and override broader guidance where more specific.
+Package-specific instructions for `apps/stack` (`@piggercode/stack`). These supplement the root constitution and override broader guidance where more specific.
 
 ## Ownership
 
-`@happier-dev/stack` provides local stack/worktree/dev orchestration for the Happier monorepo.
+`@piggercode/stack` provides local stack/worktree/dev orchestration for the Happier monorepo.
 
 - `scripts/*.mjs` — setup/bootstrap, run/dev/build, stacks, worktrees, service, tailscale, mobile, tools.
 - Default home: `~/.happier-stack`.

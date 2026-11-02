@@ -60,7 +60,7 @@ vi.mock('@/cli/runtime/update/runtimeReexec', () => ({
   maybeReexecToRuntime: maybeReexecToRuntimeMock,
 }));
 
-vi.mock('@happier-dev/cli-common/update', () => ({
+vi.mock('@piggercode/cli-common/update', () => ({
   resolveNpmPackageNameOverride: resolveNpmPackageNameOverrideMock,
 }));
 

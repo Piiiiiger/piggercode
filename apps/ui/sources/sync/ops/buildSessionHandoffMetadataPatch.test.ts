@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import type { CodexBackendMode } from '@happier-dev/agents';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 import { buildSessionHandoffMetadataPatch } from './buildSessionHandoffMetadataPatch';
 
@@ -16,7 +16,7 @@ describe('buildSessionHandoffMetadataPatch', () => {
         // rather than writing a resume key itself. Pin the exact allowed symbol
         // instead of banning the package, so a per-provider helper still cannot
         // arrive behind the same import.
-        const agentsImports = [...sourceText.matchAll(/import\s*\{([^}]*)\}\s*from\s*'@happier-dev\/agents'/g)]
+        const agentsImports = [...sourceText.matchAll(/import\s*\{([^}]*)\}\s*from\s*'@piggercode\/agents'/g)]
             .flatMap((match) => (match[1] ?? '').split(',').map((name) => name.trim()).filter(Boolean));
         expect(agentsImports).toEqual(['projectCurrentAgentSessionView']);
         expect(sourceText).not.toMatch(/providerId\s*={2,3}\s*['"](?:claude|codex|opencode)['"]/);

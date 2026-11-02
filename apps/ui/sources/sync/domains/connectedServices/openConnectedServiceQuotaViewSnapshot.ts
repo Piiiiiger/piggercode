@@ -4,7 +4,7 @@ import {
   type ConnectedServiceQuotaSnapshotV1,
   type SealedConnectedServiceQuotaSnapshotV1,
   type SealedProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 

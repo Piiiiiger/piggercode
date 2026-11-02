@@ -1,4 +1,4 @@
-import { isLoopbackHostname, normalizeHostnameForLoopbackCheck } from '@happier-dev/protocol';
+import { isLoopbackHostname, normalizeHostnameForLoopbackCheck } from '@piggercode/protocol';
 
 export type TerminalConnectLinks = Readonly<{
   webUrl: string;
@@ -25,7 +25,7 @@ const SAFE_SERVER_PROTOCOLS = new Set(['http:', 'https:']);
 /**
  * Whether this host is unusable as an address handed to another device.
  *
- * Loopback itself is `@happier-dev/protocol`'s to decide — it owns the bracket
+ * Loopback itself is `@piggercode/protocol`'s to decide — it owns the bracket
  * and trailing-dot parsing that a private copy here kept getting wrong, which
  * put `http://[::1]:3005` into mobile QR and deep links as if it were remote.
  * The extra case is local: a relay reporting `0.0.0.0` is not loopback, but it

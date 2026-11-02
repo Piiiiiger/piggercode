@@ -3,7 +3,7 @@ import {
     readRollbackEligibleTurnStarts,
     type SessionListRenderableSession,
 } from '@/sync/domains/session/listing/sessionListRenderable';
-import { parseSessionRuntimeActivityProjectionFields } from '@happier-dev/protocol';
+import { parseSessionRuntimeActivityProjectionFields } from '@piggercode/protocol';
 import { resolveSessionPresence } from '@/sync/domains/session/sessionLifecycleProjection';
 
 import type {

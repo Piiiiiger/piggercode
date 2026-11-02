@@ -19,7 +19,7 @@ import {
   type AccountSettingsPersistedObject,
   type AccountSettingsStoredContentEnvelope,
   type AccountSettingsV2UpdateResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   resolveAccountSettingsCachePath,

@@ -1,4 +1,4 @@
-import type { PrimaryTurnStatusV1 } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1 } from '@piggercode/protocol';
 
 import {
     isFreshTimestamp,

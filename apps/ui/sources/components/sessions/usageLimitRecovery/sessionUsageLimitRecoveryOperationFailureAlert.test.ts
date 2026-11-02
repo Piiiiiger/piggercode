@@ -1,7 +1,7 @@
 import {
     CONNECTED_SERVICE_UX_DIAGNOSTIC_ACTIONS,
     CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { buildSessionUsageLimitRecoveryOperationFailureAlert } from './sessionUsageLimitRecoveryOperationFailureAlert';

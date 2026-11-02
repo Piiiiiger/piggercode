@@ -1,5 +1,5 @@
 import { AGENTS_CORE } from '../../manifest.js';
-import { buildAcpConfiguredBackendV1, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { buildAcpConfiguredBackendV1, type BackendTargetRefV1 } from '@piggercode/protocol';
 import { AGENT_IDS, type AgentId } from '../../types.js';
 
 /**

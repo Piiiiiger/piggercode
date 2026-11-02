@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol/installables';
-import { resolveInstallablePolicy, applyInstallablePolicyOverride } from '@happier-dev/protocol/installablesPolicy';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol/installables';
+import { resolveInstallablePolicy, applyInstallablePolicyOverride } from '@piggercode/protocol/installablesPolicy';
 
 describe('installablesPolicy', () => {
     it('resolves defaults when there is no override', () => {

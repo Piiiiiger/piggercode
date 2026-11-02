@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 
 import { describe, expect, it } from 'vitest';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 
 import { SocketCollector } from '../../src/testkit/socketClient';
 

@@ -3,7 +3,7 @@ import type { FirstPartyAcquisitionOptions } from './acquisitionProgress.js';
 import { lstat, rename } from 'node:fs/promises';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { listInstalledVersionIdsNewestFirst } from './listInstalledVersionIdsNewestFirst.js';
 import { promoteVersionedPayload, type FirstPartyPayloadPromotionResult } from './promoteVersionedPayload.js';
 import { pruneRetainedVersions } from './pruneRetainedVersions.js';

@@ -1,7 +1,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 
 import { resolveClaudeConfigDir } from './resolveClaudeConfigDir';
 

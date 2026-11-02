@@ -1,4 +1,4 @@
-import { AGENT_IDS, hasBuiltInAcpConfig, type AgentId } from '@happier-dev/agents';
+import { AGENT_IDS, hasBuiltInAcpConfig, type AgentId } from '@piggercode/agents';
 
 import { isAgentOffered } from '@/agents/catalog/enabled';
 

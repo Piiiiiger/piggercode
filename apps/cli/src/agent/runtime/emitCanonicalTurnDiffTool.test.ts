@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import type { TurnChangeSet } from '@happier-dev/protocol';
+import type { TurnChangeSet } from '@piggercode/protocol';
 
 import { emitCanonicalTurnDiffTool } from './emitCanonicalTurnDiffTool';
 

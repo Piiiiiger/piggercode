@@ -6,7 +6,7 @@ import type {
   SessionRunnerRestartDisabledReason,
   SessionRunnerRestartModeV1,
   SessionRunnerRestartReasonV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 import type { ConnectedServiceSwitchTarget } from '@/daemon/connectedServices/sessionAuthSwitch/connectedServiceSwitchDeferralQueue';

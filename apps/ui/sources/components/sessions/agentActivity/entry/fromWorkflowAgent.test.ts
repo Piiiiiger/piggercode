@@ -1,4 +1,4 @@
-import { buildAgentActivityEntryId } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { WorkflowAgentRowViewModel } from '@/components/sessions/workState/sessionWorkflowActivityTypes';

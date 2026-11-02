@@ -23,7 +23,7 @@ const run = createRunDirs({ runLabel: 'ui-e2e' });
  * live web telemetry buffer `__HAPPIER_TRANSCRIPT_VIEWPORT_EVENTS__()`.
  *
  * Assertion semantics mirror `apps/ui/sources/dev/testkit/transcript/viewportTelemetryAssertions.ts`
- * (Lane 0.3). They are replicated minimally here because `@happier-dev/tests` cannot import
+ * (Lane 0.3). They are replicated minimally here because `@piggercode/tests` cannot import
  * `apps/ui` modules (different package; tsconfig `@/*` maps to `apps/cli/src`).
  *
  * Web-specific deltas vs the UI harness:

@@ -1,7 +1,7 @@
 import {
   ConnectedServiceAuthGroupIdSchema,
   ConnectedServiceProfileIdSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 /**

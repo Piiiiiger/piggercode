@@ -1,5 +1,5 @@
-import { readCachedCliUpdateState } from '@happier-dev/cli-common/update';
-import type { PublicReleaseRingId, PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
+import { readCachedCliUpdateState } from '@piggercode/cli-common/update';
+import type { PublicReleaseRingId, PublicReleaseRingLabel } from '@piggercode/release-runtime/releaseRings';
 
 import { maybeRefreshCliUpdateCacheInBackground } from '@/cli/runtime/update/autoUpdateNotice';
 import { configuration } from '@/configuration';

@@ -1,7 +1,7 @@
 import {
   buildSystemSessionMetadataV1,
-} from '@happier-dev/protocol';
-import { DEFAULT_AGENT_ID, type AgentId } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { DEFAULT_AGENT_ID, type AgentId } from '@piggercode/agents';
 
 import { isAgentId } from '@/agents/registry/registryCore';
 import { listPreferredMachineIds } from '@/components/settings/pickers/resolvePreferredMachineId';

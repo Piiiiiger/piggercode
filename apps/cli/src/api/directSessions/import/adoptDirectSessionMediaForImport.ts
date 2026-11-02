@@ -1,4 +1,4 @@
-import { SESSION_MEDIA_MESSAGE_META_KIND_V1 } from '@happier-dev/protocol';
+import { SESSION_MEDIA_MESSAGE_META_KIND_V1 } from '@piggercode/protocol';
 
 import { createTransferPathAllowanceRegistry } from '@/transfers/targets/createTransferPathAllowanceRegistry';
 import { persistSessionMediaItem, type PersistSessionMediaInput } from '@/session/sessionMedia/persistSessionMediaItem';

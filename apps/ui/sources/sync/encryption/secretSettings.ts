@@ -15,7 +15,7 @@ import {
   type SettingsSecretsKeySetV1,
   type SecretStringV1,
   type AccountScopedCryptoMaterial,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getRandomBytes } from '@/platform/cryptoRandom';
 

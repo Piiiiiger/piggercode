@@ -4,7 +4,7 @@ import {
     normalizeStructuredQuestionDescriptors,
     resolveStructuredQuestionOptionAnswerValue,
     type BuiltAskUserQuestionAnswerPayload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type AskUserQuestionPayloadOption = Readonly<{
     label: string;

@@ -6,7 +6,7 @@ import {
     type ConnectedServiceLimitCategoryV1,
     type SessionConnectedServiceAuthCurrentGroupTruthV1,
     type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 import type { SessionEventMessage } from '@/api/session/sessionMessageTypes';

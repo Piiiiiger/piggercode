@@ -1,4 +1,4 @@
-import type { ReviewStartInput } from '@happier-dev/protocol';
+import type { ReviewStartInput } from '@piggercode/protocol';
 
 import { resolveReviewExecutionRunIntentInput } from '@/agent/reviews/resolveReviewExecutionRunIntentInput';
 import { buildCodexNativeReviewInstructions } from './buildCodexNativeReviewInstructions';

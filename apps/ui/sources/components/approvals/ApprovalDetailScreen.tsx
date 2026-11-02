@@ -4,7 +4,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
-import { ApprovalRequestV1Schema, getActionSpec, type ActionId } from '@happier-dev/protocol';
+import { ApprovalRequestV1Schema, getActionSpec, type ActionId } from '@piggercode/protocol';
 
 import { Text } from '@/components/ui/text/Text';
 import { RoundButton } from '@/components/ui/buttons/RoundButton';

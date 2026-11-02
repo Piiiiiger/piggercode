@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { accountSettingsParse, AGY_ACP_SERVER_VERSION, INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { accountSettingsParse, AGY_ACP_SERVER_VERSION, INSTALLABLE_KEYS } from '@piggercode/protocol';
 import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, join, sep } from 'node:path';

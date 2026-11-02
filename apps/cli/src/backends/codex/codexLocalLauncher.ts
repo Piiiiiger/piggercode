@@ -11,8 +11,8 @@ import { createManagedChildProcess } from '@/subprocess/supervision/managedChild
 import { updateAgentStateBestEffort, updateMetadataBestEffort } from '@/api/session/sessionWritesBestEffort';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { logger } from '@/ui/logger';
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import { resolveCodexCliInvocation } from './utils/resolveCodexCliInvocation';
 import { delay } from '@/utils/time';
 import { resolveConfiguredCodexHome } from './utils/resolveConfiguredCodexHome';

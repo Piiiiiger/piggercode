@@ -14,7 +14,7 @@ import {
   resolveVendorResumeIdFromSessionMetadata,
   SESSION_MODE_OVERRIDE_KEY,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   ConnectedServiceBindingsV1Schema,
   ConnectedServiceMaterializationIdentityV1Schema,
@@ -22,7 +22,7 @@ import {
   type ConnectedServiceBindingsV1,
   type ConnectedServiceMaterializationIdentityV1,
   type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   HAPPIER_SESSION_CONNECTED_SERVICE_MATERIALIZATION_IDENTITY_ENV_KEY,
   parseSessionConnectedServiceMaterializationIdentityJson,

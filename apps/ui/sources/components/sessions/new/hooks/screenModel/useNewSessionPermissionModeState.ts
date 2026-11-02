@@ -10,7 +10,7 @@ import {
 import { normalizePermissionModeForAgentType } from '@/sync/domains/permissions/permissionModeOptions';
 import { isPermissionMode, type PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import type { Settings } from '@/sync/domains/settings/settings';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 type PersistedAuthoringDraftLike = Readonly<{
     permissionMode?: string | null;

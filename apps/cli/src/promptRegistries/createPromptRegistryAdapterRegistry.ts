@@ -2,7 +2,7 @@ import type {
   PromptRegistryConfiguredSourceV1,
   PromptRegistryFetchItemResponseV1,
   PromptRegistryItemSummaryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createClaudeMarketplacePromptRegistryAdapter } from '@/promptRegistries/adapters/claudeMarketplace/createClaudeMarketplacePromptRegistryAdapter';
 import { createGitPromptRegistryAdapter } from '@/promptRegistries/adapters/git/createGitPromptRegistryAdapter';

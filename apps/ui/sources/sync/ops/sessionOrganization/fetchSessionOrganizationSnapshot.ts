@@ -2,7 +2,7 @@ import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { fetchSessionOrganizationSnapshot } from '@/sync/api/session/sessionOrganizationApi';
 import { getStorage } from '@/sync/domains/state/storageStore';
 import { resolveServerProfileScopeIdForIdentifier } from '@/sync/domains/server/serverProfiles';
-import type { SessionOrganizationSnapshotRequest } from '@happier-dev/protocol';
+import type { SessionOrganizationSnapshotRequest } from '@piggercode/protocol';
 import { openSessionOrganizationSnapshotDisplayEnvelopes } from './sessionOrganizationDisplayEnvelope';
 
 export async function fetchAndApplySessionOrganizationSnapshot(params: Readonly<{

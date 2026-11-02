@@ -1,4 +1,4 @@
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 import type { DirectSessionTranscriptReadAfter } from '@/backends/directSessions/providerOps';
 
 import { readCodexDirectTranscript } from './codexDirectTranscriptSource';

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import type { Machine } from '@/api/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { TransferSessionStore } from '@/transfers/core/transferSessionStore';
 import { createTransferRecipientKeyPair } from '@/machines/transfer/transferChunkEncryption';
 

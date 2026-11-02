@@ -1,7 +1,7 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { deleteSessionOrganizationTag as deleteSessionOrganizationTagApi } from '@/sync/api/session/sessionOrganizationApi';
 import { getStorage } from '@/sync/domains/state/storageStore';
-import type { DeleteSessionOrganizationTagRequest } from '@happier-dev/protocol';
+import type { DeleteSessionOrganizationTagRequest } from '@piggercode/protocol';
 
 export async function deleteSessionTag(params: Readonly<{
     credentials: AuthCredentials;

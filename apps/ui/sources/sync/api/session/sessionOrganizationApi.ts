@@ -51,7 +51,7 @@ import {
     type SetSessionTagAssignmentsResponse,
     type UpsertSessionOrganizationLabelRequest,
     type UpsertSessionOrganizationLabelResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { z } from 'zod';
 
 const SESSION_ORGANIZATION_ROUTE = '/v2/session-organization';

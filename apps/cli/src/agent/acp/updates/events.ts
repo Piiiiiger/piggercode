@@ -3,7 +3,7 @@ import { normalizeAcpPlan } from '../plans';
 import {
   ProviderSessionTitleSchema,
   ProviderSessionUpdatedAtSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function hasOwn(record: object, key: PropertyKey): boolean {
   return Object.prototype.hasOwnProperty.call(record, key);

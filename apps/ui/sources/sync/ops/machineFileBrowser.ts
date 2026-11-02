@@ -5,9 +5,9 @@ import {
     type DaemonFilesystemListDirectoryRequest,
     type DaemonFilesystemListDirectoryResponse,
     type DaemonFilesystemListRootsResponse,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 

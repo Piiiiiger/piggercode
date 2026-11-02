@@ -7,7 +7,7 @@ import {
     SessionRuntimeIssueV1Schema,
     PendingActivationAuthorizationV1Schema,
     type SessionOrganizationSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 import { readStorageScopeFromEnv, scopedStorageId } from '@/utils/system/storageScope';

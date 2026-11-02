@@ -1,4 +1,4 @@
-import { readServerEnabledBit } from '@happier-dev/protocol';
+import { readServerEnabledBit } from '@piggercode/protocol';
 import { TokenStorage, type AuthCredentials } from '@/auth/storage/tokenStorage';
 import { getReadyServerFeatures } from '@/sync/api/capabilities/getReadyServerFeatures';
 import { parseToken } from '@/utils/auth/parseToken';

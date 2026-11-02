@@ -3,8 +3,8 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Server, Socket } from "socket.io";
 
-import { RPC_METHODS } from "@happier-dev/protocol/rpc";
-import { SOCKET_RPC_EVENTS } from "@happier-dev/protocol/socketRpc";
+import { RPC_METHODS } from "@piggercode/protocol/rpc";
+import { SOCKET_RPC_EVENTS } from "@piggercode/protocol/socketRpc";
 
 import { createSessionPublisherPresence } from "@/app/presence/sessionPublisherPresence";
 import { db } from "@/storage/db";

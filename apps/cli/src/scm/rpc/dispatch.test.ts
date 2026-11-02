@@ -8,7 +8,7 @@ import {
     buildConnectedServiceCredentialRecord,
     SCM_OPERATION_ERROR_CODES,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { runScmRoute } from './dispatch';
 import type { ScmBackendContext } from '@/scm/types';

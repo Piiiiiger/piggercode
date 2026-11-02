@@ -6,14 +6,14 @@
  * - experimental (requires explicit opt-in).
  */
 
-import { readAcpConfiguredBackendV1FromMetadata } from '@happier-dev/protocol';
+import { readAcpConfiguredBackendV1FromMetadata } from '@piggercode/protocol';
 import {
     AGENTS_CORE,
     evaluateVendorResumeEligibility,
     resolveAgentIdFromFlavor,
     resolveAgentIdFromSessionMetadata,
     resolveConfiguredAcpSessionResume,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import type { Settings } from '@/sync/domains/settings/settings';
 export type ResumeCapabilityOptions = {
     accountSettings?: Partial<Settings> | null;

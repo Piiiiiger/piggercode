@@ -3,12 +3,12 @@ import type {
   SessionRuntimeUsageLimitDetailsV1,
   SessionRuntimeIssueSourceV1,
   SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   ConnectedServiceIdSchema,
   readConnectedServiceLimitCategoryV1,
   redactBugReportSensitiveText,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { classifyProviderLimitEvidence } from '@/daemon/connectedServices/quotas/normalization';
 import { classifyProviderOutputFailure } from '@/agent/runtime/classifyProviderOutputFailure';

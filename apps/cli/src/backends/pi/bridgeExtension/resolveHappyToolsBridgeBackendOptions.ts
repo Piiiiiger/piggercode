@@ -7,7 +7,7 @@ import {
   resolveCodingPromptSessionTitleUpdatesModeV1,
   type ActionId,
   type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildHappyCliSubprocessLaunchSpec } from '@/utils/spawnHappyCLI';
 

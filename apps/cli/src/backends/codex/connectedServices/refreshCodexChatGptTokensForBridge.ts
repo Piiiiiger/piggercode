@@ -1,7 +1,7 @@
 import {
   ConnectedServiceCredentialRecordV1Schema,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   refreshConnectedAccountOauthTokens,

@@ -1,6 +1,6 @@
 import type { Credentials } from '@/persistence';
 import type { DirectSpawnedSessionTransport } from '@/session/services/createSpawnedSession';
-import type { ActionExecutorDeps } from '@happier-dev/protocol';
+import type { ActionExecutorDeps } from '@piggercode/protocol';
 import { resolveSessionEncryptionContextFromCredentials } from '@/session/transport/encryption/sessionEncryptionContext';
 import { readCurrentHappierSessionIdFromEnv } from '@/agent/runtime/session/currentSessionIdEnv';
 

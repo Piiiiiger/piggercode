@@ -1,4 +1,4 @@
-import type { ConnectedServiceExecutionAuthorityV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceExecutionAuthorityV1 } from '@piggercode/protocol';
 
 export function shouldCommitAutomaticGroupApplySessionEvent(
   event: unknown,

@@ -3,7 +3,7 @@ import type {
   ConnectedServiceUsageSourceV1,
   ConnectedServiceQuotaSnapshotV1,
   ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ProviderAccountUsagePersistenceScheduler } from '../../accountUsage/persistence';
 import { isProviderAccountUsageStoreMutationAccepted } from '../../accountUsage/store';

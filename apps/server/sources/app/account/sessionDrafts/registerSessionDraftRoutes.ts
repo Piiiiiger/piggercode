@@ -9,7 +9,7 @@ import {
     SessionDraftReadRequestV1Schema,
     SessionDraftReadResponseV1Schema,
     SessionDraftRouteErrorResponseV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { type Fastify } from '@/app/api/types';
 

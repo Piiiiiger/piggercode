@@ -7,7 +7,7 @@ import {
   readSessionAgentActivityHeadlineFromMetadata,
   SESSION_AGENT_ACTIVITY_HEADLINE_METADATA_KEY,
   SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { wireClaudeWorkflowActivitySource as wireProductionClaudeWorkflowActivitySource, type ClaudeWorkflowActivitySessionBinding } from './wireClaudeWorkflowActivitySource';
 type TestBinding = ClaudeWorkflowActivitySessionBinding;

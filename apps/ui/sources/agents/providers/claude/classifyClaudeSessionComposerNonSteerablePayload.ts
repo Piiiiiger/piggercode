@@ -1,5 +1,5 @@
-import type { AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
-import { resolveMetadataStringOverrideV1 } from '@happier-dev/agents';
+import type { AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
+import { resolveMetadataStringOverrideV1 } from '@piggercode/agents';
 
 import type { SessionComposerNonSteerablePayloadReason } from '@/agents/registry/registryUiBehavior';
 import type { Session } from '@/sync/domains/state/storageTypes';

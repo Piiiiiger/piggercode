@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveLatestPermissionIntent } from '@happier-dev/agents';
+import { resolveLatestPermissionIntent } from '@piggercode/agents';
 
 describe('resolveLatestPermissionIntent', () => {
   it('returns null when no candidates are valid', () => {

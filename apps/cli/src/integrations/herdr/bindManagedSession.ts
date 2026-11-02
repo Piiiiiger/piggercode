@@ -1,6 +1,6 @@
 import type { EventEmitter } from 'node:events';
-import { resolveManagedCliToolNameForRing } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { resolveManagedCliToolNameForRing } from '@piggercode/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { Metadata } from '@/api/types';
 import type { ApiSessionClient } from '@/api/session/sessionClient';

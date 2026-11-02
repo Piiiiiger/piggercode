@@ -1,5 +1,5 @@
-import type { ScmChangeApplyResponse } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmChangeApplyResponse } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import { runScmCommand } from '../../../runtime';
 

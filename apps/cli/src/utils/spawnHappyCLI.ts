@@ -69,7 +69,7 @@ import { createRequire } from 'node:module';
 import { resolveJavaScriptRuntimeExecutable } from '@/runtime/js/resolveJavaScriptRuntimeExecutable';
 import { buildMissingJavaScriptRuntimeMessage } from '@/runtime/js/buildMissingJavaScriptRuntimeMessage';
 import { resolvePackagedRuntimeEntrypoint } from '@/runtime/resolvePackagedRuntimeEntrypoint';
-import { parseOptionalBooleanEnv } from '@happier-dev/protocol';
+import { parseOptionalBooleanEnv } from '@piggercode/protocol';
 import { isEmbeddedBunBundlePath } from '@/runtime/js/isEmbeddedBunBundlePath';
 import {
   decidePinnedRunnerSnapshotPrune,
@@ -261,7 +261,7 @@ function resolveCurrentProcessBundledScriptPath(): string | null {
   const lowered = normalized.toLowerCase();
   const base = basename(lowered);
   if (base.includes('happier')) return scriptPath;
-  if (base === 'index.mjs' && (lowered.includes('/@happier-dev/cli/') || lowered.includes('/happier/'))) {
+  if (base === 'index.mjs' && (lowered.includes('/@piggercode/cli/') || lowered.includes('/happier/'))) {
     return scriptPath;
   }
   return null;

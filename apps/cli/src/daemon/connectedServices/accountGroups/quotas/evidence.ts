@@ -1,7 +1,7 @@
 import {
   isConnectedServiceQuotaObservationFresh,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type QuotaLifecycleEvidenceRejectionReason =
   | 'generation_mismatch'

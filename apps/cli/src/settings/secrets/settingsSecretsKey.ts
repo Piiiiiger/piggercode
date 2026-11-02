@@ -1,7 +1,7 @@
 import {
   deriveSettingsSecretsKeySetV1,
   type AccountScopedCryptoMaterial,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 

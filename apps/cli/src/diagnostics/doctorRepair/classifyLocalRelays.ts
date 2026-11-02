@@ -1,4 +1,4 @@
-import type { PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingLabel } from '@piggercode/release-runtime/releaseRings';
 
 import { semverLessThan } from './_shared';
 import type {

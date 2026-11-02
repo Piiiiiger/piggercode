@@ -5,7 +5,7 @@ import {
     ConnectedServiceQuotaSnapshotV1Schema,
     sealAccountScopedBlobCiphertext,
     sealConnectedServiceCredentialCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { storeConnectedServiceCredentialForAccount } from '@/sync/domains/connectedServices/storeConnectedServiceCredentialForAccount';
 import { getServerFetchUrl } from '@/dev/testkit/mocks/serverFetch';
 import {

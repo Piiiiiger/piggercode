@@ -1,4 +1,4 @@
-import type { SessionRollbackTarget } from '@happier-dev/protocol';
+import type { SessionRollbackTarget } from '@piggercode/protocol';
 
 export type CodexAppServerRollbackEvidenceEntry = Readonly<{
     turnId: string;

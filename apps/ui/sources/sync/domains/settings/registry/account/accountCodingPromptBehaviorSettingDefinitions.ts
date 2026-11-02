@@ -3,7 +3,7 @@ import {
     DEFAULT_CODING_PROMPT_BEHAVIOR_V1,
     buildSettingArtifacts,
     defineSettingDefinitions,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const ACCOUNT_CODING_PROMPT_BEHAVIOR_SETTING_DEFINITIONS = defineSettingDefinitions({
     codingPromptBehaviorV1: {

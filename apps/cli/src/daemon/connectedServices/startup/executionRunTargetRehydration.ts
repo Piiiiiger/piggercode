@@ -1,5 +1,5 @@
 import type { CatalogAgentId } from '@/backends/types';
-import { ExecutionRunRetentionPolicySchema, type ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import { ExecutionRunRetentionPolicySchema, type ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import type { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { ExecutionRunConnectedServicesLaunchV1Schema } from '../runsBridge/contract';

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import { z } from 'zod';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { compareWorkspaceManifests, type WorkspaceManifestComparison } from '../workspaceExportPackaging/compareWorkspaceManifests';
 import { hashWorkspaceFile } from '../workspaceExportPackaging/hashWorkspaceFile';

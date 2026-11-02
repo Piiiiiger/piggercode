@@ -1,5 +1,5 @@
-import { resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { ConnectedServiceImportError } from '@/cloud/connectedServices/connectedServiceImportError';
 import { readClaudeCodeNativeCredential } from '../connectedServices/nativeAuth/claudeCodeCredentialFile';

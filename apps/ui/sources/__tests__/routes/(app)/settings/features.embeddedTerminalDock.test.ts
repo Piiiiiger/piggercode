@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { featureRequiresServerSnapshot, readServerEnabledBit } from '@happier-dev/protocol';
+import { featureRequiresServerSnapshot, readServerEnabledBit } from '@piggercode/protocol';
 
 describe('features.tsx - embedded terminal dock location visibility', () => {
     it('terminal.embeddedPty requires server snapshot', () => {

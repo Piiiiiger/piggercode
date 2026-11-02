@@ -8,7 +8,7 @@ import { vendorBundledPackageRuntimeDependenciesFallback } from './vendorBundled
 function stripInternalBundledWorkspaceDependenciesFallback(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
   return Object.fromEntries(
-    Object.entries(value).filter(([name]) => !String(name).startsWith('@happier-dev/')),
+    Object.entries(value).filter(([name]) => !String(name).startsWith('@piggercode/')),
   );
 }
 
@@ -111,7 +111,7 @@ function collectExternalRuntimeDependencyNames(pkgJson) {
   for (const deps of [pkgJson?.dependencies, pkgJson?.optionalDependencies]) {
     if (!deps || typeof deps !== 'object') continue;
     for (const name of Object.keys(deps)) {
-      if (!name.startsWith('@happier-dev/')) {
+      if (!name.startsWith('@piggercode/')) {
         names.add(name);
       }
     }
@@ -430,7 +430,7 @@ function readBundledWorkspacePackageNamesFromHostPackageJson(raw) {
       : [];
 
   return bundledDependencies
-    .filter((value) => typeof value === 'string' && value.startsWith('@happier-dev/'));
+    .filter((value) => typeof value === 'string' && value.startsWith('@piggercode/'));
 }
 
 function resolveDefaultBundledWorkspacePackageNames(repoRoot, hostApps, readFileImpl = readFileSync) {
@@ -562,7 +562,7 @@ export function syncBundledWorkspacePackages(opts = {}) {
     }
 
     for (const hostApp of hostApps) {
-      const destPackageDir = resolve(repoRoot, 'apps', hostApp, 'node_modules', '@happier-dev', pkg);
+      const destPackageDir = resolve(repoRoot, 'apps', hostApp, 'node_modules', '@piggercode', pkg);
       const destDist = resolve(destPackageDir, 'dist');
       if (exists(srcDist)) {
         try {

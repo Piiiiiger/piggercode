@@ -1,7 +1,7 @@
 import { access, mkdir, rename } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { resolveWorkspaceRelativePath } from '../workspaceExportPackaging/resolveWorkspaceRelativePath';
 import { applyWorkspaceMetadata } from './applyWorkspaceMetadata';

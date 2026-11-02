@@ -1,4 +1,4 @@
-import type { LlmTaskRunnerConfigV1 } from '@happier-dev/protocol';
+import type { LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
 import type { Settings } from '@/sync/domains/settings/settings';
 import {

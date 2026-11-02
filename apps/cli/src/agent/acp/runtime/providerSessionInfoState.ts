@@ -1,7 +1,7 @@
 import {
   ProviderSessionInfoV1Schema,
   type ProviderSessionInfoV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 

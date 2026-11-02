@@ -4,7 +4,7 @@ import {
   ReviewFindingsV2Schema,
   type ReviewFinding,
   type ReviewFindingsV2,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function buildReviewFindingsV2Payload(params: Readonly<{
   runId: string;

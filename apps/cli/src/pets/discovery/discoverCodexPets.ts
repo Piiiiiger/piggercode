@@ -5,7 +5,7 @@ import {
   PET_DISCOVERY_LIMITS_V1,
   type PetDiscoveryDiagnosticV1,
   type PetPackageValidationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PetDiscoveryRoot } from './resolveCodexPetRoots';
 import { createPetSourceKey } from './createPetSourceKey';

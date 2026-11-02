@@ -8,7 +8,7 @@ test('vendorBundledPackageRuntimeDependencies vendors transitive external depend
   const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-vendor-runtime-deps-'));
   try {
     const srcPackageDir = join(tempRoot, 'packages', 'protocol');
-    const destPackageDir = join(tempRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = join(tempRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const srcPackageJsonPath = join(srcPackageDir, 'package.json');
 
     const depADir = join(tempRoot, 'node_modules', 'dep-a');
@@ -23,7 +23,7 @@ test('vendorBundledPackageRuntimeDependencies vendors transitive external depend
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -108,7 +108,7 @@ test('vendorBundledPackageRuntimeDependencies vendors packages that only expose 
   const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-vendor-runtime-deps-types-'));
   try {
     const srcPackageDir = join(tempRoot, 'packages', 'server-runtime');
-    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'server-runtime');
+    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'server-runtime');
     const srcPackageJsonPath = join(srcPackageDir, 'package.json');
     const typesConnectDir = join(tempRoot, 'node_modules', '@types', 'connect');
 
@@ -120,7 +120,7 @@ test('vendorBundledPackageRuntimeDependencies vendors packages that only expose 
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/server-runtime',
+          name: '@piggercode/server-runtime',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -160,7 +160,7 @@ test('vendorBundledPackageRuntimeDependencies does not clobber an existing bundl
   const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-vendor-runtime-deps-atomic-'));
   try {
     const srcPackageDir = join(tempRoot, 'packages', 'protocol');
-    const destPackageDir = join(tempRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = join(tempRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const srcPackageJsonPath = join(srcPackageDir, 'package.json');
 
     const depADir = join(tempRoot, 'node_modules', 'dep-a');
@@ -173,7 +173,7 @@ test('vendorBundledPackageRuntimeDependencies does not clobber an existing bundl
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -235,7 +235,7 @@ test('vendorBundledPackageRuntimeDependencies vendors installed packages without
   const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-vendor-runtime-deps-no-export-'));
   try {
     const srcPackageDir = join(tempRoot, 'packages', 'server-runtime');
-    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'server-runtime');
+    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'server-runtime');
     const srcPackageJsonPath = join(srcPackageDir, 'package.json');
     const octokitAppDir = join(tempRoot, 'node_modules', '@octokit', 'app');
 
@@ -247,7 +247,7 @@ test('vendorBundledPackageRuntimeDependencies vendors installed packages without
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/server-runtime',
+          name: '@piggercode/server-runtime',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -297,7 +297,7 @@ test('vendorBundledPackageRuntimeDependencies vendors npm alias package folders'
   const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-vendor-runtime-deps-alias-'));
   try {
     const srcPackageDir = join(tempRoot, 'packages', 'daemon-runtime');
-    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'daemon-runtime');
+    const destPackageDir = join(tempRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'daemon-runtime');
     const srcPackageJsonPath = join(srcPackageDir, 'package.json');
     const aliasDir = join(tempRoot, 'node_modules', 'string-width-cjs');
 
@@ -309,7 +309,7 @@ test('vendorBundledPackageRuntimeDependencies vendors npm alias package folders'
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/daemon-runtime',
+          name: '@piggercode/daemon-runtime',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -371,14 +371,14 @@ test('vendorBundledPackageRuntimeDependencies can resolve installed packages fro
 
     writeFileSync(
       resolveFromPackageJsonPath,
-      `${JSON.stringify({ name: '@happier-dev/server', version: '0.0.0', type: 'module' }, null, 2)}\n`,
+      `${JSON.stringify({ name: '@piggercode/server', version: '0.0.0', type: 'module' }, null, 2)}\n`,
       'utf8',
     );
     writeFileSync(
       srcPackageJsonPath,
       `${JSON.stringify(
         {
-          name: '@happier-dev/server-runtime',
+          name: '@piggercode/server-runtime',
           version: '0.0.0',
           type: 'module',
           dependencies: {
@@ -563,7 +563,7 @@ test('bundleInstalledPackageWithRuntimeDependencies keeps first-level deps scope
 
     writeFileSync(
       hostPackageJsonPath,
-      `${JSON.stringify({ name: '@happier-dev/cli', version: '0.0.0', type: 'module' }, null, 2)}\n`,
+      `${JSON.stringify({ name: '@piggercode/cli', version: '0.0.0', type: 'module' }, null, 2)}\n`,
       'utf8',
     );
 

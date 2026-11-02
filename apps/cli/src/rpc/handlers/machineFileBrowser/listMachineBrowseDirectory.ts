@@ -1,5 +1,5 @@
-import type { DaemonFilesystemListDirectoryResponse } from '@happier-dev/protocol'
-import { DaemonFilesystemListDirectoryRequestSchema } from '@happier-dev/protocol'
+import type { DaemonFilesystemListDirectoryResponse } from '@piggercode/protocol'
+import { DaemonFilesystemListDirectoryRequestSchema } from '@piggercode/protocol'
 
 import { listDirectoryEntries } from '@/rpc/handlers/fileSystem/directoryListing/listDirectoryEntries'
 

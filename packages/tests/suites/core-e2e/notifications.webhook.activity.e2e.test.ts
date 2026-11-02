@@ -7,7 +7,7 @@ import {
   ActivityWebhookPayloadV1Schema,
   BUILT_IN_EXPO_PUSH_NOTIFICATION_CHANNEL_ID,
   accountSettingsParse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { dispatchActivityNotificationAsync } from '../../../../apps/cli/src/activity/notifications/dispatchActivityNotification';
 import type { ActivityNotificationEvent } from '../../../../apps/cli/src/activity/notifications/activityNotificationEvent';
 

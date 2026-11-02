@@ -5,7 +5,7 @@ import {
   RPC_METHODS,
   resolveSocketRpcSessionWriteAuthorizationMethod,
   type SocketRpcAuthorizationContext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type MachineRpcAuthorizationRequest = Readonly<{
   method: string;

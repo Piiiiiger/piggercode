@@ -1,5 +1,5 @@
 import { encodeBase64 } from '@/encryption/base64';
-import { openEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { openEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 
 import { AES256Encryption, SecretBoxEncryption } from '../encryptor';
 import {

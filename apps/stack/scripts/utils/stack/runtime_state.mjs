@@ -8,7 +8,7 @@ import { isPidAlive, observePidLiveness } from '../proc/pids.mjs';
 import { isPidOwnedByStack } from '../proc/ownership.mjs';
 import { withJsonOwnerFileLock } from '../proc/jsonOwnerFileLock.mjs';
 import { normalizeStackRuntimeOwnerStartedAt } from './runtime_owner_incarnation.mjs';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 export { isPidAlive };
 

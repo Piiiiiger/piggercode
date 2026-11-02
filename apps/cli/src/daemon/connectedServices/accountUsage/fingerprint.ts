@@ -1,6 +1,6 @@
 import { createHash, createHmac, hkdfSync } from 'node:crypto';
 
-import type { ProviderAccountUsageSnapshotV1 } from '@happier-dev/protocol';
+import type { ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 

@@ -6,7 +6,7 @@ import {
   type RemoteFirstPartyCommandResult,
   type RemoteFirstPartyInstallDeps,
   type SystemTaskSshConnectionConfig,
-} from '@happier-dev/cli-common/systemTasks';
+} from '@piggercode/cli-common/systemTasks';
 
 import { buildScpCommand, buildSshCommand, redactSshText } from '../ssh/index.js';
 import { parseFirstJsonObject, resolveDefaultKnownHostsPath, runCommandCapture } from './taskRuntime.js';

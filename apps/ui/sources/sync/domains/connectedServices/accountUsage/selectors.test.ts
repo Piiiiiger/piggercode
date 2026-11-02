@@ -5,7 +5,7 @@ import {
   type ConnectedServiceQuotaSnapshotV1,
   type ProviderAccountUsageSnapshotV1,
   type ProviderAccountUsageStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { selectProviderUsageDisplaySnapshot } from './selectors';

@@ -1,4 +1,4 @@
-import { buildLaunchdPlistXml, buildServicePath } from '@happier-dev/cli-common/service';
+import { buildLaunchdPlistXml, buildServicePath } from '@piggercode/cli-common/service';
 
 const MACOS_DEFAULT_PATH = '/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin';
 

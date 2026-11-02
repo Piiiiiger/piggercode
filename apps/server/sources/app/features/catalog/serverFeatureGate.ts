@@ -1,5 +1,5 @@
 import type { FeaturesResponse } from "@/app/features/types";
-import { readServerEnabledBit, type FeatureId } from "@happier-dev/protocol";
+import { readServerEnabledBit, type FeatureId } from "@piggercode/protocol";
 
 import { resolveServerFeaturePayload } from "./resolveServerFeaturePayload";
 import { serverFeatureRegistry } from "./serverFeatureRegistry";

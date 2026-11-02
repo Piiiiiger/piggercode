@@ -14,8 +14,8 @@ import {
 import { useWorkflowRunForToolUseId } from '@/components/sessions/workState/useWorkflowRunDetails';
 import { resolveAgentActivityEvidenceAtMs } from '@/sync/domains/session/agentActivity';
 import type { WorkflowActivityRowViewModel } from '@/components/sessions/workState/sessionWorkflowActivityTypes';
-import { fromWorkflowAgentStatus } from '@happier-dev/protocol';
-import type { SessionWorkflowAgentStatusV1, SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import { fromWorkflowAgentStatus } from '@piggercode/protocol';
+import type { SessionWorkflowAgentStatusV1, SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 import type { ToolViewProps } from '../core/_registry';
 import { WorkflowAgentActivityRow } from './WorkflowAgentActivityRow';

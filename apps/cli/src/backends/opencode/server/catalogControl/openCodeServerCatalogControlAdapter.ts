@@ -1,4 +1,4 @@
-import { normalizeOpenCodeAppSkills } from '@happier-dev/protocol';
+import { normalizeOpenCodeAppSkills } from '@piggercode/protocol';
 
 import { readOpenCodeSessionRuntimeHandleFromMetadata } from '@/backends/opencode/utils/opencodeSessionAffinity';
 import type { SessionCatalogControlAdapter } from '@/session/catalogControls/sessionCatalogControlTypes';

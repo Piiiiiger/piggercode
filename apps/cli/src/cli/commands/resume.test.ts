@@ -14,7 +14,7 @@ import {
   projectSessionMetadataForWire,
   sealAccountScopedBlobCiphertext,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { reloadConfiguration } from '@/configuration';
 import type { Credentials, Settings } from '@/persistence';
@@ -29,7 +29,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { acquireSessionRunnerLock, sessionRunnerLockPathForSessionId } from '@/daemon/sessionRunnerLock';
 import { withHerdrApi } from '@/integrations/herdr/herdrApi.testkit';
 import { createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 
 const nativeBoundary = vi.hoisted(() => ({ supportedHerdr: false, foregroundSpawn: vi.fn(), interceptForeground: false }));
 // Only the installed executable's --version response is pinned. Files, sockets,

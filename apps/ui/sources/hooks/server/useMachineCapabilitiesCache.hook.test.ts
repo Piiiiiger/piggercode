@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
-import { CHECKLIST_IDS } from '@happier-dev/protocol/checklists';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CHECKLIST_IDS } from '@piggercode/protocol/checklists';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 import type { CapabilitiesDetectRequest } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { flushHookEffects } from './serverFeatureHookHarness.testHelpers';
 import { renderHook, renderScreen } from '@/dev/testkit';

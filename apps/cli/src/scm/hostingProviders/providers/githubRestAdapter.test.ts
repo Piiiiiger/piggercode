@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ScmHostingProvider } from '@happier-dev/protocol';
+import type { ScmHostingProvider } from '@piggercode/protocol';
 
 const provider: ScmHostingProvider = {
   kind: 'github',

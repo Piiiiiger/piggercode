@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { HttpStatusError } from '@/api/client/httpStatusError';
 import type { Credentials } from '@/persistence';

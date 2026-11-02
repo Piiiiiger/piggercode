@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { buildCodexAgentRuntimeDescriptor, supportsExistingSessionHandoffState } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor, supportsExistingSessionHandoffState } from '@piggercode/agents';
 import { describe, expect, it } from 'vitest';
 
 import { openSqliteDatabaseSync } from '@/utils/sqlite/sqliteSync';

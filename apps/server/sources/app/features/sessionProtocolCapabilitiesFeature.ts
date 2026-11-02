@@ -1,7 +1,7 @@
 import {
     CURRENT_PENDING_INPUT_PROTOCOL_VERSION,
     SESSION_SYNC_PROTOCOL_VERSION_RUNTIME_ACTIVITY,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { FeaturesPayloadDelta } from './types';
 

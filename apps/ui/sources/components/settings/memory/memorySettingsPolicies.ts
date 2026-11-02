@@ -1,4 +1,4 @@
-import type { MemorySettingsV1 } from '@happier-dev/protocol';
+import type { MemorySettingsV1 } from '@piggercode/protocol';
 
 export type MemoryCoveragePolicy =
     | Readonly<{ type: 'full' }>

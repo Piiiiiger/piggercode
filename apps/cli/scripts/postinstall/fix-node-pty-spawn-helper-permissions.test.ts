@@ -15,7 +15,7 @@ describe('fixNodePtySpawnHelperPermissions', () => {
     try {
       // Load current source through the published package boundary, without using
       // a possibly stale workspace bundle in apps/cli/node_modules.
-      const commonDir = join(root, 'node_modules', '@happier-dev', 'cli-common');
+      const commonDir = join(root, 'node_modules', '@piggercode', 'cli-common');
       mkdirSync(commonDir, { recursive: true });
       for (const name of ['package.json', 'nodePtySpawnHelperPermissions.cjs']) {
         copyFileSync(new URL(`../../../../packages/cli-common/${name}`, import.meta.url), join(commonDir, name));

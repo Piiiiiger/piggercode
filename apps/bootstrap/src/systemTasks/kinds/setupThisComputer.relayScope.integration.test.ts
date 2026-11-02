@@ -2,8 +2,8 @@ import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { executeSystemTask } from '@happier-dev/cli-common/systemTasks';
-import { SETUP_PAIRING_PROMPT_KIND, type SystemTaskJsonValue } from '@happier-dev/protocol';
+import { executeSystemTask } from '@piggercode/cli-common/systemTasks';
+import { SETUP_PAIRING_PROMPT_KIND, type SystemTaskJsonValue } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {

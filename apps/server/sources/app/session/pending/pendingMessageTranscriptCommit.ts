@@ -4,7 +4,7 @@ import type { Tx } from "@/storage/inTx";
 import {
     readPendingLocalId,
     type SessionMessageRole,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { isDeepStrictEqual } from "node:util";
 
 export type PendingTranscriptMessage = {

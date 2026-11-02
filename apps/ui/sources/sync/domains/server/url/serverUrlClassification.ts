@@ -1,7 +1,7 @@
 import {
     isLoopbackHostname as isProtocolLoopbackHostname,
     normalizeHostnameForLoopbackCheck,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function stripBrackets(hostname: string): string {
     const host = String(hostname ?? '').trim();
@@ -56,7 +56,7 @@ export function isLocalishHostname(hostname: string): boolean {
  * Reachability, not identity. This is the app-side reader of the same question
  * the CLI asks in `apps/cli/src/server/serverUrlClassification.ts`
  * (`isLoopbackServerHost`), and it delegates the networking part to the one
- * owner of it, `isLoopbackHostname` in `@happier-dev/protocol` — a private copy
+ * owner of it, `isLoopbackHostname` in `@piggercode/protocol` — a private copy
  * here was narrower than the owner and published `http://127.0.0.2:3005` and
  * `http://localhost.:3005` into shareable links as if a phone could reach them.
  *

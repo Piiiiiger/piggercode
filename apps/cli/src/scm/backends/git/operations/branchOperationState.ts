@@ -1,7 +1,7 @@
 import { access, readFile, stat } from 'node:fs/promises';
 import { isAbsolute, resolve } from 'node:path';
 
-import type { ScmOperationState } from '@happier-dev/protocol';
+import type { ScmOperationState } from '@piggercode/protocol';
 
 import { runScmCommand } from '../../../runtime';
 import type { ScmBackendContext } from '../../../types';

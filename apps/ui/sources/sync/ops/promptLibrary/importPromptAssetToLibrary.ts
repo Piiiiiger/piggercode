@@ -5,7 +5,7 @@ import {
   type PromptBundleSchemaIdV1,
   type PromptExternalLinkEntryV1,
   type PromptExternalLinksV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { randomUUID } from '@/platform/randomUUID';
 

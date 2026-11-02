@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { getFirstPartyComponentCatalogEntry } from '@happier-dev/cli-common/firstPartyRuntime';
+import { getFirstPartyComponentCatalogEntry } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { resolveRuntimeManifestEntrypoint } from '../shared/runtime_manifest.mjs';
 

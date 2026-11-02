@@ -2,7 +2,7 @@ import { type Dirent } from 'node:fs';
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import type { DirectSessionCandidateV1, DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionCandidateV1, DirectSessionsSource } from '@piggercode/protocol';
 
 import { deriveDirectSessionActivityFromTimestamp } from '@/api/directSessions/activity/deriveDirectSessionActivityFromTimestamp';
 import { mapWithConcurrency } from '@/api/directSessions/discovery/mapWithConcurrency';

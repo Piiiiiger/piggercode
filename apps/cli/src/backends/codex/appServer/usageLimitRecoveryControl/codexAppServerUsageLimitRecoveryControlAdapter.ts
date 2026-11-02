@@ -1,6 +1,6 @@
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import { readLatestUsageLimitFailureIssue } from '@/session/usageLimitRecoveryControls/readLatestUsageLimitFailureIssue';
-import { readSessionMetadataRuntimeDescriptor } from '@happier-dev/agents';
+import { readSessionMetadataRuntimeDescriptor } from '@piggercode/agents';
 import {
   buildRecoveryCreditConsumeIdempotencyKey,
   ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema,
@@ -9,7 +9,7 @@ import {
   readSessionUsageLimitRecoveryForIssue,
   type ConnectedServiceQuotaRecoveryCreditsV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createConnectedServiceCredentialApi } from '@/api/connectedServices/connectedServiceCredentialApi';
 import { resolveConnectedServiceCredentials } from '@/cloud/connectedServices/resolveConnectedServiceCredentials';

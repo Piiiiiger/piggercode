@@ -165,19 +165,19 @@ test('expoExec builds workspace dist deps for the projectDir (not the runnerDir)
 
   // Root does NOT depend on protocol; only apps/ui does.
   await writeJson(join(root, 'apps', 'ui', 'package.json'), {
-    name: '@happier-dev/app',
+    name: '@piggercode/app',
     private: true,
     dependencies: {
-      '@happier-dev/protocol': '0.0.0',
+      '@piggercode/protocol': '0.0.0',
     },
   });
-  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@happier-dev/cli', private: true });
-  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@happier-dev/server', private: true });
+  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@piggercode/cli', private: true });
+  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@piggercode/server', private: true });
 
   const protocolDir = join(root, 'packages', 'protocol');
   await mkdir(protocolDir, { recursive: true });
   await writeJson(join(protocolDir, 'package.json'), {
-    name: '@happier-dev/protocol',
+    name: '@piggercode/protocol',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',
@@ -239,19 +239,19 @@ test('expoExec falls back to the monorepo root expo bin when runnerDir lacks nod
   await writeWorkspacePackageBuildOwnerProxy(root);
 
   await writeJson(join(root, 'apps', 'ui', 'package.json'), {
-    name: '@happier-dev/app',
+    name: '@piggercode/app',
     private: true,
     dependencies: {
-      '@happier-dev/protocol': '0.0.0',
+      '@piggercode/protocol': '0.0.0',
     },
   });
-  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@happier-dev/cli', private: true });
-  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@happier-dev/server', private: true });
+  await writeJson(join(root, 'apps', 'cli', 'package.json'), { name: '@piggercode/cli', private: true });
+  await writeJson(join(root, 'apps', 'server', 'package.json'), { name: '@piggercode/server', private: true });
 
   const protocolDir = join(root, 'packages', 'protocol');
   await mkdir(protocolDir, { recursive: true });
   await writeJson(join(protocolDir, 'package.json'), {
-    name: '@happier-dev/protocol',
+    name: '@piggercode/protocol',
     version: '0.0.0',
     type: 'module',
     main: './dist/index.js',

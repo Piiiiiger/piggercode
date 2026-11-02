@@ -13,7 +13,7 @@ import { makeMode } from './claudeRemoteAgentSdk.testkit';
 import type { EnhancedMode } from '../loop';
 import type { Query } from '@anthropic-ai/claude-agent-sdk';
 import { resolveClaudeProjectId } from '../utils/path';
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 import { createClaudeWorkflowActivitySource } from '../workflows/claudeWorkflowActivitySource';
 import { completedNativeChildTranscript } from '../workflows/claudeWorkflowActivitySource.testkit';
 

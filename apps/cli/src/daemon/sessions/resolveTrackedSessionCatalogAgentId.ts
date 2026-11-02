@@ -1,7 +1,7 @@
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { CATALOG_AGENT_IDS, type CatalogAgentId } from '@/backends/types';
 import { resolveCatalogAgentId } from '@/backends/catalog';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import type { TrackedSession } from '../types';
 
 function readBuiltInCatalogAgentIdFromBackendTarget(target: BackendTargetRefV1 | undefined): CatalogAgentId | null {

@@ -1,4 +1,4 @@
-import { AGENTS_CORE, type AgentId } from '@happier-dev/agents';
+import { AGENTS_CORE, type AgentId } from '@piggercode/agents';
 
 import type { AcpBoundSessionIdentity } from '@/agent/acp/runtime/sessionIdentityBinding';
 import type { Metadata } from '@/api/types';

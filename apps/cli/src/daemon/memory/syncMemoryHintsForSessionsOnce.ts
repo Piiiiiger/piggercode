@@ -1,4 +1,4 @@
-import type { MemoryContentPolicyV1, MemoryCoveragePolicyV1, SessionSummaryShardV1, SessionSynopsisV1 } from '@happier-dev/protocol';
+import type { MemoryContentPolicyV1, MemoryCoveragePolicyV1, SessionSummaryShardV1, SessionSynopsisV1 } from '@piggercode/protocol';
 
 import type { DecryptedTranscriptRow } from '@/session/replay/decryptTranscriptRows';
 import {

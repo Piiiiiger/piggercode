@@ -1,5 +1,5 @@
 import type { RawJSONLines } from '@/backends/claude/types';
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import type { SessionMessageRole } from '@piggercode/protocol';
 
 import { asRecord, readNestedProperty, readStringProperty, readType } from './messageRoleClassificationPrimitives';
 

@@ -6,7 +6,7 @@ import { Item } from '@/components/ui/lists/Item';
 import { Modal } from '@/modal';
 import { t } from '@/text';
 
-import type { MemorySettingsV1 } from '@happier-dev/protocol';
+import type { MemorySettingsV1 } from '@piggercode/protocol';
 import { Icon } from '@/components/ui/icons/Icon';
 
 export const MemorySettingsBudgetsSection = React.memo(function MemorySettingsBudgetsSection(props: Readonly<{

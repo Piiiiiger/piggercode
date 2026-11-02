@@ -4,7 +4,7 @@ import {
   type SystemTaskJsonObject,
   type SystemTaskJsonValue,
   type SystemTaskResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { SystemTaskExecutionError } from './runSystemTask.js';
 

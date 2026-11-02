@@ -1,6 +1,6 @@
 import { realpathSync } from 'node:fs';
 
-import type { CliInstallSource, CliUpdateFacts } from '@happier-dev/protocol';
+import type { CliInstallSource, CliUpdateFacts } from '@piggercode/protocol';
 import {
   describeHappierCliOrigin,
   type HappierCliOrigin,
@@ -8,9 +8,9 @@ import {
   readLastCliUpdateResult,
   resolveFirstPartyInstallLayout,
   resolveManagedCliToolNameForRing,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { readCachedCliUpdateState, resolveNpmPackageNameOverride } from '@happier-dev/cli-common/update';
-import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { readCachedCliUpdateState, resolveNpmPackageNameOverride } from '@piggercode/cli-common/update';
+import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { configuration } from '@/configuration';
 

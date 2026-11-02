@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { openAccountScopedBlobCiphertext, ConnectedServiceCredentialRecordV1Schema } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext, ConnectedServiceCredentialRecordV1Schema } from '@piggercode/protocol';
 import { encodeBase64 } from '@/encryption/base64';
 
 import { sealConnectedServiceCredential } from './sealConnectedServiceCredential';

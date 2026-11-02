@@ -1,12 +1,12 @@
 import { statSync, utimesSync } from 'node:fs';
 import { chmod, mkdir, unlink, writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path';
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 
 import {
   buildServiceCommandEnv,
   isBenignServiceAbsenceFailure,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 
 import type { DaemonServiceInstallPlan, DaemonServiceUninstallPlan, DaemonServicePlannedCommand } from './plan';
 import { commandExistsInPath } from './commandExistsInPath';

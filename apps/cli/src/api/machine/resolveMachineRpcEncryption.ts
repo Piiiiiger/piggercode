@@ -2,8 +2,8 @@ import {
   deriveAccountMachineKeyFromRecoverySecret,
   openEncryptedDataKeyEnvelopeV1,
   isPlainMachineDataKeyMarker,
-} from '@happier-dev/protocol';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 
 import { resolveMachineEncryptionContext, type EncryptionContext } from '@/api/client/encryptionKey';
 import { decodeBase64, encodeBase64 } from '@/api/encryption';

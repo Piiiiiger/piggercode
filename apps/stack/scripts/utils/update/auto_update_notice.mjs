@@ -7,7 +7,7 @@ import {
   shouldNotifyUpdate,
   spawnDetachedNode,
   writeUpdateCache,
-} from '@happier-dev/cli-common/update';
+} from '@piggercode/cli-common/update';
 
 const DEFAULT_CHECK_LOCK_TTL_MS = 2 * 60 * 1000;
 const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000;

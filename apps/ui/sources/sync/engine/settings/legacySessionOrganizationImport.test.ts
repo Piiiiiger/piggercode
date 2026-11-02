@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SESSION_ORGANIZATION_MAX_ID_LENGTH } from '@happier-dev/protocol';
+import { SESSION_ORGANIZATION_MAX_ID_LENGTH } from '@piggercode/protocol';
 import { PINNED_GROUP_KEY_V1 } from '@/sync/domains/session/listing/sessionListOrderingStateV1';
 
 const store = vi.hoisted(() => new Map<string, string>());

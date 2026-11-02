@@ -1,7 +1,7 @@
 import {
   getReleaseRingCatalogEntry,
   type PublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 import type { FirstPartyRuntimeKind } from './runtimeKinds.js';
 

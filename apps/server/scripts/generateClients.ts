@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import {
     resolveServerBuildDbProvidersFromEnv,
     type ServerBuildDbProvider,
-} from "@happier-dev/cli-common/componentArtifacts";
+} from "@piggercode/cli-common/componentArtifacts";
 import { runCommand } from "./runCommand";
 
 export type BuildDbProvider = ServerBuildDbProvider;

@@ -8,7 +8,7 @@ import {
 } from './index.testHelpers';
 import { flushHookEffects, standardCleanup } from '@/dev/testkit';
 import type { ServerFeaturesSnapshot } from '@/sync/api/capabilities/serverFeaturesClient';
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import type { FeaturesResponse } from '@piggercode/protocol';
 
 type ReactActEnvironmentGlobal = typeof globalThis & {
     IS_REACT_ACT_ENVIRONMENT?: boolean;

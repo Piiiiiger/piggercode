@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
-import { getActionSpec } from '@happier-dev/protocol';
+import { getActionSpec } from '@piggercode/protocol';
 
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 import { storage } from '@/sync/domains/state/storage';

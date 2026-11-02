@@ -1,4 +1,4 @@
-import type { FeaturesResponse as ServerFeatures } from '@happier-dev/protocol';
+import type { FeaturesResponse as ServerFeatures } from '@piggercode/protocol';
 
 import { getCachedServerFeaturesSnapshot, getServerFeaturesSnapshot } from './serverFeaturesClient';
 

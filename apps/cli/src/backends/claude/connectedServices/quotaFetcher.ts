@@ -3,7 +3,7 @@ import {
   readClaudeOauthCredentialOrganizationId,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceQuotaMeterV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createHash } from 'node:crypto';
 
 import { resolveClaudeCodeUserAgent } from '@/backends/claude/utils/claudeCodeUserAgent';

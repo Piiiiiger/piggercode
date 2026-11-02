@@ -3,7 +3,7 @@ import { Modal } from '@/modal';
 import { t } from '@/text';
 import { createDefaultActionExecutor } from '@/sync/ops/actions/defaultActionExecutor';
 import { resolveServerIdForSessionIdFromLocalCache } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerIdForSessionIdFromLocalCache';
-import type { ActionId } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
 
 const SESSION_TERMINAL_COMPOSER_CLEAR_ACTION_ID = 'session.terminalComposer.clear' as ActionId;
 

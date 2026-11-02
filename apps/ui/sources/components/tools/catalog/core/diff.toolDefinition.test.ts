@@ -14,7 +14,7 @@ vi.mock('@/text', async () => {
     });
 });
 
-vi.mock('@happier-dev/protocol', () => ({
+vi.mock('@piggercode/protocol', () => ({
     DiffInputV2Schema: {},
 }));
 

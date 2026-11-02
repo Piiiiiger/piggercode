@@ -6,7 +6,7 @@
  */
 
 import { CHANGE_TITLE_INSTRUCTION } from '@/agent/runtime/changeTitleInstruction';
-import { getAgentModelConfig } from '@happier-dev/agents';
+import { getAgentModelConfig } from '@piggercode/agents';
 
 /** Environment variable name for Gemini API key */
 export const GEMINI_API_KEY_ENV = 'GEMINI_API_KEY';

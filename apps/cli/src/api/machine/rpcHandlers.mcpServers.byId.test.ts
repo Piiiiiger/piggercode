@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import { registerMachineMcpServersRpcHandlers } from './rpcHandlers.mcpServers';
 

@@ -510,7 +510,7 @@ formats a new daemon may migrate at start are forward-tolerant within 0.2 (setti
 a rollback floor to this transaction before it ships.
 
 **K5 — per-machine update facts.** `readCliUpdateFacts` (`apps/cli/src/cli/runtime/update/cliUpdateFacts.ts`,
-schema `CliUpdateFactsSchema` in `@happier-dev/protocol`) reports `currentVersion`, the ring-filtered
+schema `CliUpdateFactsSchema` in `@piggercode/protocol`) reports `currentVersion`, the ring-filtered
 cached `latestVersion`, `channel`, `installSource` (`managed` only when the running executable is
 inside its ring's recorded install; npm/brew name their own update command), `updateCommand`,
 `canUpdateRemotely` and `lastUpdate`. Every daemon publishes it in its encrypted machine metadata
@@ -838,7 +838,7 @@ PATH exposure) it reads `auth status` for the target relay's saved credentials �
 `--replace-existing` would replace — through the same `target` invocation as the dry-run (the CLI resolves
 the persisted profile matching `HAPPIER_SERVER_URL` and its credential directory), and when they are
 validated for another account (`setupReplacesValidatedAccount`,
-`@happier-dev/protocol`, the one rule the app's early question also uses) it asks through the
+`@piggercode/protocol`, the one rule the app's early question also uses) it asks through the
 `setup.accountConsent` prompt, answered by the app's one account question, and stops with
 `account_consent_declined` when kept — the terminal's relay, credentials and service are untouched.
 If the credentials read after `server set` belong to yet another account (signed in meanwhile), it

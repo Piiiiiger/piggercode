@@ -1,4 +1,4 @@
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 
 import { findCodexDirectSessionCandidateViaAppServer } from '../appServer/session/findCodexDirectSessionCandidateViaAppServer';
 import { readCodexSessionMetaFromRollout } from '../localControl/rolloutDiscovery';

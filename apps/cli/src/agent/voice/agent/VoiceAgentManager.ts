@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import type { AgentBackend, SessionId } from '@/agent/core/AgentBackend';
 import { logger } from '@/ui/logger';
-import { extractVoiceActionsFromAssistantText, type ExecutionRunResumeHandle, type VoiceAssistantAction } from '@happier-dev/protocol';
+import { extractVoiceActionsFromAssistantText, type ExecutionRunResumeHandle, type VoiceAssistantAction } from '@piggercode/protocol';
 
 import { appendVoiceAgentHistoryTurn } from './voiceAgentHistory';
 import {

@@ -1,4 +1,4 @@
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
 import { readDefaultManagedReleaseChannel, shouldPersistDefaultManagedReleaseChannel } from './defaultReleaseChannelState.js';

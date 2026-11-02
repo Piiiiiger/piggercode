@@ -10,7 +10,7 @@ import {
   type SessionSystemRecordContent,
   type SessionSystemRecordNamespace,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   decryptSessionPayload,

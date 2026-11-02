@@ -1,7 +1,7 @@
 import './utils/env/env.mjs';
 
 import { pathToFileURL } from 'node:url';
-import { getReleaseRingCatalogEntry, normalizePublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingCatalogEntry, normalizePublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { run } from './utils/proc/proc.mjs';
 import { printResult, wantsHelp, wantsJson } from './utils/cli/cli.mjs';
 

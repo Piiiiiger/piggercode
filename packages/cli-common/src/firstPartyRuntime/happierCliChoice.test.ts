@@ -158,37 +158,37 @@ posixOnly('a happier this app did not install (R12)', () => {
     it('names an npm global install by its real package name, with the commands that remove and update it', async () => {
         const homeDir = await createHome();
         const prefix = join(homeDir, 'npm-global');
-        const packageRoot = join(prefix, 'lib', 'node_modules', '@happier-dev', 'cli');
+        const packageRoot = join(prefix, 'lib', 'node_modules', '@piggercode', 'cli');
         await mkdir(join(packageRoot, 'bin'), { recursive: true });
-        await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli', version: '0.2.13' }), 'utf8');
+        await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli', version: '0.2.13' }), 'utf8');
         await writeExecutable(join(packageRoot, 'bin', 'happier.mjs'));
         await mkdir(join(prefix, 'bin'), { recursive: true });
         await symlink(join(packageRoot, 'bin', 'happier.mjs'), join(prefix, 'bin', 'happier'));
 
         expect(describeHappierCliOrigin(join(prefix, 'bin', 'happier'))).toEqual({
             kind: 'npm',
-            packageName: '@happier-dev/cli',
-            removalCommand: 'npm uninstall -g @happier-dev/cli',
-            updateCommand: 'npm install -g @happier-dev/cli@latest',
+            packageName: '@piggercode/cli',
+            removalCommand: 'npm uninstall -g @piggercode/cli',
+            updateCommand: 'npm install -g @piggercode/cli@latest',
         });
     });
 
     it('names an npm-generated Windows command shim by the package it launches', async () => {
         const homeDir = await createHome();
         const npmDir = join(homeDir, 'AppData', 'Roaming', 'npm');
-        const packageRoot = join(npmDir, 'node_modules', '@happier-dev', 'cli');
+        const packageRoot = join(npmDir, 'node_modules', '@piggercode', 'cli');
         await mkdir(join(packageRoot, 'bin'), { recursive: true });
-        await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli' }), 'utf8');
+        await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
         await writeFile(
             join(npmDir, 'happier.cmd'),
-            '@ECHO off\r\nGOTO start\r\n:find_dp0\r\nSET dp0=%~dp0\r\nEXIT /b\r\n:start\r\nSETLOCAL\r\nCALL :find_dp0\r\n"%_prog%"  "%dp0%\\node_modules\\@happier-dev\\cli\\bin\\happier.mjs" %*\r\n',
+            '@ECHO off\r\nGOTO start\r\n:find_dp0\r\nSET dp0=%~dp0\r\nEXIT /b\r\n:start\r\nSETLOCAL\r\nCALL :find_dp0\r\n"%_prog%"  "%dp0%\\node_modules\\@piggercode\\cli\\bin\\happier.mjs" %*\r\n',
             'utf8',
         );
 
         expect(describeHappierCliOrigin(join(npmDir, 'happier.cmd'))).toMatchObject({
             kind: 'npm',
-            packageName: '@happier-dev/cli',
-            removalCommand: 'npm uninstall -g @happier-dev/cli',
+            packageName: '@piggercode/cli',
+            removalCommand: 'npm uninstall -g @piggercode/cli',
         });
     });
 

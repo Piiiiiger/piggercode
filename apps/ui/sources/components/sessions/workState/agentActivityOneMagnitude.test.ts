@@ -6,7 +6,7 @@ import {
     type SessionAgentActivityHeadlineV1,
     type SessionBackgroundTaskRecordV1,
     type SessionWorkflowActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     makeSessionWorkflowActivityHeadline,

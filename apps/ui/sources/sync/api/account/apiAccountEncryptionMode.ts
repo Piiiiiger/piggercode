@@ -6,7 +6,7 @@ import { HappyError } from '@/utils/errors/errors';
 import {
     AccountEncryptionModeResponseSchema,
     type AccountEncryptionModeResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type AccountEncryptionMode = AccountEncryptionModeResponse['mode'];
 type AccountEncryptionModeResult = Readonly<{ mode: AccountEncryptionMode; updatedAt: number }>;

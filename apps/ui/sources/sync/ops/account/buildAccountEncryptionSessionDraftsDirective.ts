@@ -4,7 +4,7 @@ import {
   type AccountScopedCryptoMaterial,
   type SessionDraftAddressV1,
   type SessionDraftDocumentV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type AccountEncryptionSessionDraftMigrationCandidate = Readonly<{
   address: Extract<SessionDraftAddressV1, { kind: 'newSession' }>;

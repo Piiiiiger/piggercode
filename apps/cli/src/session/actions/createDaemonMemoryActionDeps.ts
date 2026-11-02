@@ -2,8 +2,8 @@ import {
   MemorySearchResultV1Schema,
   MemoryWindowV1Schema,
   type ActionExecutorDeps,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 type DaemonMemoryActionDeps = Pick<
   ActionExecutorDeps,

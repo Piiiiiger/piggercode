@@ -1,4 +1,4 @@
-import { openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext, type AccountScopedCiphertextFormat } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext, type AccountScopedCiphertextFormat } from '@piggercode/protocol';
 
 export type AccountSettingsOpenFormat = AccountScopedCiphertextFormat | 'unknown';
 

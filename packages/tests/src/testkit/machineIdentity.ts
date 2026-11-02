@@ -8,7 +8,7 @@ import {
   verifyMachineInstallationProof as verifyProtocolMachineInstallationProof,
   type MachineInstallationProofPayloadV1,
   type MachineInstallationProofV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { fetchJson } from './http';
 

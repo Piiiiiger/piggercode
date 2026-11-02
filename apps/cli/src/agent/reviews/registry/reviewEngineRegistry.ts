@@ -1,5 +1,5 @@
 import type { ExecutionRunProfileBoundedCompleteResult } from '@/agent/executionRuns/profiles/ExecutionRunIntentProfile';
-import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 
 import { normalizeCodexReviewOutput } from '@/agent/reviews/normalize/codex/normalizeCodexReviewOutput';
 import { resolveNativeReviewOutputNormalizer } from '@/agent/reviews/engines/nativeReviewEngines';

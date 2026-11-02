@@ -1,4 +1,4 @@
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import { createSessionTurnLifecycle } from '@/agent/runtime/session/turn/lifecycle';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -8615,7 +8615,7 @@ describe('createOpenCodeServerRuntime', () => {
   it('maps structured OpenCode usage-limit session errors into runtime issue details', async () => {
     const client = createFakeClient();
     const session = createFakeSession('happy_sess_opencode_usage_error');
-    const acceptedIssues: Array<import('@happier-dev/protocol').SessionRuntimeIssueV1> = [];
+    const acceptedIssues: Array<import('@piggercode/protocol').SessionRuntimeIssueV1> = [];
     const lifecycle = createSessionTurnLifecycle({ sessionId: session.sessionId, enqueueSessionTurn: async (mutation) => {
       if (mutation.action === 'fail' && mutation.issue) acceptedIssues.push(mutation.issue);
     } });

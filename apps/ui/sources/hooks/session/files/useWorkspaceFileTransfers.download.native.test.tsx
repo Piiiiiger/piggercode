@@ -3,7 +3,7 @@ import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSessionFixture, createMachineFixture, createDeferred, renderScreen } from '@/dev/testkit';
 import { installSessionFilesHookCommonModuleMocks } from './sessionFilesHookTestHelpers';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const native = vi.hoisted(() => ({
     files: new Map<string, number[]>(),

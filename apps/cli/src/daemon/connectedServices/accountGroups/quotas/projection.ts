@@ -3,8 +3,8 @@ import type {
   ConnectedServiceQuotaMeterV1,
   ProviderAccountUsageSnapshotV1,
   ProviderAccountSubscriptionV1,
-} from '@happier-dev/protocol';
-import { readConnectedServiceLimitCategoryV1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { readConnectedServiceLimitCategoryV1 } from '@piggercode/protocol';
 
 import {
   normalizeQuotaMeter,

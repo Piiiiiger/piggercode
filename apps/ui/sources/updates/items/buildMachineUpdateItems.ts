@@ -1,4 +1,4 @@
-import type { CliUpdateFacts } from '@happier-dev/protocol';
+import type { CliUpdateFacts } from '@piggercode/protocol';
 
 import { getInstallableDepUpdateAvailability } from '@/capabilities/installablesUpdateAvailable';
 import { t } from '@/text';

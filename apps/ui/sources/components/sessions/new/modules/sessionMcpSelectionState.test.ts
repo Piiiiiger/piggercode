@@ -4,8 +4,8 @@ import type {
     DaemonMcpServersPreviewResponse,
     ManagedMcpPreviewEntryV1,
     SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
-import { SessionMcpSelectionV1Schema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SessionMcpSelectionV1Schema } from '@piggercode/protocol';
 
 import {
     countSelectedSessionMcpPreviewEntries,

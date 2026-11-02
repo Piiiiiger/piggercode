@@ -1,4 +1,4 @@
-import { setupReplacesValidatedAccount } from '@happier-dev/protocol';
+import { setupReplacesValidatedAccount } from '@piggercode/protocol';
 
 import { createRelayUrlComparableKeySafe } from '@/sync/domains/server/relayDrift/relayDriftModel';
 

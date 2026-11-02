@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deriveBoxPublicKeyFromSeed } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed } from '@piggercode/protocol';
 
 import type { CliAccessKey } from './cliAccessKey';
 import {

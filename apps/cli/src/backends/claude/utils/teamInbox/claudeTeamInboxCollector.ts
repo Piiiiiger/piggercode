@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
 import { readFile, writeFile } from 'node:fs/promises';
 
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
 
 import type { RawJSONLines } from '@/backends/claude/types';
 import { logger } from '@/ui/logger';
@@ -331,4 +331,4 @@ export function createClaudeTeamInboxCollector(params: Readonly<{
 
   return { observe, syncAll, cleanup };
 }
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';

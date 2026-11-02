@@ -5,7 +5,7 @@ import {
     readOpenCodeSessionAffinityFromMetadata,
     normalizeOpenCodeBackendMode,
     normalizeOpenCodeCliGeneration,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { resolveOpenCodeBrowseSourceOptions } from '@/agents/providers/opencode/directSessions/resolveOpenCodeBrowseSourceOptions';
 import { resolveOpenCodeLinkEnsureRequestExtras } from '@/agents/providers/opencode/directSessions/resolveOpenCodeLinkEnsureRequestExtras';

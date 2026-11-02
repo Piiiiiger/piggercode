@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk'
-import { banner, createStepPrinter, fail, neutral, ok, sectionTitle, warn } from '@happier-dev/cli-common/output';
+import { banner, createStepPrinter, fail, neutral, ok, sectionTitle, warn } from '@piggercode/cli-common/output';
 import { configuration } from '@/configuration'
 import { readSettings, readCredentials } from '@/persistence'
 import { checkIfDaemonRunningAndCleanupStaleState } from '@/daemon/controlClient'
@@ -28,7 +28,7 @@ import {
     renderDoctorCleanupOwnershipSummary,
     type DoctorCleanupOwnershipSummary,
 } from '@/ui/doctorCleanupOwnershipSummary'
-import { getReleaseRingCatalogEntry } from '@happier-dev/release-runtime/releaseRings'
+import { getReleaseRingCatalogEntry } from '@piggercode/release-runtime/releaseRings'
 import { resolveDaemonStartupSourceServiceManagedState } from '@/daemon/ownership/daemonOwnershipMetadata'
 
 export function maskValue(value: string): string;

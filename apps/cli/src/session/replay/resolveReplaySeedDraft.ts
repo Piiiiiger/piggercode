@@ -6,8 +6,8 @@ import {
   type HappierReplayRetrievalPointerV1,
   type HappierReplayStrategy,
   type HappierReplayDialogItem,
-} from '@happier-dev/agents';
-import type { LlmTaskRunnerConfigV1, SessionWorkStateV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { LlmTaskRunnerConfigV1, SessionWorkStateV1 } from '@piggercode/protocol';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import type { Credentials } from '@/persistence';

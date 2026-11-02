@@ -1,4 +1,4 @@
-import { normalizeCursorApiEndpoint } from '@happier-dev/agents';
+import { normalizeCursorApiEndpoint } from '@piggercode/agents';
 
 import { AcpBackend, type AcpBackendOptions, type AcpPermissionHandler } from '@/agent/acp/AcpBackend';
 import type {

@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 
-import { systemTasks } from '@happier-dev/cli-common';
-import type { SystemTaskJsonObject, SystemTaskJsonValue } from '@happier-dev/protocol';
+import { systemTasks } from '@piggercode/cli-common';
+import type { SystemTaskJsonObject, SystemTaskJsonValue } from '@piggercode/protocol';
 
 import { createSecureAccessTailscaleHandler } from './kinds/secureAccessTailscale.js';
 import { createCliPathExposureEnsureHandler, createCliPathExposureRemoveHandler } from './kinds/cliPathExposure.js';

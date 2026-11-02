@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import type { RegisterNativeCatalogCleanup } from './catalogProbeLifecycle';
 

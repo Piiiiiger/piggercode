@@ -3,7 +3,7 @@ import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceId,
   SessionConnectedServiceAuthCurrentGroupTruthV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   applyConnectedServiceAuthGroupGenerationToSessions,
   type ApplyAuthGroupGenerationToSessionsResult,

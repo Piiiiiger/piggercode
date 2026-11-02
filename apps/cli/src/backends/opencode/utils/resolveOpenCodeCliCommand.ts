@@ -1,8 +1,8 @@
 export { type ProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { basename } from 'node:path';
 
-import { normalizeOpenCodeCliGeneration } from '@happier-dev/agents';
-import { resolveProviderCliCommandCandidates } from '@happier-dev/cli-common/providers';
+import { normalizeOpenCodeCliGeneration } from '@piggercode/agents';
+import { resolveProviderCliCommandCandidates } from '@piggercode/cli-common/providers';
 
 import { buildProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import type { ProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';

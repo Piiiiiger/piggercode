@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Credentials } from '@/persistence';
-import { ConnectedServiceMaterializationIdentityV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceMaterializationIdentityV1Schema } from '@piggercode/protocol';
 
 import { SPAWN_SESSION_ERROR_CODES } from '@/rpc/handlers/registerSessionHandlers';
 

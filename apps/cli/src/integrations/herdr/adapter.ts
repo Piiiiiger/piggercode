@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import type { TerminalControlPort, TerminalSpecialKey } from '@happier-dev/agents';
+import type { TerminalControlPort, TerminalSpecialKey } from '@piggercode/agents';
 
 import { buildTerminalControlCapture } from '@/integrations/terminalHost/controlCapture';
 import {

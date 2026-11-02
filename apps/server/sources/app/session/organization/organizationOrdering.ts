@@ -2,7 +2,7 @@ import {
     SESSION_ORGANIZATION_MAX_PINNED_SESSIONS,
     type ReorderSessionOrganizationRequest,
     type ReorderSessionOrganizationResponse,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { inTx } from "@/storage/inTx";
 import { hashSessionOrganizationKey } from "./hashKeys";

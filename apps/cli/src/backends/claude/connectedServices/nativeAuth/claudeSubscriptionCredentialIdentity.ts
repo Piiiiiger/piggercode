@@ -1,4 +1,4 @@
-import { readClaudeOauthCredentialOrganizationId, type ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import { readClaudeOauthCredentialOrganizationId, type ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 export type ClaudeSubscriptionCredentialIdentity = Readonly<{
   providerAccountId: string | null;

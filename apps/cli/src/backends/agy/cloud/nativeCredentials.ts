@@ -1,7 +1,7 @@
 import { readFile, stat } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { join } from 'node:path';
-import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_TOKEN_URL } from '@happier-dev/agents';
+import { AGY_OAUTH_CLIENT_ID, AGY_OAUTH_TOKEN_URL } from '@piggercode/agents';
 import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@/utils/path/expandHomeDirPath';
 import { logger } from '@/ui/logger';
 import { ConnectedServiceImportError } from '@/cloud/connectedServices/connectedServiceImportError';

@@ -1,5 +1,5 @@
 import { sanitizeConnectedServiceRuntimeFailureClassification } from '@/daemon/connectedServices/runtimeAuth/sanitizeConnectedServiceRuntimeFailureClassification';
-import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import { createSessionTurnLifecycle } from '@/agent/runtime/session/turn/lifecycle';
 import { beforeEach, describe, expect, it } from 'vitest';
 

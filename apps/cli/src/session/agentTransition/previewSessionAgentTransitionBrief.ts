@@ -1,7 +1,7 @@
 import type {
   SessionAgentTransitionBriefPreviewRequestV1,
   SessionAgentTransitionBriefPreviewV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';

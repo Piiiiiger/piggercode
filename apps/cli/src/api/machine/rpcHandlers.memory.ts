@@ -6,8 +6,8 @@ import {
   MemoryStatusV1Schema,
   MemoryWindowV1Schema,
   type MemoryWindowV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { searchTier1Memory, searchTier2Memory } from '@/daemon/memory/searchMemory';
 import { getMemoryWindow } from '@/daemon/memory/getMemoryWindow';

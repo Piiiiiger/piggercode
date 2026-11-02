@@ -1,4 +1,4 @@
-import type { FeatureDecision } from '@happier-dev/protocol';
+import type { FeatureDecision } from '@piggercode/protocol';
 import type { SessionStopRecovery } from '@/sync/ops/sessionStopContract';
 import type { SessionArchiveRequestOptions } from '@/sync/ops/sessionArchiveLifecycle';
 

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { WorkspaceReplicationBaselineStore } from './baseline/workspaceReplicationBaselineStore';
 import type { WorkspaceReplicationCasStore } from './cas/workspaceReplicationCasStore';

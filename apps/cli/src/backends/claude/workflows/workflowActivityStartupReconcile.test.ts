@@ -4,7 +4,7 @@ import {
   buildSessionWorkflowActivityHeadline,
   type SessionAgentActivityEntryV1,
   type SessionWorkflowRunHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import {

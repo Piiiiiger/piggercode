@@ -161,7 +161,7 @@ describe('packTarball (npmExecpath)', () => {
     const spawn = vi.fn(() => ({
       status: 0,
       stdout: [
-        '> @happier-dev/cli@0.1.0 prepack',
+        '> @piggercode/cli@0.1.0 prepack',
         '> yarn -s build && node scripts/bundleWorkspaceDeps.mjs',
         'Generated an empty chunk: "index".',
         '[',

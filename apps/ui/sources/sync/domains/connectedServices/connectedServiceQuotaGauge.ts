@@ -5,7 +5,7 @@ import {
     type ConnectedServiceQuotaRecoveryCreditsV1,
     type ConnectedServiceQuotaSnapshotV1,
     type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore, resolveAgentIdFromFlavor } from '@/agents/registry/registryCore';
 

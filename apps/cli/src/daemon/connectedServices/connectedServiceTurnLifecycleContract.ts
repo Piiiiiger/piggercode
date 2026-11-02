@@ -1,4 +1,4 @@
-import { PendingRequestedActionV1Schema } from '@happier-dev/protocol';
+import { PendingRequestedActionV1Schema } from '@piggercode/protocol';
 import { z } from 'zod';
 
 import {

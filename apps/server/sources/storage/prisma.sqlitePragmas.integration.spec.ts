@@ -2,7 +2,7 @@ import { mkdtemp, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { renderPrismaCompatibleSqliteDatabaseUrl } from "@happier-dev/cli-common/firstPartyRuntime";
+import { renderPrismaCompatibleSqliteDatabaseUrl } from "@piggercode/cli-common/firstPartyRuntime";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { db, resolveSqliteRuntimePragmasFromEnv, resolveSqliteStartupDiagnosticsFromEnv } from "@/storage/db";

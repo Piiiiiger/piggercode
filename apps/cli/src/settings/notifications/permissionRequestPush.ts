@@ -1,5 +1,5 @@
-import { summarizeToolInputForNotification } from '@happier-dev/protocol';
-import type { AccountSettings } from '@happier-dev/protocol';
+import { summarizeToolInputForNotification } from '@piggercode/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import type { PermissionMode } from '@/api/types';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import type { AgentRequestKind } from '@/agent/permissions/requestKind';

@@ -1,4 +1,4 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import { createClaudeConnectedServiceRuntimeAuthAdapter } from '@/backends/claude/connectedServices/createClaudeConnectedServiceRuntimeAuthAdapter';
 import { createClaudeConnectedServicesMaterializer } from '@/backends/claude/connectedServices/createClaudeConnectedServicesMaterializer';

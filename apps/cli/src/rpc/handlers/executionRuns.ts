@@ -2,9 +2,9 @@ import type { RpcHandlerContext, RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { ACPMessageData, ACPProvider } from '@/api/session/sessionMessageTypes';
 import type { AcpSendFn } from '@/agent/acp/bridge/acpSessionForwarding';
 import type { AgentBackend } from '@/agent/core/AgentBackend';
-import type { AcpConfigOptionOverridesV1, BackendTargetRefV1, ExecutionRunPublicState } from '@happier-dev/protocol';
+import type { AcpConfigOptionOverridesV1, BackendTargetRefV1, ExecutionRunPublicState } from '@piggercode/protocol';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   ExecutionRunGetRequestSchema,
   ExecutionRunListRequestSchema,
@@ -19,7 +19,7 @@ import {
   ExecutionRunUserTranscriptCommitRequestSchema,
   ExecutionRunTurnStreamReadRequestSchema,
   ExecutionRunTurnStreamCancelRequestSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ExecutionRunManager } from '@/agent/executionRuns/runtime/ExecutionRunManager';
 import type { ExecutionRunStartResult } from '@/agent/executionRuns/runtime/executionRunTypes';

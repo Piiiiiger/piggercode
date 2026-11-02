@@ -1,7 +1,7 @@
 import type { ExecutionRunState } from './executionRunTypes';
 import type { SessionRuntimeActivityContribution } from '@/session/runtimeActivity/types';
 import type { ExecutionRunController } from '@/agent/executionRuns/controllers/types';
-import { isExecutionRunActive } from '@happier-dev/protocol';
+import { isExecutionRunActive } from '@piggercode/protocol';
 
 export function readExecutionRunTurnInFlight(
   controller: ExecutionRunController | undefined,

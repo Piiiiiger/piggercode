@@ -2,7 +2,7 @@ import {
   SessionHandoffStartRequestSchema,
   type ActionExecuteResult,
   type SessionHandoffStartRequest,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ActionOperationRunner } from './actionOperationRunner';
 import type { ActionOperationAccessScope } from './actionOperationTypes';
@@ -10,15 +10,15 @@ import type { ActionOperationAccessScope } from './actionOperationTypes';
 type OperationContext = Readonly<{
   signal: AbortSignal;
   update: (value: Readonly<{
-    progress?: import('@happier-dev/protocol').ActionOperationProgressV1;
-    domainRef?: import('@happier-dev/protocol').ActionOperationDomainRefV1;
+    progress?: import('@piggercode/protocol').ActionOperationProgressV1;
+    domainRef?: import('@piggercode/protocol').ActionOperationDomainRefV1;
   }>) => void;
 }>;
 
 type HistoricalStart = (
   request: SessionHandoffStartRequest,
   options?: Readonly<{
-    onProgress?: (progress: import('@happier-dev/protocol').ActionOperationProgressV1) => void;
+    onProgress?: (progress: import('@piggercode/protocol').ActionOperationProgressV1) => void;
   }>,
 ) => Promise<unknown>;
 

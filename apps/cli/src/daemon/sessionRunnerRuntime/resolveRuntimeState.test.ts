@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SessionRunnerRuntimeStateV1Schema } from '@happier-dev/protocol';
+import { SessionRunnerRuntimeStateV1Schema } from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';

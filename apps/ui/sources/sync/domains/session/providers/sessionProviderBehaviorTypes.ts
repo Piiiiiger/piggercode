@@ -1,4 +1,4 @@
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import type { SessionParticipantTarget } from '@/sync/domains/session/participants/participantTargets';

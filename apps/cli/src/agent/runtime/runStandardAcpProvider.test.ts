@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { AgentState } from '@/api/types';
 import { createProviderEnforcedPermissionHandler } from '@/agent/permissions/createProviderEnforcedPermissionHandler';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import { createTestAcpRuntime } from '@/testkit/backends/acpRuntime';
 import { createFakeAcpRuntimeBackend } from '@/testkit/backends/acpRuntimeBackend';
 import { createMutableApiSessionClientFixture } from '@/testkit/backends/sessionFixtures';

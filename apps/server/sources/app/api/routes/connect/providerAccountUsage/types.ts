@@ -7,7 +7,7 @@ import type {
     ProviderAccountUsageRecordKeyV1,
     ProviderAccountUsageSnapshotV1,
     SealedProviderAccountUsageSnapshotV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export type ProviderAccountUsagePayloadMode = "plain_json_v1" | "sealed_account_scoped_v1";
 export type ProviderAccountUsageStatus = "ok" | "unavailable" | "estimated" | "error" | "refresh_requested";

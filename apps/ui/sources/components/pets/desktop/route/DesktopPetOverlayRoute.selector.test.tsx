@@ -17,8 +17,8 @@ import { resolveBuiltInPetPackage } from '@/components/pets/builtIns/builtInPetR
 import { buildSessionListRenderableFromSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { StorageState } from '@/sync/store/types';
 import type { LocalPetSourceMetadata } from '@/sync/domains/pets/localPetSourceMetadata';
-import type { AccountPetLibraryEntryV1 } from '@happier-dev/protocol';
-import { PET_DAEMON_RPC_METHODS } from '@happier-dev/protocol';
+import type { AccountPetLibraryEntryV1 } from '@piggercode/protocol';
+import { PET_DAEMON_RPC_METHODS } from '@piggercode/protocol';
 
 const settingsState = vi.hoisted(() => ({
     current: {

@@ -5,7 +5,7 @@ import { z } from 'zod';
 //
 // ACP-listing providers participate only through the generic `acpSessionList` direct-sessions source.
 // Membership here is transport admission, not a capability claim: the authoritative declaration is
-// `isAcpSessionListingDeclared` in `@happier-dev/agents`, the daemon re-checks it in
+// `isAcpSessionListingDeclared` in `@piggercode/agents`, the daemon re-checks it in
 // `validateDirectMachineSource`, and the live ACP handshake remains the runtime authority.
 export const AGENT_PROVIDER_IDS_V1 = [
   'claude',

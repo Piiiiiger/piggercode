@@ -1,5 +1,5 @@
 import type { Tx } from "@/storage/inTx";
-import { evaluateExistingSessionAutomationEligibility } from "@happier-dev/agents";
+import { evaluateExistingSessionAutomationEligibility } from "@piggercode/agents";
 import { openPlainAccountSettingsDbValue } from "@/app/encryption/accountSettingsStorage";
 
 import type { AutomationTargetType } from "./automationTypes";

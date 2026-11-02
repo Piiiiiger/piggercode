@@ -1,4 +1,4 @@
-import type { ConnectedServiceMaterializationIdentityV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceMaterializationIdentityV1 } from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '../connectedServiceChildEnvironment';

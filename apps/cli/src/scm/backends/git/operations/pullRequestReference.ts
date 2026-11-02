@@ -1,4 +1,4 @@
-import type { ScmPullRequestReference } from '@happier-dev/protocol';
+import type { ScmPullRequestReference } from '@piggercode/protocol';
 
 export function parsePullRequestNumberFromUrl(url: string): number | null {
     const match =

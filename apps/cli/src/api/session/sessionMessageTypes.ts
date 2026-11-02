@@ -1,7 +1,7 @@
 import type {
   SessionRuntimeIssueV1,
   TranscriptRawAgentEventV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type AcpSidechainMeta = { sidechainId?: string };
 type TranscriptEventLifecycle = {

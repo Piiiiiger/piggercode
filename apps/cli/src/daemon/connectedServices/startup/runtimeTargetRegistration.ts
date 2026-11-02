@@ -4,7 +4,7 @@ import {
   ConnectedServiceBindingsV1Schema,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { readConnectedServiceChildSelectionsFromEnv } from '../connectedServiceChildEnvironment';
 import {
   readConnectedServiceMaterializationIdentityV1,

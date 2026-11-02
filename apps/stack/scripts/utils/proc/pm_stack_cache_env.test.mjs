@@ -105,7 +105,7 @@ async function writeYarnUiPostinstallStub({ binDir, outputPath, requiredOutputPa
       'set -euo pipefail',
       'echo "$*" >> "${OUTPUT_PATH:?}"',
       'if [[ "${1:-}" == "install" ]]; then mkdir -p node_modules; fi',
-      'if [[ "$*" == "-s workspace @happier-dev/app postinstall:real" ]]; then',
+      'if [[ "$*" == "-s workspace @piggercode/app postinstall:real" ]]; then',
       `  mkdir -p ${JSON.stringify(dirname(requiredOutputPath))}`,
       `  printf '%s\n' 'export const patched = true;' > ${JSON.stringify(requiredOutputPath)}`,
       'fi',
@@ -814,7 +814,7 @@ test('ensureDepsInstalled regenerates server Prisma provider outputs when sqlite
   await writeFile(join(root, 'apps', 'cli', 'package.json'), '{}\n', 'utf-8');
   await writeFile(
     join(root, 'apps', 'server', 'package.json'),
-    JSON.stringify({ name: '@happier-dev/server', scripts: { 'generate:providers': 'tsx ./scripts/generateClients.ts' } }, null, 2) + '\n',
+    JSON.stringify({ name: '@piggercode/server', scripts: { 'generate:providers': 'tsx ./scripts/generateClients.ts' } }, null, 2) + '\n',
     'utf-8',
   );
   await writeFile(join(root, 'apps', 'server', 'prisma', 'schema.prisma'), 'datasource db { provider = "postgresql" }\n', 'utf-8');
@@ -842,7 +842,7 @@ test('ensureDepsInstalled regenerates server Prisma provider outputs when sqlite
   const out = await readFile(outputPath, 'utf-8');
   const providerGenerations = out
     .split('\n')
-    .filter((line) => /\bworkspace @happier-dev\/server generate:providers\b/.test(line));
+    .filter((line) => /\bworkspace @piggercode\/server generate:providers\b/.test(line));
   assert.equal(providerGenerations.length, 2, `expected each component preflight to preserve provider generation, got:\n${out}`);
 });
 
@@ -852,14 +852,14 @@ test('ensureDepsInstalled repairs missing UI postinstall outputs on a warm depen
 
   for (const component of ['cli', 'server']) {
     await mkdir(join(root, 'apps', component), { recursive: true });
-    await writeFile(join(root, 'apps', component, 'package.json'), `{ "name": "@happier-dev/${component}" }\n`, 'utf-8');
+    await writeFile(join(root, 'apps', component, 'package.json'), `{ "name": "@piggercode/${component}" }\n`, 'utf-8');
   }
   const componentDir = join(root, 'apps', 'ui');
   await mkdir(componentDir, { recursive: true });
   await writeFile(
     join(componentDir, 'package.json'),
     JSON.stringify({
-      name: '@happier-dev/app',
+      name: '@piggercode/app',
       scripts: { 'postinstall:real': 'node ./tools/postinstall.mjs' },
     }) + '\n',
     'utf-8',
@@ -909,7 +909,7 @@ test('ensureDepsInstalled repairs missing UI postinstall outputs on a warm depen
   const commands = (await readFile(outputPath, 'utf-8')).split('\n').filter(Boolean);
   assert.equal(commands.filter((line) => line.startsWith('install ')).length, 1);
   assert.equal(
-    commands.filter((line) => line === '-s workspace @happier-dev/app postinstall:real').length,
+    commands.filter((line) => line === '-s workspace @piggercode/app postinstall:real').length,
     1,
   );
 });
@@ -973,7 +973,7 @@ test('ensureDepsInstalled refreshes monorepo dependencies when a workspace packa
   await writeFile(join(root, 'apps', 'ui', 'package.json'), '{}\n', 'utf-8');
   await writeFile(join(root, 'apps', 'cli', 'package.json'), '{}\n', 'utf-8');
   await writeFile(join(root, 'apps', 'server', 'package.json'), '{}\n', 'utf-8');
-  await writeFile(join(root, 'packages', 'protocol', 'package.json'), '{ "name": "@happier-dev/protocol", "dependencies": { "zod": "4.3.6" } }\n', 'utf-8');
+  await writeFile(join(root, 'packages', 'protocol', 'package.json'), '{ "name": "@piggercode/protocol", "dependencies": { "zod": "4.3.6" } }\n', 'utf-8');
   await writeFile(
     join(root, 'package.json'),
     JSON.stringify({
@@ -1148,9 +1148,9 @@ test('ensureDepsInstalled waits for the monorepo CLI bundle lock before deciding
   await mkdir(componentDir, { recursive: true });
   await mkdir(join(root, 'apps', 'cli'), { recursive: true });
   await mkdir(join(root, 'apps', 'server'), { recursive: true });
-  await writeFile(join(componentDir, 'package.json'), '{ "name": "@happier-dev/ui" }\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'cli', 'package.json'), '{ "name": "@happier-dev/cli" }\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@happier-dev/server" }\n', 'utf-8');
+  await writeFile(join(componentDir, 'package.json'), '{ "name": "@piggercode/ui" }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'cli', 'package.json'), '{ "name": "@piggercode/cli" }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@piggercode/server" }\n', 'utf-8');
   await writeFile(
     join(root, 'package.json'),
     JSON.stringify({
@@ -2000,16 +2000,16 @@ test('ensureCliBuilt refreshes shared workspace deps before trusting a cached cl
   await mkdir(join(agentsDir, 'dist', 'session', 'state'), { recursive: true });
   await writeFile(join(root, 'package.json'), '{ "name": "repo", "private": true }\n', 'utf-8');
   await writeFile(join(root, 'yarn.lock'), '# yarn\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{ "name": "@happier-dev/ui", "private": true }\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@happier-dev/server", "private": true }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{ "name": "@piggercode/ui", "private": true }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@piggercode/server", "private": true }\n', 'utf-8');
   await writeFile(
     join(cliDir, 'package.json'),
     JSON.stringify(
       {
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         private: true,
         dependencies: {
-          '@happier-dev/agents': '0.0.0',
+          '@piggercode/agents': '0.0.0',
         },
       },
       null,
@@ -2025,7 +2025,7 @@ test('ensureCliBuilt refreshes shared workspace deps before trusting a cached cl
     join(agentsDir, 'package.json'),
     JSON.stringify(
       {
-        name: '@happier-dev/agents',
+        name: '@piggercode/agents',
         version: '0.0.0',
         type: 'module',
         scripts: {
@@ -2086,15 +2086,15 @@ test('ensureCliBuilt rebuilds an auto-mode cli dist after repairing a stale work
   await mkdir(join(agentsDir, 'dist'), { recursive: true });
   await writeFile(join(root, 'package.json'), '{ "name": "repo", "private": true }\n', 'utf-8');
   await writeFile(join(root, 'yarn.lock'), '# yarn\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{ "name": "@happier-dev/ui", "private": true }\n', 'utf-8');
-  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@happier-dev/server", "private": true }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'ui', 'package.json'), '{ "name": "@piggercode/ui", "private": true }\n', 'utf-8');
+  await writeFile(join(root, 'apps', 'server', 'package.json'), '{ "name": "@piggercode/server", "private": true }\n', 'utf-8');
   await writeFile(
     join(cliDir, 'package.json'),
     JSON.stringify({
-      name: '@happier-dev/cli',
+      name: '@piggercode/cli',
       private: true,
       dependencies: {
-        '@happier-dev/agents': '0.0.0',
+        '@piggercode/agents': '0.0.0',
       },
     }, null, 2) + '\n',
     'utf-8',
@@ -2107,7 +2107,7 @@ test('ensureCliBuilt rebuilds an auto-mode cli dist after repairing a stale work
   await writeFile(
     join(agentsDir, 'package.json'),
     JSON.stringify({
-      name: '@happier-dev/agents',
+      name: '@piggercode/agents',
       version: '0.0.0',
       type: 'module',
       scripts: {

@@ -4,7 +4,7 @@ import type { ExecutionRunState } from '@/agent/executionRuns/runtime/executionR
 import { areExecutionRunBackendTargetsEqual } from '@/agent/executionRuns/runtime/backendTargets';
 import { writeExecutionRunMarker } from '@/daemon/executionRunRegistry';
 import { buildExecutionRunConnectedServicesLaunchV1 } from '@/daemon/connectedServices/runsBridge/contract';
-import { projectExecutionRunRequestedConfiguration } from '@happier-dev/protocol';
+import { projectExecutionRunRequestedConfiguration } from '@piggercode/protocol';
 
 export function enqueueExecutionRunMarkerWrite(args: Readonly<{
   markerWriteChains: Map<string, Promise<void>>;

@@ -4,7 +4,7 @@ import {
     TranscriptRawRecordV1Schema,
     agentEventAttentionImpact,
     type SessionMessageAttentionImpact,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 /**
  * Canonical owner of stored-message attention-impact resolution.

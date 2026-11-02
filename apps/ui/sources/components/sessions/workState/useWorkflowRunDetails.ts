@@ -6,7 +6,7 @@ import {
     type SessionWorkflowActivityHeadlineV1,
     type SessionWorkflowRunHeadlineV1,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readAgentActivityEvidenceIndexFromHeadline } from '@/sync/domains/session/agentActivity';
 import { fetchWorkflowRunSnapshot } from '@/sync/domains/sessionActivity/sessionWorkflowActivityRecords';

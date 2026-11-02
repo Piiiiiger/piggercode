@@ -9,7 +9,7 @@ import {
 } from '@/agent/acp/bridge/acpCommonHandlers';
 import { createAcpAgentMessageForwarder } from '@/agent/acp/bridge/createAcpAgentMessageForwarder';
 import { publishAcpSessionModelsState } from '@/agent/acp/runtime/sessionModelsState';
-import { isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import { isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 import { logger } from '@/ui/logger';
 import { MessageBuffer } from '@/ui/ink/messageBuffer';
 import { createEventShapeLoggerForLog } from '@/diagnostics/eventShapeForLog';

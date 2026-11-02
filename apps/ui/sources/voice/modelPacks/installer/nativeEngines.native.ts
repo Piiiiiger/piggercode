@@ -1,4 +1,4 @@
-import type { SherpaNativeModule } from '@happier-dev/sherpa-native';
+import type { SherpaNativeModule } from '@piggercode/sherpa-native';
 
 import { fileUriToNativePath } from '@/voice/modelPacks/nativePath';
 
@@ -9,7 +9,7 @@ export type InstallerSherpaNative = Pick<SherpaNativeModule, 'release' | 'exclud
 async function getSherpaNative(overrides: InstallerOverrides): Promise<InstallerSherpaNative | null> {
   if (overrides.sherpaNative !== undefined) return overrides.sherpaNative;
   try {
-    const { getOptionalHappierSherpaNativeModule } = await import('@happier-dev/sherpa-native');
+    const { getOptionalHappierSherpaNativeModule } = await import('@piggercode/sherpa-native');
     return getOptionalHappierSherpaNativeModule();
   } catch {
     // Builds without the native speech module have no engines to unload and nothing to exclude.

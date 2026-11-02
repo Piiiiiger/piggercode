@@ -1,5 +1,5 @@
 import { runtimeFetch } from '@/utils/system/runtimeFetch';
-import { withConnectedServiceReaderSupport } from '@happier-dev/protocol';
+import { withConnectedServiceReaderSupport } from '@piggercode/protocol';
 
 import {
     reportServerAuthFailed,

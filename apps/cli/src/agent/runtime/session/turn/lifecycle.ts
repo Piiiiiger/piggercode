@@ -9,7 +9,7 @@ import type {
     PrimaryTurnStatusV1,
     SessionRuntimeIssueV1,
     SessionTurnTranscriptAnchorsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
     AppendTranscriptAnchorsInput,

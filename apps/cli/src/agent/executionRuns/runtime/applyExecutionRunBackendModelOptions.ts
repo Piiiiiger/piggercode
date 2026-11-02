@@ -1,7 +1,7 @@
 import {
   readSpawnConfigOptionOverrideValue,
   type AcpConfigOptionOverridesV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentBackend, SessionId, StartSessionResult } from '@/agent/core/AgentBackend';
 import type { SessionConfigOption } from '@/agent/acp/AcpBackend';

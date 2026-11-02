@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { realpathSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
 
 import { resolveConfiguredClaudeConfigDir } from './resolveConfiguredClaudeConfigDir';
 

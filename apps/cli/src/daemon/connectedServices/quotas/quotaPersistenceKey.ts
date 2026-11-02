@@ -1,4 +1,4 @@
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 import { createHash } from 'node:crypto';
 
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';

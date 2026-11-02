@@ -1,4 +1,4 @@
-import { createActionExecutor, type ActionExecutorDeps } from '@happier-dev/protocol';
+import { createActionExecutor, type ActionExecutorDeps } from '@piggercode/protocol';
 
 import { isActionApprovalRequiredByEnv, isActionEnabledByEnv } from '@/settings/actionsSettings';
 

@@ -1,5 +1,5 @@
-import { createRelayHostEngine } from '@happier-dev/cli-common/relayHost';
-import type { DoctorSnapshot } from '@happier-dev/protocol';
+import { createRelayHostEngine } from '@piggercode/cli-common/relayHost';
+import type { DoctorSnapshot } from '@piggercode/protocol';
 
 type HappierRelays = NonNullable<NonNullable<DoctorSnapshot['relays']>['happier']>;
 type HappierRelay = HappierRelays['relays'][number];

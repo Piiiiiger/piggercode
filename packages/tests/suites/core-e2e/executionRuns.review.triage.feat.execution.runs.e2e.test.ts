@@ -7,8 +7,8 @@ import {
   ExecutionRunActionResponseSchema,
   ExecutionRunGetResponseSchema,
   ExecutionRunStartResponseSchema,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

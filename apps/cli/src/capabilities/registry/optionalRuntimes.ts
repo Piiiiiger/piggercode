@@ -1,4 +1,4 @@
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import {
   getOptionalRuntimeStatus,

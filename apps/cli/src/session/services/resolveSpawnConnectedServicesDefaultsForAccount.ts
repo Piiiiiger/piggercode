@@ -1,5 +1,5 @@
-import { AGENT_IDS, type AgentId } from '@happier-dev/agents';
-import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { AGENT_IDS, type AgentId } from '@piggercode/agents';
+import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';

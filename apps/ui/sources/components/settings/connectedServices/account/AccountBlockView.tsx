@@ -28,8 +28,8 @@ import {
     setConnectedServiceItemCollapsed,
 } from '@/sync/domains/connectedServices/resolveConnectedServiceCollapseKey';
 import { useSettingMutable } from '@/sync/store/hooks';
-import type { ConnectedServiceCredentialHealthStatusV1, ConnectedServiceId } from '@happier-dev/protocol';
-import type { ProviderAccountSubscriptionV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialHealthStatusV1, ConnectedServiceId } from '@piggercode/protocol';
+import type { ProviderAccountSubscriptionV1 } from '@piggercode/protocol';
 import { t } from '@/text';
 
 import { type AccountUsageRow, type CapacityRingDatum } from './accountBlockModel';

@@ -1,4 +1,4 @@
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 export type ActiveAccountSettingsSnapshot = Readonly<{
   source: 'network' | 'cache' | 'none';

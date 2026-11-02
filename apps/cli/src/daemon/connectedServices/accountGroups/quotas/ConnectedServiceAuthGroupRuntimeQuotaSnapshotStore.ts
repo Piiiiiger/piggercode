@@ -3,8 +3,8 @@ import type {
   ConnectedServiceId,
   ConnectedServiceQuotaSnapshotV1,
   ProviderAccountUsageOrganizationContext,
-} from '@happier-dev/protocol';
-import { compareConnectedServiceQuotaObservationRecency, isProviderAccountUsageOrganizationContextMatch } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { compareConnectedServiceQuotaObservationRecency, isProviderAccountUsageOrganizationContextMatch } from '@piggercode/protocol';
 
 import type { ConnectedServiceAuthGroupMemberRuntimeState } from '../selection/selectConnectedServiceAuthGroupCandidate';
 import { buildConnectedServiceAuthGroupRuntimeStateFromMeters } from './projection';

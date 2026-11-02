@@ -1,4 +1,4 @@
-import type { ManagedConnectionState } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState } from '@piggercode/connection-supervisor';
 
 import type { EndpointConnectivitySnapshot, EndpointConnectivityStatus } from '@/sync/store/domains/realtime';
 import type { PauseController } from '@/utils/timing/pauseController';

@@ -1,5 +1,5 @@
-import { resolveProviderSessionIdForBackendTarget } from '@happier-dev/agents';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import { resolveProviderSessionIdForBackendTarget } from '@piggercode/agents';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';

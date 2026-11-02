@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { buildDeterministicSessionWorkStateItemId } from '@happier-dev/protocol';
+import { buildDeterministicSessionWorkStateItemId } from '@piggercode/protocol';
 
 import {
   mergeSessionWorkStateMetadataV1,

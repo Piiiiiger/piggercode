@@ -9,7 +9,7 @@ import {
     type SystemTaskEvent,
     type SystemTaskResult,
     type SystemTaskSpec,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     approveSetupPairingForTarget,
@@ -48,7 +48,7 @@ export type ThisComputerSetupAuthRequestApproval = SetupPairingApprovalTarget;
 /**
  * What the executor learned from `happier service install --dry-run --json` and needs a decision
  * on (INV9). Presented, never re-evaluated, by the UI. The payload shape and its parsing live in
- * `@happier-dev/protocol`'s setup task contract, which the executor builds through.
+ * `@piggercode/protocol`'s setup task contract, which the executor builds through.
  */
 export type SetupServiceConsentPrompt = SetupServiceConsentPromptPayload & Readonly<{ taskId: string }>;
 

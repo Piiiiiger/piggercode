@@ -1,13 +1,13 @@
-import type { AgentId, ProviderCliInstallSource } from '@happier-dev/agents';
+import type { AgentId, ProviderCliInstallSource } from '@piggercode/agents';
 import {
   classifyProviderCliInstall,
   fetchProviderCliLatestVersion,
   resolvePlatformFromNodePlatform,
   type ProviderCliLatestVersionFacts,
   type ProviderCliResolutionSource,
-} from '@happier-dev/cli-common/providers';
-import { AsyncTtlCache } from '@happier-dev/protocol';
-import { compareVersions } from '@happier-dev/cli-common/update';
+} from '@piggercode/cli-common/providers';
+import { AsyncTtlCache } from '@piggercode/protocol';
+import { compareVersions } from '@piggercode/cli-common/update';
 
 import { configuration } from '@/configuration';
 import { buildDetectContext } from '@/capabilities/context/buildDetectContext';

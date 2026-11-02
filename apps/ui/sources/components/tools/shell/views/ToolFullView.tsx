@@ -18,7 +18,7 @@ import { resolveToolHeaderTextPresentation } from '@/components/tools/shell/pres
 import { resolvePermissionPromptSurface, shouldShowGenericPermissionPromptForRequest } from '@/utils/sessions/permissions/permissionPromptPolicy';
 import { SidechainTranscriptBody } from '@/components/sessions/transcript/sidechain/SidechainTranscriptBody';
 import { resolveToolTranscriptSidechainId } from './resolveToolTranscriptSidechainId';
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 import { resolveInactiveSessionToolCallFailure } from '../permissions/resolveInactiveSessionToolCallFailure';
 import { ToolError } from '@/components/tools/shell/presentation/ToolError';
 import { resolveToolPermissionTerminalErrorMessage } from '../permissions/resolveToolPermissionTerminalErrorMessage';

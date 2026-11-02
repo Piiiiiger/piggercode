@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { WorkspaceReplicationBaselineRecord } from '../baseline/workspaceReplicationBaselineStore';
 

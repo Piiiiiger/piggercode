@@ -6,7 +6,7 @@ import {
   InMemoryConnectedServiceAuthGroupSwitchLeaseRegistry,
   type ConnectedServiceAuthGroupSwitchState,
 } from '../accountGroups/switching/ConnectedServiceAuthGroupSwitchCoordinator';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import type { TrackedSession } from '@/daemon/types';
 import {
   authorizeConnectedServiceRuntimeAuthFailureSource,

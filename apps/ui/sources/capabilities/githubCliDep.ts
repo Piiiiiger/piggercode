@@ -1,5 +1,5 @@
 import type { CapabilitiesDetectRequest, CapabilityDetectResult, CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
-import { GH_DEP_ID } from '@happier-dev/protocol/installables';
+import { GH_DEP_ID } from '@piggercode/protocol/installables';
 
 import type { InstallableDepDataLike } from './installablesRegistry';
 import { isLatestVersionCheckDue } from '@/updates/latestVersionCheckFreshness';

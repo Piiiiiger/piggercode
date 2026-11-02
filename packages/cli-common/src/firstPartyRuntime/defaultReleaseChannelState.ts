@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { normalizePublicReleaseRingId, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { joinPathForPathShape } from '../path/pathShape.js';
 import { resolveHappyHomeDirFromEnvironment } from '../providers/resolveHappyHomeDir.js';

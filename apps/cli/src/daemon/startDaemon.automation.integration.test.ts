@@ -1062,7 +1062,7 @@ describe('startDaemon automation wiring (integration)', () => {
       const {
         SPAWN_SESSION_ERROR_CODES,
         isConnectedServiceResumeUnreachableSpawnErrorDetail,
-      } = await import('@happier-dev/protocol');
+      } = await import('@piggercode/protocol');
 
       vi.mocked(resolveCatalogAgentId).mockReturnValue('claude');
       vi.mocked(shouldResolveConnectedServiceAuthForSpawn).mockReturnValue(true);
@@ -2997,7 +2997,7 @@ describe('startDaemon automation wiring (integration)', () => {
     });
 
     try {
-      const { buildConnectedServiceCredentialRecord } = await import('@happier-dev/protocol');
+      const { buildConnectedServiceCredentialRecord } = await import('@piggercode/protocol');
       const credentialRecord = buildConnectedServiceCredentialRecord({
         now: 1_000,
         serviceId: 'claude-subscription',

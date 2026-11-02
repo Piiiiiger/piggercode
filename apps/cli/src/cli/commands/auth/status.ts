@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { cmd, definitionList, fail, neutral, ok, sectionTitle, warn } from '@happier-dev/cli-common/output';
+import { cmd, definitionList, fail, neutral, ok, sectionTitle, warn } from '@piggercode/cli-common/output';
 import os from 'node:os';
 
 import { formatAccountIdentity, formatRelayHost } from '@/auth/describeSignedInIdentity';

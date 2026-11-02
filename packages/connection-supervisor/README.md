@@ -1,3 +1,3 @@
-# `@happier-dev/connection-supervisor`
+# `@piggercode/connection-supervisor`
 
 Shared connection supervision primitives for Happier realtime clients.

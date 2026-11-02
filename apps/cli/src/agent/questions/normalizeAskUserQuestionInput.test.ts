@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STRUCTURED_QUESTION_LIMITS } from '@happier-dev/protocol';
+import { STRUCTURED_QUESTION_LIMITS } from '@piggercode/protocol';
 
 import {
     InvalidAskUserQuestionInputError,

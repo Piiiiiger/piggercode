@@ -36,9 +36,9 @@ describe('this computer — Happier CLI row', () => {
     it('never offers to replace a CLI the person installed, and says up to date only when proven', () => {
         const own = buildThisComputerCliUpdateItem({
             machineId: 'm1', title: 'Happier CLI', task: IDLE_TASK,
-            facts: { currentVersion: '0.2.10', latestVersion: '0.2.11', managed: false, updateCommand: 'npm install -g @happier-dev/cli' },
+            facts: { currentVersion: '0.2.10', latestVersion: '0.2.11', managed: false, updateCommand: 'npm install -g @piggercode/cli' },
         });
-        expect(own).toMatchObject({ managedBy: 'user', state: 'available', action: { kind: 'manual', command: 'npm install -g @happier-dev/cli' } });
+        expect(own).toMatchObject({ managedBy: 'user', state: 'available', action: { kind: 'manual', command: 'npm install -g @piggercode/cli' } });
         expect(own && isUpdateItemActionable(own)).toBe(false);
 
         const current = buildThisComputerCliUpdateItem({

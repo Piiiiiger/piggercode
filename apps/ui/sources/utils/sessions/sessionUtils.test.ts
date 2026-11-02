@@ -4,7 +4,7 @@ import { flushHookEffects, renderHook, standardCleanup } from '@/dev/testkit';
 import {
     CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
     CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { installSessionUtilsCommonModuleMocks } from './sessionUtilsTestHelpers';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { StorageState } from '@/sync/store/types';

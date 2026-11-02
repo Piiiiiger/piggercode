@@ -1,4 +1,4 @@
-import type { SessionWorkStateStatusReasonV1 } from '@happier-dev/protocol';
+import type { SessionWorkStateStatusReasonV1 } from '@piggercode/protocol';
 
 export type SessionWorkStateStatus = 'pending' | 'active' | 'paused' | 'blocked' | 'complete' | 'cancelled' | 'unknown';
 export type SessionWorkStateStatusReason = SessionWorkStateStatusReasonV1;

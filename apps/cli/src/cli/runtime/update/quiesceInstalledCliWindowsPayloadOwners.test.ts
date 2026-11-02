@@ -38,8 +38,8 @@ vi.mock('cross-spawn', () => ({
   },
 }));
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/cli-common/firstPartyRuntime')>();
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/cli-common/firstPartyRuntime')>();
   return {
     ...actual,
     resolveInstalledFirstPartyComponentPaths: (...args: unknown[]) =>

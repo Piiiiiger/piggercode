@@ -29,7 +29,7 @@ import { terminateProcessGroup, terminateProcessPid } from '../proc/terminate.mj
 import {
   processInstanceFingerprintMatches,
   readProcessInstanceFingerprintSync,
-} from '@happier-dev/cli-common/processInstance';
+} from '@piggercode/cli-common/processInstance';
 import { withJsonOwnerFileLock } from '../proc/jsonOwnerFileLock.mjs';
 import { coercePort } from '../server/port.mjs';
 import { resolveServerShutdownGraceMs } from '../server/shutdown_grace.mjs';
@@ -102,7 +102,7 @@ function isEphemeralRuntimeFallbackKillAllowed(line, stackName) {
   if (kind) return false;
 
   return (
-    textContainsNeedle(line, 'npm_package_name=@happier-dev/server') &&
+    textContainsNeedle(line, 'npm_package_name=@piggercode/server') &&
     textContainsEnvBindingName(line, 'npm_lifecycle_event')
   );
 }
@@ -736,14 +736,14 @@ async function stopStackWithEnvInternal({
       // may not have been started with HAPPIER_STACK_PROCESS_KIND=infra yet. We restrict this
       // fallback to npm/yarn managed server processes to avoid touching daemon-spawned sessions.
       {
-        needles: [envNeedle, 'npm_package_name=@happier-dev/server'],
+        needles: [envNeedle, 'npm_package_name=@piggercode/server'],
         bindingNames: ['npm_lifecycle_event'],
       },
       ...(repoLocalNeedles
         ? [
             { needles: [...repoLocalNeedles, 'HAPPIER_STACK_PROCESS_KIND=infra'] },
             {
-              needles: [...repoLocalNeedles, 'npm_package_name=@happier-dev/server'],
+              needles: [...repoLocalNeedles, 'npm_package_name=@piggercode/server'],
               bindingNames: ['npm_lifecycle_event'],
             },
           ]
@@ -839,7 +839,7 @@ async function stopStackWithEnvInternal({
         const exactRepoIdentity = repoLocalNeedles.every((needle) => textContainsNeedle(line, needle));
         const stillInfraTagged = repoLocalInfraPidSet.has(pid) && processKind === 'infra';
         const stillLegacyServer = repoLocalLegacyPidSet.has(pid)
-          && textContainsNeedle(line, 'npm_package_name=@happier-dev/server')
+          && textContainsNeedle(line, 'npm_package_name=@piggercode/server')
           && textContainsEnvBindingName(line, 'npm_lifecycle_event');
         if (processKind === 'session' || !exactRepoIdentity || (!stillInfraTagged && !stillLegacyServer)) {
           const reason = processKind === 'session' ? 'session_process_kind' : 'process_identity_mismatch';

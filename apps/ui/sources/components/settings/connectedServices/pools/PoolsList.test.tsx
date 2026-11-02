@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ConnectedServiceQuotaSnapshotV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaSnapshotV1Schema } from '@piggercode/protocol';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type {
   getConnectedServiceQuotaSnapshotSealed,

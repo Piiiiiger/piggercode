@@ -1,8 +1,8 @@
 import type {
   ConnectedServiceCredentialHealthStatusV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 import { resolveConnectedServiceProviderDisplayName } from '../descriptors/connectedAccountDescriptors';
 

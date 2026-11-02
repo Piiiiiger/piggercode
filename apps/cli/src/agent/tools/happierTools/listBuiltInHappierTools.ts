@@ -1,7 +1,7 @@
 import { HAPPIER_BUILT_IN_TOOLS } from './catalog';
 import { filterBuiltInToolsForSurface } from './actionToolCatalog';
 import { isActionEnabledByEnv, readActionsSettingsFromEnv } from '@/settings/actionsSettings';
-import type { ActionId, ActionsSettingsV1 } from '@happier-dev/protocol';
+import type { ActionId, ActionsSettingsV1 } from '@piggercode/protocol';
 
 export type BuiltInHappierToolsSurface = 'mcp' | 'cli' | 'session_agent';
 

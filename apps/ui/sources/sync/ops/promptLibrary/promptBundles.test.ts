@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DecryptedArtifact } from '@/sync/domains/artifacts/artifactTypes';
 import { storage } from '@/sync/domains/state/storageStore';
-import { PromptBundleBodyV1Schema, type PromptBundleBodyV1 } from '@happier-dev/protocol';
+import { PromptBundleBodyV1Schema, type PromptBundleBodyV1 } from '@piggercode/protocol';
 
 const createArtifactWithHeaderMock = vi.hoisted(() =>
   vi.fn(async (_header: unknown, _body: string | null) => 'b1'),

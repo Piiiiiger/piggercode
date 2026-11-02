@@ -1,8 +1,8 @@
 import {
   SessionPendingQueueWakeCapabilityResponseV1Schema,
   SessionPendingQueueWakeResponseV1Schema,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 export type SessionPendingQueueWakeDiagnostic =
   | Readonly<{ type: 'wake_published' }>

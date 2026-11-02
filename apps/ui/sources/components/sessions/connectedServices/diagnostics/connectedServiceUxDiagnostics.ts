@@ -5,7 +5,7 @@ import {
     type ConnectedServiceUxDiagnosticCodeV1,
     type ConnectedServiceUxDiagnosticSuggestedActionV1,
     type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TranslationKey } from '@/text';
 

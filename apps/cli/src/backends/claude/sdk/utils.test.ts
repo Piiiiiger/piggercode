@@ -2,7 +2,7 @@ import { mkdirSync, realpathSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { EventEmitter } from 'node:events';
 
-import { getProviderCliRuntimeSpec } from '@happier-dev/agents';
+import { getProviderCliRuntimeSpec } from '@piggercode/agents';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';

@@ -6,7 +6,7 @@ import {
     type SessionListAttentionPromotionMode,
 } from '@/sync/domains/session/listing/attentionPromotion/sessionListAttentionPromotion';
 import type { SessionAttentionStandingPolicy } from '@/sync/domains/session/organization/attentionStanding';
-import type { SessionAttentionStanding } from '@happier-dev/protocol';
+import type { SessionAttentionStanding } from '@piggercode/protocol';
 
 export type SessionAttentionStandingInputs = Readonly<{
     /** Where the attention band puts a promoted session, or `off` when there is no band at all. */

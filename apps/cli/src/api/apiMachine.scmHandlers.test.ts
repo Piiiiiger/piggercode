@@ -11,8 +11,8 @@ import {
   SCM_OPERATION_ERROR_CODES,
   type ScmPullRequestOpenOrReuseRequest,
   type ScmPullRequestOpenOrReuseResponse,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { ApiMachineClient } from './apiMachine';
 

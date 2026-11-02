@@ -1,6 +1,6 @@
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MENTION_KIND_V1, buildMentionRefForKindV1 } from '@happier-dev/protocol';
+import { MENTION_KIND_V1, buildMentionRefForKindV1 } from '@piggercode/protocol';
 
 import { pressTestInstanceAsync, renderScreen, standardCleanup } from '@/dev/testkit';
 import type { SessionReferenceTarget } from '@/sync/store/hooks';

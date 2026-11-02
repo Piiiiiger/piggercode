@@ -1,12 +1,12 @@
 import * as fs from 'node:fs';
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 import {
   buildListWindowsScheduledTaskFolderPowerShellCommand,
   parseWindowsScheduledTaskFolderPowerShellJson,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 import { basename, join, win32 as win32Path } from 'node:path';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { readPositiveIntEnv } from '@/utils/readPositiveIntEnv';
 import { happierHomeDirsMatch } from '@/daemon/ownership/happierHomeDirComparableKey';
 

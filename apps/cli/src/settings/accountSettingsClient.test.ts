@@ -7,7 +7,7 @@ import {
   libsodiumEncryptForPublicKey,
   libsodiumPublicKeyFromSecretKey,
 } from '@/api/encryption';
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 import { decryptAccountSettingsCiphertext } from './accountSettingsClient';
 

@@ -8,7 +8,7 @@ import { getRootDir } from './utils/paths/paths.mjs';
 import { printResult, wantsHelp, wantsJson } from './utils/cli/cli.mjs';
 import { parseArgs } from './utils/cli/args.mjs';
 import { getVerbosityLevel } from './utils/cli/verbosity.mjs';
-import { createStepPrinter } from '@happier-dev/cli-common/output';
+import { createStepPrinter } from '@piggercode/cli-common/output';
 import { prompt, promptSelect, withRl } from './utils/cli/wizard.mjs';
 import { assertCliPrereqs } from './utils/cli/prereqs.mjs';
 import { randomToken } from './utils/crypto/tokens.mjs';
@@ -611,7 +611,7 @@ async function main() {
           // eslint-disable-next-line no-console
           console.warn(`[review-pr] tip: inspect stack wiring with:`);
           // eslint-disable-next-line no-console
-          console.warn(`  npx --yes -p @happier-dev/stack hstack --sandbox-dir "${sandboxDir}" stack info ${effectiveStackName}`);
+          console.warn(`  npx --yes -p @piggercode/stack hstack --sandbox-dir "${sandboxDir}" stack info ${effectiveStackName}`);
         }
       } else {
         await rm(markerPath, { force: false });

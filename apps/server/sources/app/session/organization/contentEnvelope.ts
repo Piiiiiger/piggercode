@@ -1,7 +1,7 @@
 import {
     SessionOrganizationContentEnvelopeSchema,
     type SessionOrganizationContentEnvelope,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import type { SessionOrganizationTx } from "./types";
 

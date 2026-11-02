@@ -1,4 +1,4 @@
-import type { ConnectedServiceLimitCategoryV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceLimitCategoryV1 } from '@piggercode/protocol';
 
 import { parseProviderResetAt } from '@/daemon/connectedServices/quotas/normalization';
 

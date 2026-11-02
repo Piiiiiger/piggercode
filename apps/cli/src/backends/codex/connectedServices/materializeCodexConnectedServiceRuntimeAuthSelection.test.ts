@@ -3,15 +3,15 @@ import Fastify from 'fastify';
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { AccountSettingsSchema, buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { AccountSettingsSchema, buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { Credentials } from '@/persistence';
 import { removeTempDir } from '@/testkit/fs/tempDir';
 import { createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
 import { installAxiosFastifyAdapter } from '@/testkit/http/axiosAdapter';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { createSessionRecordFixture, createSessionListResponseFixture } from '@/testkit/backends/sessionFixtures';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
 

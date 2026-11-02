@@ -8,7 +8,7 @@ import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceId,
   ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import { getConnectedServiceMaterializer } from '@/backends/catalog';

@@ -10,7 +10,7 @@ import {
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceCredentialRevisionV1,
   type SealedConnectedServiceCredentialV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readHttpStatus } from '@/api/client/httpStatusError';
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';

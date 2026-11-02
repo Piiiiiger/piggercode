@@ -3,7 +3,7 @@ import { act } from 'react-test-renderer';
 
 import { renderHook } from '@/dev/testkit';
 import type { SystemTaskRunState, SystemTaskRunner } from '@/components/systemTasks/types';
-import type { SystemTaskEvent, SystemTaskSpec } from '@happier-dev/protocol';
+import type { SystemTaskEvent, SystemTaskSpec } from '@piggercode/protocol';
 
 const capturedSpecs = vi.hoisted(() => [] as SystemTaskSpec[]);
 

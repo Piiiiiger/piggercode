@@ -14,7 +14,7 @@ import {
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import { resolveSessionRuntimeSnapshot } from './sessions/runtimeSnapshot/resolveSessionRuntimeSnapshot';
 import { extractResumeIdFromCommand } from './sessions/extractResumeIdFromCommand';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 type AdoptSessionsFromMarkersResult = Readonly<{
   adopted: number;

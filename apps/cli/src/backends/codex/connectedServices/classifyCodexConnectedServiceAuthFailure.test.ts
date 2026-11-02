@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import { createSessionTurnLifecycle } from '@/agent/runtime/session/turn/lifecycle';
 import { createFakeAcpRuntimeBackend } from '@/testkit/backends/acpRuntimeBackend';
 import { createApprovedPermissionHandler } from '@/testkit/backends/permissionHandler';

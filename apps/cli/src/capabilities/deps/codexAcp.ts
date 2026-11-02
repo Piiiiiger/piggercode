@@ -6,8 +6,8 @@ import { tmpdir } from 'node:os';
 import { configuration } from '@/configuration';
 import { resolveExistingManagedJavaScriptRuntimeCommand } from '@/runtime/js/managedJavaScriptRuntime';
 import { readRuntimeInstallableLastCheckAtMs } from '@/installables/runtime/runtimeInstallableUpdateState';
-import { downloadGitHubReleaseAsset, extractGitHubReleaseAsset } from '@happier-dev/cli-common/providers';
-import { fetchGitHubLatestRelease } from '@happier-dev/release-runtime/github';
+import { downloadGitHubReleaseAsset, extractGitHubReleaseAsset } from '@piggercode/cli-common/providers';
+import { fetchGitHubLatestRelease } from '@piggercode/release-runtime/github';
 
 import { resolveCodexAcpReleaseAsset, CODEX_ACP_GITHUB_REPO } from '@/runtime/managedTools/providers/codexAcpRelease';
 

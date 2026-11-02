@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { SessionDraftDocumentV1 } from '@happier-dev/protocol';
+import type { SessionDraftDocumentV1 } from '@piggercode/protocol';
 
 import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';
 import { createSessionDraftCipher } from '@/sync/encryption/sessionDraftEncryption';

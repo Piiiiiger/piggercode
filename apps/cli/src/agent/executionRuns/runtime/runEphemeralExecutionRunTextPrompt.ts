@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import type { AgentBackend, AgentMessageHandler } from '@/agent/core/AgentBackend';
 import { createExecutionRunBackend } from '@/agent/executionRuns/runtime/createExecutionRunBackend';
 import { configuration } from '@/configuration';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 export type EphemeralExecutionRunTextPromptBackendFactory = (opts: Readonly<{
   cwd: string;

@@ -7,8 +7,8 @@ import {
   resolveManagedCliToolNameForRing,
   type ManagedCliUpdateRestart,
   type ServiceDaemonBeforeCliUpdate,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { getReleaseRingCatalogEntry, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { readDaemonStateForServerId } from '@/daemon/multiDaemon';
 import type { DaemonOwnerEvaluation } from '@/daemon/ownership/evaluateCurrentDaemonOwner';

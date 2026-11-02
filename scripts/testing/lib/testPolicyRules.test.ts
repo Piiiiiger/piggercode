@@ -70,11 +70,11 @@ test('test-policy fixture strings and comments are not executed exclusive tests'
   assert.equal(report.findings.filter((finding) => finding.ruleId === 'no-exclusive-tests').length, 0);
 });
 
-test('collectPolicyFindings bans @happier-dev/tests internals from non-test source', () => {
+test('collectPolicyFindings bans @piggercode/tests internals from non-test source', () => {
   const report = collectPolicyFindings([
     {
       filePath: 'apps/ui/sources/sync/runtime.ts',
-      content: "import { helper } from '@happier-dev/tests/src/testkit/foo';",
+      content: "import { helper } from '@piggercode/tests/src/testkit/foo';",
     },
   ]);
 

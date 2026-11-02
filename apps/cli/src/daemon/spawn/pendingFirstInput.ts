@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import {
   PendingFirstInputV1Schema,
   type PendingFirstInputV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import { resolveSessionUserMessageRequestedAction } from '@/session/services/resolveSessionUserMessageRequestedAction';

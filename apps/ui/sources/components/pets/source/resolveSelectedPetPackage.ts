@@ -1,4 +1,4 @@
-import type { FeatureDecision, PetAssetMediaTypeV1, PetPackageSourceV1 } from '@happier-dev/protocol';
+import type { FeatureDecision, PetAssetMediaTypeV1, PetPackageSourceV1 } from '@piggercode/protocol';
 import type { LocalPetDaemonTarget } from '@/sync/domains/pets/localPetSourceMetadata';
 
 type AccountPetReference =

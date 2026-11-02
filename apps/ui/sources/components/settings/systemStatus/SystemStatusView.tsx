@@ -8,7 +8,7 @@ import {
   sanitizeBugReportUrl,
   sanitizeDoctorSnapshotUrls,
   type DoctorSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

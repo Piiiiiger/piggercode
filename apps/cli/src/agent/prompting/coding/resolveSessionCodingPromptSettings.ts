@@ -1,4 +1,4 @@
-import { applyCodingPromptBehaviorOverrideToSettings } from '@happier-dev/protocol';
+import { applyCodingPromptBehaviorOverrideToSettings } from '@piggercode/protocol';
 
 import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfilesFromAccountSettings';
 

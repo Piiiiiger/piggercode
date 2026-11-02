@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AIBackendProfileSchema, SavedSecretSchema } from '@happier-dev/protocol';
+import { AIBackendProfileSchema, SavedSecretSchema } from '@piggercode/protocol';
 import { buildProfileEnvironmentVariablesForSession } from './profileHelpers';
 
 describe('profile environment materialization for launch and catalog discovery', () => {

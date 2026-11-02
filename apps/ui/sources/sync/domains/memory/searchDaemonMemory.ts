@@ -6,7 +6,7 @@ import {
     type MemorySearchMode,
     type MemorySearchResultV1,
     type MemorySearchScope,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { SESSION_MACHINE_TARGET_UNAVAILABLE_ERROR_CODE } from '@/sync/runtime/sessionMachineRpcErrorCodes';

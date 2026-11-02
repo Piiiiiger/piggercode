@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { RELEASED_CONNECTED_SERVICE_IDS, type ConnectedServiceId } from '@happier-dev/protocol';
+import { RELEASED_CONNECTED_SERVICE_IDS, type ConnectedServiceId } from '@piggercode/protocol';
 import { getMachineConnectedServiceAuthSupportedServiceIds } from '@/sync/ops/connectedServiceAuthSupport';
 
 import { resolveConnectedServiceDisplayName } from '@/components/settings/connectedServices/model/resolveConnectedServiceDisplayName';

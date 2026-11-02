@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { storage } from '@/sync/domains/state/storage';
 import { createMachineFixture, createSessionFixture } from '@/dev/testkit';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { sessionUsageLimitCheckNow, sessionUsageLimitWaitResumeCancel } from './sessionUsageLimitRecovery';
 
 const transport = vi.hoisted(() => ({ machine: vi.fn(), session: vi.fn() }));

@@ -8,8 +8,8 @@ import {
   type ActionId,
   type ApprovalRequestV1,
   buildStructuredQuestionAnswerPayload,
-} from '@happier-dev/protocol';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import {
     sessionExecutionRunAction,

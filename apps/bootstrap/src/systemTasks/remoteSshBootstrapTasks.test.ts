@@ -2,7 +2,7 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { RemoteBootstrapMachineParams } from '@happier-dev/cli-common/systemTasks';
+import type { RemoteBootstrapMachineParams } from '@piggercode/cli-common/systemTasks';
 import { describe, expect, it, vi } from 'vitest';
 
 import {

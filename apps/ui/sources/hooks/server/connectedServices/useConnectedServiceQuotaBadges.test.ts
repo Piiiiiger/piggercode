@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import React from 'react';
-import { ConnectedServiceQuotaSnapshotV1Schema } from '@happier-dev/protocol';
-import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@happier-dev/protocol/testing/accountScopedCipherFixtures';
+import { ConnectedServiceQuotaSnapshotV1Schema } from '@piggercode/protocol';
+import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@piggercode/protocol/testing/accountScopedCipherFixtures';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type { getConnectedServiceQuotaSnapshotSealed } from '@/sync/api/account/apiConnectedServicesQuotasV2';
 import type { getConnectedServiceQuotaSnapshotPlain } from '@/sync/api/account/apiConnectedServicesQuotasV3';

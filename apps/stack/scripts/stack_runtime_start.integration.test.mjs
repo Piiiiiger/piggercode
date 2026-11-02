@@ -7,7 +7,7 @@ import { readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import {
   renderPrismaCompatibleSqliteDatabaseUrl,
   resolveServerLightSqliteDatabaseUrlOptionsFromEnv,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 
 import {
   createStartableRuntimeSnapshotFixture,

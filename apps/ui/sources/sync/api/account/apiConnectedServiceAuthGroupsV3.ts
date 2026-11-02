@@ -16,7 +16,7 @@ import {
     ConnectedServiceAuthGroupResponseV1Schema,
     type ConnectedServiceAuthGroupV1,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ConnectedServiceAuthGroupPolicyPatchInput = ConnectedServiceAuthGroupPolicyPatchV1;
 

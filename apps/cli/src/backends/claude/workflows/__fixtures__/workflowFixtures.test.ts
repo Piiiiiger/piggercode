@@ -9,7 +9,7 @@ import {
   SessionWorkflowRunSnapshotV1Schema,
   type SessionWorkflowAgentSnapshotV1,
   type SessionWorkflowPhaseSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const FIXTURE_DIR = dirname(fileURLToPath(import.meta.url));
 

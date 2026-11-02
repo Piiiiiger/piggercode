@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizePermissionModeForAgent } from '@happier-dev/agents';
+import { normalizePermissionModeForAgent } from '@piggercode/agents';
 
 describe('normalizePermissionModeForAgent', () => {
   it('keeps safe-yolo as the Claude session intent', () => {

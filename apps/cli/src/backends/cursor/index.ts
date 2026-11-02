@@ -1,4 +1,4 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import { checklists } from './cli/checklists';
 import type { AgentCatalogEntry } from '../types';

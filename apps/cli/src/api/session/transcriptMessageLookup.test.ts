@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import fastify, { type FastifyInstance } from 'fastify';
-import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { reloadConfiguration } from '@/configuration';

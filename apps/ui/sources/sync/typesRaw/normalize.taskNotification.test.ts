@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { normalizeRawMessage } from './normalize';
 import type { RawRecord } from './schemas';
 import { createReducer, reducer } from '../reducer/reducer';
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
 
 describe('typesRaw.normalizeRawMessage (task-notification)', () => {
   it.each([false, true])('routes a main-conversation native completion to its exact nested sidechain tool (before import=%s)', (beforeImport) => {

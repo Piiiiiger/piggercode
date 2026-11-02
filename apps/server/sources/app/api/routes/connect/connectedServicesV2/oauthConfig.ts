@@ -9,7 +9,7 @@ import {
   GEMINI_CLI_OAUTH_TOKEN_URL,
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_TOKEN_URL,
-} from "@happier-dev/agents";
+} from "@piggercode/agents";
 
 export function resolveAgyOauthClientId(): string {
   return AGY_OAUTH_CLIENT_ID;

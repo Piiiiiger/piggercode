@@ -42,7 +42,7 @@ import type {
   StreamedTranscriptWriter,
   StreamedTranscriptWriterSession,
 } from './types';
-import type { SessionTranscriptObservationProvenanceV1 } from '@happier-dev/protocol';
+import type { SessionTranscriptObservationProvenanceV1 } from '@piggercode/protocol';
 
 type SegmentKind = StreamedTranscriptSegmentKind;
 type SegmentState = StreamedTranscriptSegmentState;

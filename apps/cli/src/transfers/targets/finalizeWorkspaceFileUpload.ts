@@ -1,7 +1,7 @@
 import { mkdir, open, rm, stat } from 'fs/promises';
 import { basename, dirname, join } from 'path';
 
-import { withKeepBothSuffix } from '@happier-dev/transfers';
+import { withKeepBothSuffix } from '@piggercode/transfers';
 
 import { moveFileWithCrossDeviceFallback } from '../../utils/fs/moveFileWithCrossDeviceFallback';
 import type { UploadTransferFinalizeResult } from './uploadTransferTarget';

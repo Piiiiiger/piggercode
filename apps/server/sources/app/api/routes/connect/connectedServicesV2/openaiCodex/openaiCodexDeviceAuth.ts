@@ -5,7 +5,7 @@ import {
   OPENAI_CODEX_DEVICE_TOKEN_URL,
   OPENAI_CODEX_DEVICE_USER_CODE_URL,
   OPENAI_CODEX_DEVICE_VERIFICATION_URL,
-} from "@happier-dev/agents";
+} from "@piggercode/agents";
 
 import {
   BOX_BUNDLE_PUBLIC_KEY_BYTES,
@@ -13,7 +13,7 @@ import {
   encodeBase64,
   sealBoxBundle,
   type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { assertNonEmptyString } from "../connectValueParsers";
 import {

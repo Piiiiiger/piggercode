@@ -1,4 +1,4 @@
-import { parseBackendTargetKey, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { parseBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { normalizeBackendTargetKeysFromCsv } from './normalizeBackendTargetKeys';
 

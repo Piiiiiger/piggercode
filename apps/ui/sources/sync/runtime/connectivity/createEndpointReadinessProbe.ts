@@ -1,4 +1,4 @@
-import type { ReadinessProbeResult } from '@happier-dev/connection-supervisor';
+import type { ReadinessProbeResult } from '@piggercode/connection-supervisor';
 
 import { probeAuthenticatedServerAuthPingEndpoint } from '@/sync/api/capabilities/probeAuthenticatedServerAuthPingEndpoint';
 import { isRuntimeActive } from '@/utils/runtime/isRuntimeActive';

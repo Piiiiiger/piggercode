@@ -26,7 +26,7 @@ export function applyCliDevTsxTsconfigEnv(params: {
   repoRootDir: string;
   env: NodeJS.ProcessEnv;
 }): NodeJS.ProcessEnv {
-  // Provider harness runs start the CLI via `yarn workspace @happier-dev/cli dev ...` from the repo root.
+  // Provider harness runs start the CLI via `yarn workspace @piggercode/cli dev ...` from the repo root.
   // When the dev entrypoint uses TSX, the loader must know which tsconfig defines `@/*` path aliases.
   // Never preserve an inherited value: provider E2E is frequently launched from a managed
   // stack whose environment points at another checkout. Reusing it makes TSX execute that

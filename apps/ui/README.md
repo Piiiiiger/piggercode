@@ -30,7 +30,7 @@ Step 2: Install CLI on your computer
 </h3>
 
 ```bash
-npm install -g @happier-dev/cli
+npm install -g @piggercode/cli
 ```
 
 <h3 align="center">
@@ -65,9 +65,9 @@ On your computer, run `happier` instead of `claude` or `happier codex` instead o
 
 ## 📦 Project Components
 
-- **@happier-dev/cli** - Command-line interface for Claude Code and Codex
-- **@happier-dev/server** - Backend server for encrypted sync
-- **@happier-dev/app** - This mobile client (you are here)
+- **@piggercode/cli** - Command-line interface for Claude Code and Codex
+- **@piggercode/server** - Backend server for encrypted sync
+- **@piggercode/app** - This mobile client (you are here)
 
 ## 🏠 Who We Are
 

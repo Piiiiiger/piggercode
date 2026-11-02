@@ -14,7 +14,7 @@ import {
 } from "@/app/social/friendAdd";
 import { resolveFriendsPolicyFromServerFeatures } from "@/app/social/resolveFriendsPolicyFromServerFeatures";
 import { createServerFeatureGatedRouteApp } from "@/app/features/catalog/serverFeatureGate";
-import { UserProfileSchema } from "@happier-dev/protocol";
+import { UserProfileSchema } from "@piggercode/protocol";
 import { NotFoundSchema } from "../../schemas/notFoundSchema";
 
 export async function userRoutes(app: Fastify) {

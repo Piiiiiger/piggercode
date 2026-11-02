@@ -3,8 +3,8 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SessionWorkStateGetResponseV1Schema } from '@happier-dev/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SessionWorkStateGetResponseV1Schema } from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
@@ -214,7 +214,7 @@ describe('core e2e: Claude native goal roundtrip', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',
@@ -353,7 +353,7 @@ describe('core e2e: Claude native goal roundtrip', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',
@@ -528,7 +528,7 @@ describe('core e2e: Claude native goal roundtrip', () => {
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'claude',
         '--existing-session',
@@ -576,7 +576,7 @@ describe('core e2e: Claude native goal roundtrip', () => {
         args: [
           '-s',
           'workspace',
-          '@happier-dev/cli',
+          '@piggercode/cli',
           'dev',
           'session',
           'actions',

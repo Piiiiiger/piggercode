@@ -1,7 +1,7 @@
 import type {
   PromptAssetInstallModeV1,
   PromptAssetTypeDescriptorV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function listPromptAssetInstallModesForType(
   assetType: PromptAssetTypeDescriptorV1 | null | undefined,

@@ -15,7 +15,7 @@ import type {
 import type { RawJSONLines } from '@/backends/claude/types'
 import type { PermissionMode } from '@/api/types'
 import { normalizeClaudeToolUseNamesInSdkMessage } from './normalizeClaudeToolUseNames'
-import { providers } from '@happier-dev/agents'
+import { providers } from '@piggercode/agents'
 import { buildClaudeSdkResultUsageTelemetry } from './sdkResultUsageTelemetry'
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers'
 import { createClaudeTaskNotificationToolResultProjector, readClaudeTaskLifecycleEnvelope } from '../taskNotifications/claudeTaskLifecycleEnvelope'

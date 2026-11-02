@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
     ACTION_OPERATION_RPC_METHODS_V1,
     type ActionOperationSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     cancelActionOperation,

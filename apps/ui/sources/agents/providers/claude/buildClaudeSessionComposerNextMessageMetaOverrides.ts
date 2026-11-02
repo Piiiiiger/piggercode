@@ -1,4 +1,4 @@
-import type { AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
+import type { AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 
 function normalizeReasoningEffort(raw: unknown): string | null {
     if (typeof raw !== 'string') return null;

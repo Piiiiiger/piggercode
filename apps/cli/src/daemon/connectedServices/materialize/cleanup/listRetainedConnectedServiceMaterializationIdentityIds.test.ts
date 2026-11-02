@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { createTempDir } from '@/testkit/fs/tempDir';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
-import type { V2SessionRecord } from '@happier-dev/protocol';
+import type { V2SessionRecord } from '@piggercode/protocol';
 
 describe('listRetainedConnectedServiceMaterializationIdentityIds', () => {
   it.each(['archived', 'unreadable', 'page-limit', 'repeated-cursor', 'missing-cursor', 'complete'] as const)(

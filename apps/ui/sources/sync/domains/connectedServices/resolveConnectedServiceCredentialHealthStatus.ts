@@ -1,7 +1,7 @@
 import {
     normalizeConnectedServiceCredentialHealthStatus,
     type ConnectedServiceCredentialHealthStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Map a raw connected-service profile status onto the canonical credential

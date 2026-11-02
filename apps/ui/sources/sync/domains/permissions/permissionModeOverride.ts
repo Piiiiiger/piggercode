@@ -2,7 +2,7 @@ import type { PermissionMode } from '@/sync/domains/permissions/permissionTypes'
 import type { Session } from '../state/storageTypes';
 import { resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 import { normalizePermissionModeForAgentType } from './permissionModeOptions';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 export type PermissionModeOverrideForSpawn = {
     permissionMode: PermissionMode;

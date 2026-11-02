@@ -1,7 +1,7 @@
 import {
   SessionUsageLimitRecoveryV1Schema,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type UsageLimitRecoveryIdentity = Pick<
   SessionUsageLimitRecoveryV1,

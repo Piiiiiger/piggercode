@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 
-import type { ReviewStartInput } from '@happier-dev/protocol';
+import type { ReviewStartInput } from '@piggercode/protocol';
 import { normalizeCodeRabbitReviewStartInput } from './normalizeCodeRabbitReviewStartInput.js';
 
 const execFileAsync = promisify(execFile);

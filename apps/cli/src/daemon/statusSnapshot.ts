@@ -1,4 +1,4 @@
-import { createServerUrlComparableKey, type DoctorSnapshot } from '@happier-dev/protocol';
+import { createServerUrlComparableKey, type DoctorSnapshot } from '@piggercode/protocol';
 
 import { resolveActiveServerAuthReadiness } from '@/auth/resolveActiveServerAuthReadiness';
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';
@@ -10,7 +10,7 @@ import { readDaemonState, readSettings } from '@/persistence';
 import { resolveDaemonServiceInstallationSnapshotFromEnv } from '@/daemon/service/cli';
 import { maybeRefreshCliUpdateCacheInBackground } from '@/cli/runtime/update/autoUpdateNotice';
 import { readCliUpdateFactsForThisCli } from '@/cli/runtime/update/cliUpdateFacts';
-import { compareVersions } from '@happier-dev/cli-common/update';
+import { compareVersions } from '@piggercode/cli-common/update';
 import { projectPath } from '@/projectPath';
 
 export type DaemonStatusSnapshot = NonNullable<DoctorSnapshot['daemonStatus']>;

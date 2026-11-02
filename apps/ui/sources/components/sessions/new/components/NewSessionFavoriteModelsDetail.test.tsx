@@ -11,7 +11,7 @@ import { createUnistylesMock } from '@/dev/testkit/mocks/unistyles';
 import type { OptionPickerOverlayProps } from '@/components/sessions/pickers/OptionPickerOverlay';
 import type { ModelOption, PreflightModelList } from '@/sync/domains/models/modelOptions';
 import { settingsParse } from '@/sync/domains/settings/settings';
-import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 

@@ -74,7 +74,7 @@ describe('runtime re-exec wiring', () => {
   it('re-execs to runtime entrypoint when runtime is installed', () => {
     const homeDir = mkdtempSync(join(tmpdir(), 'happier-cli-runtime-home-'));
     tempDirs.push(homeDir);
-    createRuntimePackage(homeDir, '@happier-dev/cli', 'RUNTIME_ENTRYPOINT');
+    createRuntimePackage(homeDir, '@piggercode/cli', 'RUNTIME_ENTRYPOINT');
     const stdout = runCliVersionViaDist(homeDir);
     expect(stdout).toContain('RUNTIME_ENTRYPOINT');
   }, 120000);

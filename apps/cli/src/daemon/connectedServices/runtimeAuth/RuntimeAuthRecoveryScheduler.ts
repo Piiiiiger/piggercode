@@ -10,7 +10,7 @@ import {
   CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES,
   TranscriptRawAgentEventV1Schema,
   type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { buildConnectedServiceUxDiagnostic } from '../diagnostics/connectedServiceUxDiagnostics';
 import { sanitizeConnectedServiceDiagnosticString } from '../diagnostics/sanitizeConnectedServiceDiagnosticString';
 import {

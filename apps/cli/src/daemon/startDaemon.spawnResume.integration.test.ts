@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { encodeBase64, encrypt } from '@/api/encryption';
-import * as processInstanceBoundary from '@happier-dev/cli-common/processInstance';
+import * as processInstanceBoundary from '@piggercode/cli-common/processInstance';
 import type { Metadata } from '@/api/types';
 import { access, mkdir, mkdtemp, readFile, rm, unlink, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
@@ -30,7 +30,7 @@ import { waitForSessionWebhook } from './spawn/waitForSessionWebhook';
 import { readPendingFirstInputFromEnv } from './spawn/pendingFirstInput';
 import type { ConnectedServicesMaterializationDiagnostic } from './connectedServices/materialize/providerMaterializerTypes';
 import { ConnectedServiceAuthGroupQuotaProbeIncompleteError } from './connectedServices/accountGroups/switching/ConnectedServiceAuthGroupSwitchCoordinator';
-import { accountSettingsParse, isConnectedServiceUxDiagnosticSpawnErrorDetail } from '@happier-dev/protocol';
+import { accountSettingsParse, isConnectedServiceUxDiagnosticSpawnErrorDetail } from '@piggercode/protocol';
 import { UsageLimitRecoveryScheduler } from './connectedServices/usageLimitRecovery/UsageLimitRecoveryScheduler';
 import { RuntimeAuthRecoveryScheduler } from './connectedServices/runtimeAuth/RuntimeAuthRecoveryScheduler';
 import { TemporaryThrottleRecoveryScheduler } from './connectedServices/temporaryThrottle/TemporaryThrottleRecoveryScheduler';

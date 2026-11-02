@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { parsePermissionIntentAlias, resolvePermissionIntentFromSessionMetadata } from '@happier-dev/agents';
+import { parsePermissionIntentAlias, resolvePermissionIntentFromSessionMetadata } from '@piggercode/agents';
 import { apiSocket } from '@/sync/api/session/apiSocket';
 import { ensureSessionRuntimeForPendingInput } from '@/sync/ops';
 import { shouldDelegatePendingActivationToDaemon } from '@/sync/domains/session/input/pendingActivationWakeDecision';
@@ -17,7 +17,7 @@ import {
     resolveDirectTranscriptContinuation,
     type PendingDeliveryBlockedReason,
     type SessionUserMessageSendResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { readCurrentUiClientCompatibilityDeclaration } from '@/sync/runtime/clientCompatibility/uiClientCompatibility';
 import { applyUiClientUpgradeRequired } from '@/sync/runtime/clientCompatibility/uiClientUpgradeRequired';
 import { createEncryptionFromAuthCredentials } from '@/auth/encryption/createEncryptionFromAuthCredentials';
@@ -426,9 +426,9 @@ import { publishSessionModelsSeedToMetadata as publishSessionModelsSeedToMetadat
 import type { PreflightModelList } from '@/sync/domains/models/modelOptions';
 import { getModelScopedConfigTombstonesV1Supported } from './domains/state/agentStateCapabilities';
 import { publishAcpConfigOptionOverrideToMetadata as publishAcpConfigOptionOverrideToMetadataEngine, type AcpConfigOptionOverrideValueId } from './engine/overrides/acpConfigOptionOverridePublish';
-import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { isRpcMethodNotAvailableError, readRpcErrorCode } from '@/sync/runtime/rpcErrors';
-import { MessageAckResponseSchema, type MessageAckResponse } from '@happier-dev/protocol/updates';
+import { MessageAckResponseSchema, type MessageAckResponse } from '@piggercode/protocol/updates';
 import { resolveAccountScopedCryptoMaterialFromCredentials } from '@/sync/domains/connectedServices/resolveAccountScopedCryptoMaterialFromCredentials';
 import { getRandomBytes } from '@/platform/cryptoRandom';
 import { isRuntimeFeatureEnabled } from '@/sync/domains/features/featureDecisionInputs';
@@ -3163,7 +3163,7 @@ class Sync {
     async updatePendingRequestedAction(
         sessionId: string,
         localId: string,
-        requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1,
+        requestedAction: import('@piggercode/protocol').PendingRequestedActionV1,
         options?: Readonly<{ resumeWhenAvailable?: boolean }>,
     ): Promise<void> {
         assertSafePendingIdPathSegment(localId);
@@ -3692,7 +3692,7 @@ class Sync {
             localId?: string | null;
             deliveryMode?: 'external_handoff';
             onLocalPendingProjectionCreated?: (event: Readonly<{ localId: string }>) => void;
-            requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1;
+            requestedAction: import('@piggercode/protocol').PendingRequestedActionV1;
             resumeWhenAvailable?: true;
         }>,
     ): Promise<PendingMessageEnqueueResultV2> {

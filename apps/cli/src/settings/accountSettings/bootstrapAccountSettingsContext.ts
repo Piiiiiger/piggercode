@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { AgentId } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
 import {
   accountSettingsParse,
   AccountSettingsV2GetResponseSchema,
@@ -8,7 +8,7 @@ import {
   type AccountSettings,
   type AccountSettingsV2GetResponse,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import type { Credentials } from '@/persistence';

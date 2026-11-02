@@ -1,4 +1,4 @@
-import { buildSettingArtifacts, defineSettingDefinitions } from '@happier-dev/protocol';
+import { buildSettingArtifacts, defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 
 export const ACCOUNT_LEGACY_SETTING_DEFINITIONS = defineSettingDefinitions({

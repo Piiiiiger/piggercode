@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { joinPathForPathShape } from '../path/pathShape.js';
 import type { FirstPartyComponentId } from './componentCatalog.js';

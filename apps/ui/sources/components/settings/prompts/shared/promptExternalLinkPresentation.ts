@@ -1,4 +1,4 @@
-import type { PromptExternalLinkEntryV1 } from '@happier-dev/protocol';
+import type { PromptExternalLinkEntryV1 } from '@piggercode/protocol';
 
 type MachineEntry = Readonly<{
     id: string;

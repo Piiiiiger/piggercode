@@ -1,5 +1,5 @@
 import { AGENT_IDS, resolveAgentIdFromFlavor, type AgentId } from '@/agents/catalog/catalog';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import type { SessionParticipantTarget } from '@/sync/domains/session/participants/participantTargets';
 import type { SessionSubagentAutoRecipientContext } from '@/sync/domains/session/subagents/autoRecipient/types';

@@ -78,8 +78,8 @@ describe('readLiveRelayRuntimeStatus', () => {
         json: async () => ({ ok: true }),
       })) as unknown as typeof fetch;
 
-      vi.doMock('@happier-dev/cli-common/process', async (importOriginal) => {
-        const actual = await importOriginal<typeof import('@happier-dev/cli-common/process')>();
+      vi.doMock('@piggercode/cli-common/process', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@piggercode/cli-common/process')>();
         return {
           ...actual,
           commandExistsOnPath: () => true,

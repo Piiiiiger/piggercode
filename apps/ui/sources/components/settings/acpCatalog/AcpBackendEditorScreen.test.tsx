@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
-import type { AcpCatalogSettingsV1 } from '@happier-dev/protocol';
+import type { AcpCatalogSettingsV1 } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createDraftAcpBackend } from './createDraftAcpBackend';

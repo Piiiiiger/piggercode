@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 
 import { resolveClaudeConfigDirOverride } from './resolveClaudeConfigDirOverride';
 

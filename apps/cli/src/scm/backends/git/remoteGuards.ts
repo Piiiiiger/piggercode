@@ -1,9 +1,9 @@
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
 import {
     SCM_OPERATION_ERROR_CODES,
     type ScmRemoteMutationKind,
     type ScmRemoteMutationReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     evaluateRemoteMutationPreconditions as evaluateSharedRemoteMutationPreconditions,
     type RemoteMutationGuardResult,

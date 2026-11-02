@@ -1,6 +1,6 @@
 import { ImageRef } from "./storage/blob/files";
 import type { LinkedProvider } from "./app/auth/providers/linkedProviders";
-import type { AccountProfile as ProtocolAccountProfile } from "@happier-dev/protocol";
+import type { AccountProfile as ProtocolAccountProfile } from "@piggercode/protocol";
 
 export type AccountProfile = {
     firstName: string | null;

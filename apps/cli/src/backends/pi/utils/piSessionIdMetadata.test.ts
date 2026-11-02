@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Metadata } from '@/api/types';
-import { buildPiAgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
+import { buildPiAgentRuntimeDescriptorV1 } from '@piggercode/protocol';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
 import { formatPiSessionDirectoryForCwd } from '@/backends/pi/utils/piSessionFiles';
 

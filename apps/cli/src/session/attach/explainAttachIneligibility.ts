@@ -1,4 +1,4 @@
-import { compareMachineHosts } from '@happier-dev/protocol';
+import { compareMachineHosts } from '@piggercode/protocol';
 
 import type { CliSessionAttachEligibility } from './evaluateCliSessionAttachEligibility';
 

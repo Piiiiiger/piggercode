@@ -1,6 +1,6 @@
 import type { FeaturesResponse } from "@/app/features/types";
 import type { AuthPolicy } from "@/app/auth/authPolicy";
-import type { AuthProviderId } from "@happier-dev/protocol";
+import type { AuthProviderId } from "@piggercode/protocol";
 
 export type AuthProviderFeatures = FeaturesResponse["capabilities"]["auth"]["providers"][string];
 

@@ -1,7 +1,7 @@
 import * as privacyKit from "privacy-kit";
 import {
     parsePublicShareEncryptedDataKeyEnvelopeV0,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export type EncryptedDataKeyEnvelopeV1ParseResult =
     | Readonly<{ type: "ok"; encryptedDataKey: Uint8Array<ArrayBuffer> }>

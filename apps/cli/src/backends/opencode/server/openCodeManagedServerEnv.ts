@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
-import { normalizeOpenCodeCliGeneration } from '@happier-dev/agents';
+import { normalizeOpenCodeCliGeneration } from '@piggercode/agents';
 
 import { isOpenCodeBrokerMarker } from '@/backends/opencode/brokerPlugin/openCodeBrokerPluginEnv';
 

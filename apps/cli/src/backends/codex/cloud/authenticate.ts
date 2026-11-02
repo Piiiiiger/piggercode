@@ -10,7 +10,7 @@ import {
   OPENAI_CODEX_OAUTH_AUTHORIZE_URL,
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_SCOPE,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { openBrowser } from '@/ui/openBrowser';
 import { generatePkceCodes } from '@/cloud/pkce';
 import type { CloudConnectAuthenticateOptions } from '@/cloud/connectTypes';
@@ -23,7 +23,7 @@ import {
   exchangeCodexAuthorizationGrant,
   type CodexAuthTokens,
 } from './oauthExchange';
-import { info, ok } from '@happier-dev/cli-common/output';
+import { info, ok } from '@piggercode/cli-common/output';
 
 export type { CodexAuthTokens } from './oauthExchange';
 

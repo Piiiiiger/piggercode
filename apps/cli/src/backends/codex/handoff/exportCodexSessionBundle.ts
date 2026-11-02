@@ -1,13 +1,13 @@
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { buildCodexAgentRuntimeDescriptor, resolvePersistedCodexRuntimeIdentity } from '@happier-dev/agents';
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import { buildCodexAgentRuntimeDescriptor, resolvePersistedCodexRuntimeIdentity } from '@piggercode/agents';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 import {
   DirectSessionsSourceSchema,
   readAgentRuntimeDescriptorV1ForProvider,
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { collectCodexSessionRolloutFiles, type CodexRolloutFile } from '../directSessions/collectCodexSessionRolloutFiles';
 import { resolveCodexHomesForDirectSessionsSource } from '../directSessions/resolveCodexHomesForDirectSessionsSource';

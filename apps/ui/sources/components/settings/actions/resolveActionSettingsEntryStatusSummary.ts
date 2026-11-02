@@ -1,4 +1,4 @@
-import type { ActionId, ActionsSettingsV1 } from '@happier-dev/protocol';
+import type { ActionId, ActionsSettingsV1 } from '@piggercode/protocol';
 
 import type { TranslationKey } from '@/text';
 

@@ -7,7 +7,7 @@ import type {
     SessionOrganizationSnapshot,
     SessionOrganizationSnapshotRequest,
     SessionOrganizationTag,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionOrganizationFolderAssignmentValue = string | null;
 

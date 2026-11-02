@@ -1,8 +1,8 @@
 import { mkdir, readdir, rename, rm } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 
-import { AGENT_IDS } from '@happier-dev/agents';
-import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@happier-dev/protocol';
+import { AGENT_IDS } from '@piggercode/agents';
+import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@piggercode/protocol';
 
 import { resolveConnectedServiceCredentialLifecycleDescriptor } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';

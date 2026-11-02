@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import {
     useSessionActionDrafts,
     useSessionPendingMessages,

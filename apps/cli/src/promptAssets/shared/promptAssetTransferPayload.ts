@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { PromptAssetReadResponseV1 } from '@happier-dev/protocol';
+import type { PromptAssetReadResponseV1 } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { estimateJsonUtf8BytesBounded } from '@/transfers/shared/estimateJsonUtf8BytesBounded';

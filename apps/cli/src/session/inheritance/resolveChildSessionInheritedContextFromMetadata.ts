@@ -7,12 +7,12 @@ import {
   readSessionMcpSelectionV1FromMetadata,
   type ConnectedServiceBindingsV1,
   type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   readSessionMetadataConnectedServiceBindings,
   resolveMetadataStringOverrideV1,
   resolvePermissionIntentFromSessionMetadata,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export const CHILD_SESSION_INHERITANCE_FIELDS = {
   permission: 'permission',

@@ -1,9 +1,9 @@
-import { StopSessionResultSchema } from '@happier-dev/protocol';
+import { StopSessionResultSchema } from '@piggercode/protocol';
 import {
   RPC_METHODS,
   resolveSocketRpcSessionWriteAuthorizationMethod,
-} from '@happier-dev/protocol/rpc';
-import type { SocketRpcTransportAcknowledgementV1 } from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol/rpc';
+import type { SocketRpcTransportAcknowledgementV1 } from '@piggercode/protocol/socketRpc';
 
 export function projectMachineRpcTransportAcknowledgement(input: Readonly<{
   method: string;

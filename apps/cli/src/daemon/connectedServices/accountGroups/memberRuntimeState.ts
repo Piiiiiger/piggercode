@@ -2,11 +2,11 @@ import type {
   ConnectedServiceAuthGroupMemberStateV1,
   ConnectedServiceAuthGroupV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   clearConnectedServiceAuthGroupMemberRuntimeBlockers,
   compareConnectedServiceQuotaObservationRecency,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { logger as defaultLogger } from '@/ui/logger';
 import { ConnectedServiceAuthGroupRuntimeStateRevisionConflictError } from '@/api/connectedServices/connectedServiceCredentialApi';

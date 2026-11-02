@@ -4,7 +4,7 @@ import type { DaemonServicePlatform } from './plan';
  * The program a service definition launches: every argument before the `daemon` subcommand, so the
  * shim form `[shim, daemon, start-sync]` and the node form `[node, entry.mjs, daemon, start-sync]`
  * each name the CLI they run. Parsed from the three templates this CLI renders
- * (`@happier-dev/cli-common/service`); `null` when the definition is not one of them.
+ * (`@piggercode/cli-common/service`); `null` when the definition is not one of them.
  */
 export function readDaemonServiceDefinitionLauncher(params: Readonly<{
   platform: DaemonServicePlatform;

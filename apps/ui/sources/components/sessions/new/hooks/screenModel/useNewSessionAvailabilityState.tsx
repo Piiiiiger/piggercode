@@ -33,8 +33,8 @@ import { resolveTerminalHost } from '@/sync/domains/settings/terminalSettings';
 import { isMachineOnline } from '@/utils/sessions/machineUtils';
 import type { Machine } from '@/sync/domains/state/storageTypes';
 import type { Settings } from '@/sync/domains/settings/settings';
-import { isAgentAuthProbeSafeForBackgroundChecks } from '@happier-dev/agents';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import { isAgentAuthProbeSafeForBackgroundChecks } from '@piggercode/agents';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import { resolveMachineSpawnReadiness } from '@/sync/domains/machines/identity/resolveMachineSpawnReadiness';
 
 import { useStableValueBySignature } from '@/hooks/ui/useStableValueBySignature';

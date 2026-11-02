@@ -1,4 +1,4 @@
-import type { ComposerAgentContinuationIntentV1 } from '@happier-dev/protocol';
+import type { ComposerAgentContinuationIntentV1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { resolveSessionComposerSendDestination } from './resolveSessionComposerSendDestination';

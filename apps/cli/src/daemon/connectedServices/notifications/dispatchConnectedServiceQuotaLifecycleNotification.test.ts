@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 
 import { dispatchConnectedServiceQuotaLifecycleNotificationAsync } from './dispatchConnectedServiceQuotaLifecycleNotification';
 

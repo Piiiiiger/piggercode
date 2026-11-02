@@ -3,7 +3,7 @@ import {
   getReleaseRingPublicLabel,
   type PublicReleaseRingId,
   type PublicReleaseRingLabel,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 import type { BackgroundServiceRepairPlan } from '@/diagnostics/backgroundServiceRepair';
 import type { DaemonServiceMode } from '@/daemon/service/plan';

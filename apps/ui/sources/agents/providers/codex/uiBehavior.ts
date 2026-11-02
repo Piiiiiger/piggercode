@@ -1,6 +1,6 @@
 import type { ResumeCapabilityOptions } from '@/agents/runtime/resumeCapabilities';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol/installables';
-import { resolveCodexSpawnExtrasFromSettings, resolvePersistedCodexRuntimeIdentity } from '@happier-dev/agents';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol/installables';
+import { resolveCodexSpawnExtrasFromSettings, resolvePersistedCodexRuntimeIdentity } from '@piggercode/agents';
 import { resolveCodexBrowseSourceOptions } from '@/agents/providers/codex/directSessions/resolveCodexBrowseSourceOptions';
 import { resolveCodexLinkEnsureRequestExtras } from '@/agents/providers/codex/directSessions/resolveCodexLinkEnsureRequestExtras';
 import { resolveCodexLockedBrowseSourceOption } from '@/agents/providers/codex/directSessions/resolveCodexLockedBrowseSourceOption';

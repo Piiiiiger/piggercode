@@ -3,7 +3,7 @@ import {
   providers,
   type AgentModelDescriptor,
   type AgentModelOption,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { AnthropicModelEntry } from './fetchAnthropicModels';
 

@@ -1,4 +1,4 @@
-import { ConnectedServiceCredentialRecordV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceCredentialRecordV1Schema } from '@piggercode/protocol';
 import type { ConnectedServiceProviderRuntimeAuthAdapter } from '@/daemon/connectedServices/runtimeAuth/types';
 import { logger } from '@/ui/logger';
 import { classifyAgyRuntimeQuotaFailure } from './classifyAgyRuntimeQuotaFailure';

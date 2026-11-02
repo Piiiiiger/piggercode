@@ -5,7 +5,7 @@ import {
   normalizeClaudeTodoWriteTodosToWorkStateItems,
   type SessionWorkStateItemV1,
   type SessionWorkStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ClaudeWorkStateSnapshot = SessionWorkStateV1 & Readonly<{ ownedSourceFamilies?: readonly string[] }>;
 

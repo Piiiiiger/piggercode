@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { TransferSessionStore } from '../core/transferSessionStore';
 import {

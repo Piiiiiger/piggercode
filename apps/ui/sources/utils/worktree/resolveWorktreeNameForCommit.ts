@@ -1,4 +1,4 @@
-import { hasForbiddenGitRefName, normalizeWorktreeDisplayName } from '@happier-dev/protocol';
+import { hasForbiddenGitRefName, normalizeWorktreeDisplayName } from '@piggercode/protocol';
 
 /**
  * Resolve the worktree/branch name to commit into the new-session checkout

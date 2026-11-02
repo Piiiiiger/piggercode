@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialHealthV1 } from "@happier-dev/protocol";
+import type { ConnectedServiceCredentialHealthV1 } from "@piggercode/protocol";
 import { hasValidCredentialHealth, parseConnectedServiceCredentialHealth } from "../credentialHealthMetadata";
 import { isConnectedServiceCredentialRevision } from "../credentials/credentialRevision";
 

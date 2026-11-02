@@ -1,6 +1,6 @@
 import { PERMISSION_INTENTS, PERMISSION_MODES, type PermissionIntent, type PermissionMode } from '../types.js';
 import type { AgentId } from '../types.js';
-import { parseSessionPermissionModeAlias } from '@happier-dev/protocol';
+import { parseSessionPermissionModeAlias } from '@piggercode/protocol';
 
 export function isPermissionMode(value: unknown): value is PermissionMode {
     return typeof value === 'string' && (PERMISSION_MODES as readonly string[]).includes(value);

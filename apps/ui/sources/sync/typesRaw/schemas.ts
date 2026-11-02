@@ -6,7 +6,7 @@ import {
     type TranscriptRawAgentEventV1,
     type TranscriptRawRecordV1,
     type TranscriptRawUsageDataV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { MessageMetaSchema } from '../domains/messages/messageMetaTypes';
 

@@ -16,7 +16,7 @@ import { readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv"
 import {
     isSessionEncryptionModeAllowedByStoragePolicy,
     resolveEffectiveDefaultAccountEncryptionMode,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveRequestedSessionModeRejectionCode } from "@/app/session/encryptionRejectionCodes";
 import { mapStoredSessionRuntimeActivityProjection } from "./v2SessionListRows";
 import { mapPendingActivationAuthorization } from "@/app/session/pending/pendingActivationAuthorization";

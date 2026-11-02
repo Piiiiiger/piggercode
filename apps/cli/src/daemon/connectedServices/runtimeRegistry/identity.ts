@@ -1,7 +1,7 @@
 import {
   ConnectedServiceIdSchema,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { parseConnectedServicesBindings } from '../parseConnectedServicesBindings';
 import {

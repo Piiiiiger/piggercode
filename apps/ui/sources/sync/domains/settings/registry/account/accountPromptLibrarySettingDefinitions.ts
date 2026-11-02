@@ -6,7 +6,7 @@ import {
     PromptStacksV1Schema,
     buildSettingArtifacts,
     defineSettingDefinitions,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 function objectKeyCount(value: unknown): number {

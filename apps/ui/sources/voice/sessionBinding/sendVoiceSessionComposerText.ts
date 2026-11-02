@@ -2,7 +2,7 @@ import type { VoiceAdapterController } from '@/voice/session/types';
 import { randomUUID } from '@/platform/randomUUID';
 import { sync } from '@/sync/sync';
 import type { PendingMessageEnqueueResultV2 } from '@/sync/engine/pending/pendingQueueV2';
-import { isRpcMethodNotAvailableError } from '@happier-dev/protocol/rpcErrors';
+import { isRpcMethodNotAvailableError } from '@piggercode/protocol/rpcErrors';
 
 import { voiceSessionBindingStore } from './voiceSessionBindingStore';
 import { resolveVoiceSessionComposerRouting } from './voiceSessionComposerRouting';

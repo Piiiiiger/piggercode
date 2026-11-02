@@ -1,4 +1,4 @@
-import { verifyAccountContentPublicKeyBinding } from "@happier-dev/protocol";
+import { verifyAccountContentPublicKeyBinding } from "@piggercode/protocol";
 import { createHash } from "node:crypto";
 import * as privacyKit from "privacy-kit";
 import tweetnacl from "tweetnacl";
@@ -24,7 +24,7 @@ import { authPendingSchema } from "./oauthExternalSchemas";
 import {
     ExternalOAuthFinalizeAuthRequestSchema,
     ExternalOAuthFinalizeAuthSuccessResponseSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export function registerExternalAuthFinalizeRoute(app: Fastify) {
     app.post("/v1/auth/external/:provider/finalize", {

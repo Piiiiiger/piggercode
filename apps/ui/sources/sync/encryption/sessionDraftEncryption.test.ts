@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { SessionDraftDocumentV1, StrictJsonValue } from '@happier-dev/protocol';
+import type { SessionDraftDocumentV1, StrictJsonValue } from '@piggercode/protocol';
 
 import { createSessionDraftCipher } from './sessionDraftEncryption';
 import { SessionDraftContextUnavailableError } from '@/sync/ops/sessionDrafts/sessionDraftCipherError';

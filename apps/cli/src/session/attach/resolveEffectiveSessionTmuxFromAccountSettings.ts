@@ -1,4 +1,4 @@
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 /**
  * Resolve the *effective* "spawn sessions in tmux" preference for a given

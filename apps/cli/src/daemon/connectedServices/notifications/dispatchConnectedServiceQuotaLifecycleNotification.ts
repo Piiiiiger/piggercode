@@ -1,4 +1,4 @@
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 import { dispatchActivityNotificationAsync } from '@/activity/notifications/dispatchActivityNotification';
 import type { ExpoPushActivityNotificationSender } from '@/activity/notifications/sendExpoPushActivityNotification';

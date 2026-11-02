@@ -1,4 +1,4 @@
-import type { RuntimeConfigOutcomeChangeKeyV1, RuntimeConfigOutcomeTimingV1 } from '@happier-dev/protocol';
+import type { RuntimeConfigOutcomeChangeKeyV1, RuntimeConfigOutcomeTimingV1 } from '@piggercode/protocol';
 
 import { resolveClaudeDefaultEffortForModel } from '@/backends/claude/utils/claudeEffort';
 

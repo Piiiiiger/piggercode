@@ -1,7 +1,7 @@
 import {
   getReleaseRingCatalogEntry,
   type PublicReleaseRingId,
-} from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/release-runtime/releaseRings';
 
 export function resolvePublicReleaseRingRollingSuffix(
   ring: PublicReleaseRingId | undefined | null,

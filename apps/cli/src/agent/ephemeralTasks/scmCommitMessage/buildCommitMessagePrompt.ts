@@ -1,4 +1,4 @@
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
 
 type ScmSnapshotEntry = Readonly<{
   path: string;

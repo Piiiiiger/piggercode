@@ -1,4 +1,4 @@
-# @happier-dev/protocol
+# @piggercode/protocol
 
 Shared cross-package contracts between Happier CLI and Happier app.
 

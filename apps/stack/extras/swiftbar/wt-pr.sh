@@ -40,7 +40,7 @@ if [[ ! -x "$hstack" ]]; then
   hstack="$(command -v hstack 2>/dev/null || true)"
 fi
 if [[ -z "$hstack" ]]; then
-  echo "hstack not found (run: npx @happier-dev/stack@latest init)" >&2
+  echo "hstack not found (run: npx @piggercode/stack@latest init)" >&2
   exit 1
 fi
 

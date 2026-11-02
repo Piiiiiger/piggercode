@@ -8,4 +8,4 @@ export {
   type BackendTargetKey,
   type BackendTargetKind,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';

@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-import { INSTALLABLE_KEYS, type MemoryEmbeddingsLocalTransformersConfig } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS, type MemoryEmbeddingsLocalTransformersConfig } from '@piggercode/protocol';
 
 import { resolveCliRuntimeAssetPath } from '@/runtime/assets/resolveCliRuntimeAssetPath';
 import { ensureOptionalRuntime } from '@/installables/runtime/optionalRuntimeInstallables';

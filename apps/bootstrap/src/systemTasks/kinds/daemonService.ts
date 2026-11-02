@@ -1,5 +1,5 @@
-import { systemTasks } from '@happier-dev/cli-common';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { systemTasks } from '@piggercode/cli-common';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import {
   describeUnservedCliChoiceFailure,
@@ -26,7 +26,7 @@ import {
 } from '../localDaemonCli.js';
 import { ACCEPTED_BOOTSTRAP_CHANNELS, normalizeBootstrapChannel } from '../taskRuntime.js';
 import { listThisComputerServiceRows, type ThisComputerServiceRow } from '../thisComputerServiceRows.js';
-import { resolveServingThisComputerService } from '@happier-dev/cli-common/service';
+import { resolveServingThisComputerService } from '@piggercode/cli-common/service';
 
 export type DaemonServiceTaskParams = Readonly<{
   target: Readonly<{

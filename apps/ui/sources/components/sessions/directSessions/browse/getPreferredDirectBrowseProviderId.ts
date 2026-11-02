@@ -1,4 +1,4 @@
-import type { DirectSessionsProviderId } from '@happier-dev/protocol';
+import type { DirectSessionsProviderId } from '@piggercode/protocol';
 
 export function getPreferredDirectBrowseProviderId(
     providerIds: readonly DirectSessionsProviderId[],

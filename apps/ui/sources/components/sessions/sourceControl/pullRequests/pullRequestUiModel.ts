@@ -2,8 +2,8 @@ import type {
     ScmHostingProvider,
     ScmPullRequestState,
     ScmPullRequestSummary,
-} from '@happier-dev/protocol';
-import { parseScmUpstreamRef } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { parseScmUpstreamRef } from '@piggercode/protocol';
 
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 

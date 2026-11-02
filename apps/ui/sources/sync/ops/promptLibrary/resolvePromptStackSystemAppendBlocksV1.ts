@@ -1,4 +1,4 @@
-import { resolvePromptStackSystemAppendBlocksV1 as resolvePromptStackSystemAppendBlocksProtocolV1, type PromptStacksV1 } from '@happier-dev/protocol';
+import { resolvePromptStackSystemAppendBlocksV1 as resolvePromptStackSystemAppendBlocksProtocolV1, type PromptStacksV1 } from '@piggercode/protocol';
 import type { DecryptedArtifact } from '@/sync/domains/artifacts/artifactTypes';
 
 export async function resolvePromptStackSystemAppendBlocksV1(args: Readonly<{

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactTestRenderer } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
-import type { FeatureDecision, FeatureId } from '@happier-dev/protocol';
+import type { FeatureDecision, FeatureId } from '@piggercode/protocol';
 import { renderScreen } from '@/dev/testkit';
 
 

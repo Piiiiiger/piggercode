@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, sign } from 'node:crypto';
 
-import { verifyMinisign } from '@happier-dev/release-runtime/minisign';
+import { verifyMinisign } from '@piggercode/release-runtime/minisign';
 
 function b64(buf) {
   return Buffer.from(buf).toString('base64');

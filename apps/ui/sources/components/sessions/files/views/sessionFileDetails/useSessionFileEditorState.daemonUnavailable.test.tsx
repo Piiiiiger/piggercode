@@ -3,7 +3,7 @@ import { createModalModuleMock } from '@/dev/testkit/mocks/modal';
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { installSessionFileDetailsCommonModuleMocks } from './sessionFileDetailsTestHelpers';
 import { renderScreen } from '@/dev/testkit';

@@ -1,4 +1,4 @@
-import type { TerminalControlCapture, TerminalHostKind } from '@happier-dev/agents';
+import type { TerminalControlCapture, TerminalHostKind } from '@piggercode/agents';
 
 /**
  * Single shared owner of terminal capture stripping + normalization.

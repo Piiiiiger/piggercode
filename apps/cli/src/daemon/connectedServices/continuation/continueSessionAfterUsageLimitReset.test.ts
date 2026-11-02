@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord, V2SessionRecordSchema, type SessionRuntimeIssueV1, type SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, V2SessionRecordSchema, type SessionRuntimeIssueV1, type SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 import { createPiUsageLimitRecoveryControlAdapter } from '@/backends/pi/connectedServices/piUsageLimitRecoveryControlAdapter';
 import { createOpenCodeUsageLimitRecoveryControlAdapter } from '@/backends/opencode/connectedServices/openCodeUsageLimitRecoveryControlAdapter';
 import type { Credentials } from '@/persistence';

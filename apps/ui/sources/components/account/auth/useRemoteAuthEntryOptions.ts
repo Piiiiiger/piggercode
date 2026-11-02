@@ -3,7 +3,7 @@ import * as React from 'react';
 import { getAuthProvider } from '@/auth/providers/registry';
 import { t } from '@/text';
 
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import type { FeaturesResponse } from '@piggercode/protocol';
 
 export type RemoteServerAvailability = 'loading' | 'ready' | 'legacy' | 'unavailable' | 'incompatible';
 

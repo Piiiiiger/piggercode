@@ -4,7 +4,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 
 import type { RpcHandler, RpcHandlerRegistrar } from '@/api/rpc/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { createEncryptedTransferChunkEnvelope } from '@/machines/transfer/transferChunkEncryption';
 
 import { registerSessionHandlers } from './registerSessionHandlers';

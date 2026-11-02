@@ -260,7 +260,7 @@ function collectInternalWorkspacePackages(rootDir, maxDepth = 4) {
     if (basename === "node_modules" || basename.startsWith(".")) return;
 
     const packageJson = safeReadJson(path.resolve(dir, "package.json"));
-    if (packageJson && typeof packageJson.name === "string" && packageJson.name.startsWith("@happier-dev/")) {
+    if (packageJson && typeof packageJson.name === "string" && packageJson.name.startsWith("@piggercode/")) {
       packages.set(packageJson.name, dir);
       return;
     }
@@ -349,7 +349,7 @@ function resolveInternalWorkspaceRelativeSourceImport(originModulePath, moduleNa
 }
 
 function resolveInternalWorkspacePackageSource(moduleName, platform) {
-  if (typeof moduleName !== "string" || !moduleName.startsWith("@happier-dev/")) return null;
+  if (typeof moduleName !== "string" || !moduleName.startsWith("@piggercode/")) return null;
 
   const parts = moduleName.split("/");
   if (parts.length < 2) return null;

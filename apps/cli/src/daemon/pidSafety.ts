@@ -1,6 +1,6 @@
 import { findHappyProcessByPid } from './doctor';
 import { hashProcessCommand } from './sessionRegistry';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 // IMPORTANT: keep this strict. A false positive here could cause us to adopt/kill an unrelated process.
 export const ALLOWED_HAPPY_SESSION_PROCESS_TYPES = new Set([

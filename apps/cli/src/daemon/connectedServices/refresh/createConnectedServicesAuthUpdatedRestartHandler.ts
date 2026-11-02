@@ -2,7 +2,7 @@ import type { CatalogAgentId } from '@/backends/types';
 import type { TrackedSession } from '@/daemon/types';
 import type { ConnectedServiceCredentialLifecycleDescriptor } from '@/daemon/connectedServices/credentials/lifecycleTypes';
 import { readConnectedServiceChildSelectionsFromEnv } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
-import type { ConnectedServiceId, StopSessionResult } from '@happier-dev/protocol';
+import type { ConnectedServiceId, StopSessionResult } from '@piggercode/protocol';
 import type {
   ConnectedServiceDaemonRestartDiagnosticInput,
   ConnectedServiceDaemonRestartDiagnosticRecorder,

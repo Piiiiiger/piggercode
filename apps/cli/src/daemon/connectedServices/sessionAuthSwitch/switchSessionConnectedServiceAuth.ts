@@ -14,8 +14,8 @@ import {
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
-import { AGENTS_CORE } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import type { CatalogAgentId, ConnectedServiceResumeContinuityDiagnostics } from '@/backends/types';
 import type { TrackedSession } from '@/daemon/types';

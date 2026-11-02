@@ -1,4 +1,4 @@
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 
 export function shouldUseCandidateSource(
     selectedSource: DirectSessionsSource,

@@ -1,4 +1,4 @@
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { stableJsonStringify } from '@/utils/json/stableJsonStringify';
 

@@ -1,5 +1,5 @@
-import type { ScmOperationErrorCode, ScmRemoteRequest } from '@happier-dev/protocol';
-import { mapGitScmErrorCode, normalizeScmRemoteRequest } from '@happier-dev/protocol';
+import type { ScmOperationErrorCode, ScmRemoteRequest } from '@piggercode/protocol';
+import { mapGitScmErrorCode, normalizeScmRemoteRequest } from '@piggercode/protocol';
 
 export function buildGitPushArgs(request: Readonly<Pick<ScmRemoteRequest, 'remote' | 'branch'>>): string[] {
     const args = ['push'];

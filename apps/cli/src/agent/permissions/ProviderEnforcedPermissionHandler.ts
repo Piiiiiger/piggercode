@@ -22,7 +22,7 @@ import type { ToolTraceProtocol } from '@/agent/tools/trace/toolTrace';
 import {
   isSafeFirstPartyHappierActionToolCall,
 } from '@/agent/tools/happierTools/resolveHappierActionForMcpToolName';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import { shouldDenyAgentSessionTitleToolCall } from './codingPromptTitlePermission';
 import { resolveSessionCodingPromptSettingsFromSession } from '../prompting/coding/resolveSessionCodingPromptSettings';
 import { resolveAgentRequestKind } from './requestKind';

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { McpServersSettingsV1 } from '@piggercode/protocol';
 
 import { normalizeMcpServersSettingsV1 } from './normalizeMcpServersSettingsV1';
 

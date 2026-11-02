@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getActionSpec, type ActionId } from '@happier-dev/protocol';
+import { getActionSpec, type ActionId } from '@piggercode/protocol';
 import { useUnistyles } from 'react-native-unistyles';
 
 import type { DecryptedArtifact } from '@/sync/domains/artifacts/artifactTypes';

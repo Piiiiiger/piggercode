@@ -2,7 +2,7 @@ import { realpath } from 'node:fs/promises';
 import { isAbsolute, relative, resolve } from 'node:path';
 
 import type { CatalogAgentId } from '@/backends/types';
-import type { ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import type { ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import { resolveConnectedServiceMaterializedRootDir } from '../materialize/resolveConnectedServiceMaterializedRootDir';
 
 export function createAdoptedExecutionRunRootCleanup(input: Readonly<{

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { CLAUDE_UNIFIED_TERMINAL_DIALOG_CHOICE_REQUEST_SOURCE } from '@happier-dev/agents';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol';
+import { CLAUDE_UNIFIED_TERMINAL_DIALOG_CHOICE_REQUEST_SOURCE } from '@piggercode/agents';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol';
 
 import type { AgentState } from '@/api/types';
 import { createPermissionHandlerSessionStub } from '../../utils/permissionHandler.testkit';

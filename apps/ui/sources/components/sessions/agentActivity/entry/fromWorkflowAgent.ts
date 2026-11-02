@@ -1,4 +1,4 @@
-import { fromWorkflowAgentStatus } from '@happier-dev/protocol';
+import { fromWorkflowAgentStatus } from '@piggercode/protocol';
 
 import type { WorkflowAgentRowViewModel } from '@/components/sessions/workState/sessionWorkflowActivityTypes';
 import { t } from '@/text';

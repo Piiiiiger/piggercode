@@ -1,7 +1,7 @@
 import {
   FeaturesResponseSchema,
   type FeaturesResponse as ServerFeatures,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function parseServerFeatures(raw: unknown): ServerFeatures | null {
   const parsed = FeaturesResponseSchema.safeParse(raw);

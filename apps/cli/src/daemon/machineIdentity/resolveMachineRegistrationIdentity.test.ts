@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { verifyMachineInstallationProof } from '@happier-dev/protocol';
+import { verifyMachineInstallationProof } from '@piggercode/protocol';
 
 function createJwt(sub: string): string {
   return [

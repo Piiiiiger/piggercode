@@ -6,7 +6,7 @@ import {
     ConnectedServiceQuotaSnapshotV1Schema,
     ProviderAccountUsageSnapshotV1Schema,
     type ProviderAccountUsageRecordKeyV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { createAppCloseTracker } from "../../testkit/appLifecycle";
 

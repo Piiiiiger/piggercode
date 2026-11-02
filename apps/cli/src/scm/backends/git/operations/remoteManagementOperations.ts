@@ -4,12 +4,12 @@ import type {
     ScmRemoteManagementResponse,
     ScmRemoteRemoveRequest,
     ScmRemoteSetUrlRequest,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     SCM_OPERATION_ERROR_CODES,
     normalizeScmRemoteName,
     normalizeScmRemoteUrl,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { runScmCommand } from '../../../runtime';
 import type { ScmBackendContext } from '../../../types';

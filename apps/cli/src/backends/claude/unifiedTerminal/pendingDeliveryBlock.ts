@@ -1,5 +1,5 @@
 import type { PendingQueueDeliveryBlockedReason } from '@/api/session/pendingQueueV2Transport';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 import type { NormalizedProviderUsageLimitDetailsV1 } from '../connectedServices/mapClaudeRateLimitEventToUsageDetails';
 import type { ClaudeUnifiedDeliveryBlocker } from './_types';

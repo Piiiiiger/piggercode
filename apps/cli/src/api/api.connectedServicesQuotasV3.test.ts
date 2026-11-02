@@ -13,7 +13,7 @@ import {
   type ConnectedServiceUsageSourceV1,
   type ProviderAccountUsageRecordKeyV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const { mockPost, mockGet, mockFetch } = vi.hoisted(() => ({
   mockPost: vi.fn(),

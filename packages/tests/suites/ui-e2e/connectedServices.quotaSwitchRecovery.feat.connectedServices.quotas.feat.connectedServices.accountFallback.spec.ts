@@ -12,7 +12,7 @@ import {
     type ConnectedServiceId,
     type ConnectedServiceCredentialHealthV1,
     type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { seedCliAuthForServer } from '../../src/testkit/cliAuth';
 import { startTestDaemon, type StartedDaemon } from '../../src/testkit/daemon/daemon';

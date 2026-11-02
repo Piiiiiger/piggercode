@@ -1,4 +1,4 @@
-import { connectedServiceUsageRequiresOrganizationId, ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId, ConnectedServiceIdSchema } from '@piggercode/protocol';
 import type { ConnectedServiceRuntimeFailureClassification } from './types';
 import { resolveConnectedServiceGroupMemberByProviderAccountId, type ConnectedServiceGroupMemberProviderAccountIdentity } from '../shared/resolveConnectedServiceGroupMemberByProviderAccountId';
 

@@ -5,7 +5,7 @@ import {
   type ScmHostingProvider,
   type ScmPullRequestSummary,
   type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createGitCapabilities } from '../statusSnapshot';
 import type { ScmBackendContext, ScmPullRequestBackend } from '../../../types';

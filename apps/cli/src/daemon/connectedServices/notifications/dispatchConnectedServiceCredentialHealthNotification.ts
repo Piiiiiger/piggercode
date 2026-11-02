@@ -1,7 +1,7 @@
 import type {
   AccountSettings,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { dispatchActivityNotificationAsync } from '@/activity/notifications/dispatchActivityNotification';
 import type { ExpoPushActivityNotificationSender } from '@/activity/notifications/sendExpoPushActivityNotification';

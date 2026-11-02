@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionMediaItemV1, SessionMediaUnavailableV1 } from '@happier-dev/protocol';
+import type { SessionMediaItemV1, SessionMediaUnavailableV1 } from '@piggercode/protocol';
 
 import { boundSessionMediaEnvelopeEntries } from './boundSessionMediaEnvelopeEntries';
 

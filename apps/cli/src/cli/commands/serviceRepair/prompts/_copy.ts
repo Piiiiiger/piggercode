@@ -43,7 +43,7 @@ import type {
   RunningDaemonDuplicateProfile,
   ServerProfileMissing,
 } from '@/diagnostics/doctorRepair';
-import { cmd as presentationCmd } from '@happier-dev/cli-common/output';
+import { cmd as presentationCmd } from '@piggercode/cli-common/output';
 import { BUILTIN_RELAY } from '@/server/builtinRelay';
 
 export const CLEAN_STATE_HEADER = '✓ Your Happier installation looks good.';

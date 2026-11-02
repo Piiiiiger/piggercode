@@ -98,12 +98,12 @@ describe('CLI test global setup', () => {
         expect(ensureBuildArtifactsReadyOnce).toHaveBeenCalledWith(
             expect.objectContaining({
                 markerPaths: expect.arrayContaining([
-                    join(cliProjectRoot, 'node_modules', '@happier-dev', 'protocol', 'dist', 'sessionFork.js'),
-                    join(cliProjectRoot, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'zod', 'package.json'),
+                    join(cliProjectRoot, 'node_modules', '@piggercode', 'protocol', 'dist', 'sessionFork.js'),
+                    join(cliProjectRoot, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'zod', 'package.json'),
                     join(
                         cliProjectRoot,
                         'node_modules',
-                        '@happier-dev',
+                        '@piggercode',
                         'protocol',
                         'node_modules',
                         'base64-js',

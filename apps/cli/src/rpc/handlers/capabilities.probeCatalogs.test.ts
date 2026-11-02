@@ -6,8 +6,8 @@ import { readFile, writeFile } from 'node:fs/promises';
 import fsPromises from 'node:fs/promises';
 import { syncBuiltinESMExports } from 'node:module';
 import { dirname, join, sep } from 'node:path';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { createEncryptedRpcTestClient } from './encryptedRpc.testkit';
 import { registerCapabilitiesHandlers } from './capabilities';

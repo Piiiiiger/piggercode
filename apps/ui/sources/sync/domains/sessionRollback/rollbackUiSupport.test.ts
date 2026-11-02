@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import type { Metadata, Session } from '@/sync/domains/state/storageTypes';
-import type { SessionTurnsProjectionV1 } from '@happier-dev/protocol';
+import type { SessionTurnsProjectionV1 } from '@piggercode/protocol';
 
 import { readSessionRollbackRangesV1, resolveTranscriptRollbackActions } from './rollbackUiSupport';
 

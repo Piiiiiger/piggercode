@@ -3,7 +3,7 @@ import type { Socket } from 'socket.io-client';
 
 import { createSessionScopedSocket } from '@/api/session/sockets';
 import { SessionMessageContentSchema } from '@/api/types';
-import { UpdateContainerSchema, type UpdateContainer } from '@happier-dev/protocol/updates';
+import { UpdateContainerSchema, type UpdateContainer } from '@piggercode/protocol/updates';
 import { fetchSessionById } from '@/session/transport/http/sessionsHttp';
 import {
   detectSessionTurnActivityFromProjection,

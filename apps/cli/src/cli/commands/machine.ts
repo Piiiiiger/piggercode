@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import type { CommandContext } from '@/cli/commandRegistry';
 import { mapUnknownErrorToControlError } from '@/cli/control/controlErrorMapping';
 import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/jsonEnvelope';
-import { resolveManagedCliReleaseChannelSync } from '@happier-dev/cli-common/firstPartyRuntime';
+import { resolveManagedCliReleaseChannelSync } from '@piggercode/cli-common/firstPartyRuntime';
 import { getLiveSystemTasksRunnerAdapter } from '@/capabilities/systemTasks/liveSystemTasksRunner';
 import { configuration } from '@/configuration';
 import { describeBackgroundServiceTargetMode } from '@/daemon/service/describeBackgroundServiceTargetMode';
@@ -14,10 +14,10 @@ import type {
   SystemTaskJsonObject,
   SystemTaskResult,
   SystemTaskSpec,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { showMachineHelp } from './machine/help';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 type SystemTasksRunnerAdapter = Readonly<{
   start: (params: Readonly<{ spec: SystemTaskSpec }>) => Promise<Readonly<{ taskId: string }>>;

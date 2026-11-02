@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 
 import { commandExistsInPath } from '@/daemon/service/commandExistsInPath';
 import { resolveProviderCliCommand } from '@/runtime/managedTools/providerCliResolution';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import { resolveCodexOverrideCommand } from '@/backends/codex/utils/resolveCodexCliInvocation';
 
 const CODEX_APP_SERVER_OVERRIDE_KEYS = [

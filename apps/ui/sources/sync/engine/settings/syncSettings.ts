@@ -37,7 +37,7 @@ import {
     sealAccountScopedBlobCiphertext,
     type AccountSettingsStoredContentEnvelope,
     type AccountSettingsV2UpdateResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { applyCrashReportsOptOut } from '@/utils/system/sentry';
 import { emitAccountSettingChangedEvents } from '@/track/settingsAnalytics/emitSettingChangedEvent';
 import type { SettingsAnalyticsSource } from '@/track/settingsAnalytics/types';

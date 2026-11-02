@@ -18,7 +18,7 @@ export function readBundledWorkspaceSyncConfig(cliRootDir, {
     const packages = Array.isArray(packageJson?.bundledDependencies)
       ? packageJson.bundledDependencies
         .map((value) => (typeof value === 'string' ? value.trim() : ''))
-        .filter((value) => value.startsWith('@happier-dev/'))
+        .filter((value) => value.startsWith('@piggercode/'))
         .map((value) => value.split('/').at(-1))
         .filter((value) => typeof value === 'string' && value.length > 0)
       : [];

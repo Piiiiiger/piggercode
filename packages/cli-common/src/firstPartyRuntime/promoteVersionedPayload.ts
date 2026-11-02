@@ -1,6 +1,6 @@
 import { mkdir, rm, stat } from 'node:fs/promises';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
 import { replaceRuntimePayloadTree } from './copyRuntimePayloadTree.js';

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { LlmTaskRunnerConfigV1 } from '@happier-dev/protocol';
+import type { LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
 import { runReplaySummaryForDialog, type ReplaySummaryTextPromptRunner } from './runReplaySummaryForDialog';
 

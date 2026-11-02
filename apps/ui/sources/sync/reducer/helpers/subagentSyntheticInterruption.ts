@@ -1,4 +1,4 @@
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 
 import type { ToolCall } from '../../domains/messages/messageTypes';
 import type { ReducerState } from '../reducer';

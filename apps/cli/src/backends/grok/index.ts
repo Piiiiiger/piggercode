@@ -1,4 +1,4 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import { createCatalogDefinedCliDetect } from '@/agent/acp/catalog/createCatalogDefinedCliDetect';
 import type { AgentCatalogEntry } from '@/backends/types';

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PET_PACKAGE_LIMITS_V1 } from "@happier-dev/protocol";
+import { PET_PACKAGE_LIMITS_V1 } from "@piggercode/protocol";
 
 import { createRouteTestBuilder } from "@/app/api/testkit/routeTestBuilder";
 import type { FakeRouteApp } from "@/app/api/testkit/routeHarness";

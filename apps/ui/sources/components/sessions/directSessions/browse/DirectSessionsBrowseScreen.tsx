@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { ScrollView } from 'react-native';
-import type { DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
 
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';

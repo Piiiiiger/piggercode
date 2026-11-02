@@ -1,4 +1,4 @@
-import { resolveJavaScriptRuntimeCommand } from '@happier-dev/cli-common/providers';
+import { resolveJavaScriptRuntimeCommand } from '@piggercode/cli-common/providers';
 
 export function resolveJavaScriptRuntimeExecutable(params: Readonly<{
   isBunRuntime: boolean;

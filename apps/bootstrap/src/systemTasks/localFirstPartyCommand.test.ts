@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { installVersionedPayload, writeHappierCliChoice } from '@happier-dev/cli-common/firstPartyRuntime';
+import { installVersionedPayload, writeHappierCliChoice } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { ensureLocalFirstPartyComponentCommand, resolveExplicitOrInstalledLocalFirstPartyCommand } from './localFirstPartyCommand.js';
 

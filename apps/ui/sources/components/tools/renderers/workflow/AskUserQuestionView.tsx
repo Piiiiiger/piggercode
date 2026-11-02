@@ -20,7 +20,7 @@ import {
     useOpenAttachedSessionTerminal,
     type AttachedSessionTerminalUnavailableReason,
 } from '@/components/sessions/terminal/openAttachedSessionTerminal';
-import { isClaudeUnifiedTerminalDialogChoiceAgentStateRequest } from '@happier-dev/agents';
+import { isClaudeUnifiedTerminalDialogChoiceAgentStateRequest } from '@piggercode/agents';
 import { getStructuredQuestionAnswersV1Supported } from '@/sync/domains/state/agentStateCapabilities';
 import { Icon } from '@/components/ui/icons/Icon';
 import {
@@ -31,7 +31,7 @@ import {
     PUBLIC_RPC_HANDLER_ERROR_CODES,
     RPC_ERROR_CODES,
     readRpcErrorCode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 
 interface QuestionOption {

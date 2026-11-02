@@ -1,5 +1,5 @@
 import type { ConnectedServiceQuotaRecoveryCreditV1, ConnectedServiceQuotaRecoveryCreditsV1,
-  ConnectedServiceQuotaRecoveryCreditDetailsByIdV1 } from '@happier-dev/protocol';
+  ConnectedServiceQuotaRecoveryCreditDetailsByIdV1 } from '@piggercode/protocol';
 import { createHash } from 'node:crypto';
 
 import { isRecord } from '@/daemon/connectedServices/quotas/quotaNormalization';

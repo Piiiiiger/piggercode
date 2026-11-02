@@ -1,7 +1,7 @@
 import {
     isRecoveredHistoryTranscriptObservationProvenance,
     type SessionMessageRole,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiMessage, ApiSessionMessagesResponse } from '@/sync/api/types/apiTypes';
 import { parseSessionMessagesResponseJson, type SessionMessagesPageScope } from '@/sync/api/session/sessionMessagesApi';

@@ -4,7 +4,7 @@ import tweetnacl from 'tweetnacl';
 import {
     deriveAccountMachineKeyFromRecoverySecret,
     sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { installTokenStorageWebPlatformMocks } from '@/auth/storage/tokenStorage.testHelpers';
 import { installLocalStorageMock } from '@/auth/storage/tokenStorage.web.testHelpers';

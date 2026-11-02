@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 
 import tweetnacl from 'tweetnacl';
 import { describe, expect, it } from 'vitest';
-import { stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { stringifySerializedJsonValue } from '@piggercode/protocol';
 
 import { decodeBase64, decryptLegacyBase64, encodeBase64 } from './messageCrypto';
 

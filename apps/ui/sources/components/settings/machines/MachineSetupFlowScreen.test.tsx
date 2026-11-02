@@ -355,7 +355,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('starts the local system task flow and renders task progress after the entry row is pressed', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const taskIdByKind = new Map<string, string>();
@@ -413,7 +413,7 @@ describe('MachineSetupFlowScreen', () => {
             SystemTaskSpecSchema,
             createSetupPairingPromptData,
             createSetupServiceConsentPromptData,
-        } = await import('@happier-dev/protocol');
+        } = await import('@piggercode/protocol');
         const { createServerUrlComparableKey } = await import('@/sync/domains/server/url/serverUrlCanonical');
         const { desktopSetupCoordinator } = await import('@/setup/desktopSetupCoordinator');
 
@@ -532,7 +532,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('treats a not_authenticated local setup result as a guided follow-up instead of a hard failure', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const taskIdByKind = new Map<string, string>();
@@ -719,7 +719,7 @@ describe('MachineSetupFlowScreen', () => {
         // while the relay cannot reach this computer at all. Reading `machineId` off the task
         // result was a second readiness definition, and this is the case it got wrong.
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         await installAmbientResult(convergedAmbientResult);
         machineRpcSpy.mockImplementation(async () => {
             throw new Error('Machine RPC timed out after 30000ms');
@@ -764,7 +764,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('shows the canonical provider setup flow after the local setup task succeeds', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const taskIdByKind = new Map<string, string>();
@@ -824,7 +824,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('starts no local setup task on mount — auto-start belongs to the desktop setup gate alone (R9/INV1)', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         const starts: unknown[] = [];
         const runner = createSystemTaskRunner({
@@ -849,7 +849,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('does not show the provider setup flow when the local setup task succeeds without a machine id', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const taskIdByKind = new Map<string, string>();
@@ -899,7 +899,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('starts remote bootstrap against the public relay identity when the app is using a local relay alias', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         activeServerSnapshotState = {
             serverId: 'relay-example',
@@ -977,7 +977,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('can include remote relay runtime installation when the user opts into running a Relay on that machine', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         const starts: unknown[] = [];
         const runner = createSystemTaskRunner({
@@ -1016,7 +1016,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('restarts remote bootstrap with an explicit host-trust resolution after a prompt_required result', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const starts: unknown[] = [];
@@ -1109,7 +1109,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('retries remote bootstrap without attempting a prompt response while the host-trust prompt is still pending', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const starts: unknown[] = [];
@@ -1198,7 +1198,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('restarts remote bootstrap with desktop approval enabled and shows provider follow-up after success', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const starts: unknown[] = [];
@@ -1330,7 +1330,7 @@ describe('MachineSetupFlowScreen', () => {
 
     it('clears a stale remote prompt when the relay runtime toggle changes before retrying', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const starts: unknown[] = [];

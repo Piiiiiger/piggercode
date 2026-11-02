@@ -1,7 +1,7 @@
 import {
   type DiscoveredPetPackageV1,
   type ImportedLocalPetPackageV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PetPackageDiscoveryCacheEntry } from '../discovery/petPackageDiscoveryCache';
 

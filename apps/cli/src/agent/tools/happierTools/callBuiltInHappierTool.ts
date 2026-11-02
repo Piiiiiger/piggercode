@@ -10,7 +10,7 @@ import { startExecutionRun } from '@/session/services/executionRuns';
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';
 import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
-import { resolvePermissionPrivilegeFromSessionMetadata } from '@happier-dev/agents';
+import { resolvePermissionPrivilegeFromSessionMetadata } from '@piggercode/agents';
 
 export async function callBuiltInHappierTool(params: Readonly<{
   credentials: Credentials;

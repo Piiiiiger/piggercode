@@ -2,8 +2,8 @@ import { z } from 'zod';
 import {
     DirectSessionsProviderIdSchema,
     DirectSessionsSourceSchema,
-} from '@happier-dev/protocol';
-import type { CodexBackendMode } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 const DirectSessionLinkSchema = z.object({
     directSessionV1: z.object({

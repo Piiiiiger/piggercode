@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
 
 import {
     AGENT_ACTIVITY_ROW_NO_ACTIONS,

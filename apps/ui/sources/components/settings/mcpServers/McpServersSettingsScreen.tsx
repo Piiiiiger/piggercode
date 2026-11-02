@@ -10,7 +10,7 @@ import type {
     McpServerBindingV1,
     McpServerCatalogEntryV1,
     McpServersSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import { getAgentDropdownMenuItems } from '@/components/settings/pickers/agentDropdownItems';

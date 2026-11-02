@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { withConnectedServiceReaderSupport } from '@happier-dev/protocol';
+import { withConnectedServiceReaderSupport } from '@piggercode/protocol';
 import { createServerFetchWithReachabilityProbe } from '@/dev/testkit/mocks/serverFetch';
 
 import { fetchChanges, fetchCurrentChangesCursor } from './apiChanges';

@@ -72,7 +72,7 @@ describe('configuration runtime-context bootstrap', () => {
         cliRootDir: '/repo/apps/cli',
         homeDir: configuration.happyHomeDir,
         publicReleaseRing: 'publicdev',
-        packageName: '@happier-dev/cli',
+        packageName: '@piggercode/cli',
         argv: managedArgv.slice(1),
         env: { ...process.env, HAPPIER_CLI_RUNTIME_DISABLE: '0', HAPPIER_CLI_RUNTIME_REEXEC: '0' },
         exists: () => true,
@@ -84,7 +84,7 @@ describe('configuration runtime-context bootstrap', () => {
       })).rejects.toThrow('sentinel-reexec-exit');
       expect(exec).toHaveBeenCalledWith(
         '/managed/runtime',
-        [join(homeDir, 'runtime.dev', 'node_modules', '@happier-dev', 'cli', 'dist', 'index.mjs'), ...managedArgv.slice(1)],
+        [join(homeDir, 'runtime.dev', 'node_modules', '@piggercode', 'cli', 'dist', 'index.mjs'), ...managedArgv.slice(1)],
         expect.objectContaining({ env: expect.objectContaining({
           HAPPIER_HOME_DIR: homeDir,
           HAPPIER_ACTIVE_SERVER_ID: 'selected-profile',

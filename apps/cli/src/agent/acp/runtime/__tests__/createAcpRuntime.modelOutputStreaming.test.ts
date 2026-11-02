@@ -674,7 +674,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     await runtime.flushTurn();
 
     const firstEnvelope = durableCalls.at(-1)?.meta?.happier;
-    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@happier-dev/protocol');
+    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@piggercode/protocol');
     expect(SessionMediaMessageMetaEnvelopeV1Schema.safeParse(firstEnvelope).success).toBe(true);
     expect((firstEnvelope as { payload: { media: unknown[] } }).payload.media).toHaveLength(256);
     expect(persistedSourceIds).toHaveLength(256);
@@ -778,7 +778,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const envelope = durableCalls.at(-1)?.meta?.happier as {
       payload: { media: Array<{ id: string }>; unavailable?: unknown[] };
     };
-    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@happier-dev/protocol');
+    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@piggercode/protocol');
     expect(SessionMediaMessageMetaEnvelopeV1Schema.safeParse(envelope).success).toBe(true);
     expect(envelope.payload.media).toHaveLength(256);
     expect(envelope.payload.media).toContainEqual(expect.objectContaining({ id: 'media-retry' }));
@@ -872,7 +872,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
     const envelope = durableCalls.at(-1)?.meta?.happier as {
       payload: { media: Array<{ id: string }>; unavailable?: Array<{ id: string }> };
     };
-    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@happier-dev/protocol');
+    const { SessionMediaMessageMetaEnvelopeV1Schema } = await import('@piggercode/protocol');
     expect(SessionMediaMessageMetaEnvelopeV1Schema.safeParse(envelope).success).toBe(true);
     expect(envelope.payload.media).toHaveLength(15);
     expect(envelope.payload.media.filter(({ id }) => id.startsWith('media-distinct-success-'))).toHaveLength(5);

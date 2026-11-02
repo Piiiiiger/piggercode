@@ -1,4 +1,4 @@
-import { ConnectedServiceIdSchema, type SessionContinuationRecoveryIdentityV1 } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, type SessionContinuationRecoveryIdentityV1 } from '@piggercode/protocol';
 
 import { listMatchingRuntimeAuthRecoveryIntents } from '../runtimeAuth/matchRuntimeAuthRecoveryIntent';
 import { buildRuntimeAuthRecoveryKey } from '../runtimeAuth/recoveryKey/runtimeAuthRecoveryKey';

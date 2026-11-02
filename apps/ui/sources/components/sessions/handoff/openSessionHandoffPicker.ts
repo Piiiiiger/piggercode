@@ -1,4 +1,4 @@
-import type { SessionHandoffWorkspaceTransfer } from '@happier-dev/protocol';
+import type { SessionHandoffWorkspaceTransfer } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 

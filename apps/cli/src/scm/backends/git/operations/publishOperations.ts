@@ -1,5 +1,5 @@
-import type { ScmRemotePublishRequest, ScmRemotePublishResponse, ScmWorkingSnapshot } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmRemotePublishRequest, ScmRemotePublishResponse, ScmWorkingSnapshot } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import { runScmCommand } from '../../../runtime';

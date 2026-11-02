@@ -9,7 +9,7 @@ import {
   DaemonPetDiscoverResponseV1Schema,
   FeaturesResponseSchema,
   PET_DAEMON_RPC_METHODS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createRpcHandlerManager } from '../rpc/RpcHandlerManager';
 import { registerMachineRpcHandlers } from './rpcHandlers';

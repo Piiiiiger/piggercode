@@ -3,7 +3,7 @@ import {
   getBuiltInAcpConfig,
   getProviderCliRuntimeSpec,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { AgentCatalogEntry } from '@/backends/types';
 import type { createAcpCliCapability } from '@/capabilities/probes/createAcpCliCapability';

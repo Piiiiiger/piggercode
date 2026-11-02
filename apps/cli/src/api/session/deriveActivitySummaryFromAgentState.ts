@@ -4,7 +4,7 @@ import {
   CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
   CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
   isAgentStateRequestCoveredByCompletedRequests,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 type ActivitySummary = Readonly<{
   pendingPermissionRequestCount: number;

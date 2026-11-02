@@ -21,13 +21,13 @@ import {
     SocketRpcRequestIdSchema,
     SOCKET_RPC_TRANSPORT_RESPONSE_ENVELOPE_VERSION_V1,
     type SocketRpcTransportAcknowledgementV1,
-} from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol/socketRpc';
 import {
     RPC_ERROR_CODES,
     RPC_ERROR_MESSAGES,
     isDelegatedSessionApprovalRpcMethod,
-} from '@happier-dev/protocol/rpc';
-import { isPublicRpcHandlerError, readRpcErrorCode, toSocketRpcTargetFailureV1 } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol/rpc';
+import { isPublicRpcHandlerError, readRpcErrorCode, toSocketRpcTargetFailureV1 } from '@piggercode/protocol/rpcErrors';
 
 export type RpcHandlerRegistrationReadiness =
     | Readonly<{ status: 'ready' }>

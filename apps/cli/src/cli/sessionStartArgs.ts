@@ -1,5 +1,5 @@
 import type { PermissionMode } from '@/api/types';
-import { getAgentSessionModesKind, type AgentId } from '@happier-dev/agents';
+import { getAgentSessionModesKind, type AgentId } from '@piggercode/agents';
 import { partitionProviderSessionArgs } from '@/cli/providerSessionArgPartition';
 
 export type ParsedSessionStartArgs = {

@@ -12,7 +12,7 @@ type InstallSessionGuidanceCommonModuleMocksOptions = Readonly<{
 }>;
 
 const sessionGuidanceTranslations: Record<string, string> = {
-    'components.emptyMainScreen.installCommand': '$ npm i -g @happier-dev/cli',
+    'components.emptyMainScreen.installCommand': '$ npm i -g @piggercode/cli',
     'components.emptySessionsTablet.startNewSessionButton': 'Start New Session',
     'components.emptyMainScreen.openCamera': 'Open Camera',
     'connect.enterUrlManually': 'Enter URL manually',

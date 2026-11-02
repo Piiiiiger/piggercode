@@ -1,4 +1,4 @@
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import type { AgentId } from '@/agents/registry/registryCore';
 import { AGENT_IDS, isAgentId } from '@/agents/registry/registryCore';
 import { readAppBrandConfig } from '@/sync/runtime/appBrand';

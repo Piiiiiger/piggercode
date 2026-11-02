@@ -2,7 +2,7 @@ import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { upsertSessionOrganizationFolder as upsertSessionOrganizationFolderApi } from '@/sync/api/session/sessionOrganizationApi';
 import { readSessionOrganizationServerScopedId } from '@/sync/domains/session/organization';
 import { getStorage } from '@/sync/domains/state/storageStore';
-import type { CreateOrUpdateSessionOrganizationFolderRequest } from '@happier-dev/protocol';
+import type { CreateOrUpdateSessionOrganizationFolderRequest } from '@piggercode/protocol';
 import { createSessionOrganizationOpaqueId } from './sessionOrganizationIdAllocation';
 import {
     openSessionOrganizationFolderDisplay,

@@ -3,7 +3,7 @@ import {
   CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE,
   CLAUDE_OAUTH_AUTHORIZE_URL,
   CLAUDE_OAUTH_CALLBACK_URL,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 const openBrowserSpy = vi.fn(async (_url: string) => {});
 vi.mock('@/ui/openBrowser', () => ({ openBrowser: openBrowserSpy }));

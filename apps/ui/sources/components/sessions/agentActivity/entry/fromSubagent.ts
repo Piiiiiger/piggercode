@@ -1,4 +1,4 @@
-import { fromSubagentStatus, isInProgressAgentActivityStatus } from '@happier-dev/protocol';
+import { fromSubagentStatus, isInProgressAgentActivityStatus } from '@piggercode/protocol';
 
 import { resolveSessionSubagentAdvancedRoute } from '@/components/sessions/agents/navigation/resolveSessionSubagentAdvancedRoute';
 import { resolveSessionSubagentFullRoute } from '@/components/sessions/agents/navigation/resolveSessionSubagentFullRoute';

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { registerMachineFileBrowserHandlers } from './registerMachineFileBrowserHandlers';
 

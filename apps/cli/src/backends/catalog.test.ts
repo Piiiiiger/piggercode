@@ -3,9 +3,9 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { AGENT_IDS, DEFAULT_AGENT_ID } from '@happier-dev/agents';
-import { AGENTS_CORE } from '@happier-dev/agents';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { AGENT_IDS, DEFAULT_AGENT_ID } from '@piggercode/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import type { ConnectedServicesProviderMaterializer } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
 
 import * as catalog from './catalog';

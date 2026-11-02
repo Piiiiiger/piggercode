@@ -1,7 +1,7 @@
 import { classifyProcessByPid } from './doctor';
 import { hashProcessCommand } from './sessionRegistry';
 import type { ProcessRunState } from './processRunState';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 export type SessionRunnerProcessIdentity =
   | Readonly<{ kind: 'happy'; processCommandHash: string; processInstanceFingerprint?: string }>

@@ -3,13 +3,13 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from '
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
     SCM_COMMIT_MESSAGE_MAX_LENGTH,
     SCM_COMMIT_PATCH_MAX_COUNT,
     SCM_COMMIT_PATCH_MAX_LENGTH,
     SCM_OPERATION_ERROR_CODES,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createTestRpcManager, runGit as git } from './testRpcHarness';
 
 describe('git RPC handlers', () => {

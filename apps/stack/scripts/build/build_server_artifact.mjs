@@ -6,7 +6,7 @@ import {
   buildServerBinaryArtifactPayload,
   SERVER_BINARY_TARGETS,
   resolveCurrentBinaryTarget,
-} from '@happier-dev/cli-common/componentArtifacts';
+} from '@piggercode/cli-common/componentArtifacts';
 
 export async function buildServerArtifact({
   rootDir,

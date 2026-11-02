@@ -3,7 +3,7 @@ import type { TranslationKeyNoParams } from '@/text';
 import {
     isPendingDeliveryProviderEffectPossibleV1,
     parsePendingDeliveryStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PendingMessageVisualStateKind =
     | 'saving'

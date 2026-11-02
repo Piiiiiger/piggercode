@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { isExecutionRunActive, type ExecutionRunPublicState } from '@happier-dev/protocol';
+import { isExecutionRunActive, type ExecutionRunPublicState } from '@piggercode/protocol';
 import { ExecutionRunStatusPill } from './ExecutionRunStatusPill';
 import { Text } from '@/components/ui/text/Text';
 import { resolveExecutionRunBackendLabel } from '@/components/sessions/runs/resolveExecutionRunBackendLabel';

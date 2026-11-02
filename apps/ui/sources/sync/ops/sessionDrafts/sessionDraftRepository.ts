@@ -14,7 +14,7 @@ import {
     StrictJsonValueSchema,
     type StrictJsonValue,
     type SyncedSessionAuthoringValueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { randomUUID as platformRandomUUID } from '@/platform/randomUUID';
 import { log } from '@/log';

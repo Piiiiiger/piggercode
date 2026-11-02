@@ -3,7 +3,7 @@ import {
   createAccountContentPublicKeyBindingMessage,
   deriveAccountMachineKeyFromRecoverySecret,
   type UserProfile,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function createAccountTokenFixture(accountId: string, claims: Record<string, unknown> = {}): string {
   return `header.${Buffer.from(JSON.stringify({ ...claims, sub: accountId })).toString('base64url')}.sig`;

@@ -8,12 +8,12 @@ test('readBundledWorkspaceSyncConfig derives stack workspace packages from bundl
     existsSync: (candidate) => candidate === '/repo/apps/stack/package.json',
     readFileSync: () => JSON.stringify({
       bundledDependencies: [
-        '@happier-dev/agents',
-        '@happier-dev/cli-common',
-        '@happier-dev/connection-supervisor',
+        '@piggercode/agents',
+        '@piggercode/cli-common',
+        '@piggercode/connection-supervisor',
         'qrcode',
-        '@happier-dev/protocol',
-        '@happier-dev/release-runtime',
+        '@piggercode/protocol',
+        '@piggercode/release-runtime',
       ],
     }),
   });

@@ -4,7 +4,7 @@ import {
   type TerminalControlPort,
   type TerminalControlSendResult,
   type TerminalSpecialKey,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { splitStringByCodePoints } from '../terminalHost/chunks';
 import { buildTerminalControlCapture } from '../terminalHost/controlCapture';

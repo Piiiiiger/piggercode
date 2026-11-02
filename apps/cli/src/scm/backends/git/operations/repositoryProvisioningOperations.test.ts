@@ -9,10 +9,10 @@ import type {
     ScmHostingRepositoryPublishResponse,
     ScmHostingRepositoryPublishTarget,
     ScmHostingRepositorySummary,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     buildConnectedServiceCredentialRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import type {

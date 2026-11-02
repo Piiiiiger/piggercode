@@ -1,9 +1,9 @@
 import {
   inferAgentIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
-import type { SessionGoalSetRequestV1 } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+} from '@piggercode/agents';
+import type { SessionGoalSetRequestV1 } from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { getSessionGoalControlAdapter } from '@/backends/catalog';
 import type { Credentials } from '@/persistence';

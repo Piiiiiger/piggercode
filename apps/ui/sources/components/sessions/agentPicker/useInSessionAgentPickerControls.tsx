@@ -8,7 +8,7 @@ import {
     type AccountProfile,
     type FeatureDecision,
     type SessionAgentTransitionSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore } from '@/agents/catalog/catalog';
 import type { ResolvedBackendCatalogEntry } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';

@@ -7,7 +7,7 @@ import {
   type ManagedConnectionState,
   type ManagedConnectionTransport,
   type ReadinessProbeResult,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 
 import { HttpStatusError, readHttpStatus } from '@/api/client/httpStatusError';
 

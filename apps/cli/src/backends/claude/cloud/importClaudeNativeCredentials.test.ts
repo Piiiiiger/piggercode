@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord, normalizeConnectedServiceOauthCredentialRawMetadata } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, normalizeConnectedServiceOauthCredentialRawMetadata } from '@piggercode/protocol';
 import { claudeCloudConnect } from './connect';
 
 const NOW = Date.parse('2026-10-11T12:00:00.000Z');

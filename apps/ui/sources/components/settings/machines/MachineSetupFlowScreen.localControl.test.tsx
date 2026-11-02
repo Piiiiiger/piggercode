@@ -202,7 +202,7 @@ describe('MachineSetupFlowScreen local control follow-up', () => {
 
     it('shows the local relay control sections even before a new local setup task completes', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {
@@ -325,7 +325,7 @@ describe('MachineSetupFlowScreen local control follow-up', () => {
 
     it('renders local relay runtime and Tailscale sections after this-computer setup succeeds', async () => {
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         let nextTaskId = 1;
         const listeners = new Map<string, {

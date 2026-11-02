@@ -9,7 +9,7 @@ import {
     ProviderAccountSubscriptionV1Schema,
     ConnectedServiceQuotaRecoveryCreditDetailsByIdV1Schema,
     splitProviderAccountUsageSupplementalFacets,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { validateProviderAccountUsageRecordWrite } from "./schemas";
 import type {
     StoredProviderAccountUsageRecord,

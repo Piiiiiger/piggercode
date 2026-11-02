@@ -5,7 +5,7 @@ import {
     resolveSkillCatalogItemIdentityV1,
     sanitizeMentionRefsV1,
     type MentionRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AutocompleteSuggestion } from '@/components/autocomplete/autocompleteTypes';
 

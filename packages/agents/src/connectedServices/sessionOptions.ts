@@ -5,7 +5,7 @@ import {
     type ConnectedServiceCredentialHealthStatusV1,
     type ConnectedServiceBindingSelectionV1,
     type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentCore, ConnectedServiceId, ConnectedServiceKind } from '../types.js';
 

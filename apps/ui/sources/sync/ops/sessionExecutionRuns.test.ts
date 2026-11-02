@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const sessionRpcMock = vi.hoisted(() => vi.fn());
 const canUseSessionRpcMock = vi.hoisted(() => vi.fn(() => true));

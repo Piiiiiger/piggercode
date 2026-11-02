@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, win32 as win32Path } from 'node:path';
 import { homedir as defaultHomedir, tmpdir } from 'node:os';
-import { renderPrismaCompatibleSqliteDatabaseUrl } from '@happier-dev/cli-common/firstPartyRuntime';
+import { renderPrismaCompatibleSqliteDatabaseUrl } from '@piggercode/cli-common/firstPartyRuntime';
 import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@/utils/path/expandHomeDirPath';
 import { resolveLightSqliteDatabaseUrlOptionsFromEnv } from './sqliteConnectionConfig';
 

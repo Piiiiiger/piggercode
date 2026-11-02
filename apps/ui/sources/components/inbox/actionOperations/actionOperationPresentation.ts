@@ -1,4 +1,4 @@
-import { DIRECT_SESSION_TAKEOVER_ACTION_IDS, type ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import { DIRECT_SESSION_TAKEOVER_ACTION_IDS, type ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import type { IconName } from '@/components/ui/icons/Icon';
 import { formatShortRelativeTimeAt } from '@/utils/time/formatShortRelativeTime';

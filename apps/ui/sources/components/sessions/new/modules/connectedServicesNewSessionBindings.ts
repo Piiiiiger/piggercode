@@ -1,6 +1,6 @@
-import type { ConnectedServiceId } from '@happier-dev/agents';
-import type { AccountProfile, ConnectedServiceBindingsV1, ConnectedServicesDefaultAuthByAgentIdV1 } from '@happier-dev/protocol';
-import { readConnectedServicesDefaultAuthSettings, type ConnectedServicesDefaultAuthSettings } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/agents';
+import type { AccountProfile, ConnectedServiceBindingsV1, ConnectedServicesDefaultAuthByAgentIdV1 } from '@piggercode/protocol';
+import { readConnectedServicesDefaultAuthSettings, type ConnectedServicesDefaultAuthSettings } from '@piggercode/protocol';
 import {
   buildConnectedServiceAccountGroupOptionsByServiceId,
   buildConnectedServiceProfileOptionsByServiceId as buildCoreConnectedServiceProfileOptionsByServiceId,
@@ -16,7 +16,7 @@ import {
   type ConnectedServicesProfileOption as CoreConnectedServicesProfileOption,
   type ConnectedServicesProfileOptionsByServiceId as CoreConnectedServicesProfileOptionsByServiceId,
   type ConnectedServicesSessionAgentCore,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
 import {

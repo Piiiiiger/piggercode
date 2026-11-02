@@ -1,13 +1,13 @@
 import chalk from 'chalk';
 
-import { AGENT_IDS, getProviderCliRuntimeSpec, type AgentId } from '@happier-dev/agents';
+import { AGENT_IDS, getProviderCliRuntimeSpec, type AgentId } from '@piggercode/agents';
 
 import type { CommandContext } from '@/cli/commandRegistry';
 import type {
   invokeProviderCliInstall as invokeProviderCliInstallDefault,
 } from '@/runtime/managedTools/invokeProviderCliInstall';
 import type { runDoctorCommand as runDoctorCommandDefault } from '@/ui/doctor';
-import { createStepPrinter, fail } from '@happier-dev/cli-common/output';
+import { createStepPrinter, fail } from '@piggercode/cli-common/output';
 import { describeProviderCliInstallMode, runProviderCliInstallStep } from '@/runtime/managedTools/providerCliInstallStep';
 
 function usage(): string {

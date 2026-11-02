@@ -10,7 +10,7 @@ import { installNewSessionScreenModelCommonModuleMocks } from './newSessionScree
 import { createNewSessionPromptStore } from '@/components/sessions/new/hooks/screenModel/newSessionPromptStore';
 import type { PreflightModelList } from '@/sync/domains/models/modelOptions';
 import type { AgentId } from '@/agents/catalog/catalog';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 

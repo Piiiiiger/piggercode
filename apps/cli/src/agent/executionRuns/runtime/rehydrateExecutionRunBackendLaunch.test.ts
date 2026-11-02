@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { buildConnectedServiceCredentialRecord, type ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import type { ExecutionRunState } from '@/agent/executionRuns/runtime/executionRunTypes';
 import { ExecutionRunConnectedServicesUnavailableError, prepareExecutionRunConnectedServices } from '@/agent/executionRuns/runtime/prepareExecutionRunConnectedServices';

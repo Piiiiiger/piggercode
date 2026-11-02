@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { RPC_ERROR_CODES, RPC_METHODS } from '@happier-dev/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS } from '@piggercode/protocol';
 
 const machineRpcWithServerScopeMock = vi.hoisted(() => vi.fn());
 

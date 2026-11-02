@@ -9,7 +9,7 @@ import { projectSessionListPlacement } from '@/sync/domains/session/listing/plac
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { SessionListCacheEntryV1 } from '@/sync/domains/state/warmCachePersistence';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
-import type { V2SessionRecord } from '@happier-dev/protocol';
+import type { V2SessionRecord } from '@piggercode/protocol';
 import { createSessionFixture } from '@/dev/testkit';
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';

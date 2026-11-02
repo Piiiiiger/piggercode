@@ -1,4 +1,4 @@
-import type { SystemTaskResult } from '@happier-dev/protocol';
+import type { SystemTaskResult } from '@piggercode/protocol';
 
 import type { SystemTaskRunner } from './types';
 

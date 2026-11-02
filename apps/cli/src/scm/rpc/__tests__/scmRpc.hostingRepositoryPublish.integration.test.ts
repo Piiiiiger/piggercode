@@ -3,9 +3,9 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import type { ScmRemoteInfo, ScmWorkingSnapshot } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import type { ScmRemoteInfo, ScmWorkingSnapshot } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { writeExecutableShim } from '@/testkit/fs/executableShim';

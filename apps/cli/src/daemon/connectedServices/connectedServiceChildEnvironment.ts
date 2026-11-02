@@ -5,7 +5,7 @@ import {
   type ConnectedServiceId,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceProfileId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY = 'HAPPIER_CONNECTED_SERVICE_SELECTIONS_JSON';
 export const HAPPIER_CONNECTED_SERVICE_MATERIALIZED_ENV_KEYS_ENV_KEY =

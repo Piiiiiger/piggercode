@@ -1,4 +1,4 @@
-import type { ScmBackendId, ScmCapabilities, ScmRepoMode } from '@happier-dev/protocol';
+import type { ScmBackendId, ScmCapabilities, ScmRepoMode } from '@piggercode/protocol';
 
 import { defaultScmBackendRegistry } from '../defaultRegistry';
 import type { ScmBackendRegistry } from '../registry';

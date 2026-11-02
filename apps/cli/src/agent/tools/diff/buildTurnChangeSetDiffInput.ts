@@ -1,5 +1,5 @@
-import type { TurnChangeSet } from '@happier-dev/protocol';
-import type { ToolNormalizationProtocol } from '@happier-dev/protocol';
+import type { TurnChangeSet } from '@piggercode/protocol';
+import type { ToolNormalizationProtocol } from '@piggercode/protocol';
 
 import { boundTurnDiffFiles, type TurnDiffFileEntry } from './boundTurnDiffFiles';
 import { buildSessionChangeToolMetadata } from './sessionChangeToolMetadata';

@@ -1,4 +1,4 @@
-import type { PrimaryTurnStatusV1 } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1 } from '@piggercode/protocol';
 
 export type LatestTurnStatusSnapshot = PrimaryTurnStatusV1 | null;
 

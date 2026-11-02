@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 
 const { callMachineRpc } = vi.hoisted(() => ({ callMachineRpc: vi.fn() }));
 vi.mock('@/session/transport/rpc/machineRpc', () => ({ callMachineRpc }));

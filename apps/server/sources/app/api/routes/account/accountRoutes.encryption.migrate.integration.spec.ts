@@ -15,7 +15,7 @@ import {
 import { mutateConnectedServiceCredential } from "../connect/credentials/mutation";
 import { registerAutomationCrudRoutes } from "../automations/registerAutomationCrudRoutes";
 import tweetnacl from "tweetnacl";
-import { MACHINE_PLAIN_DATA_KEY_MARKER, encodePlainMachineStoredContent } from "@happier-dev/protocol";
+import { MACHINE_PLAIN_DATA_KEY_MARKER, encodePlainMachineStoredContent } from "@piggercode/protocol";
 import * as privacyKit from "privacy-kit";
 
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

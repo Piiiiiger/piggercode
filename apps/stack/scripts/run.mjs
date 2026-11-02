@@ -72,7 +72,7 @@ import {
 } from './runtime/launch/resolveCliRuntimeLaunchSpec.mjs';
 import { resolveServerRuntimeLaunchSpec } from './runtime/launch/resolveServerRuntimeLaunchSpec.mjs';
 import { spawnRuntimeServerAfterMigration } from './runtime/launch/runServerRuntimeMigration.mjs';
-import { resolveServerMigrationsEnabled } from '@happier-dev/cli-common/firstPartyRuntime/selfHostServerEnv';
+import { resolveServerMigrationsEnabled } from '@piggercode/cli-common/firstPartyRuntime/selfHostServerEnv';
 import { spawnStackOwnerDeathWatchdog } from './utils/stack/owner_death_watchdog.mjs';
 import { completeInterruptedStackStopBeforeStart } from './utils/stack/stop.mjs';
 import { decideDevStartupTopology, observeDevServerStartupTopology } from './utils/dev/devStartupTopology.mjs';

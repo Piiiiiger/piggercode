@@ -2,7 +2,7 @@ import {
   buildBackendTargetKey,
   readAcpConfiguredBackendV1FromMetadata,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { AGENT_IDS, type AgentId } from '../types.js';
 import { isAbsolutePathLike } from '../path/isAbsolutePathLike.js';
 import { AGENTS_CORE } from '../manifest.js';

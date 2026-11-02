@@ -3,7 +3,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { type ConnectedServiceId } from '@happier-dev/protocol';
+import { type ConnectedServiceId } from '@piggercode/protocol';
 
 import { createTestAuth } from '../../src/testkit/auth';
 import { seedCliAuthForServer } from '../../src/testkit/cliAuth';

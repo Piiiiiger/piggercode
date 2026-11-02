@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 
-import type { CliUpdateFacts } from '@happier-dev/protocol';
-import { SystemTaskExecutionError, type InteractiveSystemTaskKind } from '@happier-dev/cli-common/systemTasks';
-import { spawnDetachedNode, type DetachedSpawnResult } from '@happier-dev/cli-common/update';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { CliUpdateFacts } from '@piggercode/protocol';
+import { SystemTaskExecutionError, type InteractiveSystemTaskKind } from '@piggercode/cli-common/systemTasks';
+import { spawnDetachedNode, type DetachedSpawnResult } from '@piggercode/cli-common/update';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { readUpdaterAdmission, UPDATER_ADMISSION_FD_ENV } from '@/cli/runtime/update/updaterAdmission';
 

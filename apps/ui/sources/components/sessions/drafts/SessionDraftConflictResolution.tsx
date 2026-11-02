@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
-import type { SessionDraftAddressV1, StrictJsonValue } from '@happier-dev/protocol';
+import type { SessionDraftAddressV1, StrictJsonValue } from '@piggercode/protocol';
 
 import { Text } from '@/components/ui/text/Text';
 import type { ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';

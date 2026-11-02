@@ -1,4 +1,4 @@
-import type { SessionRuntimeActivityProjection } from "@happier-dev/protocol";
+import type { SessionRuntimeActivityProjection } from "@piggercode/protocol";
 
 import type { SessionParticipantCursor } from "@/app/session/changeTracking/markSessionParticipantsChanged";
 import { markSessionParticipantsChanged } from "@/app/session/changeTracking/markSessionParticipantsChanged";

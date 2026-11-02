@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 
 import { resolveConnectedServicesQuotasDaemonEnabled } from './resolveConnectedServicesQuotasDaemonEnabled';
 import { resetServerFeaturesClientForTests } from '@/features/serverFeaturesClient';

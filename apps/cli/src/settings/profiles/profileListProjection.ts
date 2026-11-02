@@ -1,4 +1,4 @@
-import { AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS } from '@piggercode/agents';
 import {
   getRequiredConfigEnvVarNames,
   getRequiredSecretEnvVarNames,
@@ -6,7 +6,7 @@ import {
   isProfileCompatibleWithBackendTarget,
   type AIBackendProfile,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ProfilesListItem = Readonly<{
   id: string;

@@ -2,7 +2,7 @@ import type {
     ActionExecuteResult,
     ActionExecutorContext,
     ActionId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { PetCompanionTrayItem } from '@/components/pets/activity';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';

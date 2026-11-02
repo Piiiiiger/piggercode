@@ -2,7 +2,7 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { DetectedMcpServerV1, McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { DetectedMcpServerV1, McpServersSettingsV1 } from '@piggercode/protocol';
 import { createMachineFixture, flushHookEffects } from '@/dev/testkit';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 

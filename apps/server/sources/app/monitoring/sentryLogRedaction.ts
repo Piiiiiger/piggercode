@@ -1,5 +1,5 @@
 import type { Log } from "@sentry/node";
-import { redactPublicShareCapabilityUrl } from "@happier-dev/protocol";
+import { redactPublicShareCapabilityUrl } from "@piggercode/protocol";
 
 const REDACTED_VALUE = "[redacted]";
 

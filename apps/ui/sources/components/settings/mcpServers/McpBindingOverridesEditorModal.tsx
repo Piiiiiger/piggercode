@@ -7,7 +7,7 @@ import type {
     McpServerBindingV1,
     McpServerCatalogEntryTransportV1,
     McpValueRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CustomModalInjectedProps } from '@/modal';
 import { Modal } from '@/modal';

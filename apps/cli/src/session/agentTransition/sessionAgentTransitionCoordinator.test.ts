@@ -10,8 +10,8 @@ import {
   readSessionAgentTransitionDividerV1,
   readAcpConfiguredBackendV1FromMetadata,
   type SessionStopOutcome,
-} from '@happier-dev/protocol';
-import type { SessionAgentTransitionRequestV1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import type { SessionAgentTransitionRequestV1 } from '@piggercode/protocol';
 
 /**
  * Coordinator contract tests.

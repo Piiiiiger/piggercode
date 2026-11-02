@@ -2,7 +2,7 @@ import {
     SessionDraftRecipientValueV1Schema,
     StrictJsonValueSchema,
     type StrictJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     flushSessionDraft,

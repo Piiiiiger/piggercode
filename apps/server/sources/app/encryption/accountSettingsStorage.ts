@@ -4,7 +4,7 @@ import * as privacyKit from "privacy-kit";
 import {
     AccountSettingsStoredContentEnvelopeSchema,
     type AccountSettingsStoredContentEnvelope,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { decryptString, encryptString } from "@/modules/encrypt";
 import { readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv";
 

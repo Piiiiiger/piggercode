@@ -1,6 +1,6 @@
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
-import type { ConnectedServiceBindingsV1, ConnectedServiceId, ConnectedServiceUxDiagnosticV1 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { ConnectedServiceBindingsV1, ConnectedServiceId, ConnectedServiceUxDiagnosticV1 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { prepareAccountSettingsForDaemonSpawnIfNeeded } from '@/sync/ops/accountSettingsDaemonSpawnPreparation';
 import { machineSupportsConnectedServiceAuthSelection } from '../connectedServiceAuthSupport';
 

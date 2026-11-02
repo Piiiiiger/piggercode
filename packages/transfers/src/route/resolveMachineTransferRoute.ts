@@ -1,4 +1,4 @@
-import { readServerEnabledBit, type FeaturesResponse } from '@happier-dev/protocol';
+import { readServerEnabledBit, type FeaturesResponse } from '@piggercode/protocol';
 
 export type MachineTransferStrategy = 'direct_peer' | 'server_routed_stream';
 

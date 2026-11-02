@@ -1,4 +1,4 @@
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol/installables';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol/installables';
 
 import type { AgentUiBehavior, NewSessionRelevantInstallableDepsContext } from '@/agents/registry/registryUiBehavior';
 

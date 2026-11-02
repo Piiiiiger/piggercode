@@ -1,6 +1,6 @@
 import type {
     WorkspaceAnchorsResolveResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ReviewCommentDraft } from '@/sync/domains/input/reviewComments/reviewCommentTypes';
 import type { WorkspaceScopeBase } from '@/sync/domains/workspaces/workspaceScope';

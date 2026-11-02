@@ -12,7 +12,7 @@ let mockedPreparedVersionId = 'preview-release-0.2.1';
 let resolvedLocalInstallVersion: string | null = null;
 let receivedSelfHostRelayBinaryOverride: string | null = null;
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,
@@ -27,7 +27,7 @@ vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
     };
 });
 
-vi.mock('@happier-dev/cli-common/relayHost', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,

@@ -1,4 +1,4 @@
-import { createAccountContentPublicKeyBindingMessage } from '@happier-dev/protocol';
+import { createAccountContentPublicKeyBindingMessage } from '@piggercode/protocol';
 import { encodeBase64 } from '@/encryption/base64';
 import { Encryption } from '@/sync/encryption/encryption';
 import sodium from '@/encryption/libsodium.lib';

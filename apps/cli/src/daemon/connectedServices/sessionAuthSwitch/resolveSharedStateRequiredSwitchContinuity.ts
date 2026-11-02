@@ -1,8 +1,8 @@
 import {
   resolveConnectedServicesProviderStateSharingPolicyV1,
   type AccountSettings,
-} from '@happier-dev/protocol';
-import { AGENTS_CORE } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
 import { canResumeFromMaterializedState } from '@/daemon/connectedServices/stateSharing/canResumeFromMaterializedState';
 
 import type { CatalogAgentId } from '@/backends/types';

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@happier-dev/cli-common/firstPartyRuntime';
+import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@piggercode/cli-common/firstPartyRuntime';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 function createDeferred<T = void>(): {

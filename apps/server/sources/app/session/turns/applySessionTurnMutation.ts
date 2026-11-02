@@ -10,7 +10,7 @@ import {
     type SessionTurnRollbackStateV1,
     type SessionTurnTranscriptAnchorsV1,
     type SessionTurnV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { materializePrimaryTurnProjection, type PrimaryTurnMaterializedProjection } from "./materializePrimaryTurnProjection";
 

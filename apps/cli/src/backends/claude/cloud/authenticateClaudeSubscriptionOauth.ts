@@ -5,7 +5,7 @@ import {
   CLAUDE_OAUTH_CALLBACK_URL,
   CLAUDE_OAUTH_CLIENT_ID,
   CLAUDE_OAUTH_TOKEN_URL,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { CloudConnectAuthenticateOptions } from '@/cloud/connectTypes';
 import { generatePkceCodes } from '@/cloud/pkce';

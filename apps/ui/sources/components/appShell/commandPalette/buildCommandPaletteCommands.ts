@@ -1,5 +1,5 @@
-import type { ActionId } from '@happier-dev/protocol';
-import { listActionSpecs } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
+import { listActionSpecs } from '@piggercode/protocol';
 
 import type { Command } from './types';
 import type { KeyboardCommandId } from '@/keyboard';

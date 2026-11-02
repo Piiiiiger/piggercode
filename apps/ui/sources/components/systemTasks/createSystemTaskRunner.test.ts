@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@happier-dev/protocol';
-import { SystemTaskSpecSchema } from '@happier-dev/protocol';
+import type { SystemTaskEvent, SystemTaskResult, SystemTaskSpec } from '@piggercode/protocol';
+import { SystemTaskSpecSchema } from '@piggercode/protocol';
 
 type BridgeListenerSet = Readonly<{
     onEvent: (payload: unknown) => void;

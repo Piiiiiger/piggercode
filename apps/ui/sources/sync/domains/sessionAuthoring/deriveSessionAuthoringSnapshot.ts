@@ -2,8 +2,8 @@ import {
     LEGACY_ACP_SESSION_MODE_OVERRIDE_KEY,
     SESSION_MODE_OVERRIDE_KEY,
     resolveMetadataStringOverrideStateV1FromAliases,
-} from '@happier-dev/agents';
-import { isBuiltInAgentTarget, readSessionMcpSelectionV1FromMetadata } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { isBuiltInAgentTarget, readSessionMcpSelectionV1FromMetadata } from '@piggercode/protocol';
 
 import { getModelOverrideForSpawn } from '@/sync/domains/models/modelOverride';
 import { getPermissionModeOverrideForSpawn } from '@/sync/domains/permissions/permissionModeOverride';

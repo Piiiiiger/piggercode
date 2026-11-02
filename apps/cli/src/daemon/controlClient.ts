@@ -61,7 +61,7 @@ import {
   type SessionRunnerRuntimeStateV1,
   type SessionRunnerStatusGetRequestV1,
   type SpawnSessionNonceResolution,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   StopSessionResultSchema,
   type StopSessionResult,

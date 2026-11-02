@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import type { ConnectedServiceAuthGroupApi, ConnectedServiceCredentialApi } from '@/api/connectedServices/connectedServiceCredentialApi';
 import type { Credentials } from '@/persistence';

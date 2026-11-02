@@ -23,10 +23,10 @@ import {
     type ConnectedServicesDefaultAuthByAgentIdV1,
     isConnectedServiceCredentialHealthStatusUsable,
     type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
-import { supportsConnectedServiceOperation } from '@happier-dev/protocol';
+import { supportsConnectedServiceOperation } from '@piggercode/protocol';
 import { ConnectedServiceQuotaBadgesView } from '@/components/settings/connectedServices/ConnectedServiceQuotaBadgesView';
 import { useConnectedServiceQuotaBadges } from '@/hooks/server/connectedServices/useConnectedServiceQuotaBadges';
 import { connectedServiceProfileKey, resolveConnectedServiceDefaultProfileId } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';

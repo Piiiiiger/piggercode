@@ -3,7 +3,7 @@ import type {
     SessionProviderInputOutcomeProducer,
 } from '@/api/session/sessionClient';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 function createCodexAppServerProviderInputProducer(
     isCurrentRuntimeMode: () => boolean,

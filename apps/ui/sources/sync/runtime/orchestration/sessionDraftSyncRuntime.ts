@@ -3,7 +3,7 @@ import {
     SessionDraftSocketUpdateV1Schema,
     type SessionDraftAddressV1,
     type SessionDraftSocketUpdateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     areServerAccountScopesEqual,

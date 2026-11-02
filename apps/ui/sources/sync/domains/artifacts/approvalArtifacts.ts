@@ -1,4 +1,4 @@
-import { ApprovalRequestV1Schema, type ApprovalRequestV1 } from '@happier-dev/protocol';
+import { ApprovalRequestV1Schema, type ApprovalRequestV1 } from '@piggercode/protocol';
 
 import type { DecryptedArtifact } from './artifactTypes';
 import { normalizeSessionListKeyParts } from '../session/listing/sessionListKeyNormalization';

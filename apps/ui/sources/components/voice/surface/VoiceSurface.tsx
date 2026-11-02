@@ -34,7 +34,7 @@ import { resolveLatestVoiceSessionBinding, resolveVoiceSessionBindingByControlSe
 import { voiceSessionBindingManager } from '@/voice/sessionBinding/voiceSessionBindingRuntime';
 import { resolveVoiceSessionLabel } from '@/voice/context/resolveVoiceSessionLabel';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
-import { isHiddenSystemSession } from '@happier-dev/protocol';
+import { isHiddenSystemSession } from '@piggercode/protocol';
 import { getVoiceAgentSessionTeleportAvailability } from '@/voice/agent/getVoiceAgentSessionTeleportAvailability';
 import { normalizeNonEmptyString } from '@/voice/shared/normalizeNonEmptyString';
 import { Icon } from '@/components/ui/icons/Icon';

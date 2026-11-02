@@ -143,16 +143,16 @@ function collectExternalRuntimeDepNamesFromPackageJson(
   const peerDeps = pkg?.peerDependencies ?? {};
 
   const required = Object.keys(deps)
-    .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+    .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
     .map((name) => ({ name, optional: false }));
   const optional = includeOptionalDependencies
     ? Object.keys(optionalDeps)
-        .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+        .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
         .map((name) => ({ name, optional: true }))
     : [];
   const peer = includePeerDependencies
     ? Object.keys(peerDeps)
-        .filter((name) => typeof name === 'string' && !name.startsWith('@happier-dev/'))
+        .filter((name) => typeof name === 'string' && !name.startsWith('@piggercode/'))
         .map((name) => ({ name, optional: true }))
     : [];
 
@@ -255,12 +255,12 @@ function ensureWorkspacePackageManifests(snapshotNodeModulesDir: string, rootDir
       continue;
     }
 
-    if (!packageName.startsWith('@happier-dev/')) continue;
+    if (!packageName.startsWith('@piggercode/')) continue;
 
-    const scopePackageName = packageName.slice('@happier-dev/'.length).trim();
+    const scopePackageName = packageName.slice('@piggercode/'.length).trim();
     if (!scopePackageName) continue;
 
-    const snapshotPackageJsonPath = resolve(snapshotNodeModulesDir, '@happier-dev', scopePackageName, 'package.json');
+    const snapshotPackageJsonPath = resolve(snapshotNodeModulesDir, '@piggercode', scopePackageName, 'package.json');
     ensureCopiedTextFile(snapshotPackageJsonPath, packageJsonPath, { overwriteExisting: true });
   }
 }
@@ -295,9 +295,9 @@ function ensureWorkspacePackageReferencedFiles(snapshotNodeModulesDir: string, r
     }
 
     const packageName = typeof packageJson.name === 'string' ? packageJson.name.trim() : '';
-    if (!packageName.startsWith('@happier-dev/')) continue;
+    if (!packageName.startsWith('@piggercode/')) continue;
 
-    const scopePackageName = packageName.slice('@happier-dev/'.length).trim();
+    const scopePackageName = packageName.slice('@piggercode/'.length).trim();
     if (!scopePackageName) continue;
 
     const relativeFileTargets = new Set<string>();
@@ -306,7 +306,7 @@ function ensureWorkspacePackageReferencedFiles(snapshotNodeModulesDir: string, r
     collectPackageJsonRelativeFileTargets(packageJson.types, relativeFileTargets);
     collectPackageJsonRelativeFileTargets(packageJson.exports, relativeFileTargets);
 
-    const snapshotPackageDir = resolve(snapshotNodeModulesDir, '@happier-dev', scopePackageName);
+    const snapshotPackageDir = resolve(snapshotNodeModulesDir, '@piggercode', scopePackageName);
     for (const relativeFilePath of relativeFileTargets) {
       ensureCopiedTextFile(
         resolve(snapshotPackageDir, relativeFilePath),
@@ -339,13 +339,13 @@ function ensureWorkspacePackageDistTrees(snapshotNodeModulesDir: string, rootDir
       continue;
     }
 
-    if (!packageName.startsWith('@happier-dev/')) continue;
+    if (!packageName.startsWith('@piggercode/')) continue;
 
-    const scopePackageName = packageName.slice('@happier-dev/'.length).trim();
+    const scopePackageName = packageName.slice('@piggercode/'.length).trim();
     if (!scopePackageName) continue;
 
     const sourceDistDir = resolve(packagesDir, entry.name, 'dist');
-    const snapshotPackageDir = resolve(snapshotNodeModulesDir, '@happier-dev', scopePackageName);
+    const snapshotPackageDir = resolve(snapshotNodeModulesDir, '@piggercode', scopePackageName);
     const snapshotDistDir = resolve(snapshotPackageDir, 'dist');
     if (!existsSync(sourceDistDir)) continue;
 
@@ -385,13 +385,13 @@ function ensureWorkspacePackageRuntimeDependencyTrees(snapshotNodeModulesDir: st
       continue;
     }
 
-    if (!packageName.startsWith('@happier-dev/')) continue;
+    if (!packageName.startsWith('@piggercode/')) continue;
 
-    const scopePackageName = packageName.slice('@happier-dev/'.length).trim();
+    const scopePackageName = packageName.slice('@piggercode/'.length).trim();
     if (!scopePackageName) continue;
 
-    const sourceNodeModulesDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', scopePackageName, 'node_modules');
-    const snapshotPackageNodeModulesDir = resolve(snapshotNodeModulesDir, '@happier-dev', scopePackageName, 'node_modules');
+    const sourceNodeModulesDir = resolve(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', scopePackageName, 'node_modules');
+    const snapshotPackageNodeModulesDir = resolve(snapshotNodeModulesDir, '@piggercode', scopePackageName, 'node_modules');
     if (existsSync(sourceNodeModulesDir)) {
       ensureCopiedDirectory(snapshotPackageNodeModulesDir, sourceNodeModulesDir);
     }
@@ -438,7 +438,7 @@ function ensureExternalPackageRuntimeDependencyTrees(
 
   for (const entry of listNodeModulesEntries(snapshotNodeModulesDir)) {
     if (entry.name.startsWith('.')) continue;
-    if (entry.name === '@happier-dev') continue;
+    if (entry.name === '@piggercode') continue;
 
     const packagePath = resolve(snapshotNodeModulesDir, entry.name);
     if (entry.name.startsWith('@')) {
@@ -553,7 +553,7 @@ export function ensureCliPackSnapshotRuntimeDependencies(params: {
     });
   }
 
-  const bundledScopeDir = resolve(snapshotNodeModulesDir, '@happier-dev');
+  const bundledScopeDir = resolve(snapshotNodeModulesDir, '@piggercode');
   for (const entry of listScopedPackageEntries(bundledScopeDir)) {
     const packageDir = resolve(bundledScopeDir, entry.name);
     ensurePackageRuntimeDependenciesFromPackageJson({
@@ -586,14 +586,14 @@ export function ensureCliDistSnapshotNodeModules(params: {
   if (existsSync(cliNodeModulesDir)) {
     mkdirSync(snapshotNodeModulesDir, { recursive: true });
     ensureCopiedDirectory(
-      resolve(snapshotNodeModulesDir, '@happier-dev'),
-      resolve(cliNodeModulesDir, '@happier-dev'),
+      resolve(snapshotNodeModulesDir, '@piggercode'),
+      resolve(cliNodeModulesDir, '@piggercode'),
     );
     ensureWorkspacePackageManifests(snapshotNodeModulesDir, params.rootDir);
     ensureWorkspacePackageReferencedFiles(snapshotNodeModulesDir, params.rootDir);
     ensureWorkspacePackageDistTrees(snapshotNodeModulesDir, params.rootDir);
     ensureWorkspacePackageRuntimeDependencyTrees(snapshotNodeModulesDir, params.rootDir);
-    ensureCopiedNodeModulesEntries(cliNodeModulesDir, snapshotNodeModulesDir, new Set(['@happier-dev']));
+    ensureCopiedNodeModulesEntries(cliNodeModulesDir, snapshotNodeModulesDir, new Set(['@piggercode']));
     ensureExternalPackageRuntimeDependencyTrees(snapshotNodeModulesDir, params.rootDir);
   } else if (existsSync(rootNodeModulesDir)) {
     ensureSymlink(snapshotNodeModulesDir, rootNodeModulesDir);

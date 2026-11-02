@@ -5,12 +5,12 @@ import {
     rejectUndispatchedSessionAgentTransition,
     type SessionAgentTransitionRequestV1,
     type SessionAgentTransitionResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     RPC_ERROR_CODES,
     RPC_METHODS,
     SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS,
-} from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol/rpc';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { readRpcErrorCode } from '@/sync/runtime/rpcErrors';

@@ -5,7 +5,7 @@ import {
   type ActionId,
   type ActionSurfaces,
   type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readActionsSettingsFromEnv } from '@/settings/actionsSettings';
 import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';

@@ -16,7 +16,7 @@ import type { AcceptedConnectedServiceAccountVerificationByServiceId } from '../
 import type {
   ConnectedServiceCredentialRevisionV1,
   ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { evaluatePredictiveSoftSwitchSessionApplyPolicy } from '../predictiveSoftSwitchPolicy';
 
 export type ConnectedServiceAuthGroupSwitchState = Readonly<{

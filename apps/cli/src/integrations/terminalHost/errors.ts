@@ -1,5 +1,5 @@
 import type { TerminalHostKind, TerminalHostLaunchFailure } from './_types';
-import { TerminalHostUnavailableSpawnErrorDetailSchema, type TerminalHostUnavailableSpawnErrorDetail } from '@happier-dev/protocol';
+import { TerminalHostUnavailableSpawnErrorDetailSchema, type TerminalHostUnavailableSpawnErrorDetail } from '@piggercode/protocol';
 
 /** The host may have accepted its command before its creation reply failed. */
 export class TerminalHostCreationError extends AggregateError implements TerminalHostLaunchFailure {

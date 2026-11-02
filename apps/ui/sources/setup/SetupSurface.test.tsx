@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskEvent } from '@happier-dev/protocol';
+import { SYSTEM_TASK_PROTOCOL_VERSION, type SystemTaskEvent } from '@piggercode/protocol';
 
 import type { SystemTaskRunState } from '@/components/systemTasks/types';
 import { renderScreen } from '@/dev/testkit';

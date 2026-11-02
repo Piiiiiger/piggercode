@@ -1,4 +1,4 @@
-import { SESSION_ATTACHMENT_UPLOAD_STRUCTURED_INPUT_PROVENANCE_KIND } from '@happier-dev/protocol';
+import { SESSION_ATTACHMENT_UPLOAD_STRUCTURED_INPUT_PROVENANCE_KIND } from '@piggercode/protocol';
 
 import {
     buildStructuredInputMetaOverrides,

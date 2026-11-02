@@ -5,8 +5,8 @@ import os from 'node:os';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import type { MachineTransferReceiveEnvelope, SessionHandoffResumePlan, TransferEndpointCandidate } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { MachineTransferReceiveEnvelope, SessionHandoffResumePlan, TransferEndpointCandidate } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { createEncryptedTransferChunkEnvelope } from '../../machines/transfer/transferChunkEncryption';
 import { registerMachineSessionHandoffRpcHandlers } from './rpcHandlers.sessionHandoff';

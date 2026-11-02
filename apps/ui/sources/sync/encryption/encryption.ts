@@ -23,7 +23,7 @@ import {
     openEncryptedDataKeyEnvelopeV1,
     sealAccountScopedBlobCiphertext,
     sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { syncPerformanceTelemetry } from '../runtime/syncPerformanceTelemetry';
 import { createNativeCryptoWorker } from './nativeCryptoWorker/nativeCryptoWorker';
 import {

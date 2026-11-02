@@ -8,7 +8,7 @@ import { createStorageModuleStub, createStorageStoreProxy } from '@/dev/testkit/
 import { setActiveServerId, upsertServerProfile } from '@/sync/domains/server/serverProfiles';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
-import { ActionsSettingsV1Schema } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema } from '@piggercode/protocol';
 import { clearTempData, peekTempData, type NewSessionData } from '@/utils/sessions/tempDataStore';
 import { installSessionRouteCommonModuleMocks } from './sessionRouteTestHelpers';
 
@@ -363,8 +363,8 @@ vi.mock('@/sync/domains/sessionFork/forkUiSupport', () => ({ canForkConversation
 vi.mock('@/components/sessions/fork/openSessionForkStrategyFlow', () => ({ openSessionForkStrategyFlow: vi.fn() }));
 vi.mock('@/sync/domains/sessionHandoff/handoffUiSupport', () => ({ canHandoffConversation: () => true }));
 vi.mock('@/sync/domains/sessionHandoff/runSessionHandoffPickerFlow', () => ({ runSessionHandoffPickerFlow: vi.fn() }));
-vi.mock('@happier-dev/protocol', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@happier-dev/protocol')>();
+vi.mock('@piggercode/protocol', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@piggercode/protocol')>();
     return {
         ...actual,
         getActionSpec: () => ({
@@ -374,8 +374,8 @@ vi.mock('@happier-dev/protocol', async (importOriginal) => {
         }),
     };
 });
-vi.mock('@happier-dev/agents', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@happier-dev/agents')>();
+vi.mock('@piggercode/agents', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@piggercode/agents')>();
     return {
         ...actual,
         resolveAgentIdFromSessionMetadata: (metadata: Record<string, unknown> | null | undefined) => {

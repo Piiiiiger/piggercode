@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CODEX_ACP_DEP_ID, GH_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID, GH_DEP_ID } from '@piggercode/protocol/installables';
 
 describe('installable dep capabilities', () => {
   it('registers global dep capabilities for protocol installables outside provider-owned extras', async () => {

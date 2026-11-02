@@ -11,7 +11,7 @@ import {
   openProviderAccountUsageSnapshotCiphertext,
   type ConnectedServiceQuotaSnapshotV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   spawnConnectedCodexSession,

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import {
   resolveDaemonServiceChannelSegment,

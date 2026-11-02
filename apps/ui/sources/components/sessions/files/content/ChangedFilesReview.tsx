@@ -11,7 +11,7 @@ import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 import type { ScmFileStatus } from '@/scm/scmStatusFiles';
 import { t } from '@/text';
 import { scmUiBackendRegistry } from '@/scm/registry/scmUiBackendRegistry';
-import type { ScmDiffArea } from '@happier-dev/protocol';
+import type { ScmDiffArea } from '@piggercode/protocol';
 import { useChangedFilesReviewDiffLoading } from '@/components/sessions/files/content/review/useChangedFilesReviewDiffLoading';
 import { type ChangedFilesReviewRow } from '@/components/sessions/files/content/review/buildChangedFilesReviewRows';
 import { useChangedFilesReviewPrefetch } from '@/components/sessions/files/content/review/useChangedFilesReviewPrefetch';

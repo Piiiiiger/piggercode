@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { installVersionedPayload } from '@happier-dev/cli-common/firstPartyRuntime';
+import { installVersionedPayload } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { repoRootDir } from '../../paths';
 import { resolveCliTestLaunchSpec, type CliTestLaunchSpec } from '../../process/cliLaunchSpec';
@@ -158,11 +158,11 @@ function writeLocalCliPayload(params: Readonly<{ payloadRoot: string; launch: Cl
     ].join('\n'));
 }
 
-const FOREIGN_CLI_PACKAGE = '@happier-dev/cli';
+const FOREIGN_CLI_PACKAGE = '@piggercode/cli';
 
 /**
  * The local CLI build laid out as a global npm install: the package under
- * `<prefix>/lib/node_modules/@happier-dev/cli` and a `<prefix>/bin/happier` link to its bin, so
+ * `<prefix>/lib/node_modules/@piggercode/cli` and a `<prefix>/bin/happier` link to its bin, so
  * the CLI's origin owner names it `npm` with its removal and update commands. The node entry is
  * `bin/happier.mjs`, the package's `bin.happier`: like a real install, the CLI's `argv[1]` is
  * `happier`-named, so it derives its release ring from the invoker name and the default-channel

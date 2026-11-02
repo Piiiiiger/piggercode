@@ -7,7 +7,7 @@ import type { TerminalHostRegistry } from '@/integrations/terminalHost/registry'
 import { resolveZellijSocketDir } from '@/integrations/zellij/socketDir';
 import { tryDecryptSessionMetadata } from '@/session/transport/encryption/sessionEncryptionContext';
 import { fetchSessionByIdCompat, type RawSessionRecord } from '@/session/transport/http/sessionsHttp';
-import { SessionTerminalMetadataSchema } from '@happier-dev/protocol';
+import { SessionTerminalMetadataSchema } from '@piggercode/protocol';
 import { incompleteStopSession, type StopSessionResult } from './stopSessionContract';
 
 function readNonEmptyString(value: unknown): string | null {

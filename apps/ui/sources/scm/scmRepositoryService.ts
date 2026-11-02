@@ -2,8 +2,8 @@ import type {
     ScmStatusSnapshotResponse,
     ScmWorkingSnapshot as ProtocolScmWorkingSnapshot,
     ScmWorktreeEnrichmentEntry,
-} from '@happier-dev/protocol';
-import { SCM_WORKTREES_ENRICHMENT_MAX_PATHS } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SCM_WORKTREES_ENRICHMENT_MAX_PATHS } from '@piggercode/protocol';
 
 import type { ScmCapabilities, ScmStatus, ScmWorkingSnapshot as UiScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 import { sessionScmStatusSnapshot } from '@/sync/ops';

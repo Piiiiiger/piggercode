@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import {
   readPendingLocalId,
   type SessionContinuationResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { sendSessionMessage } from '@/session/services/sendSessionMessage';
 

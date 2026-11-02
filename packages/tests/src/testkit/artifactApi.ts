@@ -4,7 +4,7 @@ import { randomBytes } from 'node:crypto';
 import {
   openEncryptedDataKeyEnvelopeV1,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CliAccessKey } from './cliAccessKey';
 import { fetchJson } from './http';

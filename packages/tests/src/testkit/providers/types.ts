@@ -1,4 +1,4 @@
-import type { StructuredQuestionAnswersV1 } from '@happier-dev/protocol';
+import type { StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 
 export type KnownProviderId = 'opencode' | 'codex' | 'claude' | 'kilo' | 'qwen' | 'kimi' | 'gemini' | 'auggie' | 'pi' | 'cursor' | 'copilot' | 'grok';
 export type ProviderId = KnownProviderId | (string & { readonly __providerIdBrand?: unique symbol });
@@ -121,7 +121,7 @@ export type ProviderScenario = {
   // For multi-step scenarios, use `steps` instead.
   prompt?: (ctx: { workspaceDir: string }) => string;
   /**
-   * Optional extra CLI args to pass to `yarn workspace @happier-dev/cli dev <provider> ...`.
+   * Optional extra CLI args to pass to `yarn workspace @piggercode/cli dev <provider> ...`.
    *
    * Useful for provider CLI flags that must be set at process start (e.g. Claude `--mcp-config`),
    * without relying on writing global config into the host HOME directory.

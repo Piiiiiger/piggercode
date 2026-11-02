@@ -1,5 +1,5 @@
 import type { ConnectedServiceRuntimeFailureClassification } from '@/daemon/connectedServices/runtimeAuth/types';
-import { ConnectedServiceCredentialRevisionV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceCredentialRevisionV1Schema } from '@piggercode/protocol';
 import {
     resolveClaudeUsageLimitResetTiming,
     type NormalizedProviderUsageLimitDetailsV1,

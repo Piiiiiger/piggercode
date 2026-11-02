@@ -118,7 +118,7 @@ fn build_hsetup_sidecar() -> Result<(), String> {
 
     if !source_path.is_file() {
         return Err(format!(
-      "hsetup sidecar binary not found at {}. Build it first (recommended): yarn workspace @happier-dev/bootstrap build:binary",
+      "hsetup sidecar binary not found at {}. Build it first (recommended): yarn workspace @piggercode/bootstrap build:binary",
       source_path.display()
     ));
     }

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 import { DirectSessionsProviderUnavailableError } from '@/backends/directSessions/providerOps';
 import type { CodexAppServerClient } from '../appServer/client/createCodexAppServerClient';

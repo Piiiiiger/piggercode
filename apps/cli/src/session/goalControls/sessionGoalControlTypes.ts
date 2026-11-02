@@ -1,5 +1,5 @@
-import type { AgentId } from '@happier-dev/agents';
-import type { SessionGoalSetRequestV1 } from '@happier-dev/protocol';
+import type { AgentId } from '@piggercode/agents';
+import type { SessionGoalSetRequestV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type {

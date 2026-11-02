@@ -1,8 +1,8 @@
 import { logger } from '@/ui/logger';
 import { daemonProcessMatchesCurrentScope } from '../ownership/daemonProcessScopeIdentity';
 import type { Credentials } from '@/persistence';
-import { parseOptionalBooleanEnv } from '@happier-dev/protocol';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { parseOptionalBooleanEnv } from '@piggercode/protocol';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 import {
   resolveTerminalAttachmentControlDescriptorStatusThroughCatalog,
   resolveCatalogAgentIdForCliSubcommand,

@@ -1,13 +1,13 @@
 import chalk from 'chalk';
 
-import { DEFAULT_BUILT_IN_BACKEND_PROFILES } from '@happier-dev/protocol';
+import { DEFAULT_BUILT_IN_BACKEND_PROFILES } from '@piggercode/protocol';
 
 import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import { readCredentials } from '@/persistence';
 import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfilesFromAccountSettings';
 import { mapProfileToListItem, type ProfilesListItem } from '@/settings/profiles/profileListProjection';
-import { ACCENT_HEX } from '@happier-dev/cli-common/output';
+import { ACCENT_HEX } from '@piggercode/cli-common/output';
 
 function printProfilesHuman(profiles: ReadonlyArray<ProfilesListItem>, authenticated: boolean): void {
   console.log(chalk.bold(`Backend profiles (${profiles.length})`));

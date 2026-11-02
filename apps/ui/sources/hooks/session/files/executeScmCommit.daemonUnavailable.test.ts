@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 import { installSessionFilesHookCommonModuleMocks } from './sessionFilesHookTestHelpers';
 
 const modalAlert = vi.hoisted(() => vi.fn());

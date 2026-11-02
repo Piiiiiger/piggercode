@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderHook } from '@/dev/testkit';
 import { resetDynamicSessionModeProbeCacheForTests } from '@/sync/domains/sessionModes/dynamicSessionModeProbeCache';
 import { buildSpawnHappySessionRpcParams } from '@/sync/domains/session/spawn/spawnSessionPayload';
-import { resolveAgentNativeSpawnDefinitiveRejection } from '@happier-dev/agents';
+import { resolveAgentNativeSpawnDefinitiveRejection } from '@piggercode/agents';
 import { useNewSessionPreflightSessionModesState } from './useNewSessionPreflightSessionModesState';
 
 const { invoke } = vi.hoisted(() => ({ invoke: vi.fn() }));

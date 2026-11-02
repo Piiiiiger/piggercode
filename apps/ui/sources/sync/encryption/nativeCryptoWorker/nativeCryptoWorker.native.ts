@@ -1,5 +1,5 @@
 import { requireNativeModule } from 'expo-modules-core';
-import { parseSerializedJsonValue } from '@happier-dev/protocol';
+import { parseSerializedJsonValue } from '@piggercode/protocol';
 
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
 

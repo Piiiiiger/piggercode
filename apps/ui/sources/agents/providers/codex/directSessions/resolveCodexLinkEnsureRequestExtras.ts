@@ -1,5 +1,5 @@
-import { buildCodexAgentRuntimeDescriptor, readSessionMetadataRuntimeDescriptor } from '@happier-dev/agents';
-import { normalizeCodexBackendMode } from '@happier-dev/protocol';
+import { buildCodexAgentRuntimeDescriptor, readSessionMetadataRuntimeDescriptor } from '@piggercode/agents';
+import { normalizeCodexBackendMode } from '@piggercode/protocol';
 
 import type { DirectBrowseLinkEnsureRequestExtras } from '@/agents/registry/registryUiBehavior';
 

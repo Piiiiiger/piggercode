@@ -1,5 +1,5 @@
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { createRpcCallError } from '@/sync/runtime/rpcErrors';
 import { apiSocket } from '@/sync/api/session/apiSocket';
@@ -8,7 +8,7 @@ import { resolveScopedSessionCryptoContext } from '@/sync/runtime/orchestration/
 import { resolveServerScopedSessionContext } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerScopedSessionContext';
 import type { ResolvedServerSessionRpcContext } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerScopedSessionContext';
 import { areServerAccountScopesEqual, createServerAccountScope, type ServerAccountScope } from '@/sync/domains/scope/serverAccountScope';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 import { raceSocketIoAckTimeout } from '@/sync/runtime/socketIoAckTimeout';
 
 import type { SocketRpcResult } from './serverScopedRpcTypes';

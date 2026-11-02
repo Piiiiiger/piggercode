@@ -3,7 +3,7 @@ import type { ToolCall } from '@/sync/domains/messages/messageTypes';
 import { t } from '@/text';
 import { ICON_WEB } from '../icons';
 import type { KnownToolDefinition } from '../_types';
-import { WebFetchInputV2Schema, WebSearchInputV2Schema } from '@happier-dev/protocol';
+import { WebFetchInputV2Schema, WebSearchInputV2Schema } from '@piggercode/protocol';
 
 export const coreWebTools = {
     'WebFetch': {

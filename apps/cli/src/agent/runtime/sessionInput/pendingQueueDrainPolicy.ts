@@ -8,7 +8,7 @@ import {
   type SessionRuntimeActivityProjection,
   type SessionPendingQueueDeliveryTiming,
   type SessionPendingQueueDrainMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { SessionRuntimeActivityProjectionBoundary } from '@/api/session/runtimeActivityProjection';
 import type { PendingForegroundSteerability } from './types';
 

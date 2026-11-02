@@ -1,4 +1,4 @@
-import type { ConnectedServiceId, ConnectedServiceProfileId } from '@happier-dev/protocol';
+import type { ConnectedServiceId, ConnectedServiceProfileId } from '@piggercode/protocol';
 
 export function summarizePiConnectedServiceActiveProfiles(params: Readonly<{
   openaiCodexProfileId: ConnectedServiceProfileId | null;

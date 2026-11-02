@@ -13,7 +13,7 @@ import { addServerProfile, useServerProfile } from '@/server/serverProfiles';
 import { captureConsoleLogAndMuteStdout, captureStdoutJsonOutput } from '@/testkit/logger/captureOutput';
 import { buildLaunchAgentPlistXml } from '@/daemon/service/darwin';
 import { resolveDaemonServiceCliRuntimeFromEnv, resolveDaemonServicePaths, type DaemonServiceListEntry } from '@/daemon/service/cli';
-import { renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 import { resolveServerSelectionBackgroundServiceOutcome } from './backgroundServiceFollowUp';
 
 const promptAnswers: string[] = [];

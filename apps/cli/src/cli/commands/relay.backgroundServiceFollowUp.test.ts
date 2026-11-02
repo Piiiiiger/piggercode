@@ -17,7 +17,7 @@ let promptedQuestions: string[] = [];
 let installedServices: readonly DaemonServiceListEntry[] = [];
 let spawnedCliActions: string[][] = [];
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
     const actual = await importOriginal<Record<string, unknown>>();
     return {
         ...actual,
@@ -32,7 +32,7 @@ vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
     };
 });
 
-vi.mock('@happier-dev/cli-common/relayHost', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
     const actual = await importOriginal<Record<string, unknown>>();
     return {
         ...actual,

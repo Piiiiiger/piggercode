@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { ActionId } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
 
 import { Modal } from '@/modal';
 import { t } from '@/text';

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizePermissionModeForGroup } from '@happier-dev/agents';
+import { normalizePermissionModeForGroup } from '@piggercode/agents';
 
 describe('normalizePermissionModeForGroup', () => {
   it('keeps provider-agnostic intents for claude sessions', () => {

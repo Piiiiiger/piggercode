@@ -29,7 +29,7 @@ import {
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { sealConnectedServiceCredential } from './sealConnectedServiceCredential';
 import { invalidateConnectedServiceQuotaSnapshotForCredential } from './connectedServiceQuotaSnapshotStore';

@@ -1,4 +1,4 @@
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import type { SessionMessageRole } from '@piggercode/protocol';
 
 import { buildSessionMessagesPath } from '@/sync/api/session/sessionMessagesApi';
 import type { NormalizedMessage } from '@/sync/typesRaw';

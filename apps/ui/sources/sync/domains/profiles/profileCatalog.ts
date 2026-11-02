@@ -1,5 +1,5 @@
 import { type AIBackendProfile } from './profileCompatibility';
-import { DEFAULT_BUILT_IN_BACKEND_PROFILES, getBuiltInBackendProfile } from '@happier-dev/protocol';
+import { DEFAULT_BUILT_IN_BACKEND_PROFILES, getBuiltInBackendProfile } from '@piggercode/protocol';
 
 /**
  * Get a built-in AI backend profile by ID.

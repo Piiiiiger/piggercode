@@ -1,4 +1,4 @@
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { DaemonServiceListEntry } from '@/daemon/service/cli';
 import type { DaemonServiceMode, DaemonServiceTargetMode } from '@/daemon/service/plan';

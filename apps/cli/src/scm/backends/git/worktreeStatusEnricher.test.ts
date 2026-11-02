@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
-import type { ScmWorktree } from '@happier-dev/protocol';
+import type { ScmWorktree } from '@piggercode/protocol';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { enrichGitWorktreesWithStatus, readWorktreeStatusEnrichmentForPaths } from './worktreeStatusEnricher';

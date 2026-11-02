@@ -4,7 +4,7 @@ import {
   ConnectedServiceIdSchema,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type RuntimeAccountIdentityProofStrength = 'exact' | 'weak';
 

@@ -16,7 +16,7 @@ import {
   trimBugReportTextToMaxBytes,
   type BugReportArtifactPayload,
   type BugReportEnvironmentPayload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import packageJson from '../../package.json';
 import { configuration } from '@/configuration';

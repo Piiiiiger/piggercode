@@ -1,5 +1,5 @@
-import { SessionRuntimeActivitySnapshotSchema } from '@happier-dev/protocol';
-import type { SessionRuntimeActivitySnapshot } from '@happier-dev/protocol';
+import { SessionRuntimeActivitySnapshotSchema } from '@piggercode/protocol';
+import type { SessionRuntimeActivitySnapshot } from '@piggercode/protocol';
 
 import type { SessionRuntimeActivitySnapshotPublisher } from '@/session/runtimeActivity/types';
 

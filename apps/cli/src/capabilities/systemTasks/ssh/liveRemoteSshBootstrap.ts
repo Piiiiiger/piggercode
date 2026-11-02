@@ -15,8 +15,8 @@ import {
   type RemoteFirstPartyCommandResult,
   type RemoteHostTrustResolution,
   type SystemTaskSshConnectionConfig,
-} from '@happier-dev/cli-common/systemTasks';
-import { createRelayHostEngine } from '@happier-dev/cli-common/relayHost';
+} from '@piggercode/cli-common/systemTasks';
+import { createRelayHostEngine } from '@piggercode/cli-common/relayHost';
 
 import { approveTerminalAuthRequest } from '@/auth/terminalAuthApproval';
 import { configuration } from '@/configuration';

@@ -12,7 +12,7 @@ import {
   sealAccountScopedBlobCiphertext,
   SessionMcpSelectionV1Schema,
   type AccountScopedCryptoMaterial,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { randomBytes as nodeRandomBytes } from 'node:crypto';
 import * as z from 'zod';
 

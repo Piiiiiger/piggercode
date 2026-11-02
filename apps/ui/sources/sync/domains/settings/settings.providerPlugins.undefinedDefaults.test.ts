@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { defineSettingDefinitions } from '@happier-dev/protocol';
+import { defineSettingDefinitions } from '@piggercode/protocol';
 import { z } from 'zod';
 
 describe('settingsDefaults provider plugin default guards', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ConnectedServiceUxDiagnosticV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceUxDiagnosticV1 } from '@piggercode/protocol';
 
 import type { ConnectedServiceRuntimeAuthFailureDaemonReport } from '../reportConnectedServiceRuntimeAuthFailureToDaemon';
 import {

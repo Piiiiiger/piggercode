@@ -7,7 +7,7 @@ import { fetchJson } from '../../src/testkit/http';
 import { createTestAuthMtls } from '../../src/testkit/auth';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
 import { createMinimalCodexPetPackage, readMinimalAccountPetCreatePayload } from '../../src/testkit/pets/petPackageFixture';
-import { FeaturesResponseSchema, readServerEnabledBit } from '@happier-dev/protocol';
+import { FeaturesResponseSchema, readServerEnabledBit } from '@piggercode/protocol';
 
 const run = createRunDirs({ runLabel: 'core' });
 

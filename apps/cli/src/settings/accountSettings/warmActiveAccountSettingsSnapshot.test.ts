@@ -1,4 +1,4 @@
-import { accountSettingsParse } from '@happier-dev/protocol';
+import { accountSettingsParse } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Credentials } from '@/persistence';

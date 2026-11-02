@@ -1,4 +1,4 @@
-import { redactBugReportSensitiveText, type MemoryContentPolicyV1, type MemoryWindowV1 } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText, type MemoryContentPolicyV1, type MemoryWindowV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { resolveSessionEncryptionContextFromCredentials } from '@/session/transport/encryption/sessionEncryptionContext';

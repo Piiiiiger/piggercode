@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveMetadataStringOverrideV1, resolvePermissionIntentFromSessionMetadata } from '@happier-dev/agents';
+import { resolveMetadataStringOverrideV1, resolvePermissionIntentFromSessionMetadata } from '@piggercode/agents';
 import * as permissionModeFromMetadata from './permissionModeFromMetadata';
 
 describe('resolvePermissionIntentFromMetadataSnapshot', () => {
@@ -221,7 +221,7 @@ describe('computePendingModelOverrideApplication', () => {
   });
 });
 
-describe('@happier-dev/agents session metadata helpers', () => {
+describe('@piggercode/agents session metadata helpers', () => {
   it('resolves nested override objects consistently', () => {
     expect(
       resolveMetadataStringOverrideV1(

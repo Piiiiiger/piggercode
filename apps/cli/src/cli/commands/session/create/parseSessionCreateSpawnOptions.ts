@@ -6,7 +6,7 @@ import {
   SessionMcpSelectionV1Schema,
   parseSessionPermissionModeAlias,
   type SpawnConfigOptionValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 
 import { DEFAULT_CATALOG_AGENT_ID } from '@/backends/types';

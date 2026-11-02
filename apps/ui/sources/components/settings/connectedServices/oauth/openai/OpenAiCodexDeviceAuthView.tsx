@@ -21,7 +21,7 @@ import {
   ConnectedServiceIdSchema,
   encodeBase64,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   pollOpenAiCodexDeviceAuthViaProxy,

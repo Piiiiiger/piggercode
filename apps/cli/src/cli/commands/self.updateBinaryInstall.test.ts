@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { ManagedCliUpdateParams, ManagedCliUpdateResult } from '@happier-dev/cli-common/firstPartyRuntime';
+import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@piggercode/cli-common/firstPartyRuntime';
+import type { ManagedCliUpdateParams, ManagedCliUpdateResult } from '@piggercode/cli-common/firstPartyRuntime';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { captureStdout } from '@/testkit/logger/captureOutput';
 
@@ -32,8 +32,8 @@ const {
   resolveFirstPartyComponentReleaseMock: vi.fn(async () => ({ versionId: '9.9.10' })),
 }));
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/cli-common/firstPartyRuntime')>();
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/cli-common/firstPartyRuntime')>();
   return {
     ...actual,
     runManagedCliUpdate: (params: ManagedCliUpdateParams) => runManagedCliUpdateMock(params),
@@ -207,7 +207,7 @@ describe('happier self update for binary installs', () => {
   });
 
   it('reports admission — or the refusal — to the daemon that started it on the admission pipe', async () => {
-    const { FirstPartyPayloadMutationLockError } = await import('@happier-dev/cli-common/firstPartyRuntime');
+    const { FirstPartyPayloadMutationLockError } = await import('@piggercode/cli-common/firstPartyRuntime');
     const { UPDATER_ADMISSION_FD_ENV } = await import('@/cli/runtime/update/updaterAdmission');
     const reportPath = join(homeDir, 'admission');
 

@@ -10,10 +10,10 @@ import { resolveCliAuthHomeDir } from '@/capabilities/cliAuth/shared';
 import type { CliAuthSpec, CliAuthStatus } from '@/backends/types';
 import { resolveProviderCliCommand } from '@/runtime/managedTools/providerCliResolution';
 import { resolveJavaScriptRuntimeExecutable } from '@/runtime/js/resolveJavaScriptRuntimeExecutable';
-import { AsyncTtlCache } from '@happier-dev/protocol';
-import { getProviderCliRuntimeSpec } from '@happier-dev/agents';
-import { isProviderCliPathRunnable, providerCliPathRequiresJavaScriptRuntime } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandInvocation, resolveWindowsCommandOnPath } from '@happier-dev/cli-common/process';
+import { AsyncTtlCache } from '@piggercode/protocol';
+import { getProviderCliRuntimeSpec } from '@piggercode/agents';
+import { isProviderCliPathRunnable, providerCliPathRequiresJavaScriptRuntime } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandInvocation, resolveWindowsCommandOnPath } from '@piggercode/cli-common/process';
 
 const execFileAsync = promisify(execFile);
 type ExecFileBestEffortOptions = ExecOptions & Readonly<{ windowsVerbatimArguments?: boolean }>;

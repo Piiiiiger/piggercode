@@ -1,4 +1,4 @@
-import type { McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { McpServersSettingsV1 } from '@piggercode/protocol';
 
 export function normalizeMcpServersSettingsV1(settings: McpServersSettingsV1): McpServersSettingsV1 {
     const serverIds = new Set(settings.servers.map((s) => s.id));

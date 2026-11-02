@@ -3,7 +3,7 @@ import { logger } from '@/ui/logger';
 import { randomUUID } from 'node:crypto';
 import { mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { DaemonExecutionRunMarkerSchema, type DaemonExecutionRunMarker } from '@happier-dev/protocol';
+import { DaemonExecutionRunMarkerSchema, type DaemonExecutionRunMarker } from '@piggercode/protocol';
 import { resolveReleaseRingScopedBasename } from '@/cli/runtime/publicReleaseChannel';
 
 const ExecutionRunMarkerSchema = DaemonExecutionRunMarkerSchema;

@@ -1,6 +1,6 @@
 # Happier CLI Instructions
 
-Package-specific instructions for `apps/cli` (`@happier-dev/cli`). These supplement the root constitution and override broader guidance where more specific.
+Package-specific instructions for `apps/cli` (`@piggercode/cli`). These supplement the root constitution and override broader guidance where more specific.
 
 ## Ownership
 
@@ -18,7 +18,7 @@ The CLI owns local runtime, daemon control, provider execution, authentication, 
 Use yarn. TypeScript changes require:
 
 ```bash
-yarn workspace @happier-dev/cli typecheck
+yarn workspace @piggercode/cli typecheck
 ```
 
 Use the smallest relevant test slice while iterating and broaden before handoff. CLI unit tests must not force a full CLI `dist` build.

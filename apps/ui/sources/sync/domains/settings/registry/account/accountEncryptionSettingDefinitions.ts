@@ -1,7 +1,7 @@
 import {
     ClientEncryptionRequirementSchema,
     defineSettingDefinitions,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const ACCOUNT_ENCRYPTION_SETTING_DEFINITIONS = defineSettingDefinitions({
     clientEncryptionRequirementV1: {

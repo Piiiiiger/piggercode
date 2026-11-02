@@ -1,5 +1,5 @@
-import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@happier-dev/protocol';
-import type { AccountSettings } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, type ConnectedServiceId } from '@piggercode/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { ExpoPushActivityNotificationSender } from '@/activity/notifications/sendExpoPushActivityNotification';

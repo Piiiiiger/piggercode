@@ -1,7 +1,7 @@
 import type {
   ActionOperationCancelV1Response,
   ActionOperationScopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ActionOperationAccessScope = Pick<ActionOperationScopeV1, 'accountId' | 'machineId'>;
 

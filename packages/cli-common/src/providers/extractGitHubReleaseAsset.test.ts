@@ -8,7 +8,7 @@ const { extractArchivePayloadToDirectoryMock } = vi.hoisted(() => ({
     extractArchivePayloadToDirectoryMock: vi.fn(async () => undefined),
 }));
 
-vi.mock('@happier-dev/release-runtime/archiveExtraction', () => ({
+vi.mock('@piggercode/release-runtime/archiveExtraction', () => ({
     extractArchivePayloadToDirectory: extractArchivePayloadToDirectoryMock,
 }));
 

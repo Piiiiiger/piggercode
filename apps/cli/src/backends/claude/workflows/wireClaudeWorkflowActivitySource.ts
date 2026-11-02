@@ -1,7 +1,7 @@
 import {
   readSessionAgentActivityHeadlineFromMetadata,
   SessionWorkflowActivityHeadlineV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 import { updateMetadataBestEffort } from '@/api/session/sessionWritesBestEffort';

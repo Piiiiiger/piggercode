@@ -4,7 +4,7 @@ import {
   encodePlainMachineStoredContent,
   isPlainMachineDataKeyMarker,
   type AccountEncryptionMigrateMachinesDirective,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { EncryptionMaterialUnavailableError, type Encryption } from '@/sync/encryption/encryption';
 import { MachineEncryption } from '@/sync/encryption/machineEncryption';
 import { EncryptionCache } from '@/sync/encryption/encryptionCache';

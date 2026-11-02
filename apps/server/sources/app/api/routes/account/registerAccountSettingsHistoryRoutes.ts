@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import {
     AccountSettingsStoredContentEnvelopeSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { recordAccountSettingsSnapshotsForWrite } from "@/app/accountSettings/accountSettingsHistoryRepository";
 import {
     accountSettingsContentEquals,

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SpawnSessionTerminalSchema } from '@happier-dev/protocol/spawnSession';
+import { SpawnSessionTerminalSchema } from '@piggercode/protocol/spawnSession';
 import {
   AcpConfigOptionOverridesV1Schema,
   AgentRuntimeDescriptorV1Schema,
@@ -10,7 +10,7 @@ import {
   SessionMcpSelectionV1Schema,
   SessionSpawnSourceContextV1Schema,
   SpawnSessionExecutionAuthorizationSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { PERMISSION_MODES } from '@/api/types';
 import { CATALOG_AGENT_IDS, type CatalogAgentId } from '@/backends/types';

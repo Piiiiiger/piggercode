@@ -5,7 +5,7 @@ import {
     normalizeAskUserQuestionRenderQuestions,
     tryBuildAskUserQuestionAnswerPayload,
 } from './buildAskUserQuestionAnswerPayload';
-import { STRUCTURED_QUESTION_LIMITS } from '@happier-dev/protocol';
+import { STRUCTURED_QUESTION_LIMITS } from '@piggercode/protocol';
 
 const questions = [
     {

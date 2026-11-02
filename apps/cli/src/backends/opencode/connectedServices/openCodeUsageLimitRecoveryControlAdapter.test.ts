@@ -1,7 +1,7 @@
 import {
   SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import type { Credentials } from '@/persistence';

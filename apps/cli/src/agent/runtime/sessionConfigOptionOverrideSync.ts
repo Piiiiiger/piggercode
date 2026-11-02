@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import {
   computeNextMetadataConfigOptionOverrideV1,
   readNewestSessionConfigOptionOverridesMetadataStateV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { isDefinitiveSessionControlApplyError } from './sessionControlApplyError';
 import { logger } from '@/ui/logger';
 import {

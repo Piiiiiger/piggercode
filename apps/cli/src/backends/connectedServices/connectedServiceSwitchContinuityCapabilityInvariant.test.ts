@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENTS_CORE } from '@happier-dev/agents';
-import type { AgentCore, AgentSessionAuthSwitchTransition } from '@happier-dev/agents';
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import type { AgentCore, AgentSessionAuthSwitchTransition } from '@piggercode/agents';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 import type { CatalogAgentId, ConnectedServiceSwitchContinuityParams } from '@/backends/types';
 import {

@@ -1,4 +1,4 @@
-import type { SessionRunnerRuntimeStateV1 } from '@happier-dev/protocol';
+import type { SessionRunnerRuntimeStateV1 } from '@piggercode/protocol';
 
 export type SessionRunnerRuntimeStatusIdentity = Readonly<{
     serverId: string;

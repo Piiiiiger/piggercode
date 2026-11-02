@@ -1026,7 +1026,7 @@ test('duplicate shared descriptor ids from daemon and server wiring merge into o
   const packageJsonPath = join(root, 'package.json');
   await mkdir(srcDir);
   await writeFile(join(srcDir, 'index.ts'), 'export const value = 1;\n');
-  await writeFile(packageJsonPath, '{"name":"@happier-dev/protocol"}\n');
+  await writeFile(packageJsonPath, '{"name":"@piggercode/protocol"}\n');
 
   const calls = [];
   const sharedFromDaemon = { id: 'shared:protocol', target: 'shared', paths: [srcDir] };

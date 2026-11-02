@@ -2,7 +2,7 @@ import { startHappyServer, type HappyMcpSessionClient } from '@/mcp/startHappySe
 import { resolveNodeBackedMcpServerCommand } from '@/mcp/runtime/resolveNodeBackedMcpServerCommand'
 import type { McpServerConfig } from '@/agent'
 import type { Credentials } from '@/persistence'
-import type { AccountSettings, ActionsSettingsV1 } from '@happier-dev/protocol'
+import type { AccountSettings, ActionsSettingsV1 } from '@piggercode/protocol'
 
 function isTruthyEnvFlag(raw: string | undefined): boolean {
   const normalized = (raw ?? '').trim().toLowerCase()

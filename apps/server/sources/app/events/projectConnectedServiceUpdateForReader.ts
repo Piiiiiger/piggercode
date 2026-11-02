@@ -3,7 +3,7 @@ import {
     projectSessionRuntimeIssueForReader,
     SessionRuntimeIssueV1Schema,
     type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import type { UpdatePayload } from "./eventPayloadTypes";
 

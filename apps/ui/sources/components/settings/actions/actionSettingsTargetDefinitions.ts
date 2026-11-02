@@ -4,7 +4,7 @@ import {
     type ActionSpec,
     type ActionSurfaces,
     type ActionUiPlacement,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TranslationKey } from '@/text';
 

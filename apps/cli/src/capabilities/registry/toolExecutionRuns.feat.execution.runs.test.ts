@@ -7,7 +7,7 @@ import { executionRunsCapability } from './toolExecutionRuns';
 import type { DetectCliEntry, DetectCliSnapshot } from '../snapshots/cliSnapshot';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';
-import { ExecutionRunIntentSchema } from '@happier-dev/protocol';
+import { ExecutionRunIntentSchema } from '@piggercode/protocol';
 
 function makeUnavailableCliEntry(): DetectCliEntry {
   return { available: false };

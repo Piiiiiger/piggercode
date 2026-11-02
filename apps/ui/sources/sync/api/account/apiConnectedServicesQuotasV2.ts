@@ -3,7 +3,7 @@ import { serverFetch } from '@/sync/http/client';
 import { HappyError } from '@/utils/errors/errors';
 import { backoff } from '@/utils/timing/time';
 
-import { SealedConnectedServiceQuotaSnapshotV1Schema, type ConnectedServiceId, type SealedConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import { SealedConnectedServiceQuotaSnapshotV1Schema, type ConnectedServiceId, type SealedConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 import { z } from 'zod';
 
 function extractErrorCode(json: unknown): string | null {

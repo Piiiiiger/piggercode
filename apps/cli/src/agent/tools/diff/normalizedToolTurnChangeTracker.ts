@@ -1,4 +1,4 @@
-import type { TurnChangeSet } from '@happier-dev/protocol';
+import type { TurnChangeSet } from '@piggercode/protocol';
 
 import { TurnChangeSetCollector } from './turnChangeSetCollector';
 import {

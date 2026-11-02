@@ -1,5 +1,5 @@
 import { matchServerFetchUrl } from '@/dev/testkit/mocks/serverFetch';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { mockRequest, mockResolveContext, mockRuntimeFetch, mockMachineRpc, mockStorageState } = vi.hoisted(() => ({

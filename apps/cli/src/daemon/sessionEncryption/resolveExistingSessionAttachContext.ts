@@ -14,7 +14,7 @@ import {
 import { fetchSessionByIdCompat } from '@/session/transport/http/sessionsHttp';
 import type { SessionSnapshotRefreshReasonInput } from '@/api/session/sessionSnapshotRefreshReason';
 import { tryParseJsonRecord } from '@/utils/tryParseJsonRecord';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 import { isSessionEncryptionModeAllowedByEffectiveClientRequirement } from '@/settings/accountSettings/resolveEffectiveClientEncryptionRequirement';
 
 export type ExistingSessionAttachContext = Readonly<{

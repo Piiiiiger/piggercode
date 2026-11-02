@@ -5,8 +5,8 @@ import { runCodexProviderAttach } from './runCodexProviderAttach';
 import { withTempDir } from '@/testkit/fs/tempDir';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { SessionProviderCliAttachPrepareRequestV1 } from '@happier-dev/protocol';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import type { SessionProviderCliAttachPrepareRequestV1 } from '@piggercode/protocol';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 describe('runCodexProviderAttach', () => {
   it('cleans its zero-turn native child when the older prepare receiver refuses terminal custody', async () => {

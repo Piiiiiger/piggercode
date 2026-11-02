@@ -1,4 +1,4 @@
-import { isAskUserQuestionToolName } from '@happier-dev/protocol';
+import { isAskUserQuestionToolName } from '@piggercode/protocol';
 
 import { normalizeAskUserQuestionInputForPublication } from '@/agent/questions/normalizeAskUserQuestionInput';
 

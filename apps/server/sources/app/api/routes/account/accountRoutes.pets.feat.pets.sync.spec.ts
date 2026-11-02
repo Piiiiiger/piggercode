@@ -6,7 +6,7 @@ import { join } from "node:path";
 import sharp from "sharp";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PET_ANIMATION_ROWS_V1, PET_ATLAS_V1 } from "@happier-dev/protocol";
+import { PET_ANIMATION_ROWS_V1, PET_ATLAS_V1 } from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

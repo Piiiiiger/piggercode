@@ -5,7 +5,7 @@ import { resolveAuthSeedFromEnv, resolveAutoCopyFromMainEnabled } from './utils/
 import { coerceHappyMonorepoRootFromPath, getStacksStorageRoot } from './utils/paths/paths.mjs';
 import { readLastLines } from './utils/fs/tail.mjs';
 import { ensureCliBuilt, isCliDistBuildLockActive } from './utils/proc/pm.mjs';
-import { resolveJavaScriptRuntimeCommand } from '@happier-dev/cli-common/providers/managedJavaScriptRuntime';
+import { resolveJavaScriptRuntimeCommand } from '@piggercode/cli-common/providers/managedJavaScriptRuntime';
 import {
   findAnyCredentialPathInCliHome,
   findExistingStackCredentialPath,

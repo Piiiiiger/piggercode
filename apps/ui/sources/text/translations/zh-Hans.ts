@@ -10299,7 +10299,7 @@ settingsSession: {
     detectedCliDetected: "已检测到",
     detectedCliNotDetected: "未检测到",
     detectedCliUnknown: "未知",
-    detectedCliNotSupported: "不支持（请更新 @happier-dev/cli）",
+    detectedCliNotSupported: "不支持（请更新 @piggercode/cli）",
     untitledSession: "无标题会话",
     back: "返回",
     notFound: "未找到设备",

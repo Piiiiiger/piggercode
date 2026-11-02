@@ -12,7 +12,7 @@ import type { Session } from '@/sync/domains/state/storageTypes';
 import { Encryption } from '@/sync/encryption/encryption';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
 import { HappyError } from '@/utils/errors/errors';
-import { encodeV2SessionListCursorV1, type V2SessionRecord } from '@happier-dev/protocol';
+import { encodeV2SessionListCursorV1, type V2SessionRecord } from '@piggercode/protocol';
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';
 

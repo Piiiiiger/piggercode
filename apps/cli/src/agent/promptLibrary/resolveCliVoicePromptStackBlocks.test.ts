@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 
 import { encodeBase64, encryptWithDataKey } from '@/api/encryption';
 import type { Credentials } from '@/persistence';

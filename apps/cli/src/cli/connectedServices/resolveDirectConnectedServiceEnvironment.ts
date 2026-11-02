@@ -4,11 +4,11 @@ import type {
   AccountSettings,
   ConnectedServiceBindingsV1,
   ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   readConnectedServiceMaterializationIdentityV1FromMetadata,
   resolveConnectedServicesProviderStateSharingPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ApiClient } from '@/api/api';
 import {

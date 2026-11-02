@@ -129,7 +129,7 @@ import {
   getActionSpec,
   readMentionRefOpaqueForKindV1,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createPendingFirstInput } from '@/daemon/spawn/pendingFirstInput';
 import { SPAWN_SESSION_ERROR_CODES } from '@/rpc/handlers/registerSessionHandlers';
 

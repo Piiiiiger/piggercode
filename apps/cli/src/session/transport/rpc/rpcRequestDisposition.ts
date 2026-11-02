@@ -1,5 +1,5 @@
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
-import { createRpcCallError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
+import { createRpcCallError } from '@piggercode/protocol/rpcErrors';
 
 export type RpcRequestDisposition = 'notSent' | 'outcomeUnknown';
 

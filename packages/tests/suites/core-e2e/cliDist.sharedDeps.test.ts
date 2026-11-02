@@ -41,12 +41,12 @@ async function writeSharedWorkspaceOutputs(repoRoot: string, protocolMarker = 'p
     await mkdir(resolve(entry.path, '..'), { recursive: true });
     await writeFile(entry.path, entry.contents, 'utf8');
 
-    const bundledPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', entry.packageName);
+    const bundledPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', entry.packageName);
     await writeFile(
       resolve(bundledPackageDir, 'package.json'),
       JSON.stringify(
         {
-          name: `@happier-dev/${entry.packageName}`,
+          name: `@piggercode/${entry.packageName}`,
           type: 'module',
           main: './dist/index.js',
           exports: {
@@ -67,7 +67,7 @@ async function writeSharedWorkspaceOutputs(repoRoot: string, protocolMarker = 'p
 
 async function createBundledWorkspacePackageDirs(repoRoot: string): Promise<void> {
   for (const packageName of CLI_SHARED_DEP_PACKAGE_NAMES) {
-    await mkdir(resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', packageName), { recursive: true });
+    await mkdir(resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', packageName), { recursive: true });
   }
 }
 
@@ -163,7 +163,7 @@ describe('core e2e: cli dist build', () => {
     const repoRoot = dir;
 
     const cliDistDir = resolve(repoRoot, 'apps', 'cli', 'dist');
-    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const arbitraryCwd = resolve(repoRoot, 'workspace');
 
     await createBundledWorkspacePackageDirs(repoRoot);
@@ -172,13 +172,13 @@ describe('core e2e: cli dist build', () => {
     await mkdir(arbitraryCwd, { recursive: true });
 
     await writeFile(resolve(cliDistDir, 'index.mjs'), "import { marker } from './chunk-hash.mjs'; console.log(marker);\n", 'utf8');
-    await writeFile(resolve(cliDistDir, 'chunk-hash.mjs'), "import { marker } from '@happier-dev/protocol'; export { marker };\n", 'utf8');
+    await writeFile(resolve(cliDistDir, 'chunk-hash.mjs'), "import { marker } from '@piggercode/protocol'; export { marker };\n", 'utf8');
     await writeSharedWorkspaceOutputs(repoRoot);
     await writeFile(
       resolve(cliNodeModulesProtocolDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           type: 'module',
           main: './dist/index.js',
           exports: {
@@ -227,7 +227,7 @@ describe('core e2e: cli dist build', () => {
     const externalSnapshotRoot = extraDir;
 
     const cliDistDir = resolve(repoRoot, 'apps', 'cli', 'dist');
-    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const rootAxiosDir = resolve(repoRoot, 'node_modules', 'axios');
     const arbitraryCwd = resolve(repoRoot, 'workspace');
 
@@ -242,13 +242,13 @@ describe('core e2e: cli dist build', () => {
       "import axios from 'axios'; import { marker } from './chunk-hash.mjs'; console.log(`${marker}:${axios.hoisted}`);\n",
       'utf8',
     );
-    await writeFile(resolve(cliDistDir, 'chunk-hash.mjs'), "import { marker } from '@happier-dev/protocol'; export { marker };\n", 'utf8');
+    await writeFile(resolve(cliDistDir, 'chunk-hash.mjs'), "import { marker } from '@piggercode/protocol'; export { marker };\n", 'utf8');
     await writeSharedWorkspaceOutputs(repoRoot);
     await writeFile(
       resolve(cliNodeModulesProtocolDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           type: 'module',
           main: './dist/index.js',
           exports: {
@@ -304,7 +304,7 @@ describe('core e2e: cli dist build', () => {
     const repoRoot = dir;
 
     const cliSrcDir = resolve(repoRoot, 'apps', 'cli', 'src');
-    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const cliNodeModulesProtocolDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const snapshotDir = resolve(repoRoot, '.project', 'tmp', 'cli-dist-snapshot');
     const arbitraryCwd = resolve(repoRoot, 'workspace');
 
@@ -313,12 +313,12 @@ describe('core e2e: cli dist build', () => {
     await mkdir(resolve(cliNodeModulesProtocolDir, 'dist'), { recursive: true });
     await mkdir(arbitraryCwd, { recursive: true });
 
-    await writeFile(resolve(cliSrcDir, 'index.ts'), "import { marker } from '@happier-dev/protocol'; console.log(marker);\n", 'utf8');
+    await writeFile(resolve(cliSrcDir, 'index.ts'), "import { marker } from '@piggercode/protocol'; console.log(marker);\n", 'utf8');
     await writeFile(
       resolve(cliNodeModulesProtocolDir, 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           type: 'module',
           main: './dist/index.js',
           exports: {
@@ -333,7 +333,7 @@ describe('core e2e: cli dist build', () => {
       'utf8',
     );
     await writeFile(resolve(cliNodeModulesProtocolDir, 'dist', 'index.js'), "export const marker = 'protocol-ok';\n", 'utf8');
-    await writeFile(resolve(repoRoot, 'apps', 'cli', 'package.json'), '{"name":"@happier-dev/cli"}', 'utf8');
+    await writeFile(resolve(repoRoot, 'apps', 'cli', 'package.json'), '{"name":"@piggercode/cli"}', 'utf8');
     await writeFile(resolve(repoRoot, 'apps', 'cli', 'tsconfig.json'), '{}', 'utf8');
     await writeSharedWorkspaceOutputs(repoRoot);
 

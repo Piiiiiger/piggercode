@@ -2,7 +2,7 @@ import type {
   AccountSettings,
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { CatalogAgentId } from '@/backends/types';
 import type { ConnectedServiceResolvedSelection } from './materializeConnectedServicesForSpawn';
 import type { ConnectedServiceRefreshFailureCategory } from '../credentials/lifecycleTypes';

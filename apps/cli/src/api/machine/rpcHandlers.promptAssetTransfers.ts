@@ -4,7 +4,7 @@ import {
   RPC_METHODS,
   type PromptAssetMutationResponseV1,
   type PromptAssetReadRequest,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import type { PromptAssetAdapter } from '@/promptAssets/types';

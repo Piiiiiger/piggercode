@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceId,
   ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceQuotaSnapshotDeliveryBody = Readonly<{
   sessionId: string;

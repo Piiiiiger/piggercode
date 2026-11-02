@@ -4,14 +4,14 @@ import { Encryption } from '@/sync/encryption/encryption';
 import { MachineEncryption } from '@/sync/encryption/machineEncryption';
 import { EncryptionCache } from '@/sync/encryption/encryptionCache';
 import { decodeBase64 } from '@/encryption/base64';
-import { MACHINE_PLAIN_DATA_KEY_MARKER, encodePlainMachineStoredContent } from '@happier-dev/protocol';
+import { MACHINE_PLAIN_DATA_KEY_MARKER, encodePlainMachineStoredContent } from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import {
   buildConnectedServiceCredentialRecord,
   openAccountScopedBlobCiphertext,
   openConnectedServiceCredentialCiphertext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveAccountScopedCryptoMaterialFromCredentials } from '@/sync/domains/connectedServices/resolveAccountScopedCryptoMaterialFromCredentials';
 import { encodeAutomationTemplateForTransport } from '@/sync/domains/automations/automationTemplateTransport';

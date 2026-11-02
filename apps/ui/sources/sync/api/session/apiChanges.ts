@@ -5,7 +5,7 @@ import {
     CurrentCursorResponseSchema,
     CursorGoneErrorSchema,
     type ChangeEntry,
-} from '@happier-dev/protocol/changes';
+} from '@piggercode/protocol/changes';
 
 export async function fetchChanges(params: {
     credentials: AuthCredentials;

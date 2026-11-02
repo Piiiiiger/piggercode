@@ -370,7 +370,7 @@ async function readPackageJsonIfExists(pkgJsonPath) {
 async function ensureServerGeneratedProviderOutputs(componentDir, installDir, { quiet = false, env: envIn, pm: pmIn } = {}) {
   const componentPkgJsonPath = join(componentDir, 'package.json');
   const componentPkg = await readPackageJsonIfExists(componentPkgJsonPath);
-  if (componentPkg?.name !== '@happier-dev/server') {
+  if (componentPkg?.name !== '@piggercode/server') {
     return;
   }
   if (typeof componentPkg?.scripts?.['generate:providers'] !== 'string') {
@@ -397,7 +397,7 @@ async function ensureServerGeneratedProviderOutputs(componentDir, installDir, { 
 
   if (pm.name === 'yarn') {
     await ensureYarnReady({ dir: installDir, env, quiet, pm });
-    await runPm(pm, ['-s', 'workspace', '@happier-dev/server', 'generate:providers'], {
+    await runPm(pm, ['-s', 'workspace', '@piggercode/server', 'generate:providers'], {
       cwd: installDir,
       stdio,
       env,
@@ -421,7 +421,7 @@ function findInstalledEnrichedMarkdownPackageDirs(componentDir, installDir) {
 
 async function ensureUiPostinstallOutputs(componentDir, installDir, { quiet = false, env: envIn, pm: pmIn } = {}) {
   const componentPkg = await readPackageJsonIfExists(join(componentDir, 'package.json'));
-  if (componentPkg?.name !== '@happier-dev/app') return;
+  if (componentPkg?.name !== '@piggercode/app') return;
   if (typeof componentPkg?.scripts?.['postinstall:real'] !== 'string') return;
 
   const requiredRelativePath = join('lib', 'module', 'web', 'streamingReveal.js');
@@ -448,7 +448,7 @@ async function ensureUiPostinstallOutputs(componentDir, installDir, { quiet = fa
 
   if (pm.name === 'yarn') {
     await ensureYarnReady({ dir: installDir, env, quiet, pm });
-    await runPm(pm, ['-s', 'workspace', '@happier-dev/app', 'postinstall:real'], {
+    await runPm(pm, ['-s', 'workspace', '@piggercode/app', 'postinstall:real'], {
       cwd: installDir,
       stdio,
       env,
@@ -918,7 +918,7 @@ fi
 
 # Fallback: run hstack from runtime install if present.
 HOME_DIR="\${HAPPIER_STACK_HOME_DIR:-$HOME/.happier-stack}"
-RUNTIME="$HOME_DIR/runtime/node_modules/@happier-dev/stack/bin/hstack.mjs"
+RUNTIME="$HOME_DIR/runtime/node_modules/@piggercode/stack/bin/hstack.mjs"
 if [[ -f "$RUNTIME" ]]; then
   exec node "$RUNTIME" happier "$@"
 fi

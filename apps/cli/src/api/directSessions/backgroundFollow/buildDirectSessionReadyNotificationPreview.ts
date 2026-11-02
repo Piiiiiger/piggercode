@@ -1,4 +1,4 @@
-import type { DirectTranscriptRawMessageV1 } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1 } from '@piggercode/protocol';
 
 function normalizePreviewText(value: unknown): string | null {
   if (typeof value !== 'string') return null;

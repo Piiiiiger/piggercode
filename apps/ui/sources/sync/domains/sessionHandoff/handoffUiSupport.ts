@@ -1,4 +1,4 @@
-import { AGENTS_CORE, resolveAgentIdFromFlavor, resolveVendorHandoffIdFromSessionMetadata } from '@happier-dev/agents';
+import { AGENTS_CORE, resolveAgentIdFromFlavor, resolveVendorHandoffIdFromSessionMetadata } from '@piggercode/agents';
 import { readMachineTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveSessionHandoffSourceMachineId } from './resolveSessionHandoffSourceMachineId';
 

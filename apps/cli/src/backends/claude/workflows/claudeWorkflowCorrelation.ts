@@ -1,8 +1,8 @@
 import {
   normalizeClaudeActivityStatusSignal,
   type ClaudeActivityStatusSignal,
-} from '@happier-dev/protocol';
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+} from '@piggercode/protocol';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
 import { logger } from '@/ui/logger';
 import { readClaudeTaskLifecycleEnvelope } from '../taskNotifications/claudeTaskLifecycleEnvelope';
 

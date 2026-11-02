@@ -4,8 +4,8 @@ import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-rou
 import { useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
-import type { ExecutionRunPublicState } from '@happier-dev/protocol';
-import { isRpcMethodNotAvailableError } from '@happier-dev/protocol/rpcErrors';
+import type { ExecutionRunPublicState } from '@piggercode/protocol';
+import { isRpcMethodNotAvailableError } from '@piggercode/protocol/rpcErrors';
 import { sessionExecutionRunList } from '@/sync/ops/sessionExecutionRuns';
 import { useSessionRouteServerScope, type SessionRouteServerScope } from '@/hooks/session/sessionRouteServerScope';
 import { useHydrateSessionForRoute } from '@/hooks/session/useHydrateSessionForRoute';

@@ -4,7 +4,7 @@ import {
     buildSessionAgentTransitionDividerLocalId,
     SESSION_MESSAGE_NO_USER_ATTENTION_IMPACT,
     SESSION_MESSAGE_USER_ATTENTION_IMPACT,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     messageAttentionImpact,

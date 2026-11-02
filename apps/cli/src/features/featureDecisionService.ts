@@ -6,7 +6,7 @@ import {
   readServerEnabledBit,
   type FeatureDecision,
   type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   createCliFeatureDecisionInputs,

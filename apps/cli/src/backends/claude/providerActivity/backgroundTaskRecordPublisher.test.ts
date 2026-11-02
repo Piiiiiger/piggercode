@@ -1,7 +1,7 @@
 import { homedir } from 'node:os';
 
 import { describe, expect, it } from 'vitest';
-import type { SessionBackgroundTaskRecordV1 } from '@happier-dev/protocol';
+import type { SessionBackgroundTaskRecordV1 } from '@piggercode/protocol';
 
 import { CliClientUpgradeRequiredError } from '@/api/clientCompatibility/cliClientCompatibility';
 import { createHttpStatusError, createInvalidResponseShapeError } from '@/api/client/httpStatusError';

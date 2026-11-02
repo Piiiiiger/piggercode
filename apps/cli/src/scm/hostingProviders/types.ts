@@ -6,7 +6,7 @@ import type {
     ScmHostingProvider,
     ScmHostingProviderKind,
     ScmPullRequestSummary,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ScmHostingProviderDetectionInput = Readonly<{
     remoteName: string | null;

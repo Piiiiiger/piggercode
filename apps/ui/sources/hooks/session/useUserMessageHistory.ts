@@ -1,7 +1,7 @@
 import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import type { FeaturesResponse } from '@piggercode/protocol';
 import {
     SESSION_MESSAGE_HISTORY_REMOTE_ROLES_QUERY,
     USER_MESSAGE_HISTORY_REMOTE_PAGE_SIZE,

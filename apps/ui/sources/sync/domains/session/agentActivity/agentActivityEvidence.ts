@@ -1,4 +1,4 @@
-import type { SessionAgentActivityHeadlineV1 } from '@happier-dev/protocol';
+import type { SessionAgentActivityHeadlineV1 } from '@piggercode/protocol';
 
 import { deriveHeadlineAgentActivityEntries } from './sources/fromHeadline';
 

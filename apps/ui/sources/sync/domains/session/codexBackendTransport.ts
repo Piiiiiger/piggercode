@@ -1,5 +1,5 @@
-import type { CodexBackendMode } from '@happier-dev/agents';
-import { readAgentRuntimeDescriptorV1ForProvider, type AgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
+import { readAgentRuntimeDescriptorV1ForProvider, type AgentRuntimeDescriptorV1 } from '@piggercode/protocol';
 
 export type CodexBackendTransportFields = {
     codexBackendMode?: CodexBackendMode;

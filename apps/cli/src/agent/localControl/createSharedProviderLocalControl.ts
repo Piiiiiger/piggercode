@@ -2,7 +2,7 @@ import { createAgentLocalControlState } from '@/agent/localControl/createAgentLo
 import { createLocalRemoteModeController } from '@/agent/localControl/createLocalRemoteModeController';
 import { resolveSwitchRequestTarget } from '@/agent/localControl/switchRequestTarget';
 import type { ApiSessionClient } from '@/api/session/sessionClient';
-import type { SessionProviderCliAttachPrepareRequestV1 } from '@happier-dev/protocol';
+import type { SessionProviderCliAttachPrepareRequestV1 } from '@piggercode/protocol';
 
 import type { AttachedTerminalSupervisor } from './createAttachedTerminalSupervisor';
 

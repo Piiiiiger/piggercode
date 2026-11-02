@@ -1,4 +1,4 @@
-import { SESSION_RUNTIME_ACTIVITY_ACTIVE_COUNT_MAX } from "@happier-dev/protocol";
+import { SESSION_RUNTIME_ACTIVITY_ACTIVE_COUNT_MAX } from "@piggercode/protocol";
 import { describe, expect, it } from "vitest";
 
 import { aggregateSessionRuntimeActivityContributions } from "./aggregate";

@@ -53,7 +53,7 @@ import {
   type MessageStoreRef,
 } from './messageSelection';
 import { useApplyLocalSettings, useApplySettings } from './settingsWriters';
-import type { PrimaryTurnStatusV1 } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1 } from '@piggercode/protocol';
 import type { StorageState } from './types';
 import { createFriendRequestCountSelector } from './friendRequestCount';
 

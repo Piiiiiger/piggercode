@@ -1,4 +1,4 @@
-import { GH_DEP_ID } from '@happier-dev/protocol/installables';
+import { GH_DEP_ID } from '@piggercode/protocol/installables';
 
 import { getGhDepStatus, installGh } from '../deps/gh';
 import { CapabilityError } from '../errors';

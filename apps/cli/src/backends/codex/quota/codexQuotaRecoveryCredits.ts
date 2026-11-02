@@ -4,7 +4,7 @@ import {
   type ConnectedServiceQuotaRecoveryCreditStatusV1,
   type ConnectedServiceQuotaRecoveryCreditV1,
   type ConnectedServiceQuotaRecoveryCreditsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { parseProviderTimestampMs } from '@/daemon/connectedServices/quotas/normalization';
 

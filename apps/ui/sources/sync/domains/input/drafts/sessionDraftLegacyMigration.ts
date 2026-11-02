@@ -1,4 +1,4 @@
-import type { StrictJsonValue } from '@happier-dev/protocol';
+import type { StrictJsonValue } from '@piggercode/protocol';
 
 import { randomUUID } from '@/platform/randomUUID';
 import {

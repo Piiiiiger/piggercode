@@ -1,4 +1,4 @@
-import { getProviderCliRuntimeSpec, type AgentId } from '@happier-dev/agents';
+import { getProviderCliRuntimeSpec, type AgentId } from '@piggercode/agents';
 
 import type { CliAuthSpec } from './types';
 

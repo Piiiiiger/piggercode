@@ -9,7 +9,7 @@ import { readStackRuntimeStateFile } from './runtime_state.mjs';
 import {
   processInstanceFingerprintMatches,
   readProcessInstanceFingerprintSync,
-} from '@happier-dev/cli-common/processInstance';
+} from '@piggercode/cli-common/processInstance';
 
 const DEFAULT_RESTART_CONFIRM_POLL_MS = 200;
 const DEFAULT_RESTART_CONFIRM_TIMEOUT_MS = 60_000;

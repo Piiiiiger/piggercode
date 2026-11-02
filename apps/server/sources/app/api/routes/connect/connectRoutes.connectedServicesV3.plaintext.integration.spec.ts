@@ -15,7 +15,7 @@ vi.mock("@/app/events/eventRouter", async () => {
 });
 
 import { db } from "@/storage/db";
-import { buildConnectedServiceCredentialRecord } from "@happier-dev/protocol";
+import { buildConnectedServiceCredentialRecord } from "@piggercode/protocol";
 import { connectRoutes } from "./connectRoutes";
 import { auth } from "@/app/auth/auth";
 import { createAppCloseTracker } from "../../testkit/appLifecycle";

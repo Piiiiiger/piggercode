@@ -1,5 +1,5 @@
-import type { AgentId } from '@happier-dev/agents';
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { AgentId } from '@piggercode/agents';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { getActiveAccountSettingsSnapshot } from './activeAccountSettingsSnapshot';

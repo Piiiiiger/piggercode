@@ -343,7 +343,7 @@ async function main() {
 
   maybeReexecToCliRoot(cliRootDir);
 
-  // If the user passed only flags (common via `npx --yes -p @happier-dev/stack hstack --help`),
+  // If the user passed only flags (common via `npx --yes -p @piggercode/stack hstack --help`),
   // treat it as root help rather than `help --help` (which would look like
   // "unknown command: --help").
   const cmd = argv.find((a) => !a.startsWith('--')) ?? 'help';

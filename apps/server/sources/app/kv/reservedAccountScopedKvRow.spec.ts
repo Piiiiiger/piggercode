@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     SessionDraftAddressV1Schema,
     canonicalSessionDraftAddressV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     ACCOUNT_SCOPED_KV_MAX_PERSISTED_KEY_UTF8_BYTES,

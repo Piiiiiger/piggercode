@@ -5,7 +5,7 @@ import {
     sealTerminalProvisioningV2Payload,
     sealTerminalProvisioningV2TokenOnlyPayload,
     sealTerminalProvisioningV3TokenOnlyPayload,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { isLegacyAuthCredentials, isTokenOnlyAuthCredentials, type AuthCredentials } from '@/auth/storage/tokenStorage';
 import { decodeBase64 } from '@/encryption/base64';

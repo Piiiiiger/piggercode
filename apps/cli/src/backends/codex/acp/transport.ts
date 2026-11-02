@@ -1,4 +1,4 @@
-import { CHANGE_TITLE_TOOL_NAME_ALIASES, isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import { CHANGE_TITLE_TOOL_NAME_ALIASES, isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 
 import { DefaultTransport } from '@/agent/transport/DefaultTransport';
 import type { ToolPattern, ToolNameContext } from '@/agent/transport/TransportHandler';

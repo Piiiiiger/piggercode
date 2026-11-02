@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 describe('sessionWorkStateMetadata', () => {
   it('re-exports the protocol-owned metadata merge helper', async () => {
     const cliMod = await import('./sessionWorkStateMetadata');
-    const protocol = await import('@happier-dev/protocol');
+    const protocol = await import('@piggercode/protocol');
 
     expect(cliMod.mergeSessionWorkStateMetadataV1).toBe(protocol.mergeSessionWorkStateMetadataV1);
 

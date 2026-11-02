@@ -5,10 +5,10 @@ import { join } from 'node:path';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@happier-dev/protocol';
+import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@piggercode/protocol';
 import type { Metadata } from '@/api/types';
 import type { RpcHandler, RpcHandlerRegistrar } from '@/api/rpc/types';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { updateSessionMetadataWithAckResult } from '@/api/session/stateUpdates';
 
 const featureDecisionMocks = vi.hoisted(() => ({

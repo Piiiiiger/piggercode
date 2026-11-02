@@ -1,6 +1,6 @@
 import { config } from '@/config';
 import PostHog from 'posthog-react-native';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 import { getFeatureBuildPolicyDecision } from '@/sync/domains/features/featureBuildPolicy';
 
 const ANALYTICS_FEATURE_ID = 'app.analytics' as const satisfies FeatureId;

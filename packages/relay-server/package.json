@@ -1,5 +1,5 @@
 {
-  "name": "@happier-dev/relay-server",
+  "name": "@piggercode/relay-server",
   "version": "0.2.17",
   "description": "Happier server runner (downloads and verifies the correct server binary for your platform).",
   "repository": "https://github.com/happier-dev/happier.git",
@@ -16,10 +16,10 @@
     "src"
   ],
   "bundledDependencies": [
-    "@happier-dev/release-runtime"
+    "@piggercode/release-runtime"
   ],
   "dependencies": {
-    "@happier-dev/release-runtime": "0.0.0"
+    "@piggercode/release-runtime": "0.0.0"
   },
   "engines": {
     "node": ">=22"

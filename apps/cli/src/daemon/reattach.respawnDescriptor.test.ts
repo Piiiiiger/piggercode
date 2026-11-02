@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 import { resolve } from 'node:path';
 
 import { hashProcessCommand } from './sessionRegistry';

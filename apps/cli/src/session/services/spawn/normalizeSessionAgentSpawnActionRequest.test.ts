@@ -4,8 +4,8 @@ import {
   DEFAULT_SESSION_AGENT_SPAWN_POLICY_V1,
   type ConnectedServiceBindingsV1,
   type SessionAgentSpawnPolicyV1,
-} from '@happier-dev/protocol';
-import { buildOpenCodeAgentRuntimeDescriptor } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { buildOpenCodeAgentRuntimeDescriptor } from '@piggercode/agents';
 import type { Credentials } from '@/persistence';
 
 import {

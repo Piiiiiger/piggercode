@@ -1,4 +1,4 @@
-import { ConnectedServiceQuotaSnapshotV1Schema, type ConnectedServiceQuotaMeterV1 } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaSnapshotV1Schema, type ConnectedServiceQuotaMeterV1 } from '@piggercode/protocol';
 import { ConnectedServiceQuotaFetchError, type ConnectedServiceQuotaFetcher, type ConnectedServiceQuotaFetcherDescriptor } from '@/daemon/connectedServices/quotas/types';
 import { requestGoogleCodeAssist, type GoogleCodeAssistFetchRuntime } from '@/daemon/connectedServices/quotas/googleCodeAssistRequest';
 import { readConnectedServiceQuotaStaleAfterMs } from '@/daemon/connectedServices/quotas/configuration';

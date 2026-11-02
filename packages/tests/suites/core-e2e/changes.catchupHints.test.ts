@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { randomUUID } from 'node:crypto';
 
-import { MessageAckResponseSchema } from '@happier-dev/protocol/updates';
+import { MessageAckResponseSchema } from '@piggercode/protocol/updates';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

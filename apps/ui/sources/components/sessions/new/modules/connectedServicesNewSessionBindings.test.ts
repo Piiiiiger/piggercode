@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENTS_CORE } from '@happier-dev/agents';
-import { AccountProfileSchema } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import { AccountProfileSchema } from '@piggercode/protocol';
 import {
     buildConnectedServiceAccountGroupOptionsByServiceId,
     buildConnectedServiceProfileOptionsByServiceId,

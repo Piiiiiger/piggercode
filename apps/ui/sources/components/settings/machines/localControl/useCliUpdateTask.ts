@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { SystemTaskSpec } from '@happier-dev/protocol';
+import type { SystemTaskSpec } from '@piggercode/protocol';
 
 import { getSystemTasksRunner } from '@/components/systemTasks/systemTasksRuntime';
 import { useSystemTaskSnapshot } from '@/components/systemTasks/useSystemTaskSnapshot';

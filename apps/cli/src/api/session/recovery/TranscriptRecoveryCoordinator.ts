@@ -2,7 +2,7 @@ import type {
   ManagedConnectionSupervisor,
   ManagedProbeReportScope,
   ReadinessProbeResult,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 
 import { readAuthenticationStatus, readHttpStatus } from '@/api/client/httpStatusError';
 import { configuration } from '@/configuration';

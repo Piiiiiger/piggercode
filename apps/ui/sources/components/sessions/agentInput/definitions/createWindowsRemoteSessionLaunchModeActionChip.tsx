@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Pressable, View } from 'react-native';
 
-import type { WindowsRemoteSessionLaunchMode } from '@happier-dev/protocol';
+import type { WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 
 import type {
     AgentInputExtraActionChip,

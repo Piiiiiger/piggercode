@@ -1,7 +1,7 @@
 import {
     ConnectedServiceCredentialHealthStatusV1Schema,
     isConnectedServiceCredentialHealthStatusReconnectRequired,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Usage-DISPLAY gate for a connected-service credential. Returns `true` ONLY for

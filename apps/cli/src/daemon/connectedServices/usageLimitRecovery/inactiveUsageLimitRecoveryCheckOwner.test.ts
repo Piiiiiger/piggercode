@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 
 import { expect, it, vi } from 'vitest';
-import type { SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import type { SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { createRecoveryIntentFileStore } from '../recoveryScheduler/recoveryIntentFileStore';

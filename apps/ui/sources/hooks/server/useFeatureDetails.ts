@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { FeatureId, FeaturesResponse as ServerFeatures } from '@happier-dev/protocol';
+import type { FeatureId, FeaturesResponse as ServerFeatures } from '@piggercode/protocol';
 
 import {
     useServerFeaturesMainSelectionSnapshot,

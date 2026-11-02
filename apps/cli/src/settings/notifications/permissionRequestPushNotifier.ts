@@ -1,4 +1,4 @@
-import { summarizeToolInputForNotification, type AccountSettings } from '@happier-dev/protocol';
+import { summarizeToolInputForNotification, type AccountSettings } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { resolveAgentRequestKind, type AgentRequestKind } from '@/agent/permissions/requestKind';

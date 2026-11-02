@@ -3,7 +3,7 @@ import {
   writeProviderAccountUsageRecordIdToMetadata,
   type ConnectedServiceUsageSourceV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { normalizeConnectedServiceAccessTokenFingerprint } from '../refresh/credentialFreshness/tokenFingerprint';
 import type { ProviderAccountUsagePersistenceScheduler } from './persistence';

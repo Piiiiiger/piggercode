@@ -4,7 +4,7 @@ import {
     SCM_OPERATION_ERROR_CODES,
     type ScmPullRequestSummary,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 

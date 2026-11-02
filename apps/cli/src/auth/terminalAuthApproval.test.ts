@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import fastify from 'fastify';
 import tweetnacl from 'tweetnacl';
-import { deriveAccountMachineKeyFromRecoverySecret } from '@happier-dev/protocol';
+import { deriveAccountMachineKeyFromRecoverySecret } from '@piggercode/protocol';
 
 import { reloadConfiguration } from '@/configuration';
 import { writeCredentialsDataKey, writeCredentialsLegacy, writeCredentialsTokenOnly } from '@/persistence';

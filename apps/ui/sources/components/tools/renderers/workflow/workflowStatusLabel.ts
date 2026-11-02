@@ -1,5 +1,5 @@
 import { t } from '@/text';
-import type { SessionWorkflowRunStatusReasonV1, SessionWorkflowRunStatusV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunStatusReasonV1, SessionWorkflowRunStatusV1 } from '@piggercode/protocol';
 
 /** i18n run-status label for the workflow card/popover header. */
 export function formatWorkflowRunStatusLabel(

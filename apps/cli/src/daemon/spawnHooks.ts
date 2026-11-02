@@ -2,9 +2,9 @@ import {
   hasBuiltInAcpConfig,
   type AgentId,
   type CodexBackendMode,
-} from '@happier-dev/agents';
-import type { AgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
-import type { AccountSettings } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { AgentRuntimeDescriptorV1 } from '@piggercode/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 
 import { resolveCanonicalCodexBackendMode } from '@/rpc/handlers/codexBackendMode';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';

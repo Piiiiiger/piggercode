@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ACTION_OPERATION_RPC_METHODS_V1 } from '@happier-dev/protocol';
+import { ACTION_OPERATION_RPC_METHODS_V1 } from '@piggercode/protocol';
 
 import { registerActionOperationRpcHandlers } from './actionOperationRpcHandlers';
 import { createActionOperationRunner } from './actionOperationRunner';

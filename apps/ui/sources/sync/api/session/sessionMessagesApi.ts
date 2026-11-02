@@ -1,4 +1,4 @@
-import type { SessionMessageRole } from '@happier-dev/protocol';
+import type { SessionMessageRole } from '@piggercode/protocol';
 
 import type { ApiSessionMessagesResponse } from '@/sync/api/types/apiTypes';
 import { ApiSessionMessagesResponseSchema } from '@/sync/api/types/apiTypes';

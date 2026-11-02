@@ -11,8 +11,8 @@ import {
   type MemorySearchHitV1,
   type MemorySearchResultV1,
   type MemoryStatusV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { createTestAuth } from '../../src/testkit/auth';
 import { seedCliAuthForServer } from '../../src/testkit/cliAuth';

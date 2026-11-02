@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { randomUUID } from 'node:crypto';
-import { AGENTS_CORE, resolveAgentIdFromFlavor, type AgentId } from '@happier-dev/agents';
-import { parseBackendTargetKey } from '@happier-dev/protocol';
+import { AGENTS_CORE, resolveAgentIdFromFlavor, type AgentId } from '@piggercode/agents';
+import { parseBackendTargetKey } from '@piggercode/protocol';
 
 import { hasFlag } from '@/cli/commands/shared/argvFlags';
 import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/jsonEnvelope';
@@ -12,7 +12,7 @@ import { normalizeActionExecuteResult } from '@/cli/commands/session/shared/norm
 import { tryHandleApprovalRequestCreated } from '@/cli/commands/session/shared/tryHandleApprovalRequestCreated';
 import { parseSessionCreateSpawnOptions, SESSION_CREATE_USAGE } from './create/parseSessionCreateSpawnOptions';
 import { resolveConnectedServicesLaunchAuthWithInventory } from '@/cli/connectedServicesLaunchAuth';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 function hasSpawnNonce(details: unknown): boolean {
   return Boolean(details && typeof details === 'object'

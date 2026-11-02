@@ -7,7 +7,7 @@ import {
   type ConnectedServiceCredentialHealthStatusV1,
   type ConnectedServiceId,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import { resolveConnectedServiceCredentialLifecycleDescriptor } from '@/backends/catalog';

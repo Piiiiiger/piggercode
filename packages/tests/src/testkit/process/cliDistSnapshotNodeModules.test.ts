@@ -11,13 +11,13 @@ const createdDirs: string[] = [];
 function createRepoRoot(): string {
   const root = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-'));
   createdDirs.push(root);
-  mkdirSync(join(root, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes', 'esm'), {
+  mkdirSync(join(root, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes', 'esm'), {
     recursive: true,
   });
   mkdirSync(join(root, 'node_modules'), { recursive: true });
-  writeFileSync(join(root, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'package.json'), '{"name":"@happier-dev/protocol"}', 'utf8');
+  writeFileSync(join(root, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'package.json'), '{"name":"@piggercode/protocol"}', 'utf8');
   writeFileSync(
-    join(root, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js'),
+    join(root, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js'),
     'export const live = "initial";\n',
     'utf8',
   );
@@ -31,7 +31,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     }
   });
 
-  it('copies the bundled @happier-dev scope into the snapshot instead of aliasing the live tree', () => {
+  it('copies the bundled @piggercode scope into the snapshot instead of aliasing the live tree', () => {
     const rootDir = createRepoRoot();
     const snapshotDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-out-'));
     createdDirs.push(snapshotDir);
@@ -40,11 +40,11 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotFile = join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js');
+    const snapshotFile = join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js');
     expect(readFileSync(snapshotFile, 'utf8')).toContain('initial');
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', '@noble', 'hashes', 'hmac.js'),
       'export const live = "mutated";\n',
       'utf8',
     );
@@ -135,14 +135,14 @@ describe('ensureCliDistSnapshotNodeModules', () => {
   it('copies deep bundled runtime dependencies into the snapshot so nested protocol imports resolve', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-deep-runtime-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         dependencies: {
           tweetnacl: '^1.0.3',
         },
@@ -150,7 +150,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
       JSON.stringify({
         name: 'tweetnacl',
         version: '1.0.3',
@@ -159,7 +159,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
       'export const live = "initial";\n',
       'utf8',
     );
@@ -174,7 +174,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     const snapshotFile = join(
       snapshotDir,
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'protocol',
       'node_modules',
       'tweetnacl',
@@ -186,7 +186,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
   it('materializes symlinked bundled runtime dependencies into the snapshot', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-symlinked-runtime-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'node_modules', 'zod'), { recursive: true });
@@ -202,13 +202,13 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
     writeFileSync(join(rootDir, 'node_modules', 'zod', 'index.js'), 'export const live = "source";\n', 'utf8');
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'package.json'),
-      JSON.stringify({ name: '@happier-dev/agents' }, null, 2),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'package.json'),
+      JSON.stringify({ name: '@piggercode/agents' }, null, 2),
       'utf8',
     );
     symlinkSync(
       resolve(rootDir, 'node_modules', 'zod'),
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod'),
     );
 
     const snapshotDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-symlinked-runtime-out-'));
@@ -218,7 +218,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotZodDir = join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod');
+    const snapshotZodDir = join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod');
     expect(lstatSync(snapshotZodDir).isSymbolicLink()).toBe(false);
     expect(readFileSync(join(snapshotZodDir, 'package.json'), 'utf8')).toContain('"name": "zod"');
     expect(readFileSync(join(snapshotZodDir, 'index.js'), 'utf8')).toContain('source');
@@ -227,15 +227,15 @@ describe('ensureCliDistSnapshotNodeModules', () => {
   it('backfills missing bundled workspace runtime dependencies from the source root node_modules tree', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-root-runtime-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents'), { recursive: true });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist'), { recursive: true });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod'), {
       recursive: true,
     });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4'), {
       recursive: true,
     });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4-mini'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4-mini'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'packages', 'agents', 'dist'), { recursive: true });
@@ -245,7 +245,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     writeFileSync(
       join(rootDir, 'packages', 'agents', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/agents',
+        name: '@piggercode/agents',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -270,9 +270,9 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
     writeFileSync(join(rootDir, 'node_modules', 'zod', 'index.js'), 'export const live = "source-root";\n', 'utf8');
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/agents',
+        name: '@piggercode/agents',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -282,17 +282,17 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
       'export const agent = true;\n',
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4', 'index.js'),
       'export const partial = "nested";\n',
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4-mini', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4-mini', 'index.js'),
       'export const partialMini = "nested";\n',
       'utf8',
     );
@@ -304,7 +304,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotZodDir = join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod');
+    const snapshotZodDir = join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod');
     expect(existsSync(snapshotZodDir)).toBe(true);
     expect(lstatSync(snapshotZodDir).isSymbolicLink()).toBe(false);
     expect(readFileSync(join(snapshotZodDir, 'package.json'), 'utf8')).toContain('"name": "zod"');
@@ -315,8 +315,8 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-merge-runtime-'));
     createdDirs.push(rootDir);
 
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist'), { recursive: true });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', 'zod', 'v4'), { recursive: true });
@@ -328,7 +328,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       join(rootDir, 'packages', 'agents', 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           version: '0.0.0',
           type: 'module',
           main: './dist/index.js',
@@ -341,10 +341,10 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
     writeFileSync(join(rootDir, 'packages', 'agents', 'dist', 'index.js'), 'export const agent = true;\n', 'utf8');
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           version: '0.0.0',
           type: 'module',
           main: './dist/index.js',
@@ -356,7 +356,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
       'export const agent = true;\n',
       'utf8',
     );
@@ -374,12 +374,12 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'package.json'),
       JSON.stringify({ name: 'zod', version: '4.3.6', main: 'index.js' }, null, 2),
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4', 'index.js'),
       'export const bundledPartial = true;\n',
       'utf8',
     );
@@ -410,7 +410,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     expect(
       readFileSync(
-        join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'v4', 'locales', 'ru.js'),
+        join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'v4', 'locales', 'ru.js'),
         'utf8',
       ),
     ).toContain('ru');
@@ -419,16 +419,16 @@ describe('ensureCliDistSnapshotNodeModules', () => {
   it('repairs missing bundled workspace runtime deps from the root node_modules tree', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-root-runtime-fallback-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol'), { recursive: true });
     mkdirSync(join(rootDir, 'packages', 'protocol', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules', 'zod'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           main: './dist/index.js',
@@ -445,7 +445,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       join(rootDir, 'packages', 'protocol', 'package.json'),
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           main: './dist/index.js',
@@ -486,30 +486,30 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
     expect(
-      readFileSync(join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'zod', 'index.js'), 'utf8'),
+      readFileSync(join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'zod', 'index.js'), 'utf8'),
     ).toContain('root-zod');
   });
 
   it('ignores transient dist.__sync_tmp__ directories when copying bundled workspace scopes', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-transient-sync-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist'), { recursive: true });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist.__sync_tmp__.58760.2'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist.__sync_tmp__.58760.2'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'package.json'),
-      '{"name":"@happier-dev/cli-common"}',
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'package.json'),
+      '{"name":"@piggercode/cli-common"}',
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'),
       'export const stable = "stable";\n',
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist.__sync_tmp__.58760.2', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist.__sync_tmp__.58760.2', 'index.js'),
       'export const transient = "transient";\n',
       'utf8',
     );
@@ -521,24 +521,24 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    expect(readFileSync(join(snapshotDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'), 'utf8')).toContain(
+    expect(readFileSync(join(snapshotDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'), 'utf8')).toContain(
       'stable',
     );
-    expect(existsSync(join(snapshotDir, 'node_modules', '@happier-dev', 'cli-common', 'dist.__sync_tmp__.58760.2'))).toBe(false);
+    expect(existsSync(join(snapshotDir, 'node_modules', '@piggercode', 'cli-common', 'dist.__sync_tmp__.58760.2'))).toBe(false);
   });
 
   it('repairs incomplete bundled workspace copies by filling in missing dist files', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-bundled-repair-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'package.json'),
-      '{"name":"@happier-dev/release-runtime"}',
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'package.json'),
+      '{"name":"@piggercode/release-runtime"}',
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'github.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'dist', 'github.js'),
       'export const live = "initial";\n',
       'utf8',
     );
@@ -547,37 +547,37 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     createdDirs.push(snapshotDir);
     const snapshotDistDir = resolve(snapshotDir, 'dist');
     mkdirSync(snapshotDistDir, { recursive: true });
-    mkdirSync(join(snapshotDir, 'node_modules', '@happier-dev', 'release-runtime'), { recursive: true });
+    mkdirSync(join(snapshotDir, 'node_modules', '@piggercode', 'release-runtime'), { recursive: true });
     writeFileSync(
-      join(snapshotDir, 'node_modules', '@happier-dev', 'release-runtime', 'package.json'),
-      '{"name":"@happier-dev/release-runtime"}',
+      join(snapshotDir, 'node_modules', '@piggercode', 'release-runtime', 'package.json'),
+      '{"name":"@piggercode/release-runtime"}',
       'utf8',
     );
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotFile = join(snapshotDir, 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'github.js');
+    const snapshotFile = join(snapshotDir, 'node_modules', '@piggercode', 'release-runtime', 'dist', 'github.js');
     expect(readFileSync(snapshotFile, 'utf8')).toContain('initial');
   });
 
-  it('repairs missing workspace package manifests in the copied @happier-dev scope', () => {
+  it('repairs missing workspace package manifests in the copied @piggercode scope', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-manifest-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'connection-supervisor', 'dist'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'connection-supervisor', 'dist'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'packages', 'connection-supervisor', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'connection-supervisor', 'dist', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'connection-supervisor', 'dist', 'index.js'),
       'export const live = "initial";\n',
       'utf8',
     );
     writeFileSync(
       join(rootDir, 'packages', 'connection-supervisor', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/connection-supervisor',
+        name: '@piggercode/connection-supervisor',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -595,21 +595,21 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotPackageJson = join(snapshotDir, 'node_modules', '@happier-dev', 'connection-supervisor', 'package.json');
-    expect(readFileSync(snapshotPackageJson, 'utf8')).toContain('@happier-dev/connection-supervisor');
+    const snapshotPackageJson = join(snapshotDir, 'node_modules', '@piggercode', 'connection-supervisor', 'package.json');
+    expect(readFileSync(snapshotPackageJson, 'utf8')).toContain('@piggercode/connection-supervisor');
   });
 
   it('copies workspace package root files referenced by package exports', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-root-export-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'packages', 'cli-common', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
 
     writeFileSync(
       join(rootDir, 'packages', 'cli-common', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/cli-common',
+        name: '@piggercode/cli-common',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -629,8 +629,8 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     writeFileSync(join(rootDir, 'packages', 'cli-common', 'processInstance.d.mts'), 'export declare const processInstance: true;\n', 'utf8');
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'package.json'),
-      JSON.stringify({ name: '@happier-dev/cli-common', version: '0.0.0', type: 'module' }),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'package.json'),
+      JSON.stringify({ name: '@piggercode/cli-common', version: '0.0.0', type: 'module' }),
       'utf8',
     );
 
@@ -641,23 +641,23 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    expect(readFileSync(join(snapshotDir, 'node_modules', '@happier-dev', 'cli-common', 'processInstance.mjs'), 'utf8')).toContain(
+    expect(readFileSync(join(snapshotDir, 'node_modules', '@piggercode', 'cli-common', 'processInstance.mjs'), 'utf8')).toContain(
       'processInstance',
     );
-    expect(existsSync(join(snapshotDir, 'node_modules', '@happier-dev', 'cli-common', 'processInstance.d.mts'))).toBe(true);
+    expect(existsSync(join(snapshotDir, 'node_modules', '@piggercode', 'cli-common', 'processInstance.d.mts'))).toBe(true);
   });
 
   it('overwrites stale bundled workspace manifests with canonical package manifests', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-stale-manifest-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist'), { recursive: true });
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'packages', 'agents', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/agents',
+        name: '@piggercode/agents',
         version: '0.0.0',
         type: 'module',
         main: './index.js',
@@ -666,14 +666,14 @@ describe('ensureCliDistSnapshotNodeModules', () => {
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
       'export const bundled = true;\n',
       'utf8',
     );
     writeFileSync(
       join(rootDir, 'packages', 'agents', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/agents',
+        name: '@piggercode/agents',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -692,7 +692,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
     const snapshotPackageJson = JSON.parse(
-      readFileSync(join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'package.json'), 'utf8'),
+      readFileSync(join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'package.json'), 'utf8'),
     ) as { main?: unknown; exports?: { '.': { default?: unknown } } };
     expect(snapshotPackageJson.main).toBe('./dist/index.js');
     expect(snapshotPackageJson.exports?.['.']?.default).toBe('./dist/index.js');
@@ -701,16 +701,16 @@ describe('ensureCliDistSnapshotNodeModules', () => {
   it('repairs missing workspace dist files from the source package tree', () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'happier-cli-dist-snapshot-dist-'));
     createdDirs.push(rootDir);
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'packages', 'release-runtime', 'dist'), { recursive: true });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
 
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/release-runtime',
+        name: '@piggercode/release-runtime',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -723,7 +723,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     writeFileSync(
       join(rootDir, 'packages', 'release-runtime', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/release-runtime',
+        name: '@piggercode/release-runtime',
         version: '0.0.0',
         type: 'module',
         main: './dist/index.js',
@@ -746,7 +746,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
 
     ensureCliDistSnapshotNodeModules({ snapshotDir, snapshotDistDir, rootDir });
 
-    const snapshotFile = join(snapshotDir, 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'github.js');
+    const snapshotFile = join(snapshotDir, 'node_modules', '@piggercode', 'release-runtime', 'dist', 'github.js');
     expect(readFileSync(snapshotFile, 'utf8')).toContain('workspace-dist');
   });
 
@@ -755,7 +755,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     createdDirs.push(rootDir);
 
     mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', 'zod'), { recursive: true });
-    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl'), {
+    mkdirSync(join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl'), {
       recursive: true,
     });
     mkdirSync(join(rootDir, 'node_modules'), { recursive: true });
@@ -767,12 +767,12 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
     writeFileSync(join(rootDir, 'apps', 'cli', 'node_modules', 'zod', 'index.js'), 'export const z = "source";\n', 'utf8');
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'package.json'),
       JSON.stringify({ name: 'tweetnacl', version: '1.0.3', main: 'nacl-fast.js' }, null, 2),
       'utf8',
     );
     writeFileSync(
-      join(rootDir, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
+      join(rootDir, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
       'export const nacl = "source";\n',
       'utf8',
     );
@@ -780,11 +780,11 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     const snapshotDir = mkdtempSync(join(tmpdir(), 'happier-cli-pack-snapshot-runtime-out-'));
     createdDirs.push(snapshotDir);
     mkdirSync(join(snapshotDir, 'dist'), { recursive: true });
-    mkdirSync(join(snapshotDir, 'node_modules', '@happier-dev', 'protocol'), { recursive: true });
+    mkdirSync(join(snapshotDir, 'node_modules', '@piggercode', 'protocol'), { recursive: true });
     writeFileSync(
       join(snapshotDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.0.0-test',
         dependencies: { zod: '4.3.6' },
       }, null, 2),
@@ -792,16 +792,16 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     );
     writeFileSync(join(snapshotDir, 'dist', 'index.mjs'), 'export const cli = true;\n', 'utf8');
     writeFileSync(
-      join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'package.json'),
+      join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0-test',
         dependencies: { tweetnacl: '^1.0.3' },
       }, null, 2),
       'utf8',
     );
     writeFileSync(
-      join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'dist-marker.txt'),
+      join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'dist-marker.txt'),
       'packed-payload',
       'utf8',
     );
@@ -811,11 +811,11 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     expect(readFileSync(join(snapshotDir, 'node_modules', 'zod', 'index.js'), 'utf8')).toContain('source');
     expect(
       readFileSync(
-        join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
+        join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'node_modules', 'tweetnacl', 'nacl-fast.js'),
         'utf8',
       ),
     ).toContain('source');
-    expect(readFileSync(join(snapshotDir, 'node_modules', '@happier-dev', 'protocol', 'dist-marker.txt'), 'utf8')).toBe(
+    expect(readFileSync(join(snapshotDir, 'node_modules', '@piggercode', 'protocol', 'dist-marker.txt'), 'utf8')).toBe(
       'packed-payload',
     );
   });
@@ -839,7 +839,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     writeFileSync(
       join(snapshotDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.0.0-test',
         dependencies: { zod: '4.3.6' },
       }, null, 2),
@@ -886,7 +886,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     createdDirs.push(snapshotDir);
     writeFileSync(
       join(snapshotDir, 'package.json'),
-      JSON.stringify({ name: '@happier-dev/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
+      JSON.stringify({ name: '@piggercode/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
       'utf8',
     );
 
@@ -915,7 +915,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     mkdirSync(join(snapshotDir, 'node_modules', 'dep-a'), { recursive: true });
     writeFileSync(
       join(snapshotDir, 'package.json'),
-      JSON.stringify({ name: '@happier-dev/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
+      JSON.stringify({ name: '@piggercode/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
       'utf8',
     );
     writeFileSync(
@@ -961,7 +961,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     writeFileSync(
       join(snapshotDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.0.0-test',
         dependencies: { 'dep-required': '1.0.0' },
         optionalDependencies: { 'dep-optional': '1.0.0' },
@@ -1000,7 +1000,7 @@ describe('ensureCliDistSnapshotNodeModules', () => {
     mkdirSync(join(snapshotDir, 'node_modules', 'dep-c'), { recursive: true });
     writeFileSync(
       join(snapshotDir, 'package.json'),
-      JSON.stringify({ name: '@happier-dev/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
+      JSON.stringify({ name: '@piggercode/cli', version: '0.0.0-test', dependencies: { 'dep-a': '1.0.0' } }, null, 2),
       'utf8',
     );
     writeFileSync(

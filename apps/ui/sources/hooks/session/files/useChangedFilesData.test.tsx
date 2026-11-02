@@ -1,7 +1,7 @@
 import * as React from 'react';
 import renderer, { act } from 'react-test-renderer';
 import { describe, expect, it } from 'vitest';
-import type { SessionChangeSet } from '@happier-dev/protocol';
+import type { SessionChangeSet } from '@piggercode/protocol';
 
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';
 

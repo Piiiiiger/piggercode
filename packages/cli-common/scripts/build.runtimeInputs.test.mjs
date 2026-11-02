@@ -24,7 +24,7 @@ function createFixture({ runtimeSource, testSource }) {
     process.platform === 'win32' ? 'junction' : 'dir',
   );
   writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-    name: '@happier-dev/cli-common-runtime-input-fixture',
+    name: '@piggercode/cli-common-runtime-input-fixture',
     type: 'module',
     main: './dist/index.js',
     types: './dist/index.d.ts',

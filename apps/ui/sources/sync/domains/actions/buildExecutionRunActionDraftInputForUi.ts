@@ -1,4 +1,4 @@
-import type { ActionId, BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { ActionId, BackendTargetRefV1 } from '@piggercode/protocol';
 
 import { buildActionDraftInput } from './buildActionDraftInput';
 import { normalizeExecutionRunActionPermissionMode } from './executionRunActionPermissionMode';

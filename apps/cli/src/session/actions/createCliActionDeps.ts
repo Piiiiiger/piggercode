@@ -16,7 +16,7 @@ import {
   type BackendTargetRefV1,
   type FeatureId,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   AGENT_IDS,
   LEGACY_ACP_SESSION_MODES_STATE_KEY,
@@ -28,7 +28,7 @@ import {
   resolvePermissionPrivilegeFromSessionMetadata,
   type AgentId,
   type PermissionIntent,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { createCliApprovalsArtifactStore } from '@/approvals/cliApprovalsArtifactStore';
 import { fetchAccountProfile } from '@/api/accountProfile';
 import { getPreferredHostName } from '@/daemon/machine/metadata';
@@ -99,8 +99,8 @@ import { callSessionRpc } from '@/session/transport/rpc/sessionRpc';
 import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
 import { resolveSessionHandoffEligibility } from '@/session/handoff/resolveSessionHandoffEligibility';
 import { delay } from '@/utils/time';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 import { routeSessionCatalogControl } from '@/session/catalogControls/sessionCatalogControlRouter';
 import { routeSessionGoalControl } from '@/session/goalControls/sessionGoalControlRouter';
 import { resolveCliFeatureDecisionForServer } from '@/features/featureDecisionService';

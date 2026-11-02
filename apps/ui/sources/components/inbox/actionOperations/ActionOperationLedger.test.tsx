@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { renderScreen, standardCleanup } from '@/dev/testkit';
 import { actionOperationStore } from '@/sync/domains/actionOperations/actionOperationStore';

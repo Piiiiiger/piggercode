@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1, AgentActivityToneV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1, AgentActivityToneV1 } from '@piggercode/protocol';
 
 import { t } from '@/text';
 import type { Theme } from '@/theme';

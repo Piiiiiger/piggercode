@@ -4,7 +4,7 @@ import {
   HappierStructuredInputV1EnvelopeSchema,
   readHappierStructuredInputV1FromMeta,
   readStructuredInputMentionSourcesV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';

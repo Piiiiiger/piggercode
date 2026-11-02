@@ -65,7 +65,7 @@ import { syncPerformanceTelemetry } from '../../runtime/syncPerformanceTelemetry
 import { isModelMode, type PermissionMode } from '@/sync/domains/permissions/permissionTypes';
 import { isModelSelectableForSession, type SessionModelOptionsContext } from '@/sync/domains/models/modelOptions';
 import { resolveAgentIdFromFlavor } from '@/agents/registry/registryCore';
-import { parsePermissionIntentAlias, resolveMetadataStringOverrideStateV1, resolvePermissionIntentFromSessionMetadata } from '@happier-dev/agents';
+import { parsePermissionIntentAlias, resolveMetadataStringOverrideStateV1, resolvePermissionIntentFromSessionMetadata } from '@piggercode/agents';
 import {
     applyReachableTargetsToSessionListRenderables,
 } from '../buildSessionListViewDataWithServerScope';

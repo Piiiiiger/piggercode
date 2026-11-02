@@ -1,8 +1,8 @@
 import { readdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { resolveRetainedVersionIds } from '@happier-dev/cli-common/firstPartyRuntime';
-import { compareVersions } from '@happier-dev/cli-common/update';
+import { resolveRetainedVersionIds } from '@piggercode/cli-common/firstPartyRuntime';
+import { compareVersions } from '@piggercode/cli-common/update';
 
 function trimVersionPrefix(entryName, entryPrefix) {
   const normalizedEntryName = String(entryName ?? '').trim();

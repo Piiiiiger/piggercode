@@ -1,6 +1,6 @@
 import { join, resolve, sep } from 'node:path';
 
-import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingPublicLabel, type PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 function resolvePublicReleaseRingSuffix(ring: PublicReleaseRingId): 'stable' | 'preview' | 'dev' {
   return getReleaseRingPublicLabel(ring);

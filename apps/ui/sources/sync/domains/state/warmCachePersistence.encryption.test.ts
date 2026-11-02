@@ -1,4 +1,4 @@
-import type { SessionOrganizationSnapshot } from '@happier-dev/protocol';
+import type { SessionOrganizationSnapshot } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**

@@ -11,7 +11,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { hapticsLight } from '@/components/ui/theme/haptics';
 
-import { type PetAnimationStateV1 } from '@happier-dev/protocol';
+import { type PetAnimationStateV1 } from '@piggercode/protocol';
 
 import {
     PET_TAP_REACTION_DURATION_MS,

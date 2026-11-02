@@ -1,4 +1,4 @@
-import type { SubagentCommandV1 } from '@happier-dev/protocol';
+import type { SubagentCommandV1 } from '@piggercode/protocol';
 
 import { clampUtf16, coerceNonEmpty, sanitizePromptField } from '@/backends/claude/utils/structuredMessages/promptFieldSanitization';
 

@@ -1,1 +1,1 @@
-export { verifyMinisign } from '@happier-dev/release-runtime/minisign';
+export { verifyMinisign } from '@piggercode/release-runtime/minisign';

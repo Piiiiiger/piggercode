@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_USERINFO_URL } from '@happier-dev/agents';
+import { AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_CLIENT_ID, AGY_OAUTH_CLIENT_SECRET, AGY_OAUTH_TOKEN_URL, AGY_OAUTH_USERINFO_URL } from '@piggercode/agents';
 import { buildConnectedAccountOauthCredentialRecord } from '@/daemon/connectedServices/descriptors/buildConnectedAccountCredentialRecord';
 import { promptInput } from '@/terminal/prompts/promptInput';
 import { agyCloudConnect } from './connect';

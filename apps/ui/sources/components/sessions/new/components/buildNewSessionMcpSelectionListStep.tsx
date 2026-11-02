@@ -5,8 +5,8 @@ import type {
     McpServerCatalogEntryV1,
     McpServersSettingsV1,
     SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
-import { resolveManagedSessionMcpSelectionV1 } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { resolveManagedSessionMcpSelectionV1 } from '@piggercode/protocol';
 
 import { getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import {

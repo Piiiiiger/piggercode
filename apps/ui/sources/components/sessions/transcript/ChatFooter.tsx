@@ -4,7 +4,7 @@ import { t } from '@/text';
 import { ComposerAuxiliaryFrame } from '@/components/sessions/shell/view/ComposerAuxiliaryFrame';
 import { SessionWarningActionBanner } from '@/components/sessions/shell/SessionWarningActionBanner';
 import { isActionOperationCancellationRequested } from '@/sync/domains/actionOperations/actionOperationSelectors';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 import type { SessionLocalControlState } from '@/sync/domains/session/control/sessionLocalControl';
 
 export type ChatFooterDirectControlState = Readonly<{

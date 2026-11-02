@@ -49,7 +49,7 @@ const LOCAL_PARAMS = {
 
 async function createHarness() {
     const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-    const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+    const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
     let nextTaskId = 1;
     const listeners = new Map<string, {

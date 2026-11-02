@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import type { Session } from '@/sync/domains/state/storageTypes';
 

@@ -1,17 +1,17 @@
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import {
   inferAgentIdFromSessionMetadata,
   resolveAgentIdFromFlavor,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY,
   SessionRuntimeIssueV1Schema,
   SessionUsageLimitRecoveryV1Schema,
   readSessionUsageLimitRecoveryForIssue,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 import { getSessionUsageLimitRecoveryControlAdapter } from '@/backends/catalog';
 import type { Credentials } from '@/persistence';

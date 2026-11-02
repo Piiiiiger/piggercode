@@ -2,7 +2,7 @@ import {
     decodeBase64,
     encodeBase64,
     parseSerializedJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const DEFAULT_FUZZ_ITERATIONS = 128;
 export const DEFAULT_FUZZ_SEED = 0x5eedc0de;

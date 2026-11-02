@@ -1,4 +1,4 @@
-import type { SessionOrganizationTag } from '@happier-dev/protocol';
+import type { SessionOrganizationTag } from '@piggercode/protocol';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return !!value && typeof value === 'object' && !Array.isArray(value);

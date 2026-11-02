@@ -1,4 +1,4 @@
-import { sealConnectedServiceCredentialCiphertext, type ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import { sealConnectedServiceCredentialCiphertext, type ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { getRandomBytes } from '@/platform/cryptoRandom';

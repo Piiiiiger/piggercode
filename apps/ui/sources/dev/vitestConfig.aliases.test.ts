@@ -35,8 +35,8 @@ describe('vitest config aliases', () => {
             : [];
         const resolver = plugins.find((plugin) => plugin.name === 'happier-vitest-expo-node-module-stubs');
 
-        expect(resolver?.resolveId?.('@happier-dev/agents')).toContain('/packages/agents/src/index.ts');
-        expect(resolver?.resolveId?.('@happier-dev/agents/permissions')).toContain(
+        expect(resolver?.resolveId?.('@piggercode/agents')).toContain('/packages/agents/src/index.ts');
+        expect(resolver?.resolveId?.('@piggercode/agents/permissions')).toContain(
             '/packages/agents/src/permissions/index.ts',
         );
     });

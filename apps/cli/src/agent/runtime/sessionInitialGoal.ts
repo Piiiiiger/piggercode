@@ -1,7 +1,7 @@
 import {
   SessionInitialGoalRequestV1Schema,
   type SessionInitialGoalRequestV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const HAPPIER_DAEMON_INITIAL_GOAL_ENV_KEY = 'HAPPIER_DAEMON_INITIAL_GOAL_V1_JSON';
 

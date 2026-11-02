@@ -35,7 +35,7 @@ export function writeCliBundledHostPackage(options: {
     dependencies?: Readonly<Record<string, string>>;
 }): void {
     writeSandboxJsonFile(join(options.happyCliDir, 'package.json'), {
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         ...(options.bundledDependencies ? { bundledDependencies: [...options.bundledDependencies] } : {}),
         ...(options.dependencies ? { dependencies: options.dependencies } : {}),
     });

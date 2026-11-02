@@ -9,7 +9,7 @@ import {
     renderScreen,
 } from '@/dev/testkit';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
-import { PUSH_NOTIFICATION_ACTION_IDS } from '@happier-dev/protocol';
+import { PUSH_NOTIFICATION_ACTION_IDS } from '@piggercode/protocol';
 import { installRootLayoutRouteCommonModuleMocks } from './rootLayoutRouteTestHelpers';
 
 type ReactActEnvironmentGlobal = typeof globalThis & {

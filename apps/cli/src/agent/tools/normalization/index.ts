@@ -1,6 +1,6 @@
 import { truncateDeep } from '../redaction/redact';
-import type { ToolHappierMetaV2, ToolNormalizationProtocol } from '@happier-dev/protocol';
-import { isChangeTitleToolNameAlias } from '@happier-dev/protocol/tools/v2';
+import type { ToolHappierMetaV2, ToolNormalizationProtocol } from '@piggercode/protocol';
+import { isChangeTitleToolNameAlias } from '@piggercode/protocol/tools/v2';
 import { normalizeBashInput, normalizeBashResult } from './families/execute';
 import { normalizeReadInput, normalizeReadResult } from './families/read';
 import { normalizeEditInput, normalizeEditResult } from './families/edit';

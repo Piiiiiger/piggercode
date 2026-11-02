@@ -1,5 +1,5 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
-import { AGENT_ACTIVITY_STATUSES_V1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
+import { AGENT_ACTIVITY_STATUSES_V1 } from '@piggercode/protocol';
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

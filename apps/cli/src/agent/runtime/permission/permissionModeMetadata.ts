@@ -1,5 +1,5 @@
 import type { Metadata, PermissionMode } from '@/api/types';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 export function maybeUpdatePermissionModeMetadata(opts: {
   currentPermissionMode: PermissionMode | undefined;

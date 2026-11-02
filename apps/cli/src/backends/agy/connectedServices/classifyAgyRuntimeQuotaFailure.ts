@@ -1,4 +1,4 @@
-import { buildUsageLimitIssueFingerprint, ConnectedServiceCredentialRevisionV1Schema, type SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, ConnectedServiceCredentialRevisionV1Schema, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import { classifyProviderLimitEvidence } from '@/daemon/connectedServices/quotas/normalization';
 import type { ConnectedServiceRuntimeFailureInput, ConnectedServiceRuntimeFailureClassification } from '@/daemon/connectedServices/runtimeAuth/types';
 import type { AcpRuntimeSessionClient } from '@/agent/acp/sessionClient';

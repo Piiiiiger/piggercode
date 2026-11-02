@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SessionDraftDocumentV1 } from '@happier-dev/protocol';
+import type { SessionDraftDocumentV1 } from '@piggercode/protocol';
 
 import { createSessionDraftRepository } from '@/sync/ops/sessionDrafts/sessionDraftRepository';
 

@@ -1,4 +1,4 @@
-import { buildBackendTargetKey, type ActionExecuteResult, type ActionExecutorContext, type ActionId, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type ActionExecuteResult, type ActionExecutorContext, type ActionId, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { SessionComposerSendResolution } from './resolveSessionComposerSend';
 import { storage } from '@/sync/domains/state/storage';

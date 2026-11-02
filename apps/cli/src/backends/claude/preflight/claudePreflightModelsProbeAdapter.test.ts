@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import type { Credentials } from '@/persistence';

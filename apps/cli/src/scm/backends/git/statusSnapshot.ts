@@ -6,7 +6,7 @@ import {
     type ScmOperationState,
     type ScmWorkingEntry,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { parseGitStatusPorcelainV2Z, parseNumStatZ } from './statusParser';
 import { parseGitWorktreeListPorcelain } from './worktreeListParser';

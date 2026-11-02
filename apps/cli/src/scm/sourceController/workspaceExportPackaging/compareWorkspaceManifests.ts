@@ -1,4 +1,4 @@
-import type { WorkspaceManifest, WorkspaceManifestEntry } from '@happier-dev/protocol';
+import type { WorkspaceManifest, WorkspaceManifestEntry } from '@piggercode/protocol';
 
 export type { WorkspaceManifest };
 

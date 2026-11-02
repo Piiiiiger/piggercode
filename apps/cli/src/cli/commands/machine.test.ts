@@ -4,8 +4,8 @@ import {
   SYSTEM_TASK_PROTOCOL_VERSION,
   type SystemTaskEvent,
   type SystemTaskResult,
-} from '@happier-dev/protocol';
-import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/protocol';
+import { STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { captureStdout } from '@/testkit/logger/captureOutput';

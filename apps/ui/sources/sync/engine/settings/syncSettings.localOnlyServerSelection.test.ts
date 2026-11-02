@@ -4,7 +4,7 @@ import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import type { Encryption } from '@/sync/encryption/encryption';
 import type { Settings } from '@/sync/domains/settings/settings';
 import { invalidateAccountEncryptionModeCache } from '@/sync/api/account/apiAccountEncryptionMode';
-import { openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 function createBaseMockSettings(): Record<string, unknown> {
     return {

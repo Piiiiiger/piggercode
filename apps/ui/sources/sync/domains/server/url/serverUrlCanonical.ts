@@ -1,4 +1,4 @@
-import { createServerUrlComparableKey as createProtocolServerUrlComparableKey, sanitizeBugReportUrl } from '@happier-dev/protocol';
+import { createServerUrlComparableKey as createProtocolServerUrlComparableKey, sanitizeBugReportUrl } from '@piggercode/protocol';
 
 import { isLocalishHostname } from './serverUrlClassification';
 

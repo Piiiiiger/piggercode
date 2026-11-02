@@ -4,7 +4,7 @@ import {
     computeContentPublicKeyFingerprint as computeProtocolContentPublicKeyFingerprint,
     encodeBase64,
     signMachineInstallationProof,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import {
     computeContentPublicKeyFingerprint,

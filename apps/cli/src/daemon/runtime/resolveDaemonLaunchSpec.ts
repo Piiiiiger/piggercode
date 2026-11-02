@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 
-import { parseOptionalBooleanEnv } from '@happier-dev/protocol';
+import { parseOptionalBooleanEnv } from '@piggercode/protocol';
 
 import { projectPath } from '@/projectPath';
 import { resolvePackagedRuntimeEntrypoint } from '@/runtime/resolvePackagedRuntimeEntrypoint';

@@ -6,7 +6,7 @@ import {
     encodeV2SessionListCursorV2,
     readConnectedServiceReaderSupport,
     type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { db } from "@/storage/db";
 import {
     createSessionSharedWithUserWhere,

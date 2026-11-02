@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { SessionHandoffPrepareTargetRequestV2 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { SessionHandoffPrepareTargetRequestV2 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { Machine } from '@/api/types';
 import { reloadConfiguration } from '@/configuration';
 import { createEnvKeyScope } from '@/testkit/env/envScope';

@@ -1,4 +1,4 @@
-import type { SessionOrganizationSnapshotRequest } from '@happier-dev/protocol';
+import type { SessionOrganizationSnapshotRequest } from '@piggercode/protocol';
 
 export function createSessionListOrganizationSnapshotRequest(): Partial<SessionOrganizationSnapshotRequest> {
     return {

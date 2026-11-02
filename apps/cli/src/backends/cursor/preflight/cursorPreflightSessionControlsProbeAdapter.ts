@@ -1,4 +1,4 @@
-import { resolveCursorSpawnExtrasFromSettings } from '@happier-dev/agents';
+import { resolveCursorSpawnExtrasFromSettings } from '@piggercode/agents';
 
 import type { SessionConfigOption } from '@/agent/acp/AcpBackend';
 import type { AgentBackend } from '@/agent/core';

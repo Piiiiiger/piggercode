@@ -1,4 +1,4 @@
-export const HAPPY_PROTOCOL_PACKAGE = '@happier-dev/protocol';
+export const HAPPY_PROTOCOL_PACKAGE = '@piggercode/protocol';
 export { buildRecoveryCreditConsumeIdempotencyKey } from './connect/recoveryCreditConsumeIdempotencyKey.js';
 
 export { PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT, ProviderAccountSubscriptionV1Schema, mergeProviderAccountSubscription, type ProviderAccountSubscriptionV1 } from './connect/accountSubscription.js';
@@ -3295,7 +3295,7 @@ export * from './actions/index.js';
 export * from './tools/happierToolsShellBridge.js';
 export * from './tools/v2/index.js';
 
-// Provider E2E specs (used by `@happier-dev/tests` to run real provider contract matrix)
+// Provider E2E specs (used by `@piggercode/tests` to run real provider contract matrix)
 export { E2eCliProviderSpecV1Schema, type E2eCliProviderSpecV1 } from './e2e/providerSpec.js';
 export {
   E2eCliProviderScenarioRegistryV1Schema,

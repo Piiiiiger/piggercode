@@ -7,7 +7,7 @@ import {
     DEFAULT_PETS_CAPABILITIES,
     DEFAULT_SESSION_CAPABILITIES,
     type FeaturesResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type FixtureOverrides = {
     friendsEnabled?: boolean;

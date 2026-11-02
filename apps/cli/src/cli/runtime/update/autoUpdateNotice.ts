@@ -12,9 +12,9 @@ import {
   shouldNotifyUpdate,
   spawnDetachedNode,
   writeUpdateCache,
-} from '@happier-dev/cli-common/update';
-import { resolveManagedCliToolNameForRing } from '@happier-dev/cli-common/firstPartyRuntime';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/update';
+import { resolveManagedCliToolNameForRing } from '@piggercode/cli-common/firstPartyRuntime';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 import { parseRuntimeContextPrefixArgs } from '@/utils/env/runtimeContextArgv';
 
 const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000;

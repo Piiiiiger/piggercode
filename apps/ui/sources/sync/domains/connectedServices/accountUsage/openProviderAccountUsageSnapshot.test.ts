@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildProviderAccountUsageRecordId, sealProviderAccountUsageSnapshot } from '@happier-dev/protocol';
+import { buildProviderAccountUsageRecordId, sealProviderAccountUsageSnapshot } from '@piggercode/protocol';
 import { encodeBase64 } from '@/encryption/base64';
 import { openProviderAccountUsageSnapshot } from './openProviderAccountUsageSnapshot';
 

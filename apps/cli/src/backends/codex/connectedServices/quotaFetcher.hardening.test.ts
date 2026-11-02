@@ -7,7 +7,7 @@
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { ConnectedServiceQuotaFetchError } from '@/daemon/connectedServices/quotas/types';
 import { createOpenAiCodexQuotaFetcher } from './quotaFetcher';

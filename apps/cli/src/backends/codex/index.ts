@@ -1,6 +1,6 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
-import { resolveCodexSessionBackendMode } from '@happier-dev/agents';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
+import { resolveCodexSessionBackendMode } from '@piggercode/agents';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import { checklists } from './cli/checklists';
 import { supportsCodexVendorResume } from './resume/vendorResumeSupport';
@@ -19,7 +19,7 @@ import { codexAppServerUsageLimitRecoveryControlAdapter } from '@/backends/codex
 import { buildCodexRuntimeLocalHandoffMetadata } from '@/backends/codex/sessionHandoff/runtimeLocalMetadata';
 import type { AgentCatalogEntry } from '../types';
 import type { ConnectedServiceCredentialLifecycleDescriptor } from '@/daemon/connectedServices/credentials/lifecycleTypes';
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 const codexConnectedServiceCredentialLifecycleDescriptor: ConnectedServiceCredentialLifecycleDescriptor = {
   providerId: 'codex',

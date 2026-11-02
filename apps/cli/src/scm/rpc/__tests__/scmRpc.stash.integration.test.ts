@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { createTestRpcManager, runGit as git } from './testRpcHarness';
 import { buildHappierBranchStashMarker } from '../../backends/git/operations/stashOperations';

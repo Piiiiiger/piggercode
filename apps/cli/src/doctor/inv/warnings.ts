@@ -2,8 +2,8 @@ import { configuration } from '@/configuration';
 import { resolveBackgroundServiceRepairPlanForCurrentRuntime } from '@/diagnostics/backgroundServiceRepair/resolveBackgroundServiceRepairPlanForCurrentRuntime';
 import { resolveDaemonServiceCliRuntimeFromEnv } from '@/daemon/service/cli';
 
-import { getReleaseRingCatalogEntry } from '@happier-dev/release-runtime/releaseRings';
-import type { DoctorSnapshot } from '@happier-dev/protocol';
+import { getReleaseRingCatalogEntry } from '@piggercode/release-runtime/releaseRings';
+import type { DoctorSnapshot } from '@piggercode/protocol';
 
 type DoctorWarning = NonNullable<DoctorSnapshot['warnings']>[number];
 

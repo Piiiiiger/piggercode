@@ -7,7 +7,7 @@ import {
   type ConnectedServiceAuthGroupV1,
   type ConnectedServiceUsageSourceV1,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 

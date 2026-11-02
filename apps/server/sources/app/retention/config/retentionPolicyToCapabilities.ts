@@ -1,4 +1,4 @@
-import type { ServerRetentionCapabilities } from '@happier-dev/protocol';
+import type { ServerRetentionCapabilities } from '@piggercode/protocol';
 
 import type { RetentionPolicy } from './retentionPolicyTypes';
 import { resolveEffectiveRetentionDomains, resolveEffectiveRetentionEnabled } from './retentionPolicyState';

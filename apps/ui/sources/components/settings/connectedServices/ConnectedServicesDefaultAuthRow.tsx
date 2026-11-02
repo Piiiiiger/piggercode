@@ -9,7 +9,7 @@ import {
     type ConnectedServiceBindingsV1,
     type ConnectedServiceId,
     type ConnectedServicesDefaultAuthByAgentIdV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { Text } from '@/components/ui/text/Text';

@@ -5,7 +5,7 @@ import { mkdir } from 'node:fs/promises';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { join, resolve } from 'node:path';
 
-import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 import { createTestAuth, type TestAuth } from './auth';
 import { seedCliAuthForServer, seedCliDataKeyAuthForServer } from './cliAuth';

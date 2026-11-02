@@ -8,7 +8,7 @@ import {
 import { publishSessionReadyProjectionUpdate } from "@/app/session/ready/publishSessionReadyProjectionUpdate";
 import { randomKeyNaked } from "@/utils/keys/randomKeyNaked";
 import { log } from "@/utils/logging/log";
-import { SESSION_MESSAGE_USER_ATTENTION_IMPACT } from "@happier-dev/protocol";
+import { SESSION_MESSAGE_USER_ATTENTION_IMPACT } from "@piggercode/protocol";
 import { db } from "@/storage/db";
 import { mapPendingActivationAuthorization } from "@/app/session/pending/pendingActivationAuthorization";
 

@@ -1,4 +1,4 @@
-import { readAcpConfiguredBackendV1FromMetadata } from '@happier-dev/protocol';
+import { readAcpConfiguredBackendV1FromMetadata } from '@piggercode/protocol';
 import type { AgentId } from '@/agents/catalog/catalog';
 import {
     LEGACY_ACP_CONFIG_OPTIONS_STATE_KEY,
@@ -14,7 +14,7 @@ import {
     SESSION_MODELS_STATE_KEY,
     SESSION_MODES_STATE_KEY,
     type MetadataStringOverrideStateV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { Metadata } from '@/sync/domains/state/storageTypes';
 import {

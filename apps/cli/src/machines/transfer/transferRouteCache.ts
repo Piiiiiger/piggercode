@@ -1,10 +1,10 @@
-import type { TransferEndpointCandidate } from '@happier-dev/protocol';
+import type { TransferEndpointCandidate } from '@piggercode/protocol';
 import {
   createMachineTransferRouteCache as createSharedMachineTransferRouteCache,
   DEFAULT_MACHINE_TRANSFER_ROUTE_CACHE_NEGATIVE_TTL_MS,
   DEFAULT_MACHINE_TRANSFER_ROUTE_CACHE_POSITIVE_TTL_MS,
   type MachineTransferRouteCache,
-} from '@happier-dev/transfers';
+} from '@piggercode/transfers';
 
 import { readPositiveIntEnv } from '@/utils/readPositiveIntEnv';
 

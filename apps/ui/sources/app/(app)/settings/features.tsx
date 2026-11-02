@@ -8,7 +8,7 @@ import {
     isFeatureServerRepresented,
     readServerEnabledBit,
     type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';

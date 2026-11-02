@@ -6,8 +6,8 @@ import type {
   TerminalInputInjectionResult,
   TerminalPromptInput,
   TerminalPromptWriteBoundaryV1,
-} from '@happier-dev/agents';
-import type { AttachSurfaceStaticMetadataV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import type { AttachSurfaceStaticMetadataV1 } from '@piggercode/protocol';
 import type { PreparedTerminalSpawn } from '@/terminal/runtime/terminalLaunchSpec';
 
 export type {
@@ -17,7 +17,7 @@ export type {
   TerminalInputInjectionResult,
   TerminalPromptInput,
   TerminalPromptWriteBoundaryV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export type TerminalHostPreference = 'auto' | TerminalHostKind;
 

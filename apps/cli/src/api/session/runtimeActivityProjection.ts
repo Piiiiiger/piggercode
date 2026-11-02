@@ -1,7 +1,7 @@
 import {
     parseSessionRuntimeActivityProjectionFields,
     type SessionRuntimeActivityState,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionRuntimeActivityProjectionBoundary = Readonly<{
     runtimeActivityState?: SessionRuntimeActivityState | null;

@@ -10,7 +10,7 @@ import { waitFor } from '../../src/testkit/timing';
 import { writeTestManifestForServer } from '../../src/testkit/manifestForServer';
 import { FailureArtifacts } from '../../src/testkit/failureArtifacts';
 import { envFlag } from '../../src/testkit/env';
-import { sealBoxBundle, openBoxBundle } from '@happier-dev/protocol';
+import { sealBoxBundle, openBoxBundle } from '@piggercode/protocol';
 
 const run = createRunDirs({ runLabel: 'core' });
 

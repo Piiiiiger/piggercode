@@ -3,7 +3,7 @@ import {
   ActionOperationGetV1RequestSchema,
   ActionOperationListV1RequestSchema,
   ACTION_OPERATION_RPC_METHODS_V1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ActionOperationRunner } from './actionOperationRunner';
 import type { ActionOperationStore } from './actionOperationStore';

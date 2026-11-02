@@ -11,7 +11,7 @@ import {
   deriveSettingsSecretsKeyV1,
   encryptSecretStringV1,
   resolveEffectiveServersV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { projectPath } from '@/projectPath';
 import { resolvePackagedRuntimeEntrypoint } from '@/runtime/resolvePackagedRuntimeEntrypoint';

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { runManagedCliUpdate } from '@happier-dev/cli-common/firstPartyRuntime';
+import { runManagedCliUpdate } from '@piggercode/cli-common/firstPartyRuntime';
 
 import type { MachineMetadata } from '@/api/types';
 import { readCliUpdateFacts } from '@/cli/runtime/update/cliUpdateFacts';
@@ -53,7 +53,7 @@ describe('the daemon republishes its CLI update facts when the update record cha
         execPath,
         invokedPath: execPath,
         platform: process.platform,
-        npmPackageName: '@happier-dev/cli',
+        npmPackageName: '@piggercode/cli',
       }),
       onError: () => {},
     });
@@ -153,7 +153,7 @@ describe('the daemon republishes its CLI update facts when the update record cha
       preferredHost: initialMachineMetadata.host,
       readFacts: () => readCliUpdateFacts({
         homeDir, publicReleaseRing: 'stable', currentVersion: '1.0.0', execPath, invokedPath: execPath,
-        platform: process.platform, npmPackageName: '@happier-dev/cli',
+        platform: process.platform, npmPackageName: '@piggercode/cli',
       }),
       onError: () => {},
     });

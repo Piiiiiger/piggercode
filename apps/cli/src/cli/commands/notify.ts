@@ -4,7 +4,7 @@ import { ApiClient } from '@/api/api';
 import { readCredentials } from '@/persistence';
 
 import type { CommandContext } from '@/cli/commandRegistry';
-import { fail, info } from '@happier-dev/cli-common/output';
+import { fail, info } from '@piggercode/cli-common/output';
 
 export async function sendPushNotification({
   api,

@@ -1,4 +1,4 @@
-import type { McpServerBindingTargetV1 } from '@happier-dev/protocol';
+import type { McpServerBindingTargetV1 } from '@piggercode/protocol';
 
 import type { Machine } from '@/sync/domains/state/storageTypes';
 

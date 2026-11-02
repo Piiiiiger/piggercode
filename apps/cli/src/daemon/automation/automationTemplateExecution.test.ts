@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { encodeBase64, encryptLegacy } from '@/api/encryption';
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 import {
   parseAutomationTemplateExecution,

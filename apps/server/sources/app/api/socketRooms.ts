@@ -1,4 +1,4 @@
-import { ConnectedServiceIdSchema, readConnectedServiceReaderSupport } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema, readConnectedServiceReaderSupport } from "@piggercode/protocol";
 
 export type SocketClientType = "session-scoped" | "user-scoped" | "machine-scoped";
 

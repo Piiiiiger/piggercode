@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { type ConnectedServiceId } from '@happier-dev/protocol';
+import { type ConnectedServiceId } from '@piggercode/protocol';
 
 import {
   startConnectedServicesCodexDaemon,

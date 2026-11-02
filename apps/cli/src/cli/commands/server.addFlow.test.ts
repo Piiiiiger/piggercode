@@ -7,10 +7,10 @@ import { dirname, join } from 'node:path';
 
 import { reloadConfiguration } from '@/configuration';
 import { readSettings, updateSettings } from '@/persistence';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 import { buildLaunchAgentPlistXml } from '@/daemon/service/darwin';
 import { resolveDaemonServiceCliRuntimeFromEnv, resolveDaemonServicePaths, type DaemonServiceListEntry } from '@/daemon/service/cli';
-import { renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 import { captureConsoleLogAndMuteStdout } from '@/testkit/logger/captureOutput';
 
 let promptAnswers: string[] = [];

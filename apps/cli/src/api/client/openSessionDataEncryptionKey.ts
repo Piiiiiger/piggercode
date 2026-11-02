@@ -1,6 +1,6 @@
 import type { Credentials } from '@/persistence';
 
-import { openEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { openEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 import { decodeBase64 } from '../encryption';
 
 export function openSessionDataEncryptionKey(params: {

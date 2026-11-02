@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { DiffInputV2Schema } from '@happier-dev/protocol/tools/v2';
-import type { FileChangeEvidence, TurnChangeSet } from '@happier-dev/protocol';
+import { DiffInputV2Schema } from '@piggercode/protocol/tools/v2';
+import type { FileChangeEvidence, TurnChangeSet } from '@piggercode/protocol';
 
 import { buildTurnChangeSetDiffInput } from './buildTurnChangeSetDiffInput';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { SessionBackgroundTaskRecordV1 } from '@happier-dev/protocol';
+import type { SessionBackgroundTaskRecordV1 } from '@piggercode/protocol';
 
 import {
     readBackgroundTaskEntryTaskId,

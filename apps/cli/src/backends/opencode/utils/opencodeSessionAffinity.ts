@@ -5,7 +5,7 @@ import {
   readOpenCodeSessionRuntimeHandleFromMetadata,
   type OpenCodeSessionAffinity,
   type OpenCodeSessionRuntimeHandle,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 type OpenCodeBackendMode = OpenCodeSessionAffinity['backendMode'];
 

@@ -3,13 +3,13 @@ import {
   DirectSessionsProviderIdSchema,
   DirectSessionsSourceSchema,
   normalizeCodexBackendMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   readOpenCodeSessionRuntimeHandleFromMetadata,
   readSessionMetadataRuntimeDescriptor,
   resolvePersistedCodexRuntimeIdentity,
   type CodexBackendMode,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import * as z from 'zod';
 
 import type { Credentials } from '@/persistence';

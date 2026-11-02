@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { ActionOperationSnapshotV1, ActionOperationStateV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1, ActionOperationStateV1 } from '@piggercode/protocol';
 
 import {
     createActionOperationActivitySummarySelector,

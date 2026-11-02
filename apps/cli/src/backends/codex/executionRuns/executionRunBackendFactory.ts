@@ -1,4 +1,4 @@
-import { readSpawnConfigOptionOverrideValue } from '@happier-dev/protocol';
+import { readSpawnConfigOptionOverrideValue } from '@piggercode/protocol';
 
 import { readNonBlankSessionControlIdentifier } from '@/agent/runtime/sessionControlIdentifiers';
 import { createCodexAcpBackend } from '@/backends/codex/acp/backend';

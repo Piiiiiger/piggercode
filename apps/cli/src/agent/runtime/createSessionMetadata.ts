@@ -8,20 +8,20 @@
  */
 
 import os from 'node:os';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 import { resolve } from 'node:path';
 
 import {
     computeNextMetadataConfigOptionOverrideV1,
     LEGACY_ACP_SESSION_MODE_OVERRIDE_KEY,
     SESSION_MODE_OVERRIDE_KEY,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
     AcpConfigOptionOverridesV1Schema,
     buildAcpSessionModeOverrideV1,
     buildModelOverrideV1,
     parseSessionMcpSelectionV1Json,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentState, Metadata, PermissionMode } from '@/api/types';
 import { configuration } from '@/configuration';

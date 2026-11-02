@@ -5,8 +5,8 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
-import type { SessionHandoffWorkspaceTransfer } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
+import type { SessionHandoffWorkspaceTransfer } from '@piggercode/protocol';
 
 import {
   createWorkspaceReplicationBlobPackBlobRecordHeaderBuffer,

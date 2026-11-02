@@ -1,4 +1,4 @@
-import type { ConnectedServiceUsageSourceV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceUsageSourceV1 } from '@piggercode/protocol';
 
 export type ConnectedServiceQuotasLoopHandle = Readonly<{
   stop: () => Promise<void>;

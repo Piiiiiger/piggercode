@@ -20,10 +20,10 @@ import { HappyError } from '@/utils/errors/errors';
 import { listServerProfiles } from '@/sync/domains/server/serverProfiles';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { serverFetch } from '@/sync/http/client';
-import { openAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext } from '@piggercode/protocol';
 import { deriveSettingsSecretsKey, sealSecretsDeep } from '@/sync/encryption/secretSettings';
 import { loadLastRegisteredExpoPushToken, saveLastRegisteredExpoPushToken } from '@/sync/domains/state/pushTokenRegistration';
-import { isExpoPushNotificationChannelEnabled } from '@happier-dev/protocol';
+import { isExpoPushNotificationChannelEnabled } from '@piggercode/protocol';
 import { readExpoPushToken, readPushPermission } from '@/activity/notifications/permission/pushNotificationAccess';
 
 export async function handleUpdateAccountSocketUpdate(params: {

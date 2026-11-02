@@ -1,5 +1,5 @@
 import { normalizeClaudeUnifiedPromptIdentityText } from './promptIdentity';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 export type ClaudeUnifiedAcceptedPromptDeliveryIdentityLike = Readonly<{
   localIds?: readonly string[] | null | undefined;

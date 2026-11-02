@@ -11,7 +11,7 @@ function preflightRequiredDependencies(projectRoot) {
   const cliRequire = createRequire(import.meta.url);
   let protocolEntryPath;
   try {
-    protocolEntryPath = cliRequire.resolve('@happier-dev/protocol');
+    protocolEntryPath = cliRequire.resolve('@piggercode/protocol');
   } catch (error) {
     if (
       error &&
@@ -19,8 +19,8 @@ function preflightRequiredDependencies(projectRoot) {
       'code' in error &&
       (error.code === 'MODULE_NOT_FOUND' || error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED')
     ) {
-      console.error('Missing bundled package: @happier-dev/protocol');
-      console.error('Reinstall @happier-dev/cli to repair your installation.');
+      console.error('Missing bundled package: @piggercode/protocol');
+      console.error('Reinstall @piggercode/cli to repair your installation.');
       process.exit(1);
     }
     throw error;
@@ -29,7 +29,7 @@ function preflightRequiredDependencies(projectRoot) {
   const protocolRequire = createRequire(protocolEntryPath);
 
   // `tweetnacl` is a direct runtime dependency of the CLI.
-  // `base64-js` and `@noble/hashes/*` are runtime dependencies of `@happier-dev/protocol` and may be
+  // `base64-js` and `@noble/hashes/*` are runtime dependencies of `@piggercode/protocol` and may be
   // vendored under the bundled protocol package's node_modules when installed via `npm`.
   const required = [
     { name: 'tweetnacl', resolveWith: cliRequire },
@@ -44,7 +44,7 @@ function preflightRequiredDependencies(projectRoot) {
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'MODULE_NOT_FOUND') {
         console.error(`Missing required dependency: ${dep.name}`);
-        console.error('Reinstall @happier-dev/cli to repair your installation.');
+        console.error('Reinstall @piggercode/cli to repair your installation.');
         process.exit(1);
       }
       throw error;

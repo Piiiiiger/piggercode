@@ -8,7 +8,7 @@ import {
     readSessionModelsState,
     readSessionModesState,
 } from '@/sync/domains/sessionControl/readSessionControlMetadata';
-import { getBuiltInAcpConfig, parsePermissionIntentAlias, resolveProviderNativePermissionModeForAgent } from '@happier-dev/agents';
+import { getBuiltInAcpConfig, parsePermissionIntentAlias, resolveProviderNativePermissionModeForAgent } from '@piggercode/agents';
 import { computeSessionModePickerControl } from '@/sync/domains/sessionControl/sessionModeControl';
 import { t } from '@/text';
 

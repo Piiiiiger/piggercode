@@ -21,7 +21,7 @@ const normalizePublicReleaseRingId = releaseRings.normalizePublicReleaseRingId;
 
 /**
  * @param {unknown} raw
- * @returns {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId | ''}
+ * @returns {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId | ''}
  */
 export function normalizePublicReleaseChannel(raw) {
   return normalizePublicReleaseRingId(raw);
@@ -53,14 +53,14 @@ export function formatPublicReleaseChannelChoices(opts = {}) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function getPublicReleaseRingEntry(channel) {
   return getReleaseRingCatalogEntry(channel);
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  * @param {{ stableAlias?: 'stable' | 'production' }} [opts]
  */
 export function formatPublicReleaseChannel(channel, opts = {}) {
@@ -70,7 +70,7 @@ export function formatPublicReleaseChannel(channel, opts = {}) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveRollingReleaseTagSuffix(channel) {
   const ring = getPublicReleaseRingEntry(channel);
@@ -81,7 +81,7 @@ export function resolveRollingReleaseTagSuffix(channel) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveRollingReleaseLabel(channel) {
   const label = getPublicReleaseRingEntry(channel).publicLabel;
@@ -89,14 +89,14 @@ export function resolveRollingReleaseLabel(channel) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveRollingPrerelease(channel) {
   return channel === 'stable' ? 'false' : 'true';
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  * @param {string} [requestedSourceRef]
  */
 export function resolvePublicReleaseSourceRef(channel, requestedSourceRef = 'auto') {
@@ -106,7 +106,7 @@ export function resolvePublicReleaseSourceRef(channel, requestedSourceRef = 'aut
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveEmbeddedPolicyForChannel(channel) {
   const embeddedPolicy = getPublicReleaseRingEntry(channel).embeddedPolicyEnv;
@@ -114,7 +114,7 @@ export function resolveEmbeddedPolicyForChannel(channel) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveExpoAppEnvironmentForChannel(channel) {
   const expoAppEnv = getPublicReleaseRingEntry(channel).expoAppEnv;
@@ -130,7 +130,7 @@ function parseOptionalPositiveInt(value) {
 }
 
 /**
- * @param {import('@happier-dev/release-runtime/releaseRings').PublicReleaseRingId} channel
+ * @param {import('@piggercode/release-runtime/releaseRings').PublicReleaseRingId} channel
  */
 export function resolveRollingVersionSuffix(channel) {
   if (channel === 'stable') return '';

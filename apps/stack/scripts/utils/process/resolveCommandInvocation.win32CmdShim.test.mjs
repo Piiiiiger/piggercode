@@ -12,7 +12,7 @@ test('resolves a Windows command shim before cli-common has any built output', a
   try {
     // The filesystem/module-resolution boundary reproduces a fresh workspace, without touching its real dist.
     const packageRoot = fileURLToPath(new URL('../../../../../packages/cli-common/', import.meta.url));
-    const fixturePackage = join(temp, 'node_modules', '@happier-dev', 'cli-common');
+    const fixturePackage = join(temp, 'node_modules', '@piggercode', 'cli-common');
     await mkdir(fixturePackage, { recursive: true });
     await copyFile(join(packageRoot, 'package.json'), join(fixturePackage, 'package.json'));
     const sourceOwner = join(packageRoot, 'windowsCommandInvocation.mjs');

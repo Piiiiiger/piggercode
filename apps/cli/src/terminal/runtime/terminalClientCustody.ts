@@ -1,7 +1,7 @@
 import psList from 'ps-list';
 import { basename } from 'node:path';
-import { processInstanceFingerprintMatches, readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { processInstanceFingerprintMatches, readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { readProcessRunState } from '@/daemon/processRunState';
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { BUILT_IN_PET_IDS_V1, PET_ATLAS_V1, PET_PACKAGE_LIMITS_V1 } from '@happier-dev/protocol';
+import { BUILT_IN_PET_IDS_V1, PET_ATLAS_V1, PET_PACKAGE_LIMITS_V1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import {

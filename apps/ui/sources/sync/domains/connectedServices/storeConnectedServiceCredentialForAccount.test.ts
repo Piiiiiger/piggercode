@@ -8,7 +8,7 @@ import { buildServerFeaturesResponse } from '@/hooks/server/serverFeaturesTestUt
 import {
   StoredJsonContentEnvelopeSchema,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 vi.mock('@/utils/timing/time', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/utils/timing/time')>();

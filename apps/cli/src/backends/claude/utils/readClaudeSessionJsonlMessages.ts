@@ -3,7 +3,7 @@ import { tryReadTextFileTail } from '@/agent/runtime/readTextFileTail';
 import { readJsonlFileForward } from '@/api/directSessions/filePaging/jsonlForwardReader';
 
 import type { RawJSONLines } from '../types';
-import { providers } from '@happier-dev/agents';
+import { providers } from '@piggercode/agents';
 import { parseRawJsonLinesObject } from './parseRawJsonLines';
 import { readClaudeTaskLifecycleEnvelope } from '../taskNotifications/claudeTaskLifecycleEnvelope';
 

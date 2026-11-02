@@ -5,7 +5,7 @@
  * resource-intensive and can be sensitive to CI machine load.
  *
  * Run with a local integration server and credentials:
- * - `HAPPIER_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION=1 yarn workspace @happier-dev/cli test:slow`
+ * - `HAPPIER_CLI_DAEMON_SPAWN_STOP_STRESS_INTEGRATION=1 yarn workspace @piggercode/cli test:slow`
  */
 
 import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach } from 'vitest';

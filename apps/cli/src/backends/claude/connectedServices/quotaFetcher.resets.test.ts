@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildConnectedServiceCredentialRecord, ConnectedServiceCredentialRecordV1Schema, ConnectedServiceQuotaSnapshotV1Schema } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, ConnectedServiceCredentialRecordV1Schema, ConnectedServiceQuotaSnapshotV1Schema } from '@piggercode/protocol';
 
 import { createClaudeSubscriptionQuotaFetcher } from './quotaFetcher';
 

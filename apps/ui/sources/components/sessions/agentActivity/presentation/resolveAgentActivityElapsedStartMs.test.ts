@@ -1,4 +1,4 @@
-import { AGENT_ACTIVITY_STATUSES_V1, isInProgressAgentActivityStatus } from '@happier-dev/protocol';
+import { AGENT_ACTIVITY_STATUSES_V1, isInProgressAgentActivityStatus } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import {

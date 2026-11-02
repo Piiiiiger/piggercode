@@ -3,7 +3,7 @@ import {
     SyncedSessionAuthoringValueV1Schema,
     type SyncedSessionAuthoringFieldIdV1,
     type SyncedSessionAuthoringValueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
     return Boolean(value) && typeof value === 'object' && !Array.isArray(value);

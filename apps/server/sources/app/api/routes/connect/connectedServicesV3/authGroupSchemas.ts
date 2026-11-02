@@ -12,7 +12,7 @@ import {
     ConnectedServiceAuthGroupV1Schema,
     ConnectedServiceIdSchema,
     ConnectedServiceProfileIdSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export const AuthGroupParamsSchema = z.object({
     serviceId: ConnectedServiceIdSchema,

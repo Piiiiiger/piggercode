@@ -4,7 +4,7 @@ import type {
     McpServerCatalogEntryV1,
     McpValueRefV1,
     McpServersSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SavedSecret } from '@/sync/domains/settings/savedSecretTypes';
 

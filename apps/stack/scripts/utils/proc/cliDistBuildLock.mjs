@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 async function loadWorkspaceBundleLockModule() {
   try {
-    const packageModule = await import('@happier-dev/cli-common/workspaceBundleLock');
+    const packageModule = await import('@piggercode/cli-common/workspaceBundleLock');
     if (typeof packageModule.WORKSPACE_BUNDLE_LOCK_TIMEOUT_ERROR_CODE === 'string') {
       return packageModule;
     }

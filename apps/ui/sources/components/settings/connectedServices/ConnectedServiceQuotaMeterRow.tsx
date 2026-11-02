@@ -6,7 +6,7 @@ import { Item } from '@/components/ui/lists/Item';
 import { MeterBar } from '@/components/ui/lists/MeterBar';
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
-import type { ConnectedServiceQuotaMeterV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaMeterV1 } from '@piggercode/protocol';
 
 import { deriveQuotaMeterValues } from '@/sync/domains/connectedServices/deriveQuotaUtilizationPct';
 import { formatResetCountdown, isResetCountdownOutdated, type ResetCountdownFormatter } from '@/sync/domains/connectedServices/formatResetCountdown';

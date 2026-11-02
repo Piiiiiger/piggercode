@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { supportsExistingSessionHandoffState, type AgentId } from '@happier-dev/agents';
+import { supportsExistingSessionHandoffState, type AgentId } from '@piggercode/agents';
 import { probeSessionHandoffCapability } from './probeSessionHandoffCapability';
 
 export type SessionHandoffExistingStateAvailability =

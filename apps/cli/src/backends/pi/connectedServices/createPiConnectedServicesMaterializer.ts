@@ -3,7 +3,7 @@ import { basename, join } from 'node:path';
 
 import {
   resolveConnectedServicesProviderStateSharingPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ConnectedServicesProviderMaterializer } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
 import {

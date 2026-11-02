@@ -14,7 +14,7 @@ const installPromptRegistryItemMock = vi.hoisted(() => vi.fn(async () => ({
 const applySettingsLocalMock = vi.hoisted(() => vi.fn());
 const updateArtifactWithHeaderMock = vi.hoisted(() => vi.fn(async () => {}));
 
-vi.mock('@happier-dev/protocol', async (importOriginal) => {
+vi.mock('@piggercode/protocol', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,

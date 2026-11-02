@@ -95,7 +95,7 @@ function writeCliArtifactFixtures(repoRoot) {
     join(cliDir, 'package.json'),
     JSON.stringify(
       {
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.0.0',
         dependencies: {
           '@huggingface/transformers': '1.0.0',
@@ -103,11 +103,11 @@ function writeCliArtifactFixtures(repoRoot) {
           '@homebridge/node-pty-prebuilt-multiarch': '1.0.0',
         },
         bundledDependencies: [
-          '@happier-dev/agents',
-          '@happier-dev/cli-common',
-          '@happier-dev/connection-supervisor',
-          '@happier-dev/protocol',
-          '@happier-dev/release-runtime',
+          '@piggercode/agents',
+          '@piggercode/cli-common',
+          '@piggercode/connection-supervisor',
+          '@piggercode/protocol',
+          '@piggercode/release-runtime',
         ],
       },
       null,
@@ -116,11 +116,11 @@ function writeCliArtifactFixtures(repoRoot) {
     'utf8',
   );
   writeCliToolUnpackFixture(repoRoot);
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/agents', relativeDir: ['packages', 'agents'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/cli-common', relativeDir: ['packages', 'cli-common'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/connection-supervisor', relativeDir: ['packages', 'connection-supervisor'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/protocol', relativeDir: ['packages', 'protocol'] });
-  writeWorkspacePackageFixture({ repoRoot, packageName: '@happier-dev/release-runtime', relativeDir: ['packages', 'release-runtime'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/agents', relativeDir: ['packages', 'agents'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/cli-common', relativeDir: ['packages', 'cli-common'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/connection-supervisor', relativeDir: ['packages', 'connection-supervisor'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/protocol', relativeDir: ['packages', 'protocol'] });
+  writeWorkspacePackageFixture({ repoRoot, packageName: '@piggercode/release-runtime', relativeDir: ['packages', 'release-runtime'] });
   writeFileSync(join(cliScriptsDir, 'childProcessOptions.cjs'), 'module.exports = { withWindowsHide: (input) => input };\n', 'utf8');
   writeFileSync(join(cliScriptsDir, 'claude_launcher_runtime.cjs'), 'module.exports = { getClaudeCliPath: () => "claude", runClaudeCli: () => {} };\n', 'utf8');
   writeFileSync(join(cliScriptsDir, 'claude_local_launcher.cjs'), 'require("./claude_launcher_runtime.cjs");\n', 'utf8');
@@ -352,7 +352,7 @@ test('buildCliBinaryArtifactPayload keeps workspace payload copies in the snapsh
 
     assert.equal(outcomeBeforeCompileRelease, 'waited');
     assert.equal(
-      readFileSync(join(payloadDir, 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.mjs'), 'utf8'),
+      readFileSync(join(payloadDir, 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.mjs'), 'utf8'),
       generationA,
     );
     assert.equal(readFileSync(workspaceDistPath, 'utf8'), generationB);

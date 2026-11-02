@@ -1,4 +1,4 @@
-import type { SessionRunnerRestartDisabledReason } from '@happier-dev/protocol';
+import type { SessionRunnerRestartDisabledReason } from '@piggercode/protocol';
 
 export type SessionRunnerActivityDisabledReasonReaders = Readonly<{
   isTurnInProgress?: (sessionId: string) => boolean;

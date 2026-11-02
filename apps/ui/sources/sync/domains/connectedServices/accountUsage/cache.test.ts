@@ -2,7 +2,7 @@ import {
   buildProviderAccountUsageRecordId,
   ProviderAccountUsageSnapshotV1Schema,
   type ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {

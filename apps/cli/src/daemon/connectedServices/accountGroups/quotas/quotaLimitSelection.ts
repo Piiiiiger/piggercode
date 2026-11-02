@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceAuthGroupQuotaLimitSelectionV1,
-} from '@happier-dev/protocol';
-import { selectConnectedServiceQuotaMetersForLimitSelection } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { selectConnectedServiceQuotaMetersForLimitSelection } from '@piggercode/protocol';
 
 function readIdentity(value: unknown): string | null {
   return typeof value === 'string' && value.trim() ? value.trim() : null;

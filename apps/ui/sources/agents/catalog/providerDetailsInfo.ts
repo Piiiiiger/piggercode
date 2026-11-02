@@ -1,4 +1,4 @@
-import type { AgentModelDescriptor } from '@happier-dev/agents';
+import type { AgentModelDescriptor } from '@piggercode/agents';
 import type { AgentCoreConfig } from '@/agents/registry/registryCore';
 
 type ResumeSupportKind =

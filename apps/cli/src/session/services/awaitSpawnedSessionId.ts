@@ -5,7 +5,7 @@ import {
   type SpawnSessionErrorDetail,
   type SpawnSessionErrorCode,
   type SpawnSessionNonceResolution,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SpawnSessionResult } from '@/rpc/handlers/registerSessionHandlers';
 import { logger } from '@/ui/logger';

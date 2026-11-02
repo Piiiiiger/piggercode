@@ -5,7 +5,7 @@ import {
     resolveUiFeatureToggleEnabled,
 } from './uiFeatureToggles';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 
 const promotedFeatureIds = [
     'attachments.uploads',

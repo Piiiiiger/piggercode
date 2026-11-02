@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { resolveLocalFeaturePolicyEnabled } from './featureLocalPolicy';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
-import type { FeatureId } from '@happier-dev/protocol';
+import type { FeatureId } from '@piggercode/protocol';
 
 describe('featureLocalPolicy', () => {
     it('disables connectedServices when build-time env is falsy', () => {

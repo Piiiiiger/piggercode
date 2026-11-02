@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
 import { resolveFirstPartyVersionInstallPath } from './installLayout.js';

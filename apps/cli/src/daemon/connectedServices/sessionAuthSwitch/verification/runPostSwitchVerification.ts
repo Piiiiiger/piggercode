@@ -2,7 +2,7 @@ import type {
   ConnectedServiceBindingsV1,
   ConnectedServiceId,
   ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import type { TrackedSession } from '@/daemon/types';

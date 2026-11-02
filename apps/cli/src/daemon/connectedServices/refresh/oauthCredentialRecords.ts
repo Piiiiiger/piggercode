@@ -2,7 +2,7 @@ import {
   ConnectedServiceCredentialRecordV1Schema,
   openConnectedServiceCredentialCiphertext,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 

@@ -9,7 +9,7 @@ import type {
   PromptAssetTypeDescriptorV1,
   PromptRegistryConfiguredSourceV1,
   PromptRegistryFetchedItemV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { defaultPromptAssetTargetInput } from '@/components/settings/prompts/assets/promptAssetExportDefaults';
 import { ContextBar } from '@/components/settings/contextBar/ContextBar';

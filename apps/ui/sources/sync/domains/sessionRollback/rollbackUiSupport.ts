@@ -1,14 +1,14 @@
 import { readMessageDisplayText } from '@/sync/domains/messages/messageDisplayText';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import type { Session } from '@/sync/domains/state/storageTypes';
-import { evaluateAgentSessionCapabilitySupport, inferAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { evaluateAgentSessionCapabilitySupport, inferAgentIdFromSessionMetadata } from '@piggercode/agents';
 import {
     listCompletedSessionTurns,
     readSessionRollbackRangesV1FromMetadata,
     SessionTurnsProjectionV1Schema,
     type SessionRollbackTarget,
     type SessionTurnsProjectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type TranscriptRollbackAction = Readonly<{
     target: SessionRollbackTarget;

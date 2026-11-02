@@ -4,7 +4,7 @@ import type { CommandContext } from '@/cli/commandRegistry';
 export { handleSessionCommand } from './handleSessionCommand';
 
 import { handleSessionCommand } from './handleSessionCommand';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 export async function handleSessionCliCommand(context: CommandContext): Promise<void> {
   try {

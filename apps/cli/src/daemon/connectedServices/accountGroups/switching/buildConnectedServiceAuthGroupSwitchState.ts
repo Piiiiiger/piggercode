@@ -1,4 +1,4 @@
-import type { ConnectedServiceAuthGroupV1, ConnectedServiceCredentialHealthStatusV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceAuthGroupV1, ConnectedServiceCredentialHealthStatusV1 } from '@piggercode/protocol';
 
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
 import {

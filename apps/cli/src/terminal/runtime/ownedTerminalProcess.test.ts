@@ -6,8 +6,8 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { describe, expect, it, vi } from 'vitest';
-import { bundleInstalledPackageWithRuntimeDependencies } from '@happier-dev/cli-common/workspaces';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { bundleInstalledPackageWithRuntimeDependencies } from '@piggercode/cli-common/workspaces';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 import { launchOwnedTerminalProcess } from './ownedTerminalProcess';
 import { createUnreadTerminalArtifactsCleanup, prepareOwnedTerminalSpawn } from './terminalLaunchSpec';

@@ -1,4 +1,4 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
 import {
   ConnectedServiceUsageSourceV1Schema,
   isConnectedServiceQuotaObservationFresh,
@@ -11,8 +11,8 @@ import {
   type ProviderAccountUsageSnapshotV1,
   type ProviderAccountUsageOrganizationContext,
   type SealedProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
-import { AGENTS_CORE } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 

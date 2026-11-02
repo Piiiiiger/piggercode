@@ -1,7 +1,7 @@
 import {
   resolveNotificationChannelsV1FromAccountSettings,
   type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { logger } from '@/ui/logger';
 import type { ActivityNotificationEvent } from './activityNotificationEvent';

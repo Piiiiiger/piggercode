@@ -20,7 +20,7 @@ import { getSessionNotificationTitle } from '@/agent/runtime/readyNotificationCo
 import { createAgentSessionMediaPersister } from '@/session/sessionMedia/createAgentSessionMediaPersister';
 import { createSessionMediaAccessPolicy } from '@/session/sessionMedia/createSessionMediaAccessPolicy';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';
-import { getProviderCliRuntimeSpec } from '@happier-dev/agents';
+import { getProviderCliRuntimeSpec } from '@piggercode/agents';
 
 export function createCodexAcpRuntime(params: {
   directory: string;

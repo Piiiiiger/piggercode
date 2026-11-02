@@ -1,4 +1,4 @@
-import { normalizeVoiceAgentTurnTranscriptText } from '@happier-dev/agents';
+import { normalizeVoiceAgentTurnTranscriptText } from '@piggercode/agents';
 
 import { parseHappierMetaEnvelope } from '@/components/sessions/transcript/structured/happierMetaEnvelope';
 import type { Message } from '@/sync/domains/messages/messageTypes';

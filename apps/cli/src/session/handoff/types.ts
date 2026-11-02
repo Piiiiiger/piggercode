@@ -3,7 +3,7 @@ import type {
   DirectSessionsSource,
   SessionHandoffCodexAffinity,
   SessionHandoffCodexBackendMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type HandoffProviderId = 'claude' | 'codex' | 'opencode';
 

@@ -1,4 +1,4 @@
-import { readSessionAgentTransitionDividerV1 } from '@happier-dev/protocol';
+import { readSessionAgentTransitionDividerV1 } from '@piggercode/protocol';
 
 import { isAgentId, type AgentId } from '@/agents/registry/registryCore';
 import type { Message } from '@/sync/domains/messages/messageTypes';

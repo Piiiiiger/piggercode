@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 import { installErrorUtilityCommonModuleMocks } from './errorUtilityTestHelpers';
 
 const modalAlertSpy = vi.hoisted(() => vi.fn((..._args: unknown[]) => {}));

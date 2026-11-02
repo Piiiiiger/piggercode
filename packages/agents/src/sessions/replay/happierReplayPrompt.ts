@@ -1,4 +1,4 @@
-import { MENTION_BOUNDS, type SessionWorkStateV1 } from '@happier-dev/protocol';
+import { MENTION_BOUNDS, type SessionWorkStateV1 } from '@piggercode/protocol';
 
 export type HappierReplayStrategy = 'recent_messages' | 'summary_plus_recent';
 

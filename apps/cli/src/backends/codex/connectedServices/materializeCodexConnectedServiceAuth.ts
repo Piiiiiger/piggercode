@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { AccountSettings, ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { AccountSettings, ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 import { CONNECTED_SERVICE_MATERIALIZATION_REASONS, type ConnectedServicesMaterializationDiagnostic } from '@/daemon/connectedServices/materialize/providerMaterializerTypes';
 import type { ConnectedServiceSharedGenerationMutationCurrentness } from '@/daemon/connectedServices/credentials/lifecycleTypes';

@@ -2,7 +2,7 @@ import {
   ConnectedServiceBindingsV1Schema,
   type ConnectedServiceBindingSelectionV1,
   type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServicesLaunchAuthIntent =
   | Readonly<{ kind: 'default' }>

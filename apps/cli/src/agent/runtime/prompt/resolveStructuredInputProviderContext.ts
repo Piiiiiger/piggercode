@@ -10,7 +10,7 @@ import {
     resolveSkillCatalogItemIdentityV1,
     sanitizeMentionRefsV1,
     type MentionRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * The send-time provider resolver (D-3, INV-9, R-10).

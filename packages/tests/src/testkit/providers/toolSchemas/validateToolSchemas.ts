@@ -3,7 +3,7 @@ import {
   ToolHappierMetaV2Schema,
   getToolInputSchemaV2,
   getToolResultSchemaV2,
-} from '@happier-dev/protocol/tools/v2';
+} from '@piggercode/protocol/tools/v2';
 
 type UnknownRecord = Record<string, unknown>;
 type FixtureEvent = {

@@ -3,7 +3,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type {
   ScmPullRequestCheckoutRequest,
   ScmPullRequestCheckoutResponse,
@@ -21,8 +21,8 @@ import type {
   ScmPullRequestRunStackedResponse,
   ScmStatusSnapshotRequest,
   ScmStatusSnapshotResponse,
-} from '@happier-dev/protocol';
-import { buildConnectedServiceCredentialRecord, SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { buildConnectedServiceCredentialRecord, SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { writeExecutableShim } from '@/testkit/fs/executableShim';
 

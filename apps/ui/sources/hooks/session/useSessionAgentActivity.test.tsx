@@ -5,7 +5,7 @@ import {
     buildAgentActivityEntryId,
     type SessionAgentActivityEntryV1,
     type SessionAgentActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import * as testkit from '@/dev/testkit';
 import { storage } from '@/sync/domains/state/storageStore';

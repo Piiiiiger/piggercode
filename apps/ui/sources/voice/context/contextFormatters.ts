@@ -6,8 +6,8 @@ import { resolveAgentRequestKind, type AgentRequestKind } from "@/utils/sessions
 import { redactVoicePathLikeData, redactVoicePathLikeString } from '@/voice/shared/redactVoicePathLikeData';
 import { resolveVoiceSessionLabel } from "@/voice/context/resolveVoiceSessionLabel";
 import { resolveVoiceToolResultHumanSummary } from "@/voice/context/resolveVoiceToolResultHumanSummary";
-import { formatPermissionRequestSummary } from '@happier-dev/protocol';
-import { isAskUserQuestionToolName } from '@happier-dev/protocol';
+import { formatPermissionRequestSummary } from '@piggercode/protocol';
+import { isAskUserQuestionToolName } from '@piggercode/protocol';
 
 interface SessionMetadata {
     summary?: { text?: string };

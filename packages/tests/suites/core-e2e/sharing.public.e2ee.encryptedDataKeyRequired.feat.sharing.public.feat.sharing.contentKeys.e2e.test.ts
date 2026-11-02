@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { createHmac } from 'node:crypto';
 import tweetnacl from 'tweetnacl';
-import { parseSerializedJsonValue } from '@happier-dev/protocol';
+import { parseSerializedJsonValue } from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { fetchJson } from '../../src/testkit/http';

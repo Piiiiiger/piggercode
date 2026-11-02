@@ -1,4 +1,4 @@
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';
 
 import { asRecord } from './_shared';
 import {

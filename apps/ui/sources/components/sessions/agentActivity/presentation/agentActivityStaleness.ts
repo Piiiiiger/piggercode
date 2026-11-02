@@ -1,4 +1,4 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
 
 import { t } from '@/text';
 

@@ -2,7 +2,7 @@ import {
     SESSION_RUNTIME_ACTIVITY_ACTIVE_COUNT_MAX,
     SessionRuntimeActivitySnapshotSchema,
     type SessionRuntimeActivitySnapshot,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import {
     SessionRuntimeActivityContributionSchema,

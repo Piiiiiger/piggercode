@@ -11,7 +11,7 @@ import {
   ConnectedServiceBindingsV1Schema,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceBindingSelection =
   | Readonly<{

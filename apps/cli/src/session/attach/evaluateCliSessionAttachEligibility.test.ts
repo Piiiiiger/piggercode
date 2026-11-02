@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
-import { projectSessionMetadataForWire } from '@happier-dev/protocol';
+import { projectSessionMetadataForWire } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';

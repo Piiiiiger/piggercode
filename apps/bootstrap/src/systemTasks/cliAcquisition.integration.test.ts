@@ -8,9 +8,9 @@ import { syncBuiltinESMExports } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { prepareFirstPartyComponentPayloadFromGitHubRelease } from '@happier-dev/cli-common/firstPartyRuntime';
-import { executeSystemTask } from '@happier-dev/cli-common/systemTasks';
-import type { CliAcquisitionProgress, DoctorSnapshotDaemonStatus, SystemTaskEvent } from '@happier-dev/protocol';
+import { prepareFirstPartyComponentPayloadFromGitHubRelease } from '@piggercode/cli-common/firstPartyRuntime';
+import { executeSystemTask } from '@piggercode/cli-common/systemTasks';
+import type { CliAcquisitionProgress, DoctorSnapshotDaemonStatus, SystemTaskEvent } from '@piggercode/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { acquireManagedLocalFirstPartyComponentCommand } from './localFirstPartyCommand.js';

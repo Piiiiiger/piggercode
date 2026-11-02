@@ -1,4 +1,4 @@
-# `@happier-dev/tests`
+# `@piggercode/tests`
 
 Real end-to-end tests for Happier (server-light + real sockets + real DB).
 
@@ -37,14 +37,14 @@ Out of scope for this package:
 
 ## Commands
 
-- Core deterministic e2e: `yarn workspace @happier-dev/tests test`
-- Core deterministic e2e (fast lane): `yarn workspace @happier-dev/tests test:core:fast`
-- Core deterministic e2e (slow lane): `yarn workspace @happier-dev/tests test:core:slow`
-- UI E2E (Playwright, web UI): `yarn workspace @happier-dev/tests test:ui:e2e`
-- WSREPL Lima matrix (macOS/Linux host opt-in): `yarn workspace @happier-dev/tests test:ui:e2e:wsrepl:lima -- happier-wsrepl-qa`
-- Stress (seeded chaos): `yarn workspace @happier-dev/tests test:stress`
-- Providers (real provider CLIs, opt-in): `yarn workspace @happier-dev/tests test:providers`
-- Typecheck: `yarn workspace @happier-dev/tests typecheck`
+- Core deterministic e2e: `yarn workspace @piggercode/tests test`
+- Core deterministic e2e (fast lane): `yarn workspace @piggercode/tests test:core:fast`
+- Core deterministic e2e (slow lane): `yarn workspace @piggercode/tests test:core:slow`
+- UI E2E (Playwright, web UI): `yarn workspace @piggercode/tests test:ui:e2e`
+- WSREPL Lima matrix (macOS/Linux host opt-in): `yarn workspace @piggercode/tests test:ui:e2e:wsrepl:lima -- happier-wsrepl-qa`
+- Stress (seeded chaos): `yarn workspace @piggercode/tests test:stress`
+- Providers (real provider CLIs, opt-in): `yarn workspace @piggercode/tests test:providers`
+- Typecheck: `yarn workspace @piggercode/tests typecheck`
 
 Root aliases may exist (e.g. `yarn test:e2e`), but the workspace commands above are the source of truth.
 
@@ -71,26 +71,26 @@ Socket assertion surface:
 
 The provider suite is opt-in, but you can run common presets via yarn scripts:
 
-- `yarn workspace @happier-dev/tests providers:opencode:smoke`
-- `yarn workspace @happier-dev/tests providers:claude:smoke`
-- `yarn workspace @happier-dev/tests providers:codex:smoke`
-- `yarn workspace @happier-dev/tests providers:kilo:smoke`
-- `yarn workspace @happier-dev/tests providers:qwen:smoke`
-- `yarn workspace @happier-dev/tests providers:kimi:smoke`
-- `yarn workspace @happier-dev/tests providers:auggie:smoke`
-- `yarn workspace @happier-dev/tests providers:all:smoke`
-- `yarn workspace @happier-dev/tests providers:opencode:extended`
-- `yarn workspace @happier-dev/tests providers:all:extended`
+- `yarn workspace @piggercode/tests providers:opencode:smoke`
+- `yarn workspace @piggercode/tests providers:claude:smoke`
+- `yarn workspace @piggercode/tests providers:codex:smoke`
+- `yarn workspace @piggercode/tests providers:kilo:smoke`
+- `yarn workspace @piggercode/tests providers:qwen:smoke`
+- `yarn workspace @piggercode/tests providers:kimi:smoke`
+- `yarn workspace @piggercode/tests providers:auggie:smoke`
+- `yarn workspace @piggercode/tests providers:all:smoke`
+- `yarn workspace @piggercode/tests providers:opencode:extended`
+- `yarn workspace @piggercode/tests providers:all:extended`
 
 Baseline updates are explicit:
 
-- `yarn workspace @happier-dev/tests providers:opencode:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:claude:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:codex:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:kilo:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:qwen:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:kimi:smoke:update-baselines`
-- `yarn workspace @happier-dev/tests providers:auggie:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:opencode:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:claude:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:codex:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:kilo:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:qwen:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:kimi:smoke:update-baselines`
+- `yarn workspace @piggercode/tests providers:auggie:smoke:update-baselines`
 
 ## Suites
 
@@ -115,13 +115,13 @@ Common artifacts:
 
 Artifacts are written on failure by default. You can force keeping artifacts even on success:
 
-- `HAPPIER_E2E_SAVE_ARTIFACTS=1 yarn workspace @happier-dev/tests test`
+- `HAPPIER_E2E_SAVE_ARTIFACTS=1 yarn workspace @piggercode/tests test`
 
 UI E2E (Playwright) notes:
 - Expo web is started via `expo start --web`; if you suspect stale Metro transforms, you can opt into cache clearing with `HAPPIER_E2E_EXPO_CLEAR=1` (default is off because `--clear` can occasionally crash Metro).
 - UI E2E artifacts live under `.project/logs/e2e/ui-playwright/...` and include screenshots + videos on failure.
 - WSREPL Lima matrix artifacts live under `apps/stack/output/wsrepl-lima-matrix/...`; the lane entrypoint, raw harness, and Lima bootstrap helper now live in `packages/tests` (`packages/tests/scripts/run-wsrepl-lima-matrix.mjs`, `packages/tests/scripts/wsrepl-lima-matrix.sh`, `packages/tests/scripts/lima-vm.sh`). The stack copies are compatibility shims only and are excluded from the published stack package.
-- Harness self-tests run via `yarn workspace @happier-dev/tests test:ui:e2e:wsrepl:lima:self`. Their environment and fake guest shell are owned by the stack testkit’s `apps/stack/scripts/testkit/core/lima_guest_harness.mjs`: fixtures explicitly supply stack/provider settings and run guest scripts without loading host login profiles. Keep fake `limactl shell` execution on that boundary; executing guest login shells directly on the host can reach the real CLI and restart a live daemon.
+- Harness self-tests run via `yarn workspace @piggercode/tests test:ui:e2e:wsrepl:lima:self`. Their environment and fake guest shell are owned by the stack testkit’s `apps/stack/scripts/testkit/core/lima_guest_harness.mjs`: fixtures explicitly supply stack/provider settings and run guest scripts without loading host login profiles. Keep fake `limactl shell` execution on that boundary; executing guest login shells directly on the host can reach the real CLI and restart a live daemon.
 
 ## Core e2e suite: what each test ensures
 
@@ -129,13 +129,13 @@ These tests always boot a real local server (local files backend) and use real s
 
 By default, core e2e runs against embedded Postgres via `pglite`, but you can opt into other providers:
 
-- `HAPPIER_E2E_DB_PROVIDER=pglite yarn workspace @happier-dev/tests test`
-- `HAPPIER_E2E_DB_PROVIDER=sqlite yarn workspace @happier-dev/tests test`
+- `HAPPIER_E2E_DB_PROVIDER=pglite yarn workspace @piggercode/tests test`
+- `HAPPIER_E2E_DB_PROVIDER=sqlite yarn workspace @piggercode/tests test`
 
 Extended (requires an external DB URL):
 
-- `HAPPIER_E2E_DB_PROVIDER=postgres DATABASE_URL='postgresql://...' yarn workspace @happier-dev/tests test`
-- `HAPPIER_E2E_DB_PROVIDER=mysql DATABASE_URL='mysql://...' yarn workspace @happier-dev/tests test`
+- `HAPPIER_E2E_DB_PROVIDER=postgres DATABASE_URL='postgresql://...' yarn workspace @piggercode/tests test`
+- `HAPPIER_E2E_DB_PROVIDER=mysql DATABASE_URL='mysql://...' yarn workspace @piggercode/tests test`
 
 Local convenience (auto-provision Docker DB):
 
@@ -160,7 +160,7 @@ Reconnect + catch-up:
 - `suites/core-e2e/sessions.list.catchup.test.ts`: sessions list catch-up via `/v2/changes` + `/v2/sessions` pagination (ensures “new session appears” after reconnect).
 
 Messages (socket + HTTP) contract/idempotency:
-- `suites/core-e2e/messages.socketAck.schema.test.ts`: socket `message` ACK matches the shared schema (`@happier-dev/protocol/updates`).
+- `suites/core-e2e/messages.socketAck.schema.test.ts`: socket `message` ACK matches the shared schema (`@piggercode/protocol/updates`).
 - `suites/core-e2e/messages.socketAck.didWrite.test.ts`: ACK includes `didWrite=true` on first commit and `didWrite=false` on idempotent duplicates.
 - `suites/core-e2e/messages.socketIdempotency.noRebroadcast.test.ts`: re-sending the same `localId` returns an ACK but must **not** broadcast a second `new-message` update.
 - `suites/core-e2e/messages.socket.echoToSender.test.ts`: sender socket is skipped by default, but receives updates when `echoToSender=true`.
@@ -206,7 +206,7 @@ The goal is to fail loudly when a provider changes its tool formats or our norma
 By default, `test:providers` is a fast no-op. Enable explicitly:
 
 ```bash
-HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @happier-dev/tests test:providers
+HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers
 ```
 
 ### Provider matrix runner
@@ -261,10 +261,10 @@ Two quick examples (current at time of writing):
 - Starts a real local `server-light`
 - Creates auth via `/v1/auth`
 - Creates a session with legacy encryption and writes a session-attach file
-- Spawns `yarn workspace @happier-dev/cli dev <provider> --existing-session <id> ...`
+- Spawns `yarn workspace @piggercode/cli dev <provider> --existing-session <id> ...`
 - Sends encrypted prompts to `/v2/sessions/:id/messages`
 - Waits for tool trace (`HAPPIER_STACK_TOOL_TRACE_FILE`)
-- Extracts fixtures using `@happier-dev/cli tool:trace:extract`
+- Extracts fixtures using `@piggercode/cli tool:trace:extract`
 - Asserts scenario invariants (fixture keys + optional workspace file checks)
 - Optionally compares extracted fixture keys + payload shapes against committed baselines
 
@@ -276,12 +276,12 @@ Implementation: `src/testkit/providers/harness/index.ts`
 2) Create a real auth token via `/v1/auth`
 3) Create a session via `/v1/sessions` using **legacy encryption** (for now) and write a session attach file
 4) Spawn a real agent via the Happier CLI:
-   - `yarn workspace @happier-dev/cli dev <provider> --existing-session <id> [--yolo]`
+   - `yarn workspace @piggercode/cli dev <provider> --existing-session <id> [--yolo]`
 5) Send the prompt via POST `/v2/sessions/:id/messages` (encrypted)
 6) If YOLO is off, auto-respond to permission requests via `${sessionId}:permission` RPC
 7) Wait for the tool trace file to contain the events required by the scenario (correlated by callId/tool_use_id)
 8) Extract fixtures from the tool trace using:
-   - `yarn workspace @happier-dev/cli tool:trace:extract --out <fixtures.json> <trace.jsonl>`
+   - `yarn workspace @piggercode/cli tool:trace:extract --out <fixtures.json> <trace.jsonl>`
 9) Validate:
    - schema validation (canonical tools where available, plus raw Claude envelope checks)
    - baseline drift (fixture keys + payload shape)
@@ -293,7 +293,7 @@ Provider drift detection uses two layers:
 
 1) **Schema validation**
    - Implemented in `src/testkit/providers/toolSchemas/validateToolSchemas.ts`
-   - Uses `@happier-dev/protocol/tools/v2` for canonical tool schemas
+   - Uses `@piggercode/protocol/tools/v2` for canonical tool schemas
    - Only enforces `_happier` + per-tool schemas for protocols that actually emit canonical V2 tool envelopes today (`acp`, `codex`)
    - Claude currently records raw `tool_use`/`tool_result` blocks; we validate a minimal raw envelope for those without requiring `_happier`.
 
@@ -329,8 +329,8 @@ Baselines should be updated when:
 
 To update baselines:
 - run the scenario(s) with `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1`
-  - easiest: `yarn workspace @happier-dev/tests providers:opencode:smoke:update-baselines`
-  - or: `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1 HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @happier-dev/tests test:providers`
+  - easiest: `yarn workspace @piggercode/tests providers:opencode:smoke:update-baselines`
+  - or: `HAPPIER_E2E_PROVIDER_UPDATE_BASELINES=1 HAPPIER_E2E_PROVIDERS=1 HAPPIER_E2E_PROVIDER_OPENCODE=1 yarn workspace @piggercode/tests test:providers`
 
 After updating:
 - review the baseline JSON diff (keys and shapes)

@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRevisionV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRevisionV1 } from '@piggercode/protocol';
 
 export type CodexConnectedServiceAppliedIdentitySource =
   | 'app_server_runtime'

@@ -8,13 +8,13 @@ describe('wrapCommandForPseudoTty', () => {
       platform: 'darwin',
       scriptPath: '/usr/bin/script',
       command: 'yarn',
-      args: ['-s', 'workspace', '@happier-dev/cli', 'dev', 'claude'],
+      args: ['-s', 'workspace', '@piggercode/cli', 'dev', 'claude'],
       needsTty: true,
     });
 
     expect(wrapped).toEqual({
       command: '/usr/bin/script',
-      args: ['-q', '/dev/null', 'yarn', '-s', 'workspace', '@happier-dev/cli', 'dev', 'claude'],
+      args: ['-q', '/dev/null', 'yarn', '-s', 'workspace', '@piggercode/cli', 'dev', 'claude'],
     });
   });
 });

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildCodexAgentRuntimeDescriptorV1 } from '@happier-dev/protocol';
+import { buildCodexAgentRuntimeDescriptorV1 } from '@piggercode/protocol';
 import { waitForCondition } from '@/testkit/async/waitFor';
 import {
   createCodexAppServerProcessEnv,

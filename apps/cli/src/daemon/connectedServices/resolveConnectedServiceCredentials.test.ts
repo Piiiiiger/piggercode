@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import {
   ConnectedServiceCredentialBindingMismatchError,
   ConnectedServiceCredentialResolutionError,

@@ -9,7 +9,7 @@ import {
   SealedProviderAccountUsageSnapshotV1Schema,
   type ProviderAccountUsageRecordId,
   type SealedProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 function extractErrorCode(json: unknown): string | null {

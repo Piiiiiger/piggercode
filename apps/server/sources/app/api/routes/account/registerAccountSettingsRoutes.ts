@@ -12,7 +12,7 @@ import {
     AccountSettingsV2UpdateRequestSchema,
     AccountSettingsV2UpdateResponseSchema,
     type AccountSettingsStoredContentEnvelope,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveEffectiveAccountEncryptionModeFromAccountRow } from "@/app/encryption/accountEncryptionMode";
 import { openPlainAccountSettingsDbValue, storePlainAccountSettingsDbValue } from "@/app/encryption/accountSettingsStorage";
 import { recordAccountSettingsSnapshotsForWrite } from "@/app/accountSettings/accountSettingsHistoryRepository";

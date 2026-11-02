@@ -1,4 +1,4 @@
-import { AGENTS_CORE, type AgentId } from '@happier-dev/agents';
+import { AGENTS_CORE, type AgentId } from '@piggercode/agents';
 import {
   readConnectedServicesDefaultAuthSettings,
   type ConnectedServicesDefaultAuthSettings,
@@ -6,7 +6,7 @@ import {
   type ConnectedServiceBindingSelectionV1,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function agentSupportsSpawnConnectedServicesDefaults(agentId: AgentId): boolean {
   return (AGENTS_CORE[agentId].connectedServices?.supportedServiceIds.length ?? 0) > 0;

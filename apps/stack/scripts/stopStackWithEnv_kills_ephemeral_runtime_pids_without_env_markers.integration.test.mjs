@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { stopStackWithEnv } from './utils/stack/stop.mjs';
 import { terminateProcessGroup } from './utils/proc/terminate.mjs';
 import { isAlive, spawnOwnedSleep, waitForProcessAlive, waitForProcessExit } from './testkit/stack_stop_sweeps_testkit.mjs';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 test('stopStackWithEnv kills runtime-tracked pids for ephemeral stacks even when env/home markers are missing', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));

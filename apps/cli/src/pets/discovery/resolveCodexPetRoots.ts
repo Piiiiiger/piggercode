@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { configuration } from '@/configuration';
 import { resolveCodexHomeEntriesForDirectSessionsSource } from '@/backends/codex/directSessions/resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';
-import type { PetDiscoveryDiagnosticV1 } from '@happier-dev/protocol';
+import type { PetDiscoveryDiagnosticV1 } from '@piggercode/protocol';
 
 import { createPetSourceKey } from './createPetSourceKey';
 

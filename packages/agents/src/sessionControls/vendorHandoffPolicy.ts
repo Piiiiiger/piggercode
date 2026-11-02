@@ -1,4 +1,4 @@
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import type { AgentId } from '../types.js';
 import { AGENTS_CORE } from '../manifest.js';
 import { isCodexVendorResumeBackendEnabled } from '../providerSettings/definitions/codex.js';

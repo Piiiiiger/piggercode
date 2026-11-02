@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { buildSettingArtifacts, type SettingDefinitionMap } from '@happier-dev/protocol';
+import { buildSettingArtifacts, type SettingDefinitionMap } from '@piggercode/protocol';
 
 import type { ProviderSettingsDefinition } from '../types.js';
 

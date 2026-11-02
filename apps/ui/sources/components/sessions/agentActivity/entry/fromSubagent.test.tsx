@@ -2,7 +2,7 @@ import * as React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderScreen } from '@/dev/testkit';
-import { ExecutionRunPublicStateSchema } from '@happier-dev/protocol';
+import { ExecutionRunPublicStateSchema } from '@piggercode/protocol';
 import { ExecutionRunRow } from '@/components/sessions/runs/ExecutionRunRow';
 import { SessionExecutionRunInfoCard } from '@/components/sessions/runs/details/SessionExecutionRunInfoCard';
 import { t } from '@/text';

@@ -1,1 +1,1 @@
-export { lookupSha256 } from '@happier-dev/release-runtime/checksums';
+export { lookupSha256 } from '@piggercode/release-runtime/checksums';

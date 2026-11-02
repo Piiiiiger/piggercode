@@ -1,4 +1,4 @@
-import type { ReorderSessionOrganizationRequest } from "@happier-dev/protocol";
+import type { ReorderSessionOrganizationRequest } from "@piggercode/protocol";
 
 import { createV2SessionListVisibilityWhere } from "@/app/api/routes/session/v2SessionListRows";
 import { createVisibleUnarchivedOrganizationSessionWhere } from "./sessionVisibility";

@@ -4,7 +4,7 @@ import {
     readHappierStructuredInputV1FromMeta,
     readMentionRefOpaqueForKindV1,
     readStructuredInputMentionSourcesV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { extractWorkspaceFileMentions } from '@/components/sessions/linkedFiles/extractWorkspaceFileMentions';
 import { isSafeWorkspaceRelativePath } from '@/utils/path/isSafeWorkspaceRelativePath';

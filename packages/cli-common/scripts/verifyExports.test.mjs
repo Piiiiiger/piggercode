@@ -50,7 +50,7 @@ describe('cli-common build export verification', () => {
       writeFileSync(join(fixtureDir, 'dist', 'index.js'), 'export const oldValue = true;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'dist', 'index.d.ts'), 'export declare const oldValue: boolean;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/cli-common-fixture',
+        name: '@piggercode/cli-common-fixture',
         exports: {
           '.': {
             default: './dist/index.js',
@@ -104,7 +104,7 @@ describe('cli-common build export verification', () => {
       writeFileSync(join(fixtureDir, 'dist', 'index.js'), 'export const oldValue = true;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'dist', 'index.d.ts'), 'export declare const oldValue: boolean;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/cli-common-fixture',
+        name: '@piggercode/cli-common-fixture',
         exports: {
           '.': {
             default: './dist/index.js',
@@ -166,7 +166,7 @@ describe('cli-common build export verification', () => {
       writeFileSync(join(fixtureDir, 'dist', 'index.js'), 'export const oldValue = true;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'dist', 'index.d.ts'), 'export declare const oldValue: boolean;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/cli-common-fixture',
+        name: '@piggercode/cli-common-fixture',
         exports: {
           '.': {
             default: './dist/index.js',
@@ -220,7 +220,7 @@ describe('cli-common build export verification', () => {
       mkdirSync(join(fixtureDir, 'dist', 'links'), { recursive: true });
       writeFileSync(join(fixtureDir, 'dist', 'links', 'index.js'), 'export const ok = true;\n', 'utf8');
       writeFileSync(join(fixtureDir, 'package.json'), JSON.stringify({
-        name: '@happier-dev/cli-common-fixture',
+        name: '@piggercode/cli-common-fixture',
         exports: {
           './links': {
             default: './dist/links/index.js',

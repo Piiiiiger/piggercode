@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildAgentActivityEntryId, type SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import { buildAgentActivityEntryId, type SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 import {
     makeSessionWorkflowActivityHeadline,
     makeSessionWorkflowRunHeadline,

@@ -1,6 +1,6 @@
 import { buildHappierToolsShellBridgeCommand } from '@/agent/tools/happierTools/runtime/buildHappierToolsShellBridgeCommand';
 
-import type { CodingPromptSessionTitleUpdatesModeV1 } from '@happier-dev/protocol';
+import type { CodingPromptSessionTitleUpdatesModeV1 } from '@piggercode/protocol';
 
 export function buildHappierToolsPromptAppendix(params: Readonly<{
   sessionId: string;

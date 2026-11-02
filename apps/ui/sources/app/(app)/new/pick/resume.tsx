@@ -12,7 +12,7 @@ import { peekTempData, type NewSessionData } from '@/utils/sessions/tempDataStor
 import { useSettings } from '@/sync/domains/state/storage';
 import { settingsDefaults } from '@/sync/domains/settings/settings';
 import { useProfile as useAccountProfile } from '@/sync/store/hooks';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 import { t } from '@/text';
 import { safeRouterBack } from '@/utils/navigation/safeRouterBack';
 

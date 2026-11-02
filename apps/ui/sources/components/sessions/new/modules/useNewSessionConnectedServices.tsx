@@ -11,8 +11,8 @@ import {
 } from '@/sync/domains/connectedServices/resolveConnectedServiceProfileActionRoute';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useProfile } from '@/sync/store/hooks';
-import type { ConnectedServiceId } from '@happier-dev/agents';
-import type { ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/agents';
+import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { NewSessionConnectedServicesSelectionContent } from '@/components/sessions/new/components/NewSessionConnectedServicesSelectionContent';
 import { resolveConnectedServiceDisplayName } from '@/components/settings/connectedServices/model/resolveConnectedServiceDisplayName';

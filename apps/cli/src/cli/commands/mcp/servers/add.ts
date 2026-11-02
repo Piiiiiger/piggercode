@@ -4,11 +4,11 @@ import { readFlagValue } from '@/cli/commands/shared/argvFlags';
 import { printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { readMcpServersSettingsFromAccountSettings } from '@/mcp/servers/readMcpServersSettingsFromAccountSettings';
 
-import { McpServersSettingsV1Schema } from '@happier-dev/protocol';
+import { McpServersSettingsV1Schema } from '@piggercode/protocol';
 
 import type { McpCommandDeps } from '../deps';
 import { readRepeatedFlagValues } from '../argv';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 export async function cmdMcpServersAdd(
   argv: string[],

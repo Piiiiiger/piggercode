@@ -1,4 +1,4 @@
-import { supportsConnectedServiceOperation, type ConnectedServiceId } from '@happier-dev/protocol';
+import { supportsConnectedServiceOperation, type ConnectedServiceId } from '@piggercode/protocol';
 
 import { getReadyServerFeatures } from '@/sync/api/capabilities/getReadyServerFeatures';
 import { ConnectedServiceApiError } from './connectedServiceApiError';

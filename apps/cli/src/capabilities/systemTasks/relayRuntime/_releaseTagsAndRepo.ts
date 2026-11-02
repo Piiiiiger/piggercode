@@ -3,13 +3,13 @@
  * Single source of truth — previously duplicated in `liveRelayRuntime.ts`
  * and `diagnostics/doctorRepair/relayUpdateCheck.ts`.
  *
- * The CLI is distributed via npm (`@happier-dev/cli`) and uses the
+ * The CLI is distributed via npm (`@piggercode/cli`) and uses the
  * `readNpmDistTagVersion` helper instead of GitHub; this module is
  * relay-specific.
  */
 
-import type { PublicReleaseRingId, PublicReleaseRingLabel } from '@happier-dev/release-runtime/releaseRings';
-import { getReleaseRingPublicLabel } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId, PublicReleaseRingLabel } from '@piggercode/release-runtime/releaseRings';
+import { getReleaseRingPublicLabel } from '@piggercode/release-runtime/releaseRings';
 
 export type RelayChannelInput = PublicReleaseRingId | PublicReleaseRingLabel | string;
 

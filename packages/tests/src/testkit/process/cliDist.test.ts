@@ -21,34 +21,34 @@ async function createRepoRoot(): Promise<string> {
   await mkdir(join(root, '.project', 'tmp'), { recursive: true });
   await mkdir(join(root, 'apps', 'cli', 'src'), { recursive: true });
   await mkdir(join(root, 'apps', 'cli', 'dist'), { recursive: true });
-  await mkdir(join(root, 'apps', 'cli', 'node_modules', '@happier-dev'), { recursive: true });
+  await mkdir(join(root, 'apps', 'cli', 'node_modules', '@piggercode'), { recursive: true });
   for (const pkgName of ['agents', 'cli-common', 'protocol', 'release-runtime']) {
     await mkdir(join(root, 'packages', pkgName, 'src'), { recursive: true });
     await mkdir(join(root, 'packages', pkgName, 'dist'), { recursive: true });
-    await mkdir(join(root, 'apps', 'cli', 'node_modules', '@happier-dev', pkgName, 'dist'), {
+    await mkdir(join(root, 'apps', 'cli', 'node_modules', '@piggercode', pkgName, 'dist'), {
       recursive: true,
     });
-    await writeFile(join(root, 'packages', pkgName, 'package.json'), `{"name":"@happier-dev/${pkgName}"}`, 'utf8');
+    await writeFile(join(root, 'packages', pkgName, 'package.json'), `{"name":"@piggercode/${pkgName}"}`, 'utf8');
     await writeFile(
-      join(root, 'apps', 'cli', 'node_modules', '@happier-dev', pkgName, 'package.json'),
-      `{"name":"@happier-dev/${pkgName}"}`,
+      join(root, 'apps', 'cli', 'node_modules', '@piggercode', pkgName, 'package.json'),
+      `{"name":"@piggercode/${pkgName}"}`,
       'utf8',
     );
     await writeFile(join(root, 'packages', pkgName, 'tsconfig.json'), '{}', 'utf8');
     await writeFile(join(root, 'packages', pkgName, 'src', 'index.ts'), 'export const ok = true;\n', 'utf8');
     await writeFile(join(root, 'packages', pkgName, 'dist', 'index.js'), 'exports.ok = true;\n', 'utf8');
     await writeFile(
-      join(root, 'apps', 'cli', 'node_modules', '@happier-dev', pkgName, 'dist', 'index.js'),
+      join(root, 'apps', 'cli', 'node_modules', '@piggercode', pkgName, 'dist', 'index.js'),
       'exports.ok = true;\n',
       'utf8',
     );
     const pkgDistPath = join(root, 'packages', pkgName, 'dist', 'index.js');
-    const bundledPkgDistPath = join(root, 'apps', 'cli', 'node_modules', '@happier-dev', pkgName, 'dist', 'index.js');
+    const bundledPkgDistPath = join(root, 'apps', 'cli', 'node_modules', '@piggercode', pkgName, 'dist', 'index.js');
     const pkgOutputTime = new Date('2030-03-09T01:10:00.000Z');
     utimesSync(pkgDistPath, pkgOutputTime, pkgOutputTime);
     utimesSync(bundledPkgDistPath, pkgOutputTime, pkgOutputTime);
   }
-  await writeFile(join(root, 'apps', 'cli', 'package.json'), '{"name":"@happier-dev/cli"}', 'utf8');
+  await writeFile(join(root, 'apps', 'cli', 'package.json'), '{"name":"@piggercode/cli"}', 'utf8');
   await writeFile(join(root, 'apps', 'cli', 'tsconfig.json'), '{}', 'utf8');
   await writeFile(join(root, 'apps', 'cli', 'src', 'index.ts'), 'export const ok = true;\n', 'utf8');
   await writeFile(join(root, 'apps', 'cli', 'src', 'cliDistBehavior.test.ts'), 'export const testOnly = true;\n', 'utf8');
@@ -224,7 +224,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'protocol',
       'package.json',
     );
@@ -233,7 +233,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'protocol',
       'node_modules',
     );
@@ -244,7 +244,7 @@ describe('ensureCliDistBuilt', () => {
       protocolPackageJsonPath,
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           dependencies: {
             zod: '4.3.6',
           },
@@ -258,7 +258,7 @@ describe('ensureCliDistBuilt', () => {
       bundledProtocolPackageJsonPath,
       JSON.stringify(
         {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           dependencies: {
             zod: '4.3.6',
           },
@@ -303,7 +303,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'package.json',
     );
@@ -312,7 +312,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'node_modules',
       'zod',
@@ -322,7 +322,7 @@ describe('ensureCliDistBuilt', () => {
       agentsPackageJsonPath,
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           dependencies: {
             zod: '4.3.6',
           },
@@ -336,7 +336,7 @@ describe('ensureCliDistBuilt', () => {
       bundledAgentsPackageJsonPath,
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           dependencies: {
             zod: '4.3.6',
           },
@@ -390,14 +390,14 @@ describe('ensureCliDistBuilt', () => {
   it('rebuilds when bundled workspace exports drift from workspace package.json exports', async () => {
     const repoRoot = await createRepoRoot();
     const workspacePackageJsonPath = join(repoRoot, 'packages', 'cli-common', 'package.json');
-    const bundledPackageJsonPath = join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'package.json');
+    const bundledPackageJsonPath = join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'package.json');
     const workspaceSystemTasksDistPath = join(repoRoot, 'packages', 'cli-common', 'dist', 'systemTasks', 'index.js');
     const bundledSystemTasksDistPath = join(
       repoRoot,
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'cli-common',
       'dist',
       'systemTasks',
@@ -410,14 +410,14 @@ describe('ensureCliDistBuilt', () => {
     await writeFile(bundledSystemTasksDistPath, 'export const ok = true;\n', 'utf8');
 
     const workspacePackageJson = {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       exports: {
         '.': { default: './dist/index.js' },
         './systemTasks': { default: './dist/systemTasks/index.js' },
       },
     };
     const staleBundledPackageJson = {
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       exports: {
         '.': { default: './dist/index.js' },
       },
@@ -457,7 +457,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'protocol',
       'dist',
       'account',
@@ -488,10 +488,10 @@ describe('ensureCliDistBuilt', () => {
     const repoRoot = await createRepoRoot();
     const sourcePath = join(repoRoot, 'packages', 'agents', 'src', 'index.ts');
     const outputPaths = [
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'dist', 'index.js'),
     ];
     const initialSourceTime = new Date('2030-03-09T01:18:00.000Z');
     utimesSync(sourcePath, initialSourceTime, initialSourceTime);
@@ -532,10 +532,10 @@ describe('ensureCliDistBuilt', () => {
     const sourcePath = join(repoRoot, 'packages', 'agents', 'src', 'index.ts');
     const lockPath = join(repoRoot, '.project', 'tmp', 'cli-shared-deps-build.lock');
     const outputPaths = [
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'dist', 'index.js'),
     ];
 
     utimesSync(sourcePath, new Date('2030-03-09T01:18:00.000Z'), new Date('2030-03-09T01:18:00.000Z'));
@@ -580,10 +580,10 @@ describe('ensureCliDistBuilt', () => {
     const sourcePath = join(repoRoot, 'packages', 'protocol', 'src', 'index.ts');
     const workspaceOutputPath = join(repoRoot, 'packages', 'protocol', 'dist', 'index.js');
     const bundledOutputPaths = [
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'agents', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'cli-common', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'dist', 'index.js'),
-      join(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'agents', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'cli-common', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'dist', 'index.js'),
+      join(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'dist', 'index.js'),
     ];
 
     utimesSync(sourcePath, new Date('2030-03-09T01:12:00.000Z'), new Date('2030-03-09T01:12:00.000Z'));
@@ -644,7 +644,7 @@ describe('ensureCliDistBuilt', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'cli-common',
       'package.json',
     );
@@ -657,12 +657,12 @@ describe('ensureCliDistBuilt', () => {
     // Break the bundled manifests (not repairable via dist symlinks) so ensureCliSharedDepsBuilt has to rebuild.
     await writeFile(
       workspaceCliCommonPackageJsonPath,
-      JSON.stringify({ name: '@happier-dev/cli-common', exports: { '.': { default: './dist/index.js' } } }, null, 2),
+      JSON.stringify({ name: '@piggercode/cli-common', exports: { '.': { default: './dist/index.js' } } }, null, 2),
       'utf8',
     );
     await writeFile(
       bundledCliCommonPackageJsonPath,
-      JSON.stringify({ name: '@happier-dev/cli-common', exports: { '.': './dist/index.js' } }, null, 2),
+      JSON.stringify({ name: '@piggercode/cli-common', exports: { '.': './dist/index.js' } }, null, 2),
       'utf8',
     );
 
@@ -678,7 +678,7 @@ describe('ensureCliDistBuilt', () => {
             buildCalls += 1;
             await writeFile(
               bundledCliCommonPackageJsonPath,
-              JSON.stringify({ name: '@happier-dev/cli-common', exports: { '.': { default: './dist/index.js' } } }, null, 2),
+              JSON.stringify({ name: '@piggercode/cli-common', exports: { '.': { default: './dist/index.js' } } }, null, 2),
               'utf8',
             );
 
@@ -748,7 +748,7 @@ describe('ensureCliDistSnapshotEntrypoint', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'package.json',
     );
@@ -757,7 +757,7 @@ describe('ensureCliDistSnapshotEntrypoint', () => {
       'apps',
       'cli',
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'node_modules',
       'zod',
@@ -768,7 +768,7 @@ describe('ensureCliDistSnapshotEntrypoint', () => {
       bundledAgentsPackageJsonPath,
       JSON.stringify(
         {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           dependencies: {
             zod: '4.3.6',
           },
@@ -791,9 +791,9 @@ describe('ensureCliDistSnapshotEntrypoint', () => {
 
     await mkdir(snapshotDistDir, { recursive: true });
     await writeFile(join(snapshotDistDir, 'index.mjs'), 'export const ok = true;\n', 'utf8');
-    await mkdir(join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod'), { recursive: true });
+    await mkdir(join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod'), { recursive: true });
     await writeFile(
-      join(snapshotDir, 'node_modules', '@happier-dev', 'agents', 'node_modules', 'zod', 'package.json'),
+      join(snapshotDir, 'node_modules', '@piggercode', 'agents', 'node_modules', 'zod', 'package.json'),
       JSON.stringify({
         name: 'zod',
         version: '4.3.6',
@@ -818,7 +818,7 @@ describe('ensureCliDistSnapshotEntrypoint', () => {
     const repairedIndexFilePath = join(
       snapshotDir,
       'node_modules',
-      '@happier-dev',
+      '@piggercode',
       'agents',
       'node_modules',
       'zod',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createStore } from 'zustand/vanilla';
-import type { SessionOrganizationSnapshot } from '@happier-dev/protocol';
+import type { SessionOrganizationSnapshot } from '@piggercode/protocol';
 
 import {
     buildSessionOrganizationOrderScopeKey,

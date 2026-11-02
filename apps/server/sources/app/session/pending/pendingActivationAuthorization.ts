@@ -1,4 +1,4 @@
-import { PendingRequestedActionV1Schema, type PendingActivationAuthorizationV1, type PendingActivationFailureCodeV1 } from '@happier-dev/protocol';
+import { PendingRequestedActionV1Schema, type PendingActivationAuthorizationV1, type PendingActivationFailureCodeV1 } from '@piggercode/protocol';
 import type { Tx } from '@/storage/inTx';
 
 type ActivationTarget = Readonly<{ accountId: string; requestId: string }>;

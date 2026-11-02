@@ -3,7 +3,7 @@ import {
   normalizeOpenCodeSessionTodosToWorkStateItems,
   type SessionWorkStateItemV1,
   type SessionWorkStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const OPEN_CODE_TODO_WORK_STATE_OWNED_SOURCE_FAMILIES = ['todo:opencode'] as const;
 export const OPEN_CODE_TODO_WORK_STATE_ITEM_LIMIT = 100;

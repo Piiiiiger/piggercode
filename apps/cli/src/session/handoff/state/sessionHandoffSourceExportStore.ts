@@ -3,7 +3,7 @@ import { join, relative, resolve, sep } from 'node:path';
 
 import { z } from 'zod';
 
-import { TransferEndpointCandidateSchema } from '@happier-dev/protocol';
+import { TransferEndpointCandidateSchema } from '@piggercode/protocol';
 
 import type { SessionHandoffProviderBundle } from '../types';
 import { writeSessionHandoffProviderBundleArtifact } from '../sessionHandoffProviderBundleFile';

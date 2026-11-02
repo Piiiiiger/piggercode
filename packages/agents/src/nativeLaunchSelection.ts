@@ -1,4 +1,4 @@
-import { AcpConfigOptionOverridesV1Schema } from '@happier-dev/protocol';
+import { AcpConfigOptionOverridesV1Schema } from '@piggercode/protocol';
 
 import { getAgentModelConfig, getAgentStaticModels } from './models.js';
 import { getAgentSessionModeDescriptor } from './sessionModes.js';

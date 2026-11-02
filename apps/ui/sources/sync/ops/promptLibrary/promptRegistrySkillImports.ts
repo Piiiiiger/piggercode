@@ -1,4 +1,4 @@
-import type { PromptRegistryConfiguredSourceV1, PromptRegistryFetchedItemV1 } from '@happier-dev/protocol';
+import type { PromptRegistryConfiguredSourceV1, PromptRegistryFetchedItemV1 } from '@piggercode/protocol';
 
 import { machinePromptRegistriesDownloadItem } from '@/sync/ops/machinePromptRegistries';
 

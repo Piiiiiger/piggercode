@@ -1,6 +1,6 @@
 import type { CatalogAgentId } from '@/backends/types';
-import type { CloudConnectTargetStatus, CloudVendorKey } from '@happier-dev/agents';
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { CloudConnectTargetStatus, CloudVendorKey } from '@piggercode/agents';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export type { CloudConnectTargetStatus, CloudVendorKey };
 

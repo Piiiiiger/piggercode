@@ -9,7 +9,7 @@ import {
     PUSH_NOTIFICATION_ACTION_IDS,
     PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS,
     PUSH_NOTIFICATION_CATEGORY_IDS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { AuthProvider, useAuth } from '@/auth/context/AuthContext';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -31,7 +31,7 @@ import {
     clearActiveViewingSessionsForNonSessionRoute,
     getActiveViewingSessionId,
 } from '@/sync/domains/session/activeViewingSession';
-import { NotificationsSettingsV1Schema } from '@happier-dev/protocol';
+import { NotificationsSettingsV1Schema } from '@piggercode/protocol';
 import { useTrackScreens } from '@/track/useTrackScreens';
 import { RealtimeProvider } from '@/realtime/RealtimeProvider';
 import { FaviconPermissionIndicator } from '@/components/web/FaviconPermissionIndicator';
@@ -364,7 +364,7 @@ function configureNotificationCategories(Notifications: ExpoNotificationsModule)
     if (Platform.OS === 'web') return;
 
     // Expo docs recommend avoiding ':' and '-' in category identifiers.
-    // Our category ids live in `@happier-dev/protocol` so the CLI push payload and app registration stay in sync.
+    // Our category ids live in `@piggercode/protocol` so the CLI push payload and app registration stay in sync.
     void Notifications.setNotificationCategoryAsync(PUSH_NOTIFICATION_CATEGORY_IDS.permissionRequestV1, [
         {
             identifier: PUSH_NOTIFICATION_ACTION_IDS.permissionAllowV1,

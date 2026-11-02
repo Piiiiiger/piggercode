@@ -6,7 +6,7 @@ import {
     type SessionOrganizationLabel,
     type SessionOrganizationSnapshot,
     type SessionOrganizationTag,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createEncryptionFromAuthCredentials } from '@/auth/encryption/createEncryptionFromAuthCredentials';
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';

@@ -76,7 +76,7 @@ import {
   splitProviderAccountUsageSupplementalFacets,
   readServerEnabledBit,
   PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
   ConnectedServiceCredentialRecordV1,
   ConnectedServiceAuthGroupV1,
@@ -94,7 +94,7 @@ import type {
   SealedConnectedServiceCredentialV1,
   SealedConnectedServiceQuotaSnapshotV1,
   SealedProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveSessionCreateEncryptionMode } from '@/api/session/resolveSessionCreateEncryptionMode';
 import { createScmConnectedAccountCredentialResolver } from './connectedServices/scmConnectedAccountCredentialResolver';
 import { resolveMachineRegistrationIdentity } from '@/daemon/machineIdentity/resolveMachineRegistrationIdentity';
@@ -858,7 +858,7 @@ export class ApiClient {
     };
     expectedCredentialRevision?: ConnectedServiceCredentialRevisionV1 | null;
     refreshLeaseOwnerId?: string;
-  }): Promise<import('@happier-dev/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
+  }): Promise<import('@piggercode/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
     const serverUrl = resolveServerHttpBaseUrl();
     const serviceId = encodeURIComponent(params.serviceId);
     const profileId = encodeURIComponent(params.profileId);
@@ -1375,7 +1375,7 @@ export class ApiClient {
     content: { t: 'plain'; v: ConnectedServiceCredentialRecordV1 };
     expectedCredentialRevision?: ConnectedServiceCredentialRevisionV1 | null;
     refreshLeaseOwnerId?: string;
-  }): Promise<import('@happier-dev/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
+  }): Promise<import('@piggercode/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
     const serverUrl = resolveServerHttpBaseUrl();
     const serviceId = encodeURIComponent(params.serviceId);
     const profileId = encodeURIComponent(params.profileId);
@@ -1439,7 +1439,7 @@ export class ApiClient {
     profileId: string;
     health: ConnectedServiceCredentialHealthV1;
     expectedCredentialRevision?: string;
-  }): Promise<import('@happier-dev/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
+  }): Promise<import('@piggercode/protocol').ConnectedServiceCredentialCompatibleMutationResponseV1> {
     const healthParsed = ConnectedServiceCredentialHealthV1Schema.safeParse(params.health);
     if (!healthParsed.success) {
       throw new Error('Invalid connected service credential health');

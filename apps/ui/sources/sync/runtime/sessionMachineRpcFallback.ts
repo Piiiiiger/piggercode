@@ -10,8 +10,8 @@ import {
     SESSION_MACHINE_TARGET_UNAVAILABLE_ERROR,
     SESSION_MACHINE_TARGET_UNAVAILABLE_ERROR_CODE,
 } from '@/sync/runtime/sessionMachineRpcErrorCodes';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { resolveAppSessionTransferAvailability } from '@happier-dev/transfers';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { resolveAppSessionTransferAvailability } from '@piggercode/transfers';
 import {
     canUseSessionRpc,
     readMachineControlTargetForSession,

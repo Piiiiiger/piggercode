@@ -6,7 +6,7 @@ import type {
     MachineUpdateMetadataRequest,
     MachineUpdateMetadataResponse,
     SpawnSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { MACHINE_RPC_POLL_INTERVAL_MS } from './machineRpcPollInterval';
 import {
     SPAWN_SESSION_ERROR_CODES,
@@ -14,8 +14,8 @@ import {
     settleSpawnSessionNonce,
     type SpawnSessionErrorCode,
     type SpawnSessionErrorDetail,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_METHODS, isRpcMethodNotFoundResult } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS, isRpcMethodNotFoundResult } from '@piggercode/protocol/rpc';
 
 import { apiSocket } from '../api/session/apiSocket';
 import type { MachineMetadata } from '../domains/state/storageTypes';
@@ -48,7 +48,7 @@ import { mergeMachineMetadataForVersionMismatch } from './machineMetadataMerge';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { isMachineRpcTimeoutError } from '@/sync/runtime/orchestration/serverScopedRpc/machineRpcTimeoutError';
 import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 import { stopSessionViaDaemonMachineRpc } from './sessionStopStrategy';
 import {
     MACHINE_ENCRYPT_RAW_ATTRIBUTION_EVENTS,

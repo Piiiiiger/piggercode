@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { readSystemSessionMetadataFromMetadata } from '@happier-dev/protocol';
+import { readSystemSessionMetadataFromMetadata } from '@piggercode/protocol';
 import { MetadataSchema } from './storageTypes';
 
 describe('MetadataSchema (systemSessionV1)', () => {

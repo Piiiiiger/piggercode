@@ -11,8 +11,8 @@ import {
   sealAccountScopedBlobCiphertext,
   type ConnectedServiceId,
   type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import {
   startConnectedServicesCodexDaemon,

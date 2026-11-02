@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
-import { redactBugReportSensitiveText } from "@happier-dev/protocol";
+import { redactBugReportSensitiveText } from "@piggercode/protocol";
 
 import { parseBooleanEnv, parseIntEnv } from "@/config/env";
 import { isServerOwnerUserId, resolveServerOwnerUserIds } from "@/app/features/serverOwners";

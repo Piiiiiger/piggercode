@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { act } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 
 import { renderScreen } from '@/dev/testkit';
 import { actionOperationStore } from '@/sync/domains/actionOperations/actionOperationStore';

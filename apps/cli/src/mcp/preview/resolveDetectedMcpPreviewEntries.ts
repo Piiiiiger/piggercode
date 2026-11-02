@@ -1,4 +1,4 @@
-import type { DetectedMcpPreviewEntryV1, DetectedMcpServerV1 } from '@happier-dev/protocol';
+import type { DetectedMcpPreviewEntryV1, DetectedMcpServerV1 } from '@piggercode/protocol';
 
 function resolvePreviewProviderScopeKind(sourceKind: DetectedMcpServerV1['source']['kind']): 'providerUser' | 'providerProject' {
   return sourceKind === 'project' ? 'providerProject' : 'providerUser';

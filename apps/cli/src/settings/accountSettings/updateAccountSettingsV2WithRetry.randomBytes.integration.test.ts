@@ -17,7 +17,7 @@ describe('updateAccountSettingsV2WithRetry source-mode random bytes', () => {
   it('updates encrypted account settings successfully when executed via tsx source mode', () => {
     const cliProjectDir = projectPath();
     const script = `
-import { accountSettingsParse, openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { accountSettingsParse, openAccountScopedBlobCiphertext, sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 import { updateAccountSettingsV2WithRetry } from './src/settings/accountSettings/updateAccountSettingsV2WithRetry.ts';
 
 const secret = new Uint8Array(32).fill(7);

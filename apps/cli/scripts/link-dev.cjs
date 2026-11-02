@@ -115,7 +115,7 @@ function unlink() {
             const stat = fs.lstatSync(binTarget);
             if (stat.isSymbolicLink()) {
                 const linkTarget = fs.readlinkSync(binTarget);
-                if (linkTarget === binSource || linkTarget.includes('@happier-dev/cli')) {
+                if (linkTarget === binSource || linkTarget.includes('@piggercode/cli')) {
                     fs.unlinkSync(binTarget);
                 }
             }
@@ -125,7 +125,7 @@ function unlink() {
     }
 
     console.log('\n✅ Removed happier-dev development symlink(s)');
-    console.log('\nTo restore npm version: npm install -g @happier-dev/cli');
+    console.log('\nTo restore npm version: npm install -g @piggercode/cli');
 }
 
 function main() {

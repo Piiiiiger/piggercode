@@ -3,12 +3,12 @@ import type {
     ProviderAccountUsageRecordKeyV1,
     ProviderAccountUsageSnapshotV1,
     SealedProviderAccountUsageSnapshotV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import {
     compareConnectedServiceQuotaObservationRecency,
     isConnectedServiceQuotaObservationAtOrBeforeNow,
     mergeProviderAccountSubscription,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { isPrismaErrorCode, type TransactionClient } from "@/storage/prisma";
 
 import { inTx } from "@/storage/inTx";

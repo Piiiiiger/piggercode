@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
     sealAccountScopedBlobCiphertext,
     type ActionOperationSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { openActionOperationRevisionEphemeral } from './actionOperationEphemeral';
 

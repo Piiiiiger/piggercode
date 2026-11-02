@@ -1,7 +1,7 @@
 import type {
     CodingPromptBehaviorModeV1,
     CodingPromptSessionTitleUpdatesModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { t } from '@/text';
 

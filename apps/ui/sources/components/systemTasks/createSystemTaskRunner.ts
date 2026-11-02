@@ -7,7 +7,7 @@ import {
     type SystemTaskEvent,
     type SystemTaskResult,
     type SystemTaskSpec,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
     SystemTaskRunState,

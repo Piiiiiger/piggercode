@@ -1,5 +1,5 @@
 import { inTx } from "@/storage/inTx";
-import type { ConnectedServiceUsageSourceV1 } from "@happier-dev/protocol";
+import type { ConnectedServiceUsageSourceV1 } from "@piggercode/protocol";
 
 import { readProviderAccountUsageRecord } from "./recordStorage";
 import {

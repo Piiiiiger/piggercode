@@ -4,7 +4,7 @@ import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
-import type { ScmLogEntry } from '@happier-dev/protocol';
+import type { ScmLogEntry } from '@piggercode/protocol';
 import { t } from '@/text';
 import { Icon } from '@/components/ui/icons/Icon';
 

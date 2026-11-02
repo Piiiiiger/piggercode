@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { mkdir, readFile } from 'node:fs/promises';
-import { resolveConnectedServicesProviderStateSharingPolicyV1 } from '@happier-dev/protocol';
+import { resolveConnectedServicesProviderStateSharingPolicyV1 } from '@piggercode/protocol';
 import {
   CONNECTED_SERVICE_MATERIALIZATION_REASONS,
   type ConnectedServicesMaterializeResult,

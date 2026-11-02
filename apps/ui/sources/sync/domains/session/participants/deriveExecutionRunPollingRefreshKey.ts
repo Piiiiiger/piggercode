@@ -1,5 +1,5 @@
 import type { Message, ToolCall } from '@/sync/domains/messages/messageTypes';
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 
 const EXECUTION_RUN_ID_REGEX = /run_[0-9a-f-]{8,}/gi;
 

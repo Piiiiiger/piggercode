@@ -1,7 +1,7 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
-import { ActionOperationSnapshotV1Schema, SessionHandoffStartResponseSchema } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { ActionOperationSnapshotV1Schema, SessionHandoffStartResponseSchema } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { createModalModuleMock } from '@/dev/testkit/mocks/modal';
 import { createSessionFixture } from '@/dev/testkit/fixtures/sessionFixtures';
 import { installSessionHandoffCommonModuleMocks } from './sessionHandoffTestHelpers';

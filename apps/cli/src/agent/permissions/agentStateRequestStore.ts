@@ -12,12 +12,12 @@ import {
 } from '@/agent/runtime/readyNotificationContext';
 import { PermissionRequestPushNotifier } from '@/settings/notifications/permissionRequestPushNotifier';
 import type { PermissionRequestPushSender } from '@/agent/permissions/BasePermissionHandler';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import {
     CLAUDE_LOCAL_PERMISSION_BRIDGE_REQUEST_SOURCE,
     CLAUDE_LOCAL_PERMISSION_BRIDGE_STOPPED_REASON,
     isAgentStateRequestCoveredByCompletedRequests,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { normalizeAskUserQuestionInputForPublication } from '@/agent/questions/normalizeAskUserQuestionInput';
 import { logger } from '@/ui/logger';
 import { deepEqual } from '@/utils/deterministicJson';

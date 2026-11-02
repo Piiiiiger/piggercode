@@ -18,7 +18,7 @@ import {
     type ScmStashPopResponse,
     type ScmStashShowRequest,
     type ScmStashShowResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { toTestIdSafeValue } from '@/utils/ui/toTestIdSafeValue';
 
 import { installSessionFilesViewCommonModuleMocks } from './sessionFilesViewsTestHelpers';

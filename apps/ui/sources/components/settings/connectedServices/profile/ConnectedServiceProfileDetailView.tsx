@@ -33,7 +33,7 @@ import {
   isConnectedServiceCredentialHealthStatusUsable,
   type ConnectedServiceCredentialHealthStatusV1,
   type ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { AccountBlock } from '../account/AccountBlock';
 import {

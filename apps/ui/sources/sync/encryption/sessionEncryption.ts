@@ -1,5 +1,5 @@
 import { encodeBase64 } from '@/encryption/base64';
-import { projectSessionMetadataForWire } from '@happier-dev/protocol';
+import { projectSessionMetadataForWire } from '@piggercode/protocol';
 import { RawRecordSchema, type RawRecord } from '../typesRaw';
 import { ApiMessage } from '../api/types/apiTypes';
 import { DecryptedMessage, Metadata, MetadataSchema, AgentState, AgentStateSchema } from '../domains/state/storageTypes';

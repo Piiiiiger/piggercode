@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { act } from 'react-test-renderer';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 
 import { flushHookEffects } from '@/hooks/server/serverFeatureHookHarness.testHelpers';
 import { renderScreen } from '@/dev/testkit';

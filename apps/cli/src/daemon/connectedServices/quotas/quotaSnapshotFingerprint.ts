@@ -1,4 +1,4 @@
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 import { createHmac, hkdfSync } from 'node:crypto';
 
 type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };

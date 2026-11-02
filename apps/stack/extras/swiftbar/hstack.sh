@@ -28,7 +28,7 @@ if [[ ! -x "$hstack_BIN" ]]; then
 fi
 
 if [[ -z "${hstack_BIN:-}" ]]; then
-  echo "hstack not found. Run: npx @happier-dev/stack@latest init" >&2
+  echo "hstack not found. Run: npx @piggercode/stack@latest init" >&2
   exit 1
 fi
 

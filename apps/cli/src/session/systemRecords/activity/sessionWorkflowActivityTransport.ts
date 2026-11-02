@@ -3,8 +3,8 @@ import type {
   SessionSystemRecordNamespace,
   SessionSystemRecordUpsertRequest,
   SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
-import { SESSION_AGENT_ACTIVITY_HEADLINE_METADATA_KEY } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SESSION_AGENT_ACTIVITY_HEADLINE_METADATA_KEY } from '@piggercode/protocol';
 
 import type { Metadata } from '@/api/types';
 import type {

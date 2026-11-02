@@ -1,5 +1,5 @@
 import { logger } from '@/ui/logger';
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 import type { TerminalHostAdapter } from '@/integrations/terminalHost/_types';
 import type { TerminalHostRegistry } from '@/integrations/terminalHost/registry';
 import {

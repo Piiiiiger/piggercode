@@ -25,7 +25,7 @@ import {
   type SetSessionConfigOptionRequest,
   type ContentBlock,
 } from '@agentclientprotocol/sdk';
-import { redactBugReportSensitiveText } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText } from '@piggercode/protocol';
 import { randomUUID } from 'node:crypto';
 import { createWriteStream, promises as fs } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';

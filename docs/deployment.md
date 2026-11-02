@@ -111,11 +111,11 @@ Both migrator and server consume `happier-server-config` and `happier-server-env
 
 ## Local dev helpers
 The server package includes scripts for local infrastructure:
-- `yarn workspace @happier-dev/server db` (Postgres in Docker)
-- `yarn workspace @happier-dev/server redis`
-- `yarn workspace @happier-dev/server s3` + `s3:init`
+- `yarn workspace @piggercode/server db` (Postgres in Docker)
+- `yarn workspace @piggercode/server redis`
+- `yarn workspace @piggercode/server s3` + `s3:init`
 
-Use `.env`/`.env.dev` to load local settings when running `yarn workspace @happier-dev/server dev`.
+Use `.env`/`.env.dev` to load local settings when running `yarn workspace @piggercode/server dev`.
 
 ## Implementation references
 - Entrypoint: `apps/server/sources/main.ts`

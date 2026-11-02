@@ -9,7 +9,7 @@ import { randomBytes } from 'crypto';
 import {
     GEMINI_CLI_OAUTH_AUTHORIZE_URL,
     GEMINI_CLI_OAUTH_SCOPES,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import { generatePkceCodes } from '@/cloud/pkce';
 import { exchangeGoogleOauthAuthorizationCodeForTokens, type GoogleOauthTokens } from '@/cloud/googleOauthTokenExchange';
 import { openBrowser } from '@/ui/openBrowser';
@@ -17,7 +17,7 @@ import type { CloudConnectAuthenticateOptions } from '@/cloud/connectTypes';
 import { startOauthPkceWithPasteFallback } from '@/cloud/oauthPkceWithPasteFallback';
 import { promptInput } from '@/terminal/prompts/promptInput';
 import { resolveGeminiOauthClientId } from '@/daemon/connectedServices/shared/oauthConfig';
-import { dim, fail, info, ok } from '@happier-dev/cli-common/output';
+import { dim, fail, info, ok } from '@piggercode/cli-common/output';
 
 export type GeminiAuthTokens = GoogleOauthTokens;
 

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   DaemonMcpServersDetectRequestSchema,
   DaemonMcpServersPreviewRequestSchema,
@@ -15,7 +15,7 @@ import {
   type McpServerCatalogEntryV1,
   type McpServersSettingsV1,
   type ResolveEffectiveServersV1Result,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { McpServerConfig } from '@/agent';
 import { readCredentials, type Credentials } from '@/persistence';

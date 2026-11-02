@@ -1,5 +1,5 @@
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 type RpcResponse = any;

@@ -1,7 +1,7 @@
 import {
   SessionUsageLimitRecoveryOperationResultV1Schema,
   type SessionUsageLimitRecoveryOperationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveCliFeatureDecisionForServer } from './featureDecisionService';
 import { resolveServerHttpBaseUrl } from '@/session/transport/http/serverHttpBaseUrl';

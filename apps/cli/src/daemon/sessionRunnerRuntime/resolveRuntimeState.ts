@@ -1,5 +1,5 @@
 import type { TrackedSession } from '@/daemon/types';
-import type { SessionRunnerDaemonEntrypointSourceV1 } from '@happier-dev/protocol';
+import type { SessionRunnerDaemonEntrypointSourceV1 } from '@piggercode/protocol';
 
 import {
   isGenerationAttestedComparableId,

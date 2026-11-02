@@ -7,7 +7,7 @@ import {
   type ApprovalRequestOriginV1,
   type ExecutionRunStartRequest,
   type ResolvedActionOption,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   getEquivalentActionIdForBuiltInTool,
   isActionDirectToolAvailableOnToolSurface,

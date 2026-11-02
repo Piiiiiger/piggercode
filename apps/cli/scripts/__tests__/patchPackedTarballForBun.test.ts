@@ -8,23 +8,23 @@ import { createTempDirSync } from '../../src/testkit/fs/tempDir';
 import { patchPackedTarballForBun } from '../postpack/patchPackedTarballForBun.mjs';
 
 describe('patchPackedTarballForBun', () => {
-  it('removes internal @happier-dev/* dependencies without removing bundled payload files', async () => {
+  it('removes internal @piggercode/* dependencies without removing bundled payload files', async () => {
     const tmp = createTempDirSync('happier-cli-postpack-test-');
     const packageDir = join(tmp, 'package');
     const tarballPath = join(tmp, 'artifact.tgz');
 
     const pkgJsonPath = join(packageDir, 'package.json');
-    const bundledMarkerPath = join(packageDir, 'node_modules', '@happier-dev', 'protocol', 'package.json');
+    const bundledMarkerPath = join(packageDir, 'node_modules', '@piggercode', 'protocol', 'package.json');
 
-    mkdirSync(join(packageDir, 'node_modules', '@happier-dev', 'protocol'), { recursive: true });
+    mkdirSync(join(packageDir, 'node_modules', '@piggercode', 'protocol'), { recursive: true });
     writeFileSync(
       pkgJsonPath,
       `${JSON.stringify({
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.1.0',
         dependencies: {
-          '@happier-dev/protocol': '0.0.0',
-          '@happier-dev/release-runtime': '0.0.0',
+          '@piggercode/protocol': '0.0.0',
+          '@piggercode/release-runtime': '0.0.0',
           tweetnacl: '^1.0.3',
         },
       }, null, 2)}\n`,
@@ -32,7 +32,7 @@ describe('patchPackedTarballForBun', () => {
     );
     writeFileSync(
       bundledMarkerPath,
-      `${JSON.stringify({ name: '@happier-dev/protocol', version: '0.0.0' }, null, 2)}\n`,
+      `${JSON.stringify({ name: '@piggercode/protocol', version: '0.0.0' }, null, 2)}\n`,
       'utf8',
     );
 
@@ -47,10 +47,10 @@ describe('patchPackedTarballForBun', () => {
     const patchedPkgRaw = readFileSync(join(extracted, 'package', 'package.json'), 'utf8');
     const patchedPkg = JSON.parse(patchedPkgRaw) as { dependencies?: Record<string, string> };
 
-    expect(Object.keys(patchedPkg.dependencies ?? {}).filter((key) => key.startsWith('@happier-dev/'))).toEqual([]);
+    expect(Object.keys(patchedPkg.dependencies ?? {}).filter((key) => key.startsWith('@piggercode/'))).toEqual([]);
     expect(patchedPkg.dependencies?.tweetnacl).toBeTruthy();
 
-    expect(() => readFileSync(join(extracted, 'package', 'node_modules', '@happier-dev', 'protocol', 'package.json'), 'utf8'))
+    expect(() => readFileSync(join(extracted, 'package', 'node_modules', '@piggercode', 'protocol', 'package.json'), 'utf8'))
       .not.toThrow();
   });
 
@@ -64,7 +64,7 @@ describe('patchPackedTarballForBun', () => {
     writeFileSync(
       pkgJsonPath,
       `${JSON.stringify({
-        name: '@happier-dev/cli',
+        name: '@piggercode/cli',
         version: '0.2.6',
         dependencies: {
           tweetnacl: '^1.0.3',

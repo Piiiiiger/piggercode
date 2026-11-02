@@ -4,7 +4,7 @@ const appStateEmitter = vi.hoisted(async () => {
     const { createReactNativeAppStateEmitter } = await import('@/dev/testkit/mocks/reactNative');
     return createReactNativeAppStateEmitter('active');
 });
-const getSnapshotPlain = vi.hoisted(() => vi.fn<(...args: unknown[]) => Promise<import('@happier-dev/protocol').ConnectedServiceQuotaSnapshotV1 | null>>(async () => null));
+const getSnapshotPlain = vi.hoisted(() => vi.fn<(...args: unknown[]) => Promise<import('@piggercode/protocol').ConnectedServiceQuotaSnapshotV1 | null>>(async () => null));
 const requestRefresh = vi.hoisted(() => vi.fn(async () => true));
 
 vi.mock('react-native', async () => {

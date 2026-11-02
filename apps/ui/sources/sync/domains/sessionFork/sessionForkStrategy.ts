@@ -1,5 +1,5 @@
-import type { SessionForkPoint, SessionForkRpcResult } from '@happier-dev/protocol';
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import type { SessionForkPoint, SessionForkRpcResult } from '@piggercode/protocol';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 
 /**
  * The three routes the fork strategy modal offers. `native` and `replay` are

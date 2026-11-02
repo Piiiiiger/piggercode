@@ -6,7 +6,7 @@ import { isTmuxAvailable, normalizeExitCode } from '@/integrations/tmux';
 import { createTerminalAttachPlan } from './terminalAttachPlan';
 import { createTmuxSingleWindowAttachPlan } from './tmuxSingleWindowAttachPlan';
 import type { TerminalAttachmentInfo } from './terminalAttachmentInfo';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 function spawnTmux(params: {
   args: string[];

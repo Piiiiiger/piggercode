@@ -1,4 +1,4 @@
-import type { DirectSessionsSource, DirectTranscriptRawMessageV1, DirectTranscriptTruncationReason } from '@happier-dev/protocol';
+import type { DirectSessionsSource, DirectTranscriptRawMessageV1, DirectTranscriptTruncationReason } from '@piggercode/protocol';
 
 import { createOpenCodeDirectClient } from './createOpenCodeDirectClient';
 import { mapOpenCodeMessageToDirectItem } from './mapOpenCodeMessageToDirectItem';

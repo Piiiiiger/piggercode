@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 import {
   processInstanceFingerprintMatches,
   readProcessInstanceFingerprintSync,
-} from '@happier-dev/cli-common/processInstance';
+} from '@piggercode/cli-common/processInstance';
 import { isPidAlive, observePidLiveness } from './pids.mjs';
 
 function resolveProcessBoundary(boundary = {}) {

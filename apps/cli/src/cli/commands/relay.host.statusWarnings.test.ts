@@ -5,7 +5,7 @@ import { createEnvKeyScope } from '../../testkit/env/envScope';
 import { createTempDir, removeTempDir } from '../../testkit/fs/tempDir';
 import { captureConsoleLogAndMuteStdout } from '../../testkit/logger/captureOutput';
 
-vi.mock('@happier-dev/cli-common/relayHost', async (importOriginal) => {
+vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,

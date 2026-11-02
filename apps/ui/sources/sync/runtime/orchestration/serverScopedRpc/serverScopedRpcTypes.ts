@@ -1,4 +1,4 @@
-import type { SocketRpcAuthorizationContext } from '@happier-dev/protocol/rpc';
+import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 
 export type SocketRpcResult<T = string> =
     | { ok: true; result: T }

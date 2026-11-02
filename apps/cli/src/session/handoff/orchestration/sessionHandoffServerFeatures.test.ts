@@ -1,4 +1,4 @@
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { observeServerFeaturesSnapshotMock } = vi.hoisted(() => ({

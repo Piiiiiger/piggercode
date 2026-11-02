@@ -3,8 +3,8 @@ import { chmod, mkdir, open, readFile, rename, rm, stat } from 'node:fs/promises
 import type { FileHandle } from 'node:fs/promises';
 import { delimiter, dirname, join } from 'node:path';
 
-import { fetchGitHubLatestRelease } from '@happier-dev/release-runtime';
-import { extractArchivePayloadToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
+import { fetchGitHubLatestRelease } from '@piggercode/release-runtime';
+import { extractArchivePayloadToDirectory } from '@piggercode/release-runtime/archiveExtraction';
 
 import { resolveWindowsCommandOnPath, runCommandCapture } from '../process/index.js';
 import { createManagedToolScratchDir } from './createManagedToolScratchDir.js';

@@ -6,13 +6,13 @@ import {
   buildOpenCodeAgentRuntimeDescriptor,
   normalizeCodexBackendMode,
   type CodexBackendMode,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
   type AgentRuntimeDescriptorV1,
   type DirectSessionsProviderId,
   type DirectSessionsSource,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import { fetchSessionById, fetchSessionsPage, getOrCreateSessionByTag } from '@/session/transport/http/sessionsHttp';

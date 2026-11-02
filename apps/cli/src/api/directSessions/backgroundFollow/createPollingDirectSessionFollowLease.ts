@@ -1,5 +1,5 @@
-import type { DirectTranscriptRawMessageV1, DirectTranscriptTruncationReason } from '@happier-dev/protocol';
-import { resolveDirectTranscriptContinuation } from '@happier-dev/protocol';
+import type { DirectTranscriptRawMessageV1, DirectTranscriptTruncationReason } from '@piggercode/protocol';
+import { resolveDirectTranscriptContinuation } from '@piggercode/protocol';
 import { logger } from '@/ui/logger';
 
 import type {

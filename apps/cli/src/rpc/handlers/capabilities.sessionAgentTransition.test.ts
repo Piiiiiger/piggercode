@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { CapabilitiesDetectRequest, CapabilitiesDetectResponse } from '@/capabilities/types';
 
 import { registerCapabilitiesHandlers } from './capabilities';

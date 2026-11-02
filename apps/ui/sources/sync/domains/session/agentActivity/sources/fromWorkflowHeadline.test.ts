@@ -1,4 +1,4 @@
-import type { SessionWorkflowActivityHeadlineV1, SessionWorkflowRunHeadlineV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowActivityHeadlineV1, SessionWorkflowRunHeadlineV1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { deriveWorkflowHeadlineAgentActivityEntries } from './fromWorkflowHeadline';

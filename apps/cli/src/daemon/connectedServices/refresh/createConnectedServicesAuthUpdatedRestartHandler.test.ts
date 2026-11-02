@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 import type { CatalogAgentId } from '@/backends/types';
 import { agent as openCodeAgent } from '@/backends/opencode';
 import { agent as piAgent } from '@/backends/pi';

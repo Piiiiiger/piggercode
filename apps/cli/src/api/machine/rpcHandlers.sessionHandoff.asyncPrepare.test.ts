@@ -4,8 +4,8 @@ import { join } from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { FeaturesResponseSchema, type ActionOperationSnapshotV1, type SessionHandoffPrepareTargetRequestV2 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { FeaturesResponseSchema, type ActionOperationSnapshotV1, type SessionHandoffPrepareTargetRequestV2 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 async function removeTestDirectory(path: string): Promise<void> {
   await rm(path, {
@@ -39,7 +39,7 @@ describe('rpcHandlers (session handoff async prepare)', () => {
       });
       const { RpcHandlerManager } = await import('../rpc/RpcHandlerManager');
       const { registerMachineRpcHandlers } = await import('./rpcHandlers');
-      const { readRpcErrorCode } = await import('@happier-dev/protocol/rpcErrors');
+      const { readRpcErrorCode } = await import('@piggercode/protocol/rpcErrors');
       const manager = new RpcHandlerManager({ scopePrefix: 'local', encryptionKey: new Uint8Array(32), encryptionVariant: 'dataKey' });
       let processMutationCount = 0;
       registration = registerMachineRpcHandlers({ rpcHandlerManager: manager, handlers: {

@@ -1,4 +1,4 @@
-import type { ToolNormalizationProtocol } from '@happier-dev/protocol';
+import type { ToolNormalizationProtocol } from '@piggercode/protocol';
 
 type UnknownRecord = Record<string, unknown>;
 

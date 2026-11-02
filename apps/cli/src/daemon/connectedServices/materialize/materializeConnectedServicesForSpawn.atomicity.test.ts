@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { normalizeMaterializationKeyForPath } from './normalizeMaterializationKeyForPath';
 
 describe('materializeConnectedServicesForSpawn atomicity', () => {

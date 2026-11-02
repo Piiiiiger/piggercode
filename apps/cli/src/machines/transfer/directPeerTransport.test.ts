@@ -109,7 +109,7 @@ describe('direct peer machine transfer', () => {
       createDirectPeerTransferRegistry,
     } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46002,
@@ -163,7 +163,7 @@ describe('direct peer machine transfer', () => {
       createDirectPeerTransferRegistry,
     } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46001,
       now: () => 1_000,
@@ -239,7 +239,7 @@ describe('direct peer machine transfer', () => {
 
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46005,
@@ -294,7 +294,7 @@ describe('direct peer machine transfer', () => {
 
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46005,
@@ -355,7 +355,7 @@ describe('direct peer machine transfer', () => {
       createDirectPeerTransferRegistry,
     } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46001,
@@ -754,7 +754,7 @@ describe('direct peer machine transfer', () => {
       createDirectPeerTransferApp,
       createDirectPeerTransferRegistry,
     } = await import('./directPeerTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const registry = createDirectPeerTransferRegistry({
       advertisedPort: 46001,
@@ -799,7 +799,7 @@ describe('direct peer machine transfer', () => {
     const {
       createDirectPeerTransferApp,
     } = await import('./directPeerTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const recipientSecretKeySeed = new Uint8Array(32).fill(7);
     const recipientPublicKeyBase64 = Buffer.from(deriveBoxPublicKeyFromSeed(recipientSecretKeySeed)).toString('base64');
@@ -849,7 +849,7 @@ describe('direct peer machine transfer', () => {
     const {
       createDirectPeerTransferApp,
     } = await import('./directPeerTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const recipientSecretKeySeed = new Uint8Array(32).fill(7);
     const recipientPublicKeyBase64 = Buffer.from(deriveBoxPublicKeyFromSeed(recipientSecretKeySeed)).toString('base64');
@@ -2154,7 +2154,7 @@ describe('direct peer machine transfer', () => {
   it('does not preallocate the entire chunk response body when content-length is large', async () => {
     const { requestDirectPeerTransferToFile } = await import('./directPeerTransport');
     const { createEncryptedTransferChunkEnvelope, createTransferManifestHash } = await import('./transferChunkEncryption');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     process.env.HAPPIER_MACHINE_TRANSFER_DIRECT_PEER_CHUNK_BYTES = String(512 * 1024);
 
@@ -2444,7 +2444,7 @@ describe('direct peer machine transfer', () => {
     const payloadSourceModule = await import('./transferPayloadSource');
     const { createDirectPeerTransferApp, createDirectPeerTransferRegistry } = await import('./directPeerTransport');
     const { createFileTransferPayloadSource } = payloadSourceModule;
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const resolveSizeSpy = vi.spyOn(payloadSourceModule, 'resolveTransferPayloadSizeBytes');
     const resolveHashSpy = vi.spyOn(payloadSourceModule, 'resolveTransferPayloadManifestHash');
@@ -2517,7 +2517,7 @@ describe('direct peer machine transfer', () => {
     }));
 
     const { createDirectPeerTransferApp } = await import('./directPeerTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const recipientSecretKeySeed = new Uint8Array(32).fill(7);
     const recipientPublicKeyBase64 = Buffer.from(deriveBoxPublicKeyFromSeed(recipientSecretKeySeed)).toString('base64');

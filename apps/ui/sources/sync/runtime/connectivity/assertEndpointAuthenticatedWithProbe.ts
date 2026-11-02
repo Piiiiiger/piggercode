@@ -1,4 +1,4 @@
-import type { ManagedEndpointSupervisor, ManagedEndpointSupervisorState } from '@happier-dev/connection-supervisor';
+import type { ManagedEndpointSupervisor, ManagedEndpointSupervisorState } from '@piggercode/connection-supervisor';
 
 import { acquireEndpointSupervisor, getEndpointSupervisorForServer } from '@/sync/runtime/connectivity/endpointSupervisorPool';
 

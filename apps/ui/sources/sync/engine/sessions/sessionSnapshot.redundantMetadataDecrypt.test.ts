@@ -10,7 +10,7 @@ import {
 } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { syncPerformanceTelemetry } from '@/sync/runtime/syncPerformanceTelemetry';
-import type { V2SessionRecord } from '@happier-dev/protocol';
+import type { V2SessionRecord } from '@piggercode/protocol';
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';
 

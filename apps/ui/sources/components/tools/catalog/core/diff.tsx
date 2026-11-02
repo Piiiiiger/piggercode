@@ -3,7 +3,7 @@ import type { ToolCall } from '@/sync/domains/messages/messageTypes';
 import * as z from 'zod';
 import { ICON_EDIT } from '../icons';
 import type { KnownToolDefinition } from '../_types';
-import { DiffInputV2Schema } from '@happier-dev/protocol';
+import { DiffInputV2Schema } from '@piggercode/protocol';
 import { resolveDiffToolHeaderPresentation } from '../resolveDiffToolHeaderPresentation';
 
 export const coreDiffTools = {

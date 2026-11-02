@@ -4,18 +4,18 @@ import os from 'os';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { spawn as spawnChildProcess } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
-import { getReleaseRingCatalogEntry } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingCatalogEntry } from '@piggercode/release-runtime/releaseRings';
 import {
   AGENT_IDS,
   resolveAgentIdFromSessionMetadata,
   resolveAgentNativeSpawnDefinitiveRejection,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { ApiClient, isMachineContentPublicKeyMismatchError } from '@/api/api';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
 import { ensureMachineRegistered } from '@/api/machine/ensureMachineRegistered';
 import { reconcileRecoveredSessionMachineControl } from './sessions/reconcileRecoveredSessionMachineControl';
-import { isRpcMethodNotAvailableError } from '@happier-dev/protocol/rpcErrors';
+import { isRpcMethodNotAvailableError } from '@piggercode/protocol/rpcErrors';
 import { callSessionRpc } from '@/session/transport/rpc/sessionRpc';
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';
 import {
@@ -27,7 +27,7 @@ import { checkRuntimeAuthUsageLimitRecovery } from './connectedServices/runtimeA
 import { isCurrentUsageLimitRecoverySource } from './connectedServices/runtimeAuth/isCurrentUsageLimitRecoveryCredential';
 import { continueSessionAfterUsageLimitReset } from './connectedServices/continuation/continueSessionAfterUsageLimitReset';
 import { buildRuntimeAuthUsageLimitRecoveryMetadataUpdater } from './connectedServices/runtimeAuth/projection/connectedServiceRuntimeAuthRecoveryUsageLimitMetadata';
-import { SessionUsageLimitRecoveryV1Schema } from '@happier-dev/protocol';
+import { SessionUsageLimitRecoveryV1Schema } from '@piggercode/protocol';
 import { createRuntimeAuthRecoverySchedulerForDaemon } from './connectedServices/runtimeAuth/createRuntimeAuthRecoverySchedulerForDaemon';
 import { projectTemporaryThrottleRecoveryMetadata } from './connectedServices/runtimeAuth/projection/temporaryThrottleRecoveryMetadata';
 import { deriveConnectedServiceBrokerRefreshToken } from './connectedServices/broker/brokerRefreshCapabilityToken';
@@ -73,7 +73,7 @@ import {
   notifyTerminalAttachmentRetiredThroughCatalog,
 } from '@/backends/catalog';
 import { CATALOG_AGENT_IDS } from '@/backends/types';
-import { processInstanceFingerprintMatches, readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { processInstanceFingerprintMatches, readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 import {
   writeDaemonStateIfLockOwned,
   writeConnectedServiceBrokerState,
@@ -438,14 +438,14 @@ import {
   type SessionContinuationRecoveryIdentityV1,
   type SessionContinuationResumePromptModeV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveConnectedServiceQuotasDaemonOptions } from './connectedServices/quotas/resolveConnectedServiceQuotasDaemonOptions';
 import { resolveConnectedServicesQuotasDaemonEnabled } from './connectedServices/quotas/resolveConnectedServicesQuotasDaemonEnabled';
 import { startConnectedServiceQuotasLoop, type ConnectedServiceQuotasLoopHandle } from './connectedServices/quotas/startConnectedServiceQuotasLoop';
 import { readConnectedServiceRuntimeIdentityForQuotaFanout } from './connectedServices/quotas/identity/readConnectedServiceRuntimeIdentityForQuotaFanout';
 import type { RuntimeAccountIdentitySelectionInput } from './connectedServices/quotas/identity/runtimeAccountIdentityTypes';
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';
-import { parseBooleanEnv, resolveConnectedServicesProviderStateSharingPolicyV1, type AccountSettings, type BackendTargetRefV1, type ConnectedServiceId } from '@happier-dev/protocol';
+import { parseBooleanEnv, resolveConnectedServicesProviderStateSharingPolicyV1, type AccountSettings, type BackendTargetRefV1, type ConnectedServiceId } from '@piggercode/protocol';
 import type { CatalogAgentId, ConnectedServiceSwitchEffectiveBinding } from '@/backends/types';
 import {
   createTerminalAttachmentId,

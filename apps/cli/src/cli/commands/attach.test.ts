@@ -16,9 +16,9 @@ import { createOpenCodeSharedLocalControl } from '@/backends/opencode/localContr
 import { createOpenCodeTuiSupervisor } from '@/backends/opencode/localControl/openCodeTuiSupervisor';
 import { resolveOpenCodeLocalControlSupport } from '@/backends/opencode/localControl/resolveOpenCodeLocalControlSupport';
 import { runOpenCodeProviderAttach } from '@/backends/opencode/attach/runOpenCodeProviderAttach';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import { createCodexSharedLocalControl } from '@/backends/codex/localControl/createCodexSharedLocalControl';
 import { createCodexSharedAttachArgs } from '@/backends/codex/localControl/createCodexSharedAttachArgs';
 import { createAttachedTerminalSupervisor } from '@/agent/localControl/createAttachedTerminalSupervisor';

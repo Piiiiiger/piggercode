@@ -6,8 +6,8 @@ import { join, delimiter as PATH_DELIMITER } from 'node:path';
 import { AGENTS } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';
 import { getVendorResumeSupport } from '@/backends/catalog';
-import { resolveWindowsCommandOnPath } from '@happier-dev/cli-common/process';
-import { CODEX_PROVIDER_SETTINGS_DEFAULTS } from '@happier-dev/agents';
+import { resolveWindowsCommandOnPath } from '@piggercode/cli-common/process';
+import { CODEX_PROVIDER_SETTINGS_DEFAULTS } from '@piggercode/agents';
 import { resolveProviderSpawnExtrasForRuntime } from '@/settings/providerSettings';
 
 const EXECUTION_RUN_INTENTS = ['review', 'plan', 'delegate'] as const;

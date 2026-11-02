@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENT_PROVIDER_IDS_V1 } from '@happier-dev/protocol';
+import { AGENT_PROVIDER_IDS_V1 } from '@piggercode/protocol';
 
 import {
   BUILT_IN_ACP_CONFIG,

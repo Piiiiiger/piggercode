@@ -1,5 +1,5 @@
-import type { ScmDiffFileRequest, ScmDiffFileResponse, ScmStatusSnapshotRequest, ScmStatusSnapshotResponse, ScmWorkingSnapshot } from '@happier-dev/protocol';
-import { ScmStatusSnapshotResponseSchema } from '@happier-dev/protocol';
+import type { ScmDiffFileRequest, ScmDiffFileResponse, ScmStatusSnapshotRequest, ScmStatusSnapshotResponse, ScmWorkingSnapshot } from '@piggercode/protocol';
+import { ScmStatusSnapshotResponseSchema } from '@piggercode/protocol';
 
 import {
   createNonRepositoryScmSnapshotResponse,

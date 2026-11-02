@@ -1,6 +1,6 @@
 import { access } from 'node:fs/promises'
 
-import type { MachineFileBrowserRoot } from '@happier-dev/protocol'
+import type { MachineFileBrowserRoot } from '@piggercode/protocol'
 
 type ResolveMachineBrowseRootsInput = Readonly<{
   platform?: NodeJS.Platform

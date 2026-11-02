@@ -1,4 +1,4 @@
-import type { PendingDeliveryDetailV1 } from '@happier-dev/protocol';
+import type { PendingDeliveryDetailV1 } from '@piggercode/protocol';
 import type { TranslationKey } from '@/text';
 
 export function resolveClaudePendingDeliveryLabelKey(input: Readonly<{

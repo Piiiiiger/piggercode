@@ -4,7 +4,7 @@ import {
     AccountPetCreateResponseV1Schema,
     AccountPetDeleteResponseV1Schema,
     AccountPetListResponseV1Schema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { resolveApiHotEndpointRateLimit } from "@/app/api/utils/apiRateLimitCatalog";
 import type { Fastify } from "@/app/api/types";

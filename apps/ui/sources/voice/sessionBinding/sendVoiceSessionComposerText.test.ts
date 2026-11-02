@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol';
-import { RpcError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES } from '@piggercode/protocol';
+import { RpcError } from '@piggercode/protocol/rpcErrors';
 
 import { storage } from '@/sync/domains/state/storage';
 import { appendVoiceConversationUserText } from './voiceConversationTranscript';

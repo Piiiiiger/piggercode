@@ -1,4 +1,4 @@
-import { normalizePatchInputRecord } from '@happier-dev/protocol/tools/v2';
+import { normalizePatchInputRecord } from '@piggercode/protocol/tools/v2';
 
 type UnknownRecord = Record<string, unknown>;
 

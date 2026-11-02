@@ -1,4 +1,4 @@
-import { PromptBundleBodyV1Schema } from '@happier-dev/protocol';
+import { PromptBundleBodyV1Schema } from '@piggercode/protocol';
 
 import { storage } from '@/sync/domains/state/storage';
 
@@ -6,7 +6,7 @@ export type SkillBundleArtifactState = Readonly<{
     title: string;
     folderId: string | null;
     tags: string[];
-    body: import('@happier-dev/protocol').PromptBundleBodyV1;
+    body: import('@piggercode/protocol').PromptBundleBodyV1;
 }>;
 
 export function readSkillBundleArtifactState(artifactId: string): SkillBundleArtifactState | null {

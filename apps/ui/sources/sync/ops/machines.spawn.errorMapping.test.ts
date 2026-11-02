@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { RPC_ERROR_CODES, RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 import { storage } from '@/sync/domains/state/storage';
 import { getPersistenceStorage } from '@/sync/domains/state/persistence';
 import { serverAccountScopedStorageKey } from '@/sync/domains/scope/serverAccountScope';

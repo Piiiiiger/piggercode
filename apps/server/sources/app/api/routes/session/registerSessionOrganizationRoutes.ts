@@ -1,4 +1,4 @@
-import type { FeatureId } from "@happier-dev/protocol";
+import type { FeatureId } from "@piggercode/protocol";
 import {
     CreateOrUpdateSessionOrganizationFolderRequestSchema,
     CreateOrUpdateSessionOrganizationFolderResponseSchema,
@@ -28,7 +28,7 @@ import {
     SetSessionTagAssignmentsResponseSchema,
     UpsertSessionOrganizationLabelRequestSchema,
     UpsertSessionOrganizationLabelResponseSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { z } from "zod";
 
 import { createServerFeatureGatedRouteApp } from "@/app/features/catalog/serverFeatureGate";

@@ -1,5 +1,5 @@
-import { readNonBlankOpaqueIdentifier } from '@happier-dev/protocol';
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { readNonBlankOpaqueIdentifier } from '@piggercode/protocol';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 import type { ToolCall } from '@/sync/domains/messages/messageTypes';
 
 function asRecord(value: unknown): Record<string, unknown> | null {

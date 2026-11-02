@@ -54,14 +54,14 @@ function collectInternalWorkspacePackageDirs(packageJson) {
   ]) {
     if (!source || typeof source !== 'object' || Array.isArray(source)) continue;
     for (const name of Object.keys(source)) {
-      if (name.startsWith('@happier-dev/')) packageNames.add(name);
+      if (name.startsWith('@piggercode/')) packageNames.add(name);
     }
   }
   for (const name of packageJson?.bundledDependencies ?? packageJson?.bundleDependencies ?? []) {
-    if (typeof name === 'string' && name.startsWith('@happier-dev/')) packageNames.add(name);
+    if (typeof name === 'string' && name.startsWith('@piggercode/')) packageNames.add(name);
   }
   return [...packageNames]
-    .map((name) => `packages/${name.slice('@happier-dev/'.length)}`)
+    .map((name) => `packages/${name.slice('@piggercode/'.length)}`)
     .sort();
 }
 
@@ -139,9 +139,9 @@ export async function createPackSandbox({ monorepoRoot, packageRelDir }) {
 }
 
 export function analyzeTarList(paths) {
-  const hasAgents = paths.some((p) => p.startsWith('package/node_modules/@happier-dev/agents/'));
-  const hasCliCommon = paths.some((p) => p.startsWith('package/node_modules/@happier-dev/cli-common/'));
-  const hasProtocol = paths.some((p) => p.startsWith('package/node_modules/@happier-dev/protocol/'));
+  const hasAgents = paths.some((p) => p.startsWith('package/node_modules/@piggercode/agents/'));
+  const hasCliCommon = paths.some((p) => p.startsWith('package/node_modules/@piggercode/cli-common/'));
+  const hasProtocol = paths.some((p) => p.startsWith('package/node_modules/@piggercode/protocol/'));
   return { hasAgents, hasCliCommon, hasProtocol };
 }
 
@@ -270,9 +270,9 @@ async function main() {
       `[pack] dir: ${packDir}`,
       `[pack] tarball: ${basename(tarballPath)} (generated in a temp sandbox)`,
       `[pack] bundledDependencies (best-effort):`,
-      `- @happier-dev/agents:   ${hasAgents ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
-      `- @happier-dev/cli-common: ${hasCliCommon ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
-      `- @happier-dev/protocol: ${hasProtocol ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
+      `- @piggercode/agents:   ${hasAgents ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
+      `- @piggercode/cli-common: ${hasCliCommon ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
+      `- @piggercode/protocol: ${hasProtocol ? '✅ present' : shouldEnforceBundledDeps ? '❌ missing' : '↪ not required'}`,
     ];
     if (!ok) {
       lines.push('', '[pack] NOTE: missing bundled deps in tarball; publish would likely break for npm consumers.');

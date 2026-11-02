@@ -10,7 +10,7 @@ import {
   sealAccountScopedBlobCiphertext,
   type AccountSettingsStoredContentEnvelope,
   type AccountSettingsV2UpdateResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { updateAccountSettingsV2WithRetry } from './updateAccountSettingsV2WithRetry';
 import type { AccountSettingsCache } from './accountSettingsCache';

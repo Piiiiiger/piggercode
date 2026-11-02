@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { SESSION_AGENT_TRANSITION_DIVIDER_LOCAL_ID_PREFIX } from "@happier-dev/protocol";
+import { SESSION_AGENT_TRANSITION_DIVIDER_LOCAL_ID_PREFIX } from "@piggercode/protocol";
 
 import {
     checkSessionAccess,

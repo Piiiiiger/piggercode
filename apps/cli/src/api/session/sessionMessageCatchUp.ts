@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 
 import { SessionMessageContentSchema, type Update } from '../types';
 import { resolveServerHttpBaseUrl } from '@/session/transport/http/serverHttpBaseUrl';

@@ -1,5 +1,5 @@
-import { deriveCanonicalPatchFileDiffs } from '@happier-dev/protocol/tools/v2';
-import type { FileChangeEvidence, TurnChangeSet } from '@happier-dev/protocol';
+import { deriveCanonicalPatchFileDiffs } from '@piggercode/protocol/tools/v2';
+import type { FileChangeEvidence, TurnChangeSet } from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 

@@ -1,6 +1,6 @@
 import { act } from 'react-test-renderer';
 import { afterEach, expect, it, vi } from 'vitest';
-import { SYSTEM_TASK_PROTOCOL_VERSION } from '@happier-dev/protocol';
+import { SYSTEM_TASK_PROTOCOL_VERSION } from '@piggercode/protocol';
 
 import { renderHook } from '@/dev/testkit';
 import { createSystemTaskRunner } from '@/components/systemTasks/createSystemTaskRunner';
@@ -114,7 +114,7 @@ it('names the exact command that updates the command line the person kept (R12)'
             update: { currentVersion: '0.2.10', latestVersion: '0.2.13', updateAvailable: true, managed: false },
             choice: {
                 mode: 'own',
-                otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: null, updateCommand: 'npm install -g @happier-dev/cli@latest' },
+                otherCli: { command: '/usr/local/bin/happier', origin: 'npm', removalCommand: null, updateCommand: 'npm install -g @piggercode/cli@latest' },
             },
         },
     };
@@ -136,7 +136,7 @@ it('names the exact command that updates the command line the person kept (R12)'
     expect(hook.getCurrent().item).toMatchObject({
         state: 'available',
         managedBy: 'user',
-        action: { kind: 'manual', command: 'npm install -g @happier-dev/cli@latest' },
+        action: { kind: 'manual', command: 'npm install -g @piggercode/cli@latest' },
     });
     await hook.unmount();
 });

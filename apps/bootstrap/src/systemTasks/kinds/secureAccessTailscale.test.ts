@@ -7,8 +7,8 @@ const tailscaleMocks = vi.hoisted(() => ({
     runTailscaleServeEnable: vi.fn(),
 }));
 
-vi.mock('@happier-dev/cli-common/tailscale', async () => {
-    const actual = await vi.importActual<typeof import('@happier-dev/cli-common/tailscale')>('@happier-dev/cli-common/tailscale');
+vi.mock('@piggercode/cli-common/tailscale', async () => {
+    const actual = await vi.importActual<typeof import('@piggercode/cli-common/tailscale')>('@piggercode/cli-common/tailscale');
     return {
         ...actual,
         runTailscaleStatusJson: tailscaleMocks.runTailscaleStatusJson,

@@ -1,4 +1,4 @@
-import { withKeepBothSuffix } from '@happier-dev/transfers';
+import { withKeepBothSuffix } from '@piggercode/transfers';
 
 export async function resolveKeepBothTargetPath(input: Readonly<{
     desiredPath: string;

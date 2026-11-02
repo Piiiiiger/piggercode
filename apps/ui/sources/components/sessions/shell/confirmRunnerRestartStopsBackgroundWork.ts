@@ -1,7 +1,7 @@
 import { Modal } from '@/modal';
 import { storage } from '@/sync/domains/state/storage';
 import { t } from '@/text';
-import { hasActiveSessionRuntimeActivity } from '@happier-dev/protocol';
+import { hasActiveSessionRuntimeActivity } from '@piggercode/protocol';
 
 // Repeated presses while the dialog is open must not stack dialogs (and restart requests).
 let confirmationOpen = false;

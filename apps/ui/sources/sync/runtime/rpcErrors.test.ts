@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createRpcCallError, isRpcMethodNotAvailableError, isRpcMethodNotFoundError, RpcError } from './rpcErrors';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 
 describe('rpcErrors', () => {
   it('creates an Error with rpcErrorCode when provided', () => {

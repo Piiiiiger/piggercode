@@ -6,4 +6,4 @@ export type {
   TerminalInputInjectionV1,
   TerminalPromptInput,
   TerminalPromptWriteBoundaryV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';

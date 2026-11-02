@@ -6,7 +6,7 @@ import {
     openTerminalProvisioningV2Payload,
     type SystemTaskEvent,
     type SystemTaskJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { decodeBase64, encodeBase64 } from '@/encryption/base64';
 import { createServerUrlComparableKey } from '@/sync/domains/server/url/serverUrlCanonical';

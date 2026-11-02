@@ -5,7 +5,7 @@ import {
     type SessionSystemRecord,
     type SessionSystemRecordContent,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { fetchSessionSystemRecord } from '@/sync/ops/sessionSystemRecords';
 

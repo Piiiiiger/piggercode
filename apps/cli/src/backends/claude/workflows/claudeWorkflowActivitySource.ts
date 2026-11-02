@@ -4,7 +4,7 @@ import {
 } from './workflowActivityStartupReconcile';
 import {
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
   createCoalescedWorkflowActivityPublisher,

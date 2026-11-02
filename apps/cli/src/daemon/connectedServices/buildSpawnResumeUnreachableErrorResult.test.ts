@@ -4,7 +4,7 @@ import {
   SPAWN_SESSION_ERROR_CODES,
   SPAWN_SESSION_ERROR_DETAIL_KINDS,
   isConnectedServiceResumeUnreachableSpawnErrorDetail,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ConnectedServiceSpawnResumeUnreachableError } from './resolveConnectedServiceAuthForSpawn';
 import { buildSpawnResumeUnreachableErrorResult } from './buildSpawnResumeUnreachableErrorResult';

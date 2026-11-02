@@ -3,7 +3,7 @@ import {
     SessionBackgroundTaskRecordV1Schema,
     type SessionBackgroundTaskRecordV1,
     type SessionSystemRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { listSessionSystemRecords } from '@/sync/ops/sessionSystemRecords';
 

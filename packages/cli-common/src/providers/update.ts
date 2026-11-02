@@ -5,13 +5,13 @@ import type {
   AgentId,
   ProviderCliInstallSource,
   ProviderCliRuntimeInstallPlatform as ProviderCliInstallPlatform,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
   getProviderCliRuntimeSpec,
   resolveProviderCliLatestVersionSource,
   resolveProviderCliNpmPackageName,
-} from '@happier-dev/agents';
-import { fetchGitHubLatestRelease, requestJson } from '@happier-dev/release-runtime';
+} from '@piggercode/agents';
+import { fetchGitHubLatestRelease, requestJson } from '@piggercode/release-runtime';
 
 import { compareVersions } from '../update/index.js';
 import { readManagedPnpmMinimumReleaseAgeMs } from './managedPnpm.js';

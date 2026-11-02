@@ -1,4 +1,4 @@
-import { parseHappierToolsShellBridgeCommand } from '@happier-dev/protocol';
+import { parseHappierToolsShellBridgeCommand } from '@piggercode/protocol';
 
 type UnknownRecord = Record<string, unknown>;
 

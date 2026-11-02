@@ -1,4 +1,4 @@
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 describe('resolveGithubConnectedAccountToken', () => {

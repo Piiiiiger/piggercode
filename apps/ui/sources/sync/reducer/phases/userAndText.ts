@@ -1,5 +1,5 @@
 import type { TracedMessage } from '../reducerTracer';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 import type { UsageData } from '../../typesRaw';
 import type { ReducerState } from '../reducer';
 import type { ToolCall } from '../../domains/messages/messageTypes';

@@ -2,8 +2,8 @@ import { resolve } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
 
 import type { Metadata } from '@/api/types';
-import { buildCodexAgentRuntimeDescriptor, type CodexBackendMode } from '@happier-dev/agents';
-import { normalizeCodexBackendMode, type DirectSessionsSource } from '@happier-dev/protocol';
+import { buildCodexAgentRuntimeDescriptor, type CodexBackendMode } from '@piggercode/agents';
+import { normalizeCodexBackendMode, type DirectSessionsSource } from '@piggercode/protocol';
 import { findConnectedServiceChildSelection } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { inferCodexDirectSessionsSourceFromHome } from '../directSessions/resolveCodexHomeEntriesForDirectSessionsSource';
 import { resolveConfiguredCodexHome } from './resolveConfiguredCodexHome';

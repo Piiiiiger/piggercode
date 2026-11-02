@@ -1,5 +1,5 @@
-import type { ActionId } from '@happier-dev/protocol';
-import { ActionsSettingsV1Schema, isActionEnabledByActionsSettings } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
+import { ActionsSettingsV1Schema, isActionEnabledByActionsSettings } from '@piggercode/protocol';
 
 import { isExecutionRunsFeatureAction } from '@/sync/domains/actions/isExecutionRunsFeatureAction';
 import { resolveLocalFeaturePolicyEnabled } from '@/sync/domains/features/featureLocalPolicy';

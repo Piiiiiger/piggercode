@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ConnectedServiceCredentialRecordV1Schema,
   buildConnectedServiceCredentialRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { computeConnectedServiceAccessTokenFingerprint } from '@/daemon/connectedServices/refresh/credentialFreshness/tokenFingerprint';
 
 import { materializeGeminiConnectedServiceAuth } from './materializeGeminiConnectedServiceAuth';

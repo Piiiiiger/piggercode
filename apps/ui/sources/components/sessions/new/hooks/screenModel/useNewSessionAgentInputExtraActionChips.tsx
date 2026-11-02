@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { ActionId, WindowsRemoteSessionLaunchMode } from '@happier-dev/protocol';
+import type { ActionId, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/catalog/catalog';
 import {

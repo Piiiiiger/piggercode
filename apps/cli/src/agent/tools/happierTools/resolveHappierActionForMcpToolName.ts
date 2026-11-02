@@ -2,7 +2,7 @@ import {
   getActionSpec,
   listActionSpecs,
   type ActionId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getEquivalentActionIdForBuiltInTool } from './actionToolCatalog';
 

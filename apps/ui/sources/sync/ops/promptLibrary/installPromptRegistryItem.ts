@@ -5,7 +5,7 @@ import {
   type PromptAssetScopeV1,
   type PromptExternalLinksV1,
   type PromptRegistryConfiguredSourceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { randomUUID } from '@/platform/randomUUID';
 import { machinePromptRegistriesDownloadItem, machinePromptRegistriesInstall } from '@/sync/ops/machinePromptRegistries';

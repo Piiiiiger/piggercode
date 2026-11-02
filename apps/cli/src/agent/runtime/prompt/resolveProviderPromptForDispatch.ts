@@ -2,9 +2,9 @@ import {
     HAPPIER_STRUCTURED_INPUT_METADATA_KEY_V1,
     MENTION_BOUNDS,
     sanitizeMentionRefsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
-import { fitHappierReplaySeedWithinTotalBudget } from '@happier-dev/agents';
+import { fitHappierReplaySeedWithinTotalBudget } from '@piggercode/agents';
 
 import { configuration } from '@/configuration';
 import {

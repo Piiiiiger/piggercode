@@ -15,7 +15,7 @@ import {
     StoredJsonContentEnvelopeSchema,
     assertConnectedServiceCredentialRecordBinding,
     type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { ConnectedServiceProfileIdSchema } from "../connectedServicesV2/profileIdSchema";
 import { readEncryptionFeatureEnv } from "@/app/features/catalog/readFeatureEnv";
 import { isServerFeatureEnabledForRequest } from "@/app/features/catalog/serverFeatureGate";

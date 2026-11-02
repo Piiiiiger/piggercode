@@ -1,7 +1,7 @@
 import {
   settleSpawnSessionNonce,
   type SpawnSessionNonceResolution,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { fetchJson } from '../http';
 

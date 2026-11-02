@@ -1,7 +1,7 @@
 import type {
     SessionOrganizationLabelKind,
     SessionOrganizationOrderScopeKind,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function buildSessionOrganizationServerKey(serverId: string, id: string): string {
     return `${String(serverId).trim()}:${String(id).trim()}`;

@@ -8,7 +8,7 @@ import {
   type ProviderAccountUsageRecordId,
   type ProviderAccountUsageSnapshotV1,
   type SealedProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 

@@ -1,5 +1,5 @@
-import { buildCodexAgentRuntimeDescriptor, readSessionMetadataRuntimeDescriptor, resolvePersistedCodexRuntimeIdentity } from '@happier-dev/agents';
-import { DirectSessionsSourceSchema } from '@happier-dev/protocol';
+import { buildCodexAgentRuntimeDescriptor, readSessionMetadataRuntimeDescriptor, resolvePersistedCodexRuntimeIdentity } from '@piggercode/agents';
+import { DirectSessionsSourceSchema } from '@piggercode/protocol';
 
 import type { ExistingSessionHandoffStateResolver } from '@/backends/types';
 import { resolveExistingCodexIndexedRolloutPath } from '@/backends/codex/connectedServices/reconcileCodexResumeRolloutPath';

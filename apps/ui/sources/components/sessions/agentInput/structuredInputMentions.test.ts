@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeSessionUserMessageSendMeta } from '@happier-dev/protocol';
+import { sanitizeSessionUserMessageSendMeta } from '@piggercode/protocol';
 
 import {
     buildStructuredInputMetaOverrides,

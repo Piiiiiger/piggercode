@@ -2,8 +2,8 @@ import type {
   DirectSessionTranscriptDeltaEphemeral,
   DirectTranscriptRawMessageV1,
   DirectTranscriptTruncationReason,
-} from '@happier-dev/protocol';
-import { resolveDirectTranscriptContinuation } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { resolveDirectTranscriptContinuation } from '@piggercode/protocol';
 
 import { dispatchActivityNotificationAsync } from '@/activity/notifications/dispatchActivityNotification';
 import { readCredentials, type Credentials } from '@/persistence';

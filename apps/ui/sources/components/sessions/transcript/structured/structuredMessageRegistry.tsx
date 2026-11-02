@@ -16,7 +16,7 @@ import {
     SubagentCommandV1Schema,
     SubagentLaunchV1Schema,
     VoiceAgentTurnV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { ReviewFindingsMessageCard } from '@/components/sessions/reviews/messages/ReviewFindingsMessageCard';
 import { ReviewFollowUpMessageCard } from '@/components/sessions/reviews/messages/ReviewFollowUpMessageCard';
 import { PlanOutputMessageCard } from '@/components/sessions/plans/messages/PlanOutputMessageCard';

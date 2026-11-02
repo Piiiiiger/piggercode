@@ -934,7 +934,7 @@ vi.mock('@/components/sessions/agentInput/sessionActions/listAgentInputActionChi
     listAgentInputActionChipActionIds: () => [],
 }));
 
-vi.mock('@happier-dev/protocol', async (importOriginal) => {
+vi.mock('@piggercode/protocol', async (importOriginal) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actual = await importOriginal<any>();
     return {
@@ -947,7 +947,7 @@ vi.mock('@/sync/domains/actions/buildActionDraftInput', () => ({
     buildActionDraftInput: () => ({}),
 }));
 
-vi.mock('@happier-dev/agents', async (importOriginal) => {
+vi.mock('@piggercode/agents', async (importOriginal) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actual = await importOriginal<any>();
     return {

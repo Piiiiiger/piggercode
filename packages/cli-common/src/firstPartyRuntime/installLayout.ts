@@ -1,4 +1,4 @@
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import { joinPathForPathShape } from '../path/pathShape.js';
 import { resolveHappyHomeDirFromEnvironment } from '../providers/resolveHappyHomeDir.js';

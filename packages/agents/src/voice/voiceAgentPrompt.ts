@@ -5,7 +5,7 @@ import {
   listVoiceToolActionSpecs,
   renderPromptPlanV1,
   type PromptBlockV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildVoiceDiscoveryChecklistLines, buildVoiceToolDocumentationLines } from './voiceToolDocumentation.js';
 

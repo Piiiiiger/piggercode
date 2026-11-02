@@ -1,4 +1,4 @@
-import { readSessionMetadataRuntimeDescriptor } from '@happier-dev/agents';
+import { readSessionMetadataRuntimeDescriptor } from '@piggercode/agents';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/text', async () => {

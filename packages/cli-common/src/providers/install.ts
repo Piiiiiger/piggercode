@@ -10,10 +10,10 @@ import type {
   ProviderCliManagedInstallSpec,
   ProviderCliRuntimeInstallPlatform as ProviderCliInstallPlatform,
   ProviderCliRuntimeSpec,
-} from '@happier-dev/agents';
-import { getProviderCliRuntimeSpec } from '@happier-dev/agents';
-import { fetchGitHubLatestRelease } from '@happier-dev/release-runtime';
-import { ArchiveExpandedByteLimitError } from '@happier-dev/release-runtime/archiveExtraction';
+} from '@piggercode/agents';
+import { getProviderCliRuntimeSpec } from '@piggercode/agents';
+import { fetchGitHubLatestRelease } from '@piggercode/release-runtime';
+import { ArchiveExpandedByteLimitError } from '@piggercode/release-runtime/archiveExtraction';
 
 import { withWorkspaceBundleLock } from '../../workspaceBundleLock.mjs';
 

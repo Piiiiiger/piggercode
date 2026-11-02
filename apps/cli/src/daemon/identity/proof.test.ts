@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import tweetnacl from 'tweetnacl';
 
 import { encodeBase64 } from '@/api/encryption';
-import { verifyMachineInstallationProof } from '@happier-dev/protocol';
+import { verifyMachineInstallationProof } from '@piggercode/protocol';
 
 import { buildInstallationProofForMachine } from './proof';
 

@@ -1,4 +1,4 @@
-import type { BackendTargetRefV1 } from '@happier-dev/protocol';
+import type { BackendTargetRefV1 } from '@piggercode/protocol';
 
 export type PreflightModelsProbeFailureCacheStrategy = 'cooldown' | 'retry';
 

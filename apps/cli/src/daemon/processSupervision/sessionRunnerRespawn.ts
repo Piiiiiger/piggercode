@@ -10,7 +10,7 @@ import type { TrackedSession } from '@/daemon/types';
 import {
   SPAWN_SESSION_ERROR_CODES,
   isConnectedServiceResumeUnreachableSpawnErrorDetail,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { RestartController } from '@/subprocess/supervision/restartController';
 import type { StopRequest, TerminationEvent } from '@/subprocess/supervision/types';

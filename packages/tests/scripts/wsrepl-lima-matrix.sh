@@ -2122,7 +2122,7 @@ PY
     echo "[wsrepl-qa] host daemon start/status reported a missing CLI dist entrypoint; rebuilding and retrying..." >&2
     (
       cd "${REPO_DIR}"
-      yarn workspace @happier-dev/cli build
+      yarn workspace @piggercode/cli build
     ) >"${build_file}" 2>&1 || true
 
 	    set +e
@@ -2244,7 +2244,7 @@ PY
       echo "[wsrepl-qa] host daemon start failed due to missing CLI dist entrypoint; rebuilding and retrying..." >&2
       (
         cd "${REPO_DIR}"
-        yarn workspace @happier-dev/cli build
+        yarn workspace @piggercode/cli build
       ) >"${build_file}" 2>&1 || true
 
       set +e
@@ -3339,7 +3339,7 @@ autoupdate_guest_happier_from_worktree() {
     cd "${REPO_DIR}"
     WSREPL_QA_VM_HAPPIER_PAYLOAD_DIR="${payload_dir}" \
       node --input-type=module - "${REPO_DIR}" "${payload_dir}" "${bun_target}" <<'NODE'
-	import { buildCliBinaryArtifactPayload, CLI_BINARY_TARGETS } from '@happier-dev/cli-common/componentArtifacts';
+	import { buildCliBinaryArtifactPayload, CLI_BINARY_TARGETS } from '@piggercode/cli-common/componentArtifacts';
 
 	const [repoRoot, payloadDir, bunTarget] = process.argv.slice(2);
 	const target = CLI_BINARY_TARGETS.find((value) => value.bunTarget === bunTarget);

@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import os from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { SessionHandoffPrepareTargetResultGetResponseSchema, SessionHandoffStartResponseSchema } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SessionHandoffPrepareTargetResultGetResponseSchema, SessionHandoffStartResponseSchema } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { RpcHandlerManager } from '../rpc/RpcHandlerManager';
 import { openSqliteDatabaseSync } from '@/utils/sqlite/sqliteSync';
 

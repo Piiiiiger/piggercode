@@ -6,7 +6,7 @@ import { parseOptionalBooleanEnv } from "@/config/env";
 import { warn } from "@/utils/logging/log";
 import { isBunRuntime } from "@/utils/runtime/isBunRuntime";
 import { redactSentryEvent, redactSentryLog } from "./sentryLogRedaction";
-import { redactPublicShareCapabilityUrl } from "@happier-dev/protocol";
+import { redactPublicShareCapabilityUrl } from "@piggercode/protocol";
 
 type Integration = Parameters<typeof Sentry.addIntegration>[0];
 

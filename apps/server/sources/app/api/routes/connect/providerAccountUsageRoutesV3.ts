@@ -17,7 +17,7 @@ import {
     splitProviderAccountUsageSupplementalFacets,
     PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT,
     StoredJsonContentEnvelopeSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { NotFoundSchema } from "../../schemas/notFoundSchema";
 import {
     ProviderAccountUsageInvalidParamsResponseSchema,

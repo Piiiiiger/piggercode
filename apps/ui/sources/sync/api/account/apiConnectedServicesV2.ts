@@ -14,7 +14,7 @@ import {
   type ConnectedServiceCredentialRevisionV1,
   type ConnectedServiceId,
   type SealedConnectedServiceCredentialV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const ConnectedServiceCredentialMetadataResponseSchema = z.object({
   kind: z.enum(['oauth', 'token']),

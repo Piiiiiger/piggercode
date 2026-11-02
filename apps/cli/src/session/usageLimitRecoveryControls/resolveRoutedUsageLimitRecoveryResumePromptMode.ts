@@ -1,7 +1,7 @@
 import {
   resolveSessionUsageLimitRecoveryResumePromptModeV1,
   type SessionUsageLimitRecoveryResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Lazily-loaded lower precedence tiers for the routed resume-prompt-mode resolution.

@@ -1,4 +1,4 @@
-import { redactBugReportSensitiveText, trimBugReportTextToMaxBytes } from '@happier-dev/protocol';
+import { redactBugReportSensitiveText, trimBugReportTextToMaxBytes } from '@piggercode/protocol';
 
 export function redactMcpServerProbeError(raw: unknown): string {
   const text = raw instanceof Error ? raw.message : String(raw ?? '');

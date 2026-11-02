@@ -5,7 +5,7 @@ import {
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceCredentialRecordV1,
   type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import type { SessionUsageLimitRecoveryControlAdapterParams } from '@/session/usageLimitRecoveryControls/sessionUsageLimitRecoveryControlTypes';
 import { createGeminiUsageLimitRecoveryControlAdapter } from './geminiUsageLimitRecoveryControlAdapter';

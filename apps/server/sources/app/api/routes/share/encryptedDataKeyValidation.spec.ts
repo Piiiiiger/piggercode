@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { encodeBase64, stringifySerializedJsonValue } from "@happier-dev/protocol";
+import { encodeBase64, stringifySerializedJsonValue } from "@piggercode/protocol";
 
 import {
     tryParseEncryptedDataKeyEnvelopeV1,

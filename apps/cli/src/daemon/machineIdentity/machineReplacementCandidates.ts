@@ -1,4 +1,4 @@
-import type { MachineReplacementReason } from '@happier-dev/protocol';
+import type { MachineReplacementReason } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { readSettings, updateSettings, type MachineReplacementCandidate, type Settings } from '@/persistence';

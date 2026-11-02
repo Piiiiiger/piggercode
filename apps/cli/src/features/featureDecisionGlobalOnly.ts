@@ -3,7 +3,7 @@ import {
   evaluateFeatureDecisionBase,
   type FeatureDecision,
   type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getCliFeatureBuildPolicyDecision } from './featureBuildPolicy';
 import { resolveCliLocalFeaturePolicyEnabled } from './featureLocalPolicy';

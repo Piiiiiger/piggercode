@@ -1,4 +1,4 @@
-import { createFeatureDecision, type FeatureDecision, type FeatureId } from '@happier-dev/protocol';
+import { createFeatureDecision, type FeatureDecision, type FeatureId } from '@piggercode/protocol';
 import type { Settings } from '@/sync/domains/settings/settings';
 
 import { storage } from '@/sync/domains/state/storage';

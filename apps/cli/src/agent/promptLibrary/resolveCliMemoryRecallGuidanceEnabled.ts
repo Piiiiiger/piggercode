@@ -3,7 +3,7 @@ import {
   isMemoryRecallGuidanceSupported,
   type MemoryRecallGuidanceSurface,
   type MemorySettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export async function resolveCliMemoryRecallGuidanceEnabled(args?: Readonly<{
   surfaces?: readonly MemoryRecallGuidanceSurface[];

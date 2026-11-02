@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { cmd, definitionList, errorFrame, fail, ok, warn } from '@happier-dev/cli-common/output';
+import { cmd, definitionList, errorFrame, fail, ok, warn } from '@piggercode/cli-common/output';
 import os from 'node:os';
 
 import { clearCredentials, clearMachineId } from '@/persistence';

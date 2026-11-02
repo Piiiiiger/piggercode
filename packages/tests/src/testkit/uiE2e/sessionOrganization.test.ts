@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { SESSION_ORGANIZATION_SNAPSHOT_VERSION } from '@happier-dev/protocol';
+import { SESSION_ORGANIZATION_SNAPSHOT_VERSION } from '@piggercode/protocol';
 
 import {
   buildSessionFolderSettingsSnapshotFromOrganizationSnapshot,

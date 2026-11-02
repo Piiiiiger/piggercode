@@ -1,4 +1,4 @@
-import { isClaudeSlashCommandSupported } from '@happier-dev/protocol';
+import { isClaudeSlashCommandSupported } from '@piggercode/protocol';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
     return value && typeof value === 'object' && !Array.isArray(value)

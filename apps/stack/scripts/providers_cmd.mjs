@@ -2,9 +2,9 @@ import './utils/env/env.mjs';
 
 import { parseArgs } from './utils/cli/args.mjs';
 import { printResult, wantsHelp, wantsJson } from './utils/cli/cli.mjs';
-import { createStepPrinter } from '@happier-dev/cli-common/output';
-import { AGENT_IDS, getProviderCliRuntimeSpec } from '@happier-dev/agents';
-import { installProviderCli, planProviderCliInstall, resolvePlatformFromNodePlatform } from '@happier-dev/cli-common/providers';
+import { createStepPrinter } from '@piggercode/cli-common/output';
+import { AGENT_IDS, getProviderCliRuntimeSpec } from '@piggercode/agents';
+import { installProviderCli, planProviderCliInstall, resolvePlatformFromNodePlatform } from '@piggercode/cli-common/providers';
 
 function usageText() {
   return [

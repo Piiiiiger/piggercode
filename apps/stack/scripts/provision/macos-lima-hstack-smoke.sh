@@ -7,7 +7,7 @@ set -euo pipefail
 #   ./scripts/provision/macos-lima-hstack-smoke.sh [vm-name]
 #
 # Env:
-#   HSTACK_VERSION=latest            # @happier-dev/stack version to test (default: latest)
+#   HSTACK_VERSION=latest            # @piggercode/stack version to test (default: latest)
 #   HSTACK_SMOKE_KEEP=1              # keep sandbox dir in the VM (default: 0)
 #   HSTACK_RAW_BASE=...              # override raw github base (default: happier-dev/happier main)
 #   HSTACK_PROVISION_PROFILE=happier # guest provisioning profile (default: happier)
@@ -76,7 +76,7 @@ if [[ -z "${HSTACK_RAW_BASE}" ]]; then
 fi
 
 echo "[lima-smoke] vm: ${VM_NAME}"
-echo "[lima-smoke] @happier-dev/stack: ${HSTACK_VERSION}"
+echo "[lima-smoke] @piggercode/stack: ${HSTACK_VERSION}"
 echo "[lima-smoke] provision profile: ${HSTACK_PROVISION_PROFILE}"
 echo "[lima-smoke] raw base: ${HSTACK_RAW_BASE}"
 

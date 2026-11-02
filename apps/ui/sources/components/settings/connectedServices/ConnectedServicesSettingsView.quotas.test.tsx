@@ -6,8 +6,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   ConnectedServiceQuotaSnapshotV1Schema,
   ConnectedServicesProviderStateSharingSettingsV1Schema,
-} from '@happier-dev/protocol';
-import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@happier-dev/protocol/testing/accountScopedCipherFixtures';
+} from '@piggercode/protocol';
+import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@piggercode/protocol/testing/accountScopedCipherFixtures';
 import { installConnectedServicesCommonModuleMocks } from './connectedServicesTestHelpers';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type { getConnectedServiceQuotaSnapshotSealed } from '@/sync/api/account/apiConnectedServicesQuotasV2';

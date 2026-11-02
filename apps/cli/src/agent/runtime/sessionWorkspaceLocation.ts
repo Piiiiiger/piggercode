@@ -1,4 +1,4 @@
-import { buildSessionWorkspaceLocationV1, type SessionWorkspaceLocationV1 } from '@happier-dev/protocol';
+import { buildSessionWorkspaceLocationV1, type SessionWorkspaceLocationV1 } from '@piggercode/protocol';
 
 export const SESSION_MACHINE_WORKSPACE_PATH_ENV = 'HAPPIER_SESSION_MACHINE_WORKSPACE_PATH' as const;
 

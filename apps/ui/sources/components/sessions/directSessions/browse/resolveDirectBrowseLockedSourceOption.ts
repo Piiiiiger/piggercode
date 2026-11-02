@@ -1,4 +1,4 @@
-import type { AccountProfile, DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
+import type { AccountProfile, DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
 
 import { getAgentBehavior, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
 import type { Settings } from '@/sync/domains/settings/settings';

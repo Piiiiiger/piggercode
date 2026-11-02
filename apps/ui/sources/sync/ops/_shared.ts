@@ -4,7 +4,7 @@ import {
     type SpawnSessionErrorCode,
     type SpawnSessionErrorDetail,
     type SpawnSessionResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { isSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 
 export function isPlainObject(value: unknown): value is Record<string, unknown> {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import { projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import { buildProviderAccountUsageSnapshotFromConnectedServiceQuotaObservation } from './fromConnectedServiceQuotaObservation';
 

@@ -1,4 +1,4 @@
-import { maybeParseJson } from '@happier-dev/protocol';
+import { maybeParseJson } from '@piggercode/protocol';
 
 export function coerceToolResultRecord(value: unknown): Record<string, unknown> | null {
     const parsed = maybeParseJson(value);

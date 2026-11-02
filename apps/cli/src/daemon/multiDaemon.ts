@@ -2,8 +2,8 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
-import { resolveServingThisComputerService } from '@happier-dev/cli-common/service';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
+import { resolveServingThisComputerService } from '@piggercode/cli-common/service';
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';
 import { configuration } from '@/configuration';
 import { resolveDaemonStartupSourceServiceManagedState } from '@/daemon/ownership/daemonOwnershipMetadata';

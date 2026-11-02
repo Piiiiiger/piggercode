@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { buildCodexAgentRuntimeDescriptor, type CodexBackendMode } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor, type CodexBackendMode } from '@piggercode/agents';
 import {
     AgentRuntimeDescriptorV1Schema,
     BackendTargetRefSchema,
@@ -12,8 +12,8 @@ import {
     type BackendTargetRefV1,
     type SessionInitialGoalRequestV1,
     type SessionAuthoringValueV1,
-} from '@happier-dev/protocol';
-import { SpawnSessionTerminalSchema } from '@happier-dev/protocol/spawnSession';
+} from '@piggercode/protocol';
+import { SpawnSessionTerminalSchema } from '@piggercode/protocol/spawnSession';
 import { isPermissionMode, type PermissionMode } from '../../permissions/permissionTypes';
 
 import { buildCodexBackendTransportFields, type CodexBackendTransportFields } from '../codexBackendTransport';
@@ -41,7 +41,7 @@ export type ResumeHappySessionRpcParams = CodexBackendTransportFields & {
     modelUpdatedAt?: number;
     accountSettingsVersionHint?: number;
     initialTranscriptAfterSeq?: number;
-    executionAuthorization?: import('@happier-dev/protocol').SpawnSessionExecutionAuthorization;
+    executionAuthorization?: import('@piggercode/protocol').SpawnSessionExecutionAuthorization;
     initialGoal?: SessionInitialGoalRequestV1;
 };
 

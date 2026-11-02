@@ -2,7 +2,7 @@ import type {
   ConnectedServiceAuthGroupV1,
   ConnectedServiceUsageSourceV1,
   ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ProviderAccountUsageStore } from '../../accountUsage/store';
 import { projectProviderAccountUsageSnapshotToAuthGroupRuntimeState } from '../quotas/projection';

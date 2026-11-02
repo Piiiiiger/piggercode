@@ -11,7 +11,7 @@ import type {
 
 import { renderDoctorRepairReport } from './renderDoctorRepairReport';
 import { renderAuthentication } from './sections/renderAuthentication';
-import { warn } from '@happier-dev/cli-common/output';
+import { warn } from '@piggercode/cli-common/output';
 
 const cli: CurrentCliInfo = {
   releaseChannel: 'dev',

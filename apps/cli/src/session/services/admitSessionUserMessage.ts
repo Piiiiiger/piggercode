@@ -1,5 +1,5 @@
-import type { PendingRequestedActionV1 } from '@happier-dev/protocol';
-import type { PermissionIntent } from '@happier-dev/agents';
+import type { PendingRequestedActionV1 } from '@piggercode/protocol';
+import type { PermissionIntent } from '@piggercode/agents';
 
 import { enqueuePendingQueueV2MessageViaHttp } from '@/api/session/pendingQueueV2Transport';
 import type { Credentials } from '@/persistence';

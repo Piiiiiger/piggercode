@@ -1,5 +1,5 @@
 import type { CatalogAgentId } from '@/backends/types';
-import { buildBackendTargetKey, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 export function buildAgentProbeCacheKey(params: Readonly<{
   agentId: CatalogAgentId;

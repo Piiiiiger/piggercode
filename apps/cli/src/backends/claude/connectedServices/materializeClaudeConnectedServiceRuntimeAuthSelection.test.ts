@@ -9,7 +9,7 @@ import {
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceCredentialRecordV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import { HAPPIER_CONNECTED_SERVICE_TARGET_MATERIALIZED_ROOT_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';

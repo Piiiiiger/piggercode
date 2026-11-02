@@ -1,5 +1,5 @@
 import { normalizeSessionConfigOptionsArray, type SessionConfigOption } from '@/sync/domains/sessionControl/configOptionsControl';
-import type { ProbedResourceSnapshot } from '@happier-dev/protocol';
+import type { ProbedResourceSnapshot } from '@piggercode/protocol';
 
 import { createPersistentProbedResourceCache } from '@/sync/runtime/probedResources/createPersistentProbedResourceCache';
 

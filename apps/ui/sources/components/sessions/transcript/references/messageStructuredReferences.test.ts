@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MENTION_KIND_V1, buildMentionRefForKindV1 } from '@happier-dev/protocol';
+import { MENTION_KIND_V1, buildMentionRefForKindV1 } from '@piggercode/protocol';
 
 import { resolveMessageStructuredReferences } from './messageStructuredReferences';
 

@@ -1,4 +1,4 @@
-import { isChangeTitleToolLikeName } from '@happier-dev/protocol/tools/v2';
+import { isChangeTitleToolLikeName } from '@piggercode/protocol/tools/v2';
 
 const TRUSTED_SAFE_TOOL_NAMES = new Set([
   'think',

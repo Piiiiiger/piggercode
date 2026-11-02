@@ -4,7 +4,7 @@ import {
   type SessionWorkStateItemV1,
   type SessionWorkStateV1,
   type SessionWorkStateWriteSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SessionGoalControlAdapter } from '@/session/goalControls/sessionGoalControlTypes';
 import { mergeSessionWorkStateMetadataV1 } from '@/session/workState/sessionWorkStateMetadata';

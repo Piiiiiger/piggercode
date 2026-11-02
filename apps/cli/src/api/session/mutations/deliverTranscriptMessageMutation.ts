@@ -7,7 +7,7 @@ import {
     SessionTranscriptObservationProvenanceV1Schema,
     SessionTranscriptObservationV1Schema,
     MessageAckResponseSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
 import { emitSocketWithAck } from '@/session/transport/shared/socketAck';

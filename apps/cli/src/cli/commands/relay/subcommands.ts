@@ -9,8 +9,8 @@ import {
   type ServerProfile,
 } from '@/server/serverProfiles';
 import { buildMissingLocalRelayError, resolveLocalRelay } from '@/utils/localRelay';
-import { getReleaseRingPublicLabel } from '@happier-dev/release-runtime/releaseRings';
-import { resolveManagedCliReleaseChannelSync } from '@happier-dev/cli-common/firstPartyRuntime';
+import { getReleaseRingPublicLabel } from '@piggercode/release-runtime/releaseRings';
+import { resolveManagedCliReleaseChannelSync } from '@piggercode/cli-common/firstPartyRuntime';
 
 import {
   argvValue,
@@ -21,7 +21,7 @@ import {
 } from '../server/commandUtilities';
 import { runServerSelectionBackgroundServiceFollowUp } from '../backgroundServiceFollowUp';
 
-import { createServerUrlComparableKey } from '@happier-dev/protocol';
+import { createServerUrlComparableKey } from '@piggercode/protocol';
 
 import { resolveInstalledDaemonServiceInventoryForCurrentRelay } from '@/daemon/ownership/daemonServiceInventory';
 import { resolveDaemonServiceCliRuntimeFromEnv } from '@/daemon/service/cli';
@@ -30,7 +30,7 @@ import { handleAuthCommand } from '../auth';
 import { handleDaemonCliCommand } from '../daemon';
 
 import { runRelayHostSubcommand } from './host';
-import { info } from '@happier-dev/cli-common/output';
+import { info } from '@piggercode/cli-common/output';
 
 type RelaySetJsonResult = Readonly<{
   serverId: string;

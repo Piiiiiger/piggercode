@@ -1,4 +1,4 @@
-import type { StepPrinter } from '@happier-dev/cli-common/output';
+import type { StepPrinter } from '@piggercode/cli-common/output';
 
 import type { ProviderCliInstallInvocationResult } from './invokeProviderCliInstall';
 

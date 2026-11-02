@@ -1,4 +1,4 @@
-import { PreflightSessionCatalogsV1Schema, SessionSkillCatalogListResponseV1Schema, type PreflightSessionCatalogsV1 } from '@happier-dev/protocol';
+import { PreflightSessionCatalogsV1Schema, SessionSkillCatalogListResponseV1Schema, type PreflightSessionCatalogsV1 } from '@piggercode/protocol';
 
 import { normalizeAvailableCommands } from '@/agent/acp/commands/publishSlashCommands';
 import { requireCatalogEntry } from '@/backends/catalog';

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildBackendTargetKey, DEFAULT_ACTIONS_SETTINGS_V1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, DEFAULT_ACTIONS_SETTINGS_V1 } from '@piggercode/protocol';
 import { DEFAULT_AGENT_ID } from '@/agents/registry/registryCore';
 import { settingsParse, applySettings, settingsDefaults, type Settings } from './settings';
 import { AIBackendProfileSchema } from '../profiles/profileCompatibility';

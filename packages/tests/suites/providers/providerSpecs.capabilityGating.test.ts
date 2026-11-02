@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AGENT_IDS, hasBuiltInAcpConfig } from '@happier-dev/agents';
+import { AGENT_IDS, hasBuiltInAcpConfig } from '@piggercode/agents';
 
 import { loadProvidersFromCliSpecs } from '../../src/testkit/providers/specs/providerSpecs';
 import { resolveScenarioById } from '../../src/testkit/providers/harness/scenarioSelection';

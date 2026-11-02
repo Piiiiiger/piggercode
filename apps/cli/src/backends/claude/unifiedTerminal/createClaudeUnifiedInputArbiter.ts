@@ -3,7 +3,7 @@ import type { TerminalInputInjectionResult, TerminalLifecycleObservation, Termin
 import { isNonSteerablePromptPayload, parseSpecialCommand } from '@/cli/parsers/specialCommands';
 import { logger } from '@/ui/logger';
 
-import { isConditionalPendingSteerClaim } from '@happier-dev/protocol';
+import { isConditionalPendingSteerClaim } from '@piggercode/protocol';
 import type {
   ClaudeUnifiedInFlightSteerEvaluator,
   ClaudeUnifiedInputArbiter,

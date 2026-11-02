@@ -5,7 +5,7 @@ import { renderScreen } from '@/dev/testkit';
 import {
     ConnectedServiceQuotaSnapshotV1Schema,
     type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { ItemAction } from '@/components/ui/lists/itemActions';
 import type { UseConnectedServiceQuotaSnapshotResult } from '@/hooks/server/connectedServices/useConnectedServiceQuotaSnapshot';
 import { buildQuotaResetRows } from '@/sync/domains/connectedServices/buildQuotaResetRows';

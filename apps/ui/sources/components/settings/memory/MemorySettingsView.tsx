@@ -26,7 +26,7 @@ import {
     DEFAULT_MEMORY_SETTINGS,
     type MemorySettingsV1,
     type MemoryStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { MemorySettingsBudgetsSection } from './MemorySettingsBudgetsSection';
 import { MemorySettingsContentPolicySection } from './MemorySettingsContentPolicySection';
 import { MemorySettingsCoverageSection } from './MemorySettingsCoverageSection';

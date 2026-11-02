@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { RpcHandler, RpcHandlerRegistrar } from '@/api/rpc/types';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { registerSessionHandlers } from './registerSessionHandlers';
 

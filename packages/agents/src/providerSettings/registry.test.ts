@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import type { SettingDefinitionMap } from '@happier-dev/protocol';
+import type { SettingDefinitionMap } from '@piggercode/protocol';
 
 import { assertProviderSettingsRegistryValid, getProviderSettingsDefinition } from './registry.js';
 import type { ProviderSettingsDefinition } from './types.js';

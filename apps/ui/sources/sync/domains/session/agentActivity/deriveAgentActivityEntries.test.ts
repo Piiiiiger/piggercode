@@ -5,7 +5,7 @@ import {
     type SessionAgentActivityEntryV1,
     type SessionAgentActivityHeadlineV1,
     type SessionWorkflowActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { collectAgentActivityGroupingIds } from './agentActivityGrouping';
 import { deriveAgentActivityCounts } from './deriveAgentActivityCounts';

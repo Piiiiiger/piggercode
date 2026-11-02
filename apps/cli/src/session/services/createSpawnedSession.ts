@@ -4,7 +4,7 @@ import type {
   ConnectedServiceBindingsV1,
   SessionMcpSelectionV1,
   SessionSpawnSourceContextV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import os from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { createPendingFirstInput } from '@/daemon/spawn/pendingFirstInput';
@@ -13,8 +13,8 @@ import { resolveDaemonSpawnSessionByNonce, spawnDaemonSession } from '@/daemon/c
 import { DEFAULT_SESSION_WEBHOOK_TIMEOUT_MS } from '@/daemon/spawn/waitForSessionWebhook';
 import { callExactMachineRpc } from '@/session/transport/rpc/machineRpc';
 import { readRpcRequestDisposition } from '@/session/transport/rpc/rpcRequestDisposition';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError } from '@happier-dev/protocol/rpcErrors';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError } from '@piggercode/protocol/rpcErrors';
 import type { Credentials } from '@/persistence';
 import { SPAWN_SESSION_ERROR_CODES } from '@/rpc/handlers/registerSessionHandlers';
 import { SpawnDaemonSessionRequestSchema, type SpawnDaemonSessionRequest } from '@/rpc/handlers/spawnSessionOptionsContract';

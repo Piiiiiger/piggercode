@@ -7,8 +7,8 @@ import { captureConsoleJsonOutput } from '@/testkit/logger/captureOutput';
 import {
   deriveBoxPublicKeyFromSeed,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import { bindApiSessionSocketMock, createApiSessionSocketStub } from '@/testkit/backends/apiSessionSocketHarness';
 
 const { mockIo } = vi.hoisted(() => ({

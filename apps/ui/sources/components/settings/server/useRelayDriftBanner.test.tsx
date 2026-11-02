@@ -361,7 +361,7 @@ describe('useRelayDriftBanner', () => {
     it('dispatches the relay repair system task when the action is pressed', async () => {
         const { useRelayDriftBanner } = await import('./useRelayDriftBanner');
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
         const startMock = vi.fn(async (spec: unknown) => {
             SystemTaskSpecSchema.parse(spec);
             return 'task_1';
@@ -503,7 +503,7 @@ describe('useRelayDriftBanner', () => {
     it('infers the active webapp url when repairing Happier Cloud relay drift', async () => {
         const { useRelayDriftBanner } = await import('./useRelayDriftBanner');
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         const startMock = vi.fn(async (spec: unknown) => {
             SystemTaskSpecSchema.parse(spec);
@@ -568,7 +568,7 @@ describe('useRelayDriftBanner', () => {
     it('prefers the active snapshot local relay url when available', async () => {
         const { useRelayDriftBanner } = await import('./useRelayDriftBanner');
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         const startMock = vi.fn(async (spec: unknown) => {
             SystemTaskSpecSchema.parse(spec);
@@ -634,7 +634,7 @@ describe('useRelayDriftBanner', () => {
     it('sends the app relay to the executor, never a relay derived from the daemon', async () => {
         const { useRelayDriftBanner } = await import('./useRelayDriftBanner');
         const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
-        const { SystemTaskSpecSchema } = await import('@happier-dev/protocol');
+        const { SystemTaskSpecSchema } = await import('@piggercode/protocol');
 
         const startMock = vi.fn(async (spec: unknown) => {
             SystemTaskSpecSchema.parse(spec);

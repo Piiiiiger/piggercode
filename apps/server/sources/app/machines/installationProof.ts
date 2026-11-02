@@ -9,7 +9,7 @@ import {
     MachineReplacementReasonSchema,
     verifyMachineInstallationProof,
     type MachineInstallationProofPayloadV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export type VerifiedMachineInstallationIdentity = Readonly<{
     installationId: string;

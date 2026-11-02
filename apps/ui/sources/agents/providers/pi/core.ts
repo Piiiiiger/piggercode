@@ -4,7 +4,7 @@ import { buildAgentConnectedServicesUiConfig } from '@/agents/registry/buildAgen
 import { buildAgentResumeUiConfig } from '@/agents/registry/buildAgentResumeUiConfig';
 import { buildAgentSessionStorageUiConfig } from '@/agents/registry/buildAgentSessionStorageUiConfig';
 import { buildAgentToolsUiConfig } from '@/agents/registry/buildAgentToolsUiConfig';
-import { getAgentModelConfig, getAgentSessionModesKind } from '@happier-dev/agents';
+import { getAgentModelConfig, getAgentSessionModesKind } from '@piggercode/agents';
 
 export const PI_CORE: AgentCoreConfig = {
     id: 'pi',

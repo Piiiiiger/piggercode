@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ConnectedServiceQuotaSnapshotV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceQuotaSnapshotV1Schema } from '@piggercode/protocol';
 
 import { buildPoolQuotaLimitCandidates } from './PoolQuotaLimitsSelectField';
 

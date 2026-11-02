@@ -5,7 +5,7 @@ import {
   resolveConnectedServicesProviderStateSharingPolicyV1,
   type AccountSettings,
   type ConnectedServicesProviderStateSharingPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveConfiguredClaudeConfigDir } from '@/backends/claude/utils/resolveConfiguredClaudeConfigDir';
 import { applyConnectedServiceStateSharingDescriptor } from '@/daemon/connectedServices/stateSharing/applyConnectedServiceStateSharingDescriptor';

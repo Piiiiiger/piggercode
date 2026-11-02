@@ -1,4 +1,4 @@
-import type { FeaturesResponse, ServerRetentionDomainPolicyV2, ServerRetentionPolicyV2 } from '@happier-dev/protocol';
+import type { FeaturesResponse, ServerRetentionDomainPolicyV2, ServerRetentionPolicyV2 } from '@piggercode/protocol';
 
 export type LegacyServerRetentionPolicy = NonNullable<FeaturesResponse['capabilities']['server']['retention']>;
 

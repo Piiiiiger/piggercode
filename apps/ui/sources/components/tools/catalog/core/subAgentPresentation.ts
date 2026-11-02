@@ -1,4 +1,4 @@
-import { readSessionAppliedModelMetadataStateV1 } from '@happier-dev/agents';
+import { readSessionAppliedModelMetadataStateV1 } from '@piggercode/agents';
 
 import { resolveBuiltInAgentTitle } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { isAgentId, resolveAgentIdFromFlavor, type AgentId } from '@/agents/catalog/catalog';

@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Fastify } from "../../../types";
 import { db } from "@/storage/db";
 import { inTx } from "@/storage/inTx";
-import { ConnectedServiceIdSchema, type ConnectedServiceId } from "@happier-dev/protocol";
+import { ConnectedServiceIdSchema, type ConnectedServiceId } from "@piggercode/protocol";
 
 import { ConnectedServiceProfileIdSchema } from "./profileIdSchema";
 import { NotFoundSchema } from "../../../schemas/notFoundSchema";

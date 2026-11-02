@@ -4,7 +4,7 @@ import type { SDKAssistantMessage } from '../sdk';
 import type { EnhancedMode } from '../loop';
 import { createPermissionHandlerSessionStub } from './permissionHandler.testkit';
 import type { PermissionRpcPayload } from './permissionRpc';
-import type { StructuredQuestionResponseV1 } from '@happier-dev/protocol';
+import type { StructuredQuestionResponseV1 } from '@piggercode/protocol';
 
 vi.mock('@/lib', () => ({
   logger: {

@@ -3,7 +3,7 @@ import type {
   DirectSessionsSource,
   DirectTranscriptRawMessageV1,
   DirectTranscriptTruncationReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   DirectSessionFollowLease,

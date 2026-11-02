@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { AGY_OAUTH_ALLOW_RAW_AUTHORIZATION_CODE, AGY_OAUTH_AUTHORIZE_URL, AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_SCOPES, AGY_OAUTH_USERINFO_URL } from '@happier-dev/agents';
+import { AGY_OAUTH_ALLOW_RAW_AUTHORIZATION_CODE, AGY_OAUTH_AUTHORIZE_URL, AGY_OAUTH_CALLBACK_URL, AGY_OAUTH_SCOPES, AGY_OAUTH_USERINFO_URL } from '@piggercode/agents';
 import { exchangeGoogleOauthAuthorizationCodeForTokens, type GoogleOauthTokens } from '@/cloud/googleOauthTokenExchange';
 import { generatePkceCodes } from '@/cloud/pkce';
 import { startOauthPkceWithPasteFallback } from '@/cloud/oauthPkceWithPasteFallback';
@@ -7,7 +7,7 @@ import type { CloudConnectAuthenticateOptions } from '@/cloud/connectTypes';
 import { resolveConnectedAccountOauthConfig } from '@/daemon/connectedServices/descriptors/connectedAccountDescriptors';
 import { promptInput } from '@/terminal/prompts/promptInput';
 import { openBrowser } from '@/ui/openBrowser';
-import { info, ok, warn } from '@happier-dev/cli-common/output';
+import { info, ok, warn } from '@piggercode/cli-common/output';
 
 export type AgyAuthTokens = GoogleOauthTokens & Readonly<{
   providerEmail: string | null;

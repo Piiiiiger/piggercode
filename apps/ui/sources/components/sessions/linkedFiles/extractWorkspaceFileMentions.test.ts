@@ -15,7 +15,7 @@ describe('extractWorkspaceFileMentions', () => {
     });
 
     it('ignores scoped npm package references in command text', () => {
-        expect(extractWorkspaceFileMentions('Run `yarn workspace @happier-dev/app typecheck`')).toEqual([]);
+        expect(extractWorkspaceFileMentions('Run `yarn workspace @piggercode/app typecheck`')).toEqual([]);
         expect(extractWorkspaceFileMentions('Install @scope/package before editing @src/api.ts')).toEqual(['src/api.ts']);
     });
 

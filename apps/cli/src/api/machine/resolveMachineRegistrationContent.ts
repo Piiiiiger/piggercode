@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { readServerEnabledBit, MACHINE_PLAIN_DATA_KEY_MARKER } from '@happier-dev/protocol';
+import { readServerEnabledBit, MACHINE_PLAIN_DATA_KEY_MARKER } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 import { encodeBase64 } from '@/api/encryption';
 import { resolveMachineEncryptionContext } from '@/api/client/encryptionKey';

@@ -1,6 +1,6 @@
 import { logger } from '@/ui/logger';
-import { SESSION_RPC_METHODS, StructuredQuestionResponseV1Schema } from '@happier-dev/protocol';
-import { PUBLIC_RPC_HANDLER_ERROR_CODES, PublicRpcHandlerError, isPublicRpcHandlerError } from '@happier-dev/protocol/rpcErrors';
+import { SESSION_RPC_METHODS, StructuredQuestionResponseV1Schema } from '@piggercode/protocol';
+import { PUBLIC_RPC_HANDLER_ERROR_CODES, PublicRpcHandlerError, isPublicRpcHandlerError } from '@piggercode/protocol/rpcErrors';
 
 import type { SessionPermissionRpcPayload } from './sessionPermissionRpc';
 

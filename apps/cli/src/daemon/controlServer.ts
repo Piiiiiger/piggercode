@@ -94,7 +94,7 @@ import {
   type SessionRunnerRuntimeStateV1,
   type SessionRunnerStatusGetRequestV1,
   type SpawnSessionNonceResolution,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   ConnectedServiceRuntimeAuthFailureKindSchema,
   type ConnectedServiceRuntimeFailureClassification,

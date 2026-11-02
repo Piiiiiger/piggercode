@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 import { describe, expect, it } from 'vitest';
-import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY } from '@happier-dev/protocol';
+import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY } from '@piggercode/protocol';
 
 import { resolveInactiveUsageLimitRecoverySchedulerResult } from './connectedServices/usageLimitRecovery/resolveInactiveUsageLimitRecoverySchedulerResult';
 

@@ -3,7 +3,7 @@ import {
     SubagentLaunchV1Schema,
     type SubagentCommandV1,
     type SubagentLaunchV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ResolveSubagentStructuredSendParams =
     | Readonly<{

@@ -1,6 +1,6 @@
 import type { ExecutionRunProfileBoundedCompleteResult } from '@/agent/executionRuns/profiles/ExecutionRunIntentProfile';
 import type { ExecutionRunStructuredMeta } from '@/agent/executionRuns/profiles/ExecutionRunIntentProfile';
-import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import type { BackendTargetRefV1, ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import { buildReviewFindingsV2Payload } from '@/agent/reviews/normalize/buildReviewFindingsV2Payload';
 
 type ParsedFinding = {

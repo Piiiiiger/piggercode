@@ -3,7 +3,7 @@ import {
     encodeBase64,
     openEncryptedDataKeyEnvelopeV1,
     parseSerializedJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import sodium from 'libsodium-wrappers';
 
 import { UI_CRYPTO_GOLDEN_VECTORS } from '../../sources/sync/encryption/nativeCryptoWorker/cryptoGoldenVectors';

@@ -4,7 +4,7 @@ import { useUnistyles } from 'react-native-unistyles';
 import {
     buildBackendTargetKey,
     type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

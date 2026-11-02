@@ -2,7 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
-import { renderSystemdServiceUnit } from '@happier-dev/cli-common/service';
+import { renderSystemdServiceUnit } from '@piggercode/cli-common/service';
 
 import { withTempDir } from '@/testkit/fs/tempDir';
 

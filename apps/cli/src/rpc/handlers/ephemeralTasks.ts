@@ -2,8 +2,8 @@ import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { AgentBackend } from '@/agent/core/AgentBackend';
 import { resolveExecutionRunRuntimeBackendId } from '@/agent/executionRuns/runtime/backendTargets';
 
-import { BackendTargetRefSchema, EphemeralTaskRunRequestSchema, type BackendTargetRefV1 } from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { BackendTargetRefSchema, EphemeralTaskRunRequestSchema, type BackendTargetRefV1 } from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { runScmCommitMessageTask } from '@/agent/ephemeralTasks/scmCommitMessage/runScmCommitMessageTask';
 import { z } from 'zod';

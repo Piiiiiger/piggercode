@@ -313,7 +313,7 @@ export function classifyHappyProcess(proc: RawProcessInfo): HappyProcessInfo | n
   // (reattach + stopSession). A false positive could cause us to adopt/kill a non-Happy process.
   const isHappy =
     (isNodeHostProcess &&
-      (normalizedCommand.includes('@happier-dev/cli') ||
+      (normalizedCommand.includes('@piggercode/cli') ||
         normalizedCommand.includes('dist/index.mjs') ||
         normalizedCommand.includes('package-dist/index.mjs') ||
         normalizedCommand.includes('bin/happier.mjs') ||
@@ -324,10 +324,10 @@ export function classifyHappyProcess(proc: RawProcessInfo): HappyProcessInfo | n
         (normalizedCommand.includes('tsx') &&
           normalizedCommand.includes('src/index.ts') &&
           (normalizedCommand.includes('apps/cli') ||
-            normalizedCommand.includes('@happier-dev/cli') ||
+            normalizedCommand.includes('@piggercode/cli') ||
             isCliSourceSnapshotCommand)))) ||
     normalizedCommand.includes('happier.mjs') ||
-    normalizedCommand.includes('@happier-dev/cli') ||
+    normalizedCommand.includes('@piggercode/cli') ||
     normalizedCommand.includes('package-dist/index.mjs') ||
     normalizedName === 'happier' ||
     normalizedName === 'happier.exe';

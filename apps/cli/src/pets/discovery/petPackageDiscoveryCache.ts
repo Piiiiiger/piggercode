@@ -2,9 +2,9 @@ import type {
   PetAssetMediaTypeV1,
   PetPackageManifestV1,
   PetPackageSourceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
-import { PET_DISCOVERY_LIMITS_V1, PET_PACKAGE_FORMAT_CODEX_ATLAS_V1 } from '@happier-dev/protocol';
+import { PET_DISCOVERY_LIMITS_V1, PET_PACKAGE_FORMAT_CODEX_ATLAS_V1 } from '@piggercode/protocol';
 
 export type PetPackageDiscoveryCacheEntry = Readonly<{
   sourceKey: string;

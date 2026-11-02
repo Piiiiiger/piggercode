@@ -1,4 +1,4 @@
-import { systemTasks } from '@happier-dev/cli-common';
+import { systemTasks } from '@piggercode/cli-common';
 
 import { reportCliAcquisitionProgress } from '../cliAcquisitionProgress.js';
 import { updateManagedLocalHappierCli } from '../happierCli.js';

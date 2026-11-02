@@ -1,9 +1,9 @@
 import { renderHook, createSessionFixture, flushHookEffects, createDeferred } from '@/dev/testkit';
 import { storage } from '@/sync/domains/state/storage';
-import type { ActionOperationSnapshotV1 } from '@happier-dev/protocol';
+import type { ActionOperationSnapshotV1 } from '@piggercode/protocol';
 import { actionOperationStore } from '@/sync/domains/actionOperations/actionOperationStore';
 import { RpcError } from '@/sync/runtime/rpcErrors';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 

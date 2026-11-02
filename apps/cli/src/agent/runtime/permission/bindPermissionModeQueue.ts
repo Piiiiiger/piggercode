@@ -16,7 +16,7 @@ import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
 import type { SessionUserMessageDeliveryInfo } from '@/api/session/sessionClientPort';
 import type { PendingQueueDeliveryBlockedReason } from '@/api/session/pendingQueueV2Transport';
 import { logger } from '@/ui/logger';
-import { isConditionalPendingSteerClaim } from '@happier-dev/protocol';
+import { isConditionalPendingSteerClaim } from '@piggercode/protocol';
 
 /**
  * Config change carried by a steered message that the backend must own BEFORE the text joins the
@@ -423,7 +423,7 @@ function resolveInFlightSteerDeliveryIdentity(
     userMessageLocalIds: readonly string[] | null;
     providerAcceptancePending?: boolean;
     pendingProviderAction?: PendingProviderAction;
-    pendingRequestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    pendingRequestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
   };
   steerOptions: InFlightSteerDeliveryIdentity | undefined;
 }> {

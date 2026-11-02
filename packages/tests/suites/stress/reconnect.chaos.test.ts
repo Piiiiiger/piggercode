@@ -11,7 +11,7 @@ import { envFlag } from '../../src/testkit/env';
 import { writeTestManifestForServer } from '../../src/testkit/manifestForServer';
 import { sleep, waitFor } from '../../src/testkit/timing';
 import { mulberry32, parseOptionalInt, pickOne, randomIntInclusive } from '../../src/testkit/seed';
-import { MessageAckResponseSchema } from '@happier-dev/protocol/updates';
+import { MessageAckResponseSchema } from '@piggercode/protocol/updates';
 import { parsePositiveInt } from '../../src/testkit/numbers';
 
 const run = createRunDirs({ runLabel: 'stress' });

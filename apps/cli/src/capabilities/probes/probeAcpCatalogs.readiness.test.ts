@@ -7,8 +7,8 @@ import { syncBuiltinESMExports } from 'node:module';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 
-import { AGENT_IDS } from '@happier-dev/agents';
-import { AGY_ACP_SERVER_VERSION } from '@happier-dev/protocol/installables';
+import { AGENT_IDS } from '@piggercode/agents';
+import { AGY_ACP_SERVER_VERSION } from '@piggercode/protocol/installables';
 import type { DetectCliSnapshot } from '@/capabilities/snapshots/cliSnapshot';
 import { agent as agyEntry } from '@/backends/agy';
 import { resolveAgyAcpReleaseAsset } from '@/runtime/managedTools/providers/agyAcpRelease';

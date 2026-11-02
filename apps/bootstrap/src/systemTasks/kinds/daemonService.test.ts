@@ -24,7 +24,7 @@ vi.mock('../taskRuntime.js', async (importOriginal) => {
   };
 });
 
-import { writeHappierCliChoice } from '@happier-dev/cli-common/firstPartyRuntime';
+import { writeHappierCliChoice } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { installManagedCliFixture } from '../localHappierCliFixture.js';
 import { createDaemonServiceStartHandler, createDaemonServiceStatusHandler } from './daemonService.js';
@@ -178,9 +178,9 @@ describe('daemonService system task handlers', () => {
   it('reports the computer\'s CLI choice and names the other CLI with the commands that remove or update it', async () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-status-cli-choice-'));
     const npmBin = join(home, 'npm-global', 'bin');
-    const packageRoot = join(home, 'npm-global', 'lib', 'node_modules', '@happier-dev', 'cli');
+    const packageRoot = join(home, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
-    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli' }), 'utf8');
+    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
     writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '#!/bin/sh\n', 'utf8');
     chmodSync(join(packageRoot, 'bin', 'happier.mjs'), 0o755);
     mkdirSync(npmBin, { recursive: true });
@@ -195,8 +195,8 @@ describe('daemonService system task handlers', () => {
     const otherCli = {
       command: join(npmBin, 'happier'),
       origin: 'npm',
-      removalCommand: 'npm uninstall -g @happier-dev/cli',
-      updateCommand: 'npm install -g @happier-dev/cli@latest',
+      removalCommand: 'npm uninstall -g @piggercode/cli',
+      updateCommand: 'npm install -g @piggercode/cli@latest',
     };
 
     await writeHappierCliChoice({ choice: { mode: 'managed' }, processEnv: process.env });

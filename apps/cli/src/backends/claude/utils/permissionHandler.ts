@@ -23,7 +23,7 @@ import { updateAgentStateBestEffort, updateMetadataBestEffort } from '@/api/sess
 import { configuration } from '@/configuration';
 import { waitForSessionMetadataRetryBackoff } from '@/agent/runtime/sessionMetadataWaitRetryBackoff';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import { cloneStringKeyedRecordToNullProto } from '@/api/session/agentStateRecords';
 import type { Metadata } from '@/api/types';
 import { resolveAgentRequestKind } from '@/agent/permissions/requestKind';
@@ -48,9 +48,9 @@ import {
     isClaudeLocalPermissionBridgeAgentStateRequest,
     isClaudeUnifiedTerminalDialogChoiceAgentStateRequest,
     SESSION_MODE_OVERRIDE_KEY,
-} from '@happier-dev/agents';
-import { isChangeTitleToolLikeName } from '@happier-dev/protocol/tools/v2';
-import { isAskUserQuestionToolName, type StructuredQuestionAnswersV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { isChangeTitleToolLikeName } from '@piggercode/protocol/tools/v2';
+import { isAskUserQuestionToolName, type StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 import {
     normalizeLegacyStructuredQuestionAnswers,
     normalizeStructuredQuestionAnswersV1,
@@ -1002,4 +1002,4 @@ export class PermissionHandler {
         return this.responses;
     }
 }
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';

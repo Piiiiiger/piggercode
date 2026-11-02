@@ -6,9 +6,9 @@ import {
     MENTION_BOUNDS,
     MENTION_KIND_V1,
     buildMentionRefForKindV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
-import { buildHappierReplayPromptFromDialog } from '@happier-dev/agents';
+import { buildHappierReplayPromptFromDialog } from '@piggercode/agents';
 
 import {
     ResolvedMentionContextTooLargeError,

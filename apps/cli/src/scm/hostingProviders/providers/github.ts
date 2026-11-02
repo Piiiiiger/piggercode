@@ -1,4 +1,4 @@
-import type { ScmHostingProvider } from '@happier-dev/protocol';
+import type { ScmHostingProvider } from '@piggercode/protocol';
 
 import { encodeCompareRef, parseScmRemoteUrl, stripTrailingSlash } from '../remoteUrl';
 import type { ScmHostingProviderAdapter, ScmHostingProviderDetectionInput } from '../types';

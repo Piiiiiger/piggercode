@@ -6,7 +6,7 @@ import {
   type ConnectedServiceUxDiagnosticFailurePhaseV1,
   type ConnectedServiceUxDiagnosticSourceV1,
   type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type DiagnosticScalar = string | number | boolean | null;
 

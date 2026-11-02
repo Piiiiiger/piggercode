@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ConnectedServiceCredentialRecordV1, ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1, ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 
 import { createConnectedServiceQuotaFetchers } from './createConnectedServiceQuotaFetchers';
 

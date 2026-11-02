@@ -1,4 +1,4 @@
-import { isInProgressAgentActivityStatus } from '@happier-dev/protocol';
+import { isInProgressAgentActivityStatus } from '@piggercode/protocol';
 
 import type { AgentActivityRowEntry } from '../agentActivityRowEntry';
 

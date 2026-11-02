@@ -716,4 +716,4 @@ export function deriveClaudeTeamParticipants(params: Readonly<{ messages: readon
     const members = Array.from(membersById.values());
     return { teamId, members };
 }
-import { isGenericSubAgentToolName } from '@happier-dev/protocol/tools/v2';
+import { isGenericSubAgentToolName } from '@piggercode/protocol/tools/v2';

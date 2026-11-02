@@ -1,4 +1,4 @@
-import { getAgentToolsCapability, resolveAgentIdFromFlavor, type AgentId } from '@happier-dev/agents';
+import { getAgentToolsCapability, resolveAgentIdFromFlavor, type AgentId } from '@piggercode/agents';
 
 export type AgentToolsDeliveryRuntimeContext = Readonly<{
   platform?: NodeJS.Platform;

@@ -1,5 +1,5 @@
-import { AGENTS_CORE, type AgentId } from '@happier-dev/agents';
-import type { AccountSettings, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { AGENTS_CORE, type AgentId } from '@piggercode/agents';
+import type { AccountSettings, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { resolveCliConnectedServicesLaunchBindings } from '@/cli/connectedServicesLaunchAuth';
 import { normalizeActionExecuteResult } from '@/cli/commands/session/shared/normalizeActionExecuteResult';

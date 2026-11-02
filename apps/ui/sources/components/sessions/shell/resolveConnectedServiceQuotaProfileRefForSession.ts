@@ -1,9 +1,9 @@
-import type { AccountProfile } from '@happier-dev/protocol';
+import type { AccountProfile } from '@piggercode/protocol';
 import {
     buildBackendTargetKey,
     isConnectedServiceCredentialHealthStatusUsable,
     type ConnectedServiceCredentialHealthStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAgentCore, isAgentId } from '@/agents/catalog/catalog';
 import type { ConnectedServiceQuotaProfileRefProvenance } from '@/sync/domains/connectedServices/connectedServiceQuotaGauge';

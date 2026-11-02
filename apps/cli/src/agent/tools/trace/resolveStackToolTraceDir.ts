@@ -1,7 +1,7 @@
 import os from 'node:os';
 import path from 'node:path';
 
-import { resolveHappyHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { resolveHappyHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 

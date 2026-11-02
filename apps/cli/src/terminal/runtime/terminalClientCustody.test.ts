@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { basename } from 'node:path';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 const os = vi.hoisted(() => ({
   census: vi.fn(async () => [{ pid: process.pid, ppid: process.ppid, name: 'launcher', cmd: '' },

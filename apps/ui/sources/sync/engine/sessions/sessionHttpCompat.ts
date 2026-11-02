@@ -4,7 +4,7 @@ import {
     V2SessionByIdNotFoundSchema,
     type V2SessionListResponse,
     type V2SessionRecord,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createNotAuthenticatedError } from '@/sync/runtime/connectivity/authErrors';
 import {

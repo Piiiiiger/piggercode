@@ -5,7 +5,7 @@ import { isTmuxAvailable, selectPreferredTmuxSessionName, TmuxUtilities } from '
 import { AGENTS, requireCatalogEntry } from '@/backends/catalog';
 import { DEFAULT_CATALOG_AGENT_ID } from '@/backends/types';
 import { createTerminalAttachmentId } from '@/terminal/attachment/terminalAttachmentInfo';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 function removeFlag(argv: string[], flag: string): string[] {
   return argv.filter((arg) => arg !== flag);

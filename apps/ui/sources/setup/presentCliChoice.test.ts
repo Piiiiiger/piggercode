@@ -1,4 +1,4 @@
-import type { SetupCliChoicePromptPayload } from '@happier-dev/protocol';
+import type { SetupCliChoicePromptPayload } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 type AlertButton = Readonly<{ text: string; onPress?: () => void }>;
@@ -23,8 +23,8 @@ const NPM_CLI: SetupCliChoicePromptPayload = {
     command: '/usr/local/bin/happier',
     version: '0.2.13',
     origin: 'npm',
-    removalCommand: 'npm uninstall -g @happier-dev/cli',
-    updateCommand: 'npm install -g @happier-dev/cli@latest',
+    removalCommand: 'npm uninstall -g @piggercode/cli',
+    updateCommand: 'npm install -g @piggercode/cli@latest',
     belowSetupFloor: false,
     missing: false,
     keepBlockedBy: null,

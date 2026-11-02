@@ -5,7 +5,7 @@ import type { CommandContext } from '@/cli/commandRegistry';
 import { mapUnknownErrorToControlError } from '@/cli/control/controlErrorMapping';
 import { printJsonEnvelope, wantsJson } from '@/cli/output/jsonEnvelope';
 import { readCredentials } from '@/persistence';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 type AutomationCommandDeps = Readonly<{
   readCredentialsFn: typeof readCredentials;

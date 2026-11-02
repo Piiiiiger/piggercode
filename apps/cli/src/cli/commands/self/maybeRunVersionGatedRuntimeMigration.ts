@@ -1,4 +1,4 @@
-import { compareVersions, normalizeSemverBase } from '@happier-dev/cli-common/update';
+import { compareVersions, normalizeSemverBase } from '@piggercode/cli-common/update';
 
 import { resolveBackgroundServiceRepairPlanForCurrentRuntime } from '@/diagnostics/backgroundServiceRepair/resolveBackgroundServiceRepairPlanForCurrentRuntime';
 import type { DaemonServiceMode } from '@/daemon/service/plan';

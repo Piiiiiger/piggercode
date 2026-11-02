@@ -1,7 +1,7 @@
 import {
   ExactSessionTurnEndMutationV1Schema,
   type ExactSessionTurnEndMutationV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveDaemonObservedExitMutationId } from '@/api/session/mutations/sessionMutationTypes';
 

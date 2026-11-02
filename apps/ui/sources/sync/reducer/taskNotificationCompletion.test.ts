@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
 import { normalizeToolCallForRendering } from '@/components/tools/normalization/core/normalizeToolCallForRendering';
 import { collectHostText, renderScreen } from '@/dev/testkit';
 

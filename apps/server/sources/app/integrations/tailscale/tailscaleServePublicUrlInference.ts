@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
-import { tailscaleServeHttpsUrlForInternalServerUrlFromStatus } from "@happier-dev/cli-common/tailscale";
+import { tailscaleServeHttpsUrlForInternalServerUrlFromStatus } from "@piggercode/cli-common/tailscale";
 
 import { parseBooleanEnv, parseIntEnv } from "@/config/env";
 

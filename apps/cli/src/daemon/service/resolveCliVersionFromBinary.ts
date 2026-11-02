@@ -14,10 +14,10 @@
  * realpath-parsers or package.json readers drifting apart.
  */
 
-import { spawnBackgroundSync } from '@happier-dev/cli-common/process';
+import { spawnBackgroundSync } from '@piggercode/cli-common/process';
 import { existsSync } from 'node:fs';
 
-import { buildServiceCommandEnv } from '@happier-dev/cli-common/service';
+import { buildServiceCommandEnv } from '@piggercode/cli-common/service';
 
 /**
  * Spawn `<binaryPath> --version` and return the first trimmed non-empty line

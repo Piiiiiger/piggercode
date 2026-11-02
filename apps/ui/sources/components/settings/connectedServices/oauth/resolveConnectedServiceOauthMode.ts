@@ -1,4 +1,4 @@
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export type ConnectedServiceOauthMode = 'device' | 'paste' | 'embedded';
 export type ConnectedServiceOauthAddMethod = 'device' | 'paste' | 'browser';

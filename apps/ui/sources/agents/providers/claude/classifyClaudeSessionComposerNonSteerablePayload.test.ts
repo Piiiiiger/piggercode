@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
+import type { AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import { classifyClaudeSessionComposerNonSteerablePayload } from './classifyClaudeSessionComposerNonSteerablePayload';
 

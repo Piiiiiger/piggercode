@@ -10,8 +10,8 @@ import { captureConsoleLogAndMuteStdout } from '../../testkit/logger/captureOutp
 let mockedPreparedPayloadRoot = '';
 let mockedRelayUrl = 'http://127.0.0.1:3005';
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@happier-dev/cli-common/firstPartyRuntime')>();
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@piggercode/cli-common/firstPartyRuntime')>();
     return {
         ...actual,
         prepareFirstPartyComponentPayloadFromGitHubRelease: async () => ({
@@ -25,8 +25,8 @@ vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
     };
 });
 
-vi.mock('@happier-dev/cli-common/relayHost', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@happier-dev/cli-common/relayHost')>();
+vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@piggercode/cli-common/relayHost')>();
     return {
         ...actual,
         createRelayHostEngine: () => ({

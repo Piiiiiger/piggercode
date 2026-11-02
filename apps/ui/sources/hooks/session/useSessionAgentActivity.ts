@@ -3,7 +3,7 @@ import * as React from 'react';
 import {
     readSessionAgentActivityHeadlineFromMetadata,
     type SessionAgentActivityHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     AGENT_ACTIVITY_ROW_NO_ACTIONS,

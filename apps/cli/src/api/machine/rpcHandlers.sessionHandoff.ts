@@ -34,8 +34,8 @@ import {
   SessionHandoffStatusGetRequestSchema,
   type SessionHandoffStatus,
   type WorkspaceManifest,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { probeSessionHandoffCapability } from '@/session/handoff/orchestration/sessionHandoffCoordinator';
 import type { RpcHandler } from '../rpc/types';
 

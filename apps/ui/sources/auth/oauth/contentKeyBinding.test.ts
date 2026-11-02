@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import tweetnacl from 'tweetnacl';
 import { bytesToHex } from '@noble/hashes/utils';
-import { deriveAccountMachineKeyFromRecoverySecret, verifyAccountContentPublicKeyBinding } from '@happier-dev/protocol';
+import { deriveAccountMachineKeyFromRecoverySecret, verifyAccountContentPublicKeyBinding } from '@piggercode/protocol';
 import { encodeBase64 } from '@/encryption/base64';
 import { buildContentKeyBinding } from './contentKeyBinding';
 

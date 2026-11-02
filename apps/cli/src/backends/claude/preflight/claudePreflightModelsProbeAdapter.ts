@@ -1,4 +1,4 @@
-import type { AgentModelDescriptor } from '@happier-dev/agents';
+import type { AgentModelDescriptor } from '@piggercode/agents';
 
 import type { PreflightSessionControlsProbeAdapter } from '@/capabilities/probes/preflightSessionControlsProbeAdapterTypes';
 import { resolveClaudeModelCatalogResolution } from '@/backends/claude/models/resolveClaudeModelCatalog';

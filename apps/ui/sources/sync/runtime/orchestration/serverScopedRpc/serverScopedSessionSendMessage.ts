@@ -39,7 +39,7 @@ export type ServerScopedSessionSendMessageDeps = Readonly<{
     metaOverrides?: Record<string, unknown>,
     options?: Readonly<{
       localId?: string | null;
-      requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1;
+      requestedAction: import('@piggercode/protocol').PendingRequestedActionV1;
     }>,
   ) => Promise<Readonly<{
     localId: string;
@@ -59,10 +59,10 @@ function normalizeId(raw: unknown): string {
 }
 
 function resolveWireRequestedAction(params: Readonly<{
-  requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1;
+  requestedAction: import('@piggercode/protocol').PendingRequestedActionV1;
   providerDeliveryIntent?: 'immediate' | 'first_turn' | null;
   wireMode: PendingInputServerWireMode;
-}>): import('@happier-dev/protocol').PendingRequestedActionV1 {
+}>): import('@piggercode/protocol').PendingRequestedActionV1 {
   return params.providerDeliveryIntent === 'first_turn'
     && !isCurrentPendingInputServerWireMode(params.wireMode)
     ? { v: 1, kind: 'enqueue' }
@@ -92,7 +92,7 @@ export function createServerScopedSessionSendMessage(deps?: Partial<ServerScoped
     metaOverrides?: Record<string, unknown> | null;
     profileId?: string | null;
     localId?: string | null;
-    requestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    requestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     providerDeliveryIntent?: 'immediate' | 'first_turn' | null;
   }>) => Promise<ServerScopedSessionSendMessageResult>;
 }> {
@@ -125,7 +125,7 @@ export function createServerScopedSessionSendMessage(deps?: Partial<ServerScoped
     metaOverrides?: Record<string, unknown> | null;
     profileId?: string | null;
     localId?: string | null;
-    requestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    requestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     providerDeliveryIntent?: 'immediate' | 'first_turn' | null;
   }>): Promise<ServerScopedSessionSendMessageResult> => {
     const sessionId = normalizeId(args.sessionId);

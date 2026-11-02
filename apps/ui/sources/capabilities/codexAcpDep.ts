@@ -1,6 +1,6 @@
 import type { CapabilitiesDetectRequest, CapabilityDetectResult, CapabilityId, CodexAcpDepData } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { compareVersionsOrNull } from '@/utils/system/versionUtils';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 import { isLatestVersionCheckDue } from '@/updates/latestVersionCheckFreshness';
 
 function isCodexAcpLatestVersionSuccess(

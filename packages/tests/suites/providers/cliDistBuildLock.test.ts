@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, unlinkSync, writeFileSync } from
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-import { withWorkspaceBundleLock } from '@happier-dev/cli-common/workspaceBundleLock';
+import { withWorkspaceBundleLock } from '@piggercode/cli-common/workspaceBundleLock';
 import { describe, expect, it } from 'vitest';
 
 import { withCliDistBuildLock } from '../../src/testkit/process/cliDist';

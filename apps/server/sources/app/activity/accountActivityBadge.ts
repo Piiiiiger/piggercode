@@ -5,7 +5,7 @@ import {
     SessionRuntimeIssueV1Schema,
     type PrimaryTurnStatusV1,
     type SessionRuntimeIssueV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export type SessionActivityBadgeInputs = Readonly<{
     seq?: number | null;

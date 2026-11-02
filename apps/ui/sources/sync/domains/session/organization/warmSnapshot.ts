@@ -1,4 +1,4 @@
-import { SESSION_ORGANIZATION_SNAPSHOT_VERSION, type SessionOrganizationSnapshot } from '@happier-dev/protocol';
+import { SESSION_ORGANIZATION_SNAPSHOT_VERSION, type SessionOrganizationSnapshot } from '@piggercode/protocol';
 
 import type { SessionOrganizationProjection } from './types';
 

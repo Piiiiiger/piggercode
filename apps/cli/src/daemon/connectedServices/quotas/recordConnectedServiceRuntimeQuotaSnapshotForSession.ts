@@ -1,10 +1,10 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@happier-dev/protocol';
+import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
 import type {
   ConnectedServiceId,
   ConnectedServiceQuotaSnapshotV1,
   ConnectedServiceUsageSourceV1,
   ProviderAccountUsageSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 

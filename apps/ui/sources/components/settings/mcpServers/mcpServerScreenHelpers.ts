@@ -2,7 +2,7 @@ import { AGENT_IDS, DEFAULT_AGENT_ID, getAgentCore, type AgentId } from '@/agent
 import { isAgentOffered } from '@/agents/catalog/enabled';
 import { supportsDetectedMcpConfigScan } from '@/agents/registry/registryUiBehavior';
 
-import type { McpDetectedProviderV1 } from '@happier-dev/protocol';
+import type { McpDetectedProviderV1 } from '@piggercode/protocol';
 
 export function listDetectedMcpProviderIds(): readonly McpDetectedProviderV1[] {
     return AGENT_IDS.filter((agentId) => isAgentOffered(agentId) && supportsDetectedMcpConfigScan(agentId)) as readonly McpDetectedProviderV1[];

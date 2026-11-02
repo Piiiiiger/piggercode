@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createHttpStatusError } from '@/api/client/httpStatusError';
 

@@ -1,6 +1,6 @@
 import { afterEach, describe, it, expect } from 'vitest';
 import Constants from 'expo-constants';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 
 import { getEnabledAgentIds, isAgentEnabled, isAgentOffered } from './enabled';
 import { AGENT_IDS } from './catalog';

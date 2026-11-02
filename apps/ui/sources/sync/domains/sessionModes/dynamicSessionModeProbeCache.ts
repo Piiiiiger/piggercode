@@ -1,5 +1,5 @@
 import type { PreflightSessionModeList } from '@/sync/domains/sessionModes/sessionModeOptions';
-import type { ProbedResourceSnapshot } from '@happier-dev/protocol';
+import type { ProbedResourceSnapshot } from '@piggercode/protocol';
 
 import { createPersistentProbedResourceCache } from '@/sync/runtime/probedResources/createPersistentProbedResourceCache';
 

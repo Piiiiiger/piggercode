@@ -1,4 +1,4 @@
-import { type AgentId, getBuiltInAcpConfig } from '@happier-dev/agents';
+import { type AgentId, getBuiltInAcpConfig } from '@piggercode/agents';
 
 import type { AcpBackendOptions, AcpPermissionHandler } from '@/agent/acp/AcpBackend';
 import { HAPPIER_SESSION_ID_ENV_KEY, withCurrentHappierSessionId } from '@/agent/runtime/session/currentSessionIdEnv';

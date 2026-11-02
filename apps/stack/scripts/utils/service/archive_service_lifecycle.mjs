@@ -3,7 +3,7 @@ import {
   inspectServiceRegistration,
   resolveServiceBackend,
   resolveServiceDefinitionPath,
-} from '@happier-dev/cli-common/service';
+} from '@piggercode/cli-common/service';
 
 export function resolveStackServiceDefinitionCandidates({ platform = process.platform, homeDir, label } = {}) {
   const home = String(homeDir ?? '').trim();

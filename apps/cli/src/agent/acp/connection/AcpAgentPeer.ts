@@ -28,7 +28,7 @@ import {
 import {
   redactBugReportSensitiveText,
   trimBugReportTextToMaxBytes,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AcpClientConnectionOptions } from './types';
 

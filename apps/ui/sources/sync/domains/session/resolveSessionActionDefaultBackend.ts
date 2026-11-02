@@ -1,5 +1,5 @@
-import { readAcpConfiguredBackendV1FromMetadata, type BackendTargetRefV1 } from '@happier-dev/protocol';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { readAcpConfiguredBackendV1FromMetadata, type BackendTargetRefV1 } from '@piggercode/protocol';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 import { DEFAULT_AGENT_ID, resolveAgentIdFromFlavor, type AgentId } from '@/agents/catalog/catalog';
 import type { Session } from '@/sync/domains/state/storageTypes';

@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { open } from 'node:fs/promises';
 import { join } from 'node:path';
-import { buildConfigureServerLinks } from '@happier-dev/cli-common/links';
+import { buildConfigureServerLinks } from '@piggercode/cli-common/links';
 
 import { findExistingStackCredentialPath } from '../utils/auth/credentials_paths.mjs';
 import { isAuthFlowEnabled } from '../utils/auth/daemon_gate.mjs';

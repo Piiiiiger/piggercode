@@ -1,4 +1,4 @@
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import type { WorkspaceStagingRoot } from './createWorkspaceStagingRoot';
 import { stageWorkspaceDirectory, type StagedWorkspaceDirectory } from './stageWorkspaceDirectory';

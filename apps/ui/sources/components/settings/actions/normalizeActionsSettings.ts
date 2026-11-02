@@ -4,7 +4,7 @@ import {
     type ActionToolExposureMode,
     type ActionToolExposureSurface,
     type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ParsedActionSettingsOverride = ActionsSettingsV1['actions'][ActionId];
 type SparseActionSettingsOverride = Omit<ParsedActionSettingsOverride, 'toolExposureModes'> & Readonly<{

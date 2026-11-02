@@ -1,4 +1,4 @@
-import { SessionWorkspaceLocationV1Schema } from '@happier-dev/protocol';
+import { SessionWorkspaceLocationV1Schema } from '@piggercode/protocol';
 
 import { ensureSessionMachineAccessKeyBinding } from '@/api/session/ensureSessionMachineAccessKeyBinding';
 import { configuration } from '@/configuration';

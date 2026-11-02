@@ -1,4 +1,4 @@
-import { isAskUserQuestionToolName } from '@happier-dev/protocol';
+import { isAskUserQuestionToolName } from '@piggercode/protocol';
 
 export type PermissionPromptSurfaceSetting = 'composer' | 'transcript' | 'both';
 

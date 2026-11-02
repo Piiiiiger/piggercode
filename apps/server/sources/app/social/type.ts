@@ -1,7 +1,7 @@
 import { getPublicUrl, ImageRef } from "@/storage/blob/files";
 import type { RelationshipStatus } from "@/storage/prisma";
 import * as privacyKit from "privacy-kit";
-import type { UserProfile } from "@happier-dev/protocol";
+import type { UserProfile } from "@piggercode/protocol";
 import { findIdentityProviderById } from "@/app/auth/providers/identityProviders/registry";
 
 export type { UserProfile };

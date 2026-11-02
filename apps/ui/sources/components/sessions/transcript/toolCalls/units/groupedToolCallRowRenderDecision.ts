@@ -1,4 +1,4 @@
-import { isSubAgentTranscriptToolName } from '@happier-dev/protocol/tools/v2';
+import { isSubAgentTranscriptToolName } from '@piggercode/protocol/tools/v2';
 
 import { resolveToolTranscriptSidechainId } from '@/components/tools/shell/views/resolveToolTranscriptSidechainId';
 import type { ToolCallMessage } from '@/sync/domains/messages/messageTypes';

@@ -1,7 +1,7 @@
 import type {
     ConnectedServiceQuotaRecoveryCreditV1,
     ConnectedServiceQuotaRecoveryCreditsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceQuotaRecoveryCreditSummary = Readonly<{
     availableCount: number;

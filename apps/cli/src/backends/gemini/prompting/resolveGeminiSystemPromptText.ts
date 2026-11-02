@@ -1,5 +1,5 @@
 import type { Credentials } from '@/persistence';
-import { getAgentToolsCapability } from '@happier-dev/agents';
+import { getAgentToolsCapability } from '@piggercode/agents';
 import { resolveEffectiveCodingPromptText } from '@/agent/prompting/coding/resolveEffectiveCodingPrompt';
 
 export async function resolveGeminiSystemPromptText(params: Readonly<{

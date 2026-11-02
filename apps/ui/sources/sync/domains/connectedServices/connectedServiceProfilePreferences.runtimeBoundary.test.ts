@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 describe('connectedServiceProfilePreferences runtime boundary', () => {
   it('keeps UI profile key helpers available when agents package runtime exports are stale', async () => {
     vi.resetModules();
-    vi.doMock('@happier-dev/agents', () => ({}));
+    vi.doMock('@piggercode/agents', () => ({}));
 
     const {
       connectedServiceProfileKey,

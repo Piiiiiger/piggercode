@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import {
   deriveBoxPublicKeyFromSeed,
   sealEncryptedDataKeyEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { SessionAttachSecret } from '@/agent/runtime/sessionAttach';
 
 describe('happier resume command (integration)', () => {

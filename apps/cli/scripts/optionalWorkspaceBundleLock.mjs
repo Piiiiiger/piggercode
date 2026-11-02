@@ -4,7 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 async function loadWorkspaceBundleLockModule() {
   try {
-    return await import('@happier-dev/cli-common/workspaceBundleLock');
+    return await import('@piggercode/cli-common/workspaceBundleLock');
   } catch (packageImportError) {
     const scriptDir = dirname(fileURLToPath(import.meta.url));
     const repoRoot = resolve(scriptDir, '..', '..', '..');

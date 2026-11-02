@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import {
   buildPiAgentRuntimeDescriptorV1,
   readAgentRuntimeDescriptorV1ForProvider,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { basename, isAbsolute } from 'node:path';
 
 import {

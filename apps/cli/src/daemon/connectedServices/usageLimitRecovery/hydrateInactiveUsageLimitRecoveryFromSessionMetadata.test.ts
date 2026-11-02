@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY } from '@happier-dev/protocol';
+import { SESSION_USAGE_LIMIT_RECOVERY_METADATA_KEY } from '@piggercode/protocol';
 
 import { createSessionListResponseFixture, createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';
 import { hydrateInactiveUsageLimitRecoveryFromSessionMetadata } from './hydrateInactiveUsageLimitRecoveryFromSessionMetadata';

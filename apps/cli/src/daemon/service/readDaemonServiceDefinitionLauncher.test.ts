@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@happier-dev/cli-common/service';
+import { buildLaunchdPlistXml, renderSystemdServiceUnit, renderWindowsScheduledTaskWrapperPs1 } from '@piggercode/cli-common/service';
 
 import { describeDaemonServiceRuntimeReplacement, readDaemonServiceDefinitionLauncher } from './readDaemonServiceDefinitionLauncher';
 

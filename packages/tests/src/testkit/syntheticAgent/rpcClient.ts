@@ -1,4 +1,4 @@
-import type { SocketRpcAuthorizationContext } from '@happier-dev/protocol/rpc';
+import type { SocketRpcAuthorizationContext } from '@piggercode/protocol/rpc';
 
 import type { SocketCollector } from '../socketClient';
 import { decryptDataKeyBase64, encryptDataKeyBase64 } from '../rpcCrypto';

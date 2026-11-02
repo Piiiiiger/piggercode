@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import { HAPPIER_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import {
@@ -1329,7 +1329,7 @@ describe('R3-4: Claude in-band evidence becomes source-backed → predictive sof
   function deliveredQuotaCall() {
     const calls = mockNotifyDaemonConnectedServiceQuotaSnapshot.mock.calls as readonly (readonly unknown[])[];
     const call = calls.at(-1)?.[0] as
-      | { sourceProviderAccountId?: string; snapshot: import('@happier-dev/protocol').ConnectedServiceQuotaSnapshotV1 }
+      | { sourceProviderAccountId?: string; snapshot: import('@piggercode/protocol').ConnectedServiceQuotaSnapshotV1 }
       | undefined;
     if (!call) throw new Error('expected a quota snapshot delivery');
     return call;

@@ -37,7 +37,7 @@ import {
     type BackendTargetRefV1,
     type SessionMcpSelectionV1,
     type WindowsRemoteSessionLaunchMode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     serverAccountScopeKeySuffix,
     type ServerAccountScope,

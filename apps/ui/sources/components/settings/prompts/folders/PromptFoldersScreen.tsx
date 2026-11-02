@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { PromptBundleBodyV1Schema, PromptDocBodyV1Schema } from '@happier-dev/protocol';
+import { PromptBundleBodyV1Schema, PromptDocBodyV1Schema } from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

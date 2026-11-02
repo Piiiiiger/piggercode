@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { accountSettingsParse, deriveSettingsSecretsKeyV1, encryptSecretStringV1 } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { accountSettingsParse, deriveSettingsSecretsKeyV1, encryptSecretStringV1 } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { registerMachineMcpServersRpcHandlers } from './rpcHandlers.mcpServers';
 import type { bootstrapAccountSettingsContext } from '@/settings/accountSettings/bootstrapAccountSettingsContext';

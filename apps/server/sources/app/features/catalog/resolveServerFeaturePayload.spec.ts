@@ -9,7 +9,7 @@ import { resolveServerFeaturePayload } from "./resolveServerFeaturePayload";
 import { resolveServerFeatureBuildPolicy } from "./serverFeatureBuildPolicy";
 import { serverFeatureRegistry, type ServerFeatureResolver } from "./serverFeatureRegistry";
 import type { FeaturesPayloadDelta } from "../types";
-import { evaluateFeatureBuildPolicy } from "@happier-dev/protocol";
+import { evaluateFeatureBuildPolicy } from "@piggercode/protocol";
 
 function fromPartial(partial: FeaturesPayloadDelta): ServerFeatureResolver {
     return () => partial;

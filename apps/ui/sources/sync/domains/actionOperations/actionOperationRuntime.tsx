@@ -3,8 +3,8 @@ import * as React from 'react';
 import type {
     ActionOperationListV1Request,
     ActionOperationListV1Response,
-} from '@happier-dev/protocol';
-import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError } from '@piggercode/protocol/rpcErrors';
 
 import { listActionOperations } from '@/sync/ops/actionOperations';
 import { useActiveServerAccountScope, useAllMachines, useSocketStatus } from '@/sync/domains/state/storage';

@@ -1,5 +1,5 @@
-import type { BackendTargetRefV1, SessionMcpSelectionV1, WindowsRemoteSessionLaunchMode } from '@happier-dev/protocol';
-import type { CodexBackendMode } from '@happier-dev/agents';
+import type { BackendTargetRefV1, SessionMcpSelectionV1, WindowsRemoteSessionLaunchMode } from '@piggercode/protocol';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 import type { NewSessionCheckoutCreationDraft } from '@/sync/domains/state/newSessionCheckoutDraft';
 

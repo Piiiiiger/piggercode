@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDaemonControlApp } from './controlServer';
 import { SPAWN_SESSION_ERROR_CODES, type SpawnSessionErrorDetail } from '@/rpc/handlers/registerSessionHandlers';
-import { SPAWN_SESSION_ERROR_DETAIL_KINDS } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_DETAIL_KINDS } from '@piggercode/protocol';
 import {
   buildSessionRunnerRespawnDescriptorV1FromSpawnOptions,
   buildSpawnSessionOptionsFromRespawnDescriptorV1,

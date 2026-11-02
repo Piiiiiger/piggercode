@@ -114,9 +114,9 @@ import { createGitSessionRpcHarness, git, initBareRemote, initRepo } from '@/syn
 import { createSaplingSessionRpcHarness, initSaplingRepo, runSapling } from '@/sync/ops/__tests__/saplingRepoHarness';
 import { normalizeWorkingSnapshotForUi } from '@/scm/scmRepositoryService';
 import { useFilesScmOperations } from './useFilesScmOperations';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 

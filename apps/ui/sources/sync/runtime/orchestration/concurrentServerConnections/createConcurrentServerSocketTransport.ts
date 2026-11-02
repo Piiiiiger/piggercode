@@ -1,9 +1,9 @@
 import { io, type Socket } from 'socket.io-client';
-import { ConnectedServiceIdSchema, CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, CONNECTED_SERVICE_READER_SUPPORT_SOCKET_AUTH_FIELD } from '@piggercode/protocol';
 import type {
     ManagedConnectionTransport,
     TransportDisconnectEvent,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 
 import { resolveSocketIoTransports } from '@/sync/runtime/socketIoTransports';
 import { applyUiClientUpgradeRequired } from '@/sync/runtime/clientCompatibility/uiClientUpgradeRequired';

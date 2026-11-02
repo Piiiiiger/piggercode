@@ -11,7 +11,7 @@ import {
     ProviderAccountUsageRecordIdSchema,
     ProviderAccountUsageRecordKeyV1Schema,
     SealedProviderAccountUsageSnapshotV1Schema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { NotFoundSchema } from "../../schemas/notFoundSchema";
 import {
     ProviderAccountUsageInvalidParamsResponseSchema,

@@ -1,8 +1,8 @@
-import type { SocketRpcAuthorizationContext } from '@happier-dev/protocol';
+import type { SocketRpcAuthorizationContext } from '@piggercode/protocol';
 import type {
     SocketRpcRequestPayload,
     SocketRpcTransportAcknowledgementV1,
-} from '@happier-dev/protocol/socketRpc';
+} from '@piggercode/protocol/socketRpc';
 
 /**
  * Common RPC types and interfaces for both session and machine clients

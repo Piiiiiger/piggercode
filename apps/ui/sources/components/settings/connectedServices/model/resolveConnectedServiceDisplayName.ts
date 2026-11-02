@@ -1,4 +1,4 @@
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export type ConnectedServiceDisplayNameKey =
     | 'connectedServices.serviceNames.claudeSubscription'

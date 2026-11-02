@@ -24,7 +24,7 @@ export async function writeRuntimePackageJson({
   };
 
   const output: RuntimePackageJson = {
-    name: String(raw.name ?? '@happier-dev/server'),
+    name: String(raw.name ?? '@piggercode/server'),
     version: String(raw.version ?? '0.0.0'),
     private: true,
     type: String(raw.type ?? 'module'),

@@ -1,7 +1,7 @@
 import { resolveNewSessionCapabilityProbeContext } from '@/components/sessions/new/modules/newSessionCapabilityProbeContext';
 import type { SessionModelDiscoveryContext } from '@/components/sessions/agentInput/components/AgentInputModelDiscoveryDetail';
 import Color from 'color';
-import { isRecoveredHistoryTranscriptObservationProvenance } from '@happier-dev/protocol';
+import { isRecoveredHistoryTranscriptObservationProvenance } from '@piggercode/protocol';
 
 import { AgentContentView } from '@/components/sessions/transcript/AgentContentView';
 import { AgentInput, type AgentInputSendOptions } from '@/components/sessions/agentInput';
@@ -117,7 +117,7 @@ import {
     resolveAgentIdFromSessionMetadata,
     parsePermissionIntentAlias,
     resolvePermissionIntentFromSessionMetadata,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 import {
     SPAWN_SESSION_ERROR_CODES,
     buildBackendTargetKey,
@@ -126,7 +126,7 @@ import {
     isConnectedServiceUxDiagnosticSpawnErrorDetail,
     type ComposerAgentContinuationIntentV1,
     type SessionAgentTransitionResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { useResumeCapabilityOptions } from '@/agents/hooks/useResumeCapabilityOptions';
 import { useSession } from '@/sync/domains/state/storage';
 import { readMessageDisplayText } from '@/sync/domains/messages/messageDisplayText';
@@ -443,7 +443,7 @@ import {
     type ConnectedServiceQuotaRecoveryCreditsV1,
     type SessionRuntimeIssueV1,
     type SessionUsageLimitRecoveryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { selectSyncErrorForServer } from '@/sync/runtime/connectivity/syncErrorScope';
 import { resolveNextOptimisticAcpConfigOptionOverrides } from './resolveNextOptimisticAcpConfigOptionOverrides';
 import { useSessionViewShellSession, useSessionViewShellSessionSeq } from './sessionViewStableSession';

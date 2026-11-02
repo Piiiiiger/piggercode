@@ -1,7 +1,7 @@
 import type { Capability } from '../service';
 import { CapabilityError } from '../errors';
 import { getCodexAcpDepStatus, installCodexAcp } from '../deps/codexAcp';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 
 export const codexAcpDepCapability: Capability = {
     descriptor: {

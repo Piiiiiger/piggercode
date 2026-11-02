@@ -5,7 +5,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import {
   processInstanceFingerprintMatches,
   readProcessInstanceFingerprintSync,
-} from '@happier-dev/cli-common/processInstance';
+} from '@piggercode/cli-common/processInstance';
 
 function normalizeNeedles(needles) {
   const raw = Array.isArray(needles) ? needles : [];

@@ -4,7 +4,7 @@ import {
   SESSION_WORKFLOW_RUN_SNAPSHOT_PROJECTION_VERSION,
   type SessionWorkflowActivityHeadlineV1,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { CliClientUpgradeRequiredError } from '@/api/clientCompatibility/cliClientCompatibility';
 import { createHttpStatusError, createInvalidResponseShapeError } from '@/api/client/httpStatusError';

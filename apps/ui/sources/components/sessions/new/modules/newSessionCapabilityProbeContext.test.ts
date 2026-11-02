@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 describe('resolveNewSessionCapabilityProbeContext (stability)', () => {
     it('uses the session runtime identity ahead of changed account defaults', async () => {
         vi.resetModules();
-        vi.doUnmock('@happier-dev/agents');
+        vi.doUnmock('@piggercode/agents');
         const { resolveNewSessionCapabilityProbeContext } = await import('./newSessionCapabilityProbeContext');
         const { settingsDefaults } = await import('@/sync/domains/settings/settings');
         const context = resolveNewSessionCapabilityProbeContext({
@@ -19,8 +19,8 @@ describe('resolveNewSessionCapabilityProbeContext (stability)', () => {
         vi.resetModules();
 
         const resolveAgentConfiguredRuntimeKind = vi.fn(() => 'appServer');
-        vi.doMock('@happier-dev/agents', async (importOriginal) => {
-            const actual = await importOriginal<typeof import('@happier-dev/agents')>();
+        vi.doMock('@piggercode/agents', async (importOriginal) => {
+            const actual = await importOriginal<typeof import('@piggercode/agents')>();
             return {
                 ...actual,
                 resolveAgentConfiguredRuntimeKind,
@@ -47,8 +47,8 @@ describe('resolveNewSessionCapabilityProbeContext (stability)', () => {
 
         let runtimeKind = 'appServer';
         const resolveAgentConfiguredRuntimeKind = vi.fn(() => runtimeKind);
-        vi.doMock('@happier-dev/agents', async (importOriginal) => {
-            const actual = await importOriginal<typeof import('@happier-dev/agents')>();
+        vi.doMock('@piggercode/agents', async (importOriginal) => {
+            const actual = await importOriginal<typeof import('@piggercode/agents')>();
             return {
                 ...actual,
                 resolveAgentConfiguredRuntimeKind,

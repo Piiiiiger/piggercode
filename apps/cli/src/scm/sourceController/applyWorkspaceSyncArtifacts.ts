@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { cp, copyFile, lstat, mkdir, rm, symlink } from 'node:fs/promises';
 import { dirname, join, parse } from 'node:path';
 
-import type { WorkspaceManifestEntry } from '@happier-dev/protocol';
+import type { WorkspaceManifestEntry } from '@piggercode/protocol';
 
 import type { ScmBackendRegistry } from '@/scm/registry';
 import { assertPortableWorkspaceEntriesWithSourceController } from '@/scm/sourceController/workspacePortability';

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { RPC_ERROR_CODES } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES } from '@piggercode/protocol/rpc';
 import { flushHookEffects, renderScreen } from '@/dev/testkit';
 import { installSettingsViewCommonModuleMocks } from '../settingsViewTestHelpers';
 
-import type { MemoryStatusV1 } from '@happier-dev/protocol';
+import type { MemoryStatusV1 } from '@piggercode/protocol';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 

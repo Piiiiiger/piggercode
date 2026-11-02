@@ -4,7 +4,7 @@ import {
     decodeBase64,
     encodeBase64,
     signMachineInstallationProof,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { createDbMocks, installDbModuleMock } from "../../testkit/dbMocks";
 import { createRouteTestBuilder } from "../../testkit/routeTestBuilder";

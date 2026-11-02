@@ -2,7 +2,7 @@ import { execFileSync } from 'child_process';
 import type { ExecFileSyncOptionsWithStringEncoding } from 'node:child_process';
 
 import { logger } from '@/ui/logger';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 export interface CodexVersionInfo {
     raw: string | null;

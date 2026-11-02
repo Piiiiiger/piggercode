@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { SystemTaskEvent, SystemTaskJsonObject, SystemTaskResult } from '@happier-dev/protocol';
+import type { SystemTaskEvent, SystemTaskJsonObject, SystemTaskResult } from '@piggercode/protocol';
 
 import { getDefaultSystemTaskRunner } from '@/components/systemTasks';
 import type { SystemTaskRunState, SystemTaskRunner } from '@/components/systemTasks/types';

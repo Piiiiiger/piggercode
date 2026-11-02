@@ -1,4 +1,4 @@
-import type { MemoryStatusV1 } from '@happier-dev/protocol';
+import type { MemoryStatusV1 } from '@piggercode/protocol';
 
 export type MemoryIndexContentTelemetry = Readonly<{
   lightShardCount: number;

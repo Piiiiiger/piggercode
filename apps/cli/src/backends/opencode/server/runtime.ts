@@ -1,4 +1,4 @@
-import { buildUsageLimitIssueFingerprint } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint } from '@piggercode/protocol';
 import { randomUUID } from 'node:crypto';
 import type { McpServerConfig } from '@/agent';
 import type { ProviderEnforcedPermissionHandler } from '@/agent/permissions/ProviderEnforcedPermissionHandler';
@@ -14,7 +14,7 @@ import {
   isChangeTitleToolNameAlias,
   normalizeOpenCodeAppSkills,
   type SessionRuntimeIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { TurnChangeSetCollector } from '@/agent/tools/diff/turnChangeSetCollector';
 import { emitCanonicalTurnDiffTool } from '@/agent/runtime/emitCanonicalTurnDiffTool';
 import { isAbortLikeError } from '@/agent/executionRuns/runtime/turnDelivery';

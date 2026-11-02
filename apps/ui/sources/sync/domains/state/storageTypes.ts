@@ -25,7 +25,7 @@ import {
     type ScmDefaultBranchPushPolicy,
     type ScmHostingProvider,
     type ScmPullRequestSummary,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 //
 // Agent states
@@ -547,12 +547,12 @@ export interface PendingMessage {
     sendState?: 'unconfirmed' | 'failed';
     pendingDeliveryStatus?: PendingDeliveryStatus;
     /** Descriptive detail for a delivering row; never an outcome or settlement authority. */
-    pendingDeliveryDetail?: import('@happier-dev/protocol').PendingDeliveryDetailV1;
+    pendingDeliveryDetail?: import('@piggercode/protocol').PendingDeliveryDetailV1;
     pendingDeliveryStatusRaw?: string;
     pendingDeliveryBlockedReason?: PendingDeliveryBlockedReason;
     pendingDeliveryBlockedReasonRaw?: string;
     /** Canonical action owned by the durable Pending row. Old omitted rows normalize to enqueue. */
-    requestedAction?: import('@happier-dev/protocol').PendingRequestedActionV1;
+    requestedAction?: import('@piggercode/protocol').PendingRequestedActionV1;
     /** Explicit persisted action was malformed; the row remains visible but is never executable. */
     requestedActionMalformed?: true;
     /** Protocol-owned role for eligibility decisions; null means an older/unknown row. */

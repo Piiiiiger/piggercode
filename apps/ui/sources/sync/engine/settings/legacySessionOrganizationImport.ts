@@ -5,7 +5,7 @@ import {
     SESSION_ORGANIZATION_MAX_SORT_KEY_LENGTH,
     type ImportLegacySessionOrganizationRequest,
     type SessionOrganizationSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     SessionFoldersV1Schema,
     type SessionFolderWorkspaceRefV1,

@@ -1,7 +1,7 @@
 import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
 import { describe, expect, it } from 'vitest';
 
 import { withTempDir } from '@/testkit/fs/tempDir';

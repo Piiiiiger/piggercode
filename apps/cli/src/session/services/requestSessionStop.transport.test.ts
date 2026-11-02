@@ -4,7 +4,7 @@ import { Console } from 'node:console';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { encodeBase64, encrypt } from '@/api/encryption';
 import { requestSessionStop } from './requestSessionStop';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
 import type { AccountMachineInventoryRow } from '@/api/machine/fetchAccountMachines';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
 import { installAxiosFastifyAdapter } from '@/testkit/http/axiosAdapter';

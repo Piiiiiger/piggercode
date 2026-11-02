@@ -2,8 +2,8 @@ import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { appendFile, rename, rm, stat } from 'node:fs/promises';
 
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { resolveCodexCliInvocation } from '../../utils/resolveCodexCliInvocation';
 import { withCodexNativeStartupLock } from '../../utils/withCodexNativeStartupLock';

@@ -1,7 +1,7 @@
 import { spawn, type ChildProcess, type SpawnOptions } from 'child_process';
 import { randomUUID } from 'node:crypto';
 
-import { getReleaseRingCatalogEntry } from '@happier-dev/release-runtime/releaseRings';
+import { getReleaseRingCatalogEntry } from '@piggercode/release-runtime/releaseRings';
 import { configuration } from '@/configuration';
 import type { DaemonStartupSource } from '@/daemon/ownership/daemonOwnershipMetadata';
 import {

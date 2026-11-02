@@ -3,7 +3,7 @@ import type {
   ExecutionRunResumeHandle,
   ExecutionRunUserTranscriptDirective,
   VoiceAssistantAction,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type VoiceAgentPermissionPolicy = 'no_tools' | 'read_only';
 export type VoiceAgentAgentSource = 'session' | 'agent';

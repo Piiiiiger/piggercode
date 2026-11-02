@@ -2,7 +2,7 @@ import {
   ConnectedServiceAuthGroupIdSchema,
   ConnectedServiceCredentialRevisionV1Schema,
   ConnectedServiceProfileIdSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 export const CODEX_CHATGPT_AUTH_TOKENS_REFRESH_PATH =

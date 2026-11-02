@@ -6,7 +6,7 @@ import {
     type ManagedConnectionTransport,
     type ReadinessProbeResult,
     type TransportDisconnectEvent,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 
 import { probeAuthenticatedServerAuthPingEndpoint } from '@/sync/api/capabilities/probeAuthenticatedServerAuthPingEndpoint';
 import { canonicalizeServerUrl } from '@/sync/domains/server/url/serverUrlCanonical';

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 
-import type { PromptRegistryFetchItemResponseV1 } from '@happier-dev/protocol';
+import type { PromptRegistryFetchItemResponseV1 } from '@piggercode/protocol';
 
 import { buildPromptBundleBodyFromDirectory } from '@/promptAssets/shared/promptBundleDirectory';
 import {

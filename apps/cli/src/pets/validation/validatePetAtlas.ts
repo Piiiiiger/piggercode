@@ -3,7 +3,7 @@ import {
   PET_ATLAS_V1,
   type PetAssetMediaTypeV1,
   type PetPackageValidationIssueV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PetAtlasValidationResult =
   | Readonly<{ ok: true; mediaType: PetAssetMediaTypeV1; width: number; height: number }>

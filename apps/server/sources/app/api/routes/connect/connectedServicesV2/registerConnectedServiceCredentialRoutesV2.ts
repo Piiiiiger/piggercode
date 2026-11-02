@@ -12,7 +12,7 @@ import {
   CONNECTED_SERVICE_ERROR_CODES,
   SealedConnectedServiceCredentialV1Schema,
   type ConnectedServiceId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { encodeCredentialTokenBytes, decodeCredentialTokenString } from "./credentialTokenCodec";
 import { ConnectedServiceProfileIdSchema } from "./profileIdSchema";

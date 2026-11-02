@@ -13,7 +13,7 @@ import {
   runTailscaleStatusJson,
   tailscaleStatusSnapshotForUnreachableDaemon,
   type TailscaleStatusSnapshot,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 
 /**
  * A one-shot interactive command can afford a slower probe than the background

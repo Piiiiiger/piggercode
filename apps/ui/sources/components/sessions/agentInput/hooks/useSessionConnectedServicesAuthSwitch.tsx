@@ -1,14 +1,14 @@
 import * as React from 'react';
 
 import { useRouter } from 'expo-router';
-import { readSessionMetadataConnectedServiceBindings } from '@happier-dev/agents';
+import { readSessionMetadataConnectedServiceBindings } from '@piggercode/agents';
 import {
     ConnectedServiceIdSchema,
     type ConnectedServiceId,
     type ConnectedServiceBindingSelectionV1,
     type ConnectedServiceBindingsV1,
     type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentInputExtraActionChip, AgentInputStatusBadge } from '@/components/sessions/agentInput/agentInputContracts';
 import type { AgentInputContentPopoverRenderArgs } from '@/components/sessions/agentInput/components/AgentInputContentPopover';

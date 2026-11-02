@@ -1,7 +1,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS } from '@piggercode/agents';
 
 import type { CatalogAgentId } from '@/backends/types';
 

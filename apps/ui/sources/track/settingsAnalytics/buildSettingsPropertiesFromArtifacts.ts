@@ -1,4 +1,4 @@
-import type { SettingArtifacts, SettingDefinitionMap } from '@happier-dev/protocol';
+import type { SettingArtifacts, SettingDefinitionMap } from '@piggercode/protocol';
 
 import type { SettingsAnalyticsSnapshot } from './types';
 import { serializeDerivedSettingEntries } from './serializeDerivedSettingEntries';

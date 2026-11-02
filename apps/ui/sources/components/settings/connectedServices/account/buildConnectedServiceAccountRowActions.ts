@@ -2,7 +2,7 @@ import type { ItemAction } from '@/components/ui/lists/itemActions';
 import {
     isConnectedServiceCredentialHealthStatusUsable,
     type ConnectedServiceCredentialHealthStatusV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { t } from '@/text';
 
 /**

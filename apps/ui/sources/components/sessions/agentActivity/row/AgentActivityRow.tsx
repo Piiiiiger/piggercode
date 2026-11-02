@@ -1,5 +1,5 @@
-import type { AgentActivityStatusV1 } from '@happier-dev/protocol';
-import { resolveAgentActivityTone } from '@happier-dev/protocol';
+import type { AgentActivityStatusV1 } from '@piggercode/protocol';
+import { resolveAgentActivityTone } from '@piggercode/protocol';
 import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';

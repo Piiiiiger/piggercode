@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 import { describe, expect, it, vi } from 'vitest';
-import { SPAWN_SESSION_ERROR_CODES } from '@happier-dev/protocol';
+import { SPAWN_SESSION_ERROR_CODES } from '@piggercode/protocol';
 
 import { logger } from '@/ui/logger';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';

@@ -3,9 +3,9 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { io as ioClient } from "socket.io-client";
 import type { Redis } from "ioredis";
 
-import { SESSION_RUNTIME_ACTIVITY_CLOSE_EVENT, SESSION_RUNTIME_ACTIVITY_SNAPSHOT_EVENT } from "@happier-dev/protocol";
-import { RPC_METHODS } from "@happier-dev/protocol/rpc";
-import { SOCKET_RPC_EVENTS } from "@happier-dev/protocol/socketRpc";
+import { SESSION_RUNTIME_ACTIVITY_CLOSE_EVENT, SESSION_RUNTIME_ACTIVITY_SNAPSHOT_EVENT } from "@piggercode/protocol";
+import { RPC_METHODS } from "@piggercode/protocol/rpc";
+import { SOCKET_RPC_EVENTS } from "@piggercode/protocol/socketRpc";
 import { auth } from "@/app/auth/auth";
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

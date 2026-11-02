@@ -1,7 +1,7 @@
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 import { decodeBase64, decrypt } from '@/api/encryption';
 import { logger } from '@/ui/logger';
-import { openAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { openAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 function isAccountSettingsDebugEnabled(): boolean {
   const raw = typeof process.env.HAPPIER_DEBUG_ACCOUNT_SETTINGS === 'string'

@@ -1,4 +1,4 @@
-import type { PendingRequestedActionV1 } from '@happier-dev/protocol';
+import type { PendingRequestedActionV1 } from '@piggercode/protocol';
 
 type SessionUserMessageDeliveryIntent = 'ordinary' | 'runtime_bootstrap';
 

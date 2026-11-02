@@ -9,7 +9,7 @@ import {
     SessionStoredMessageContentSchema,
     SessionTurnMutationV1Schema,
     ExactSessionTurnEndMutationV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
 import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';

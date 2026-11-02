@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRecordV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRecordV1 } from '@piggercode/protocol';
 
 export function materializeClaudeAnthropicApiKeyAuth(params: Readonly<{
   record: ConnectedServiceCredentialRecordV1;

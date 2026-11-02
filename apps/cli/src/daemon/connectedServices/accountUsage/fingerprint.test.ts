@@ -1,4 +1,4 @@
-import { buildProviderAccountUsageRecordId, type ProviderAccountUsageSnapshotV1 } from '@happier-dev/protocol';
+import { buildProviderAccountUsageRecordId, type ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { computeProviderAccountUsageSnapshotFingerprint, computeProviderAccountUsageSnapshotMaterialRevision } from './fingerprint';

@@ -3,8 +3,8 @@ import type {
     SessionDraftAddressV1,
     SessionDraftDocumentV1,
     SessionDraftStoredContentEnvelopeV1,
-} from '@happier-dev/protocol';
-import { canonicalSessionDraftAddressV1, SessionDraftDocumentV1Schema } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { canonicalSessionDraftAddressV1, SessionDraftDocumentV1Schema } from '@piggercode/protocol';
 import { createDeferred } from '@/dev/testkit/hooks/createDeferred';
 
 import {

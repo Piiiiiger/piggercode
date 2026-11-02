@@ -7,7 +7,7 @@ import {
   deriveAccountMachineKeyFromRecoverySecret,
   sealTerminalProvisioningV2TokenOnlyPayload,
   UserResponseSchema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { getAccountEncryptionMode } from '@/api/connectedServices/connectedServiceCredentialApi';
 import { decodeJwtPayload } from '@/cloud/decodeJwtPayload';

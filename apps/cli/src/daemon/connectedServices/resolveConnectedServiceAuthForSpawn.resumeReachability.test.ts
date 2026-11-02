@@ -5,7 +5,7 @@ import { randomBytes } from 'node:crypto';
 
 import { describe, expect, it } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 import type { Credentials } from '@/persistence';
 import type { ApiClient } from '@/api/api';

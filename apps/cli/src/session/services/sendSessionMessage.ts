@@ -3,9 +3,9 @@ import { randomUUID } from 'node:crypto';
 
 import {
   resolveMetadataStringOverrideV1,
-} from '@happier-dev/agents';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readPendingLocalId, type PendingRequestedActionV1 } from '@happier-dev/protocol';
+} from '@piggercode/agents';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readPendingLocalId, type PendingRequestedActionV1 } from '@piggercode/protocol';
 
 import { fetchEncryptedTranscriptPageAfterSeq } from '@/api/session/fetchEncryptedTranscriptWindow';
 import {

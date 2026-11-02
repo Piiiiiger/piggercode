@@ -4,7 +4,7 @@ import { claudeRemoteAgentSdk } from './claudeRemoteAgentSdk';
 import type { EnhancedMode } from '../loop';
 import { resolveClaudeConfigDirOverride } from '@/backends/claude/utils/resolveClaudeConfigDirOverride';
 import { repairClaudeTranscriptAfterInterrupt } from './agentSdk/repairClaudeTranscriptAfterInterrupt';
-import { isFeatureId } from '@happier-dev/protocol';
+import { isFeatureId } from '@piggercode/protocol';
 import { resolveCliFeatureDecision } from '@/features/featureDecisionService';
 import { normalizeClaudeRemoteMode } from './normalizeClaudeRemoteMode';
 import { resolveClaudeRemoteSessionStartPlan } from './sessionStartPlan';

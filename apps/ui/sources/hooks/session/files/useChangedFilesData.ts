@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { SessionChangeSet } from '@happier-dev/protocol';
+import type { SessionChangeSet } from '@piggercode/protocol';
 
 import type { ScmProjectOperationLogEntry } from '@/sync/runtime/orchestration/projectManager';
 import type { ScmWorkingSnapshot } from '@/sync/domains/state/storageTypes';

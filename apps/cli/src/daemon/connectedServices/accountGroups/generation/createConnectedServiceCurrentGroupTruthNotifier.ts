@@ -2,8 +2,8 @@ import {
   SessionConnectedServiceAuthApplyGenerationResponseV1Schema,
   type ConnectedServiceId,
   type SessionConnectedServiceAuthCurrentGroupTruthV1,
-} from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { resolveConnectedServiceCredentialLifecycleDescriptor } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';

@@ -5,9 +5,9 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { captureConsoleJsonOutput } from '@/testkit/logger/captureOutput';
 
-import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const { mockIo } = vi.hoisted(() => ({
   mockIo: vi.fn(),

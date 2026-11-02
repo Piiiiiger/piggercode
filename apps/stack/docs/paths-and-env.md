@@ -13,11 +13,11 @@ hstack where
 ## Quick glossary
 
 - **CLI root dir**
-  - The directory containing the `@happier-dev/stack` scripts (`scripts/*.mjs`) that your `hstack` command is currently executing.
+  - The directory containing the `@piggercode/stack` scripts (`scripts/*.mjs`) that your `hstack` command is currently executing.
   - This is *not* necessarily your current shell `cwd`.
   - It can be:
     - a cloned repo checkout (e.g. `/Users/<you>/.../happier-dev`), or
-    - the installed runtime package under `~/.happier-stack/runtime/node_modules/@happier-dev/stack` (see “Runtime dir”).
+    - the installed runtime package under `~/.happier-stack/runtime/node_modules/@piggercode/stack` (see “Runtime dir”).
 
 - **Home dir** (`HAPPIER_STACK_HOME_DIR`)
   - Default: `~/.happier-stack`
@@ -25,7 +25,7 @@ hstack where
 
 - **Runtime dir** (`HAPPIER_STACK_RUNTIME_DIR`)
   - Default: `~/.happier-stack/runtime`
-  - Used by `hstack self update` to install/upgrade a pinned `@happier-dev/stack` runtime package.
+  - Used by `hstack self update` to install/upgrade a pinned `@piggercode/stack` runtime package.
 
 - **Workspace dir** (`HAPPIER_STACK_WORKSPACE_DIR`)
   - Default: `~/.happier-stack/workspace` (when it exists).
@@ -136,7 +136,7 @@ Stack env files are allowed to contain **non-prefixed keys** (like `DATABASE_URL
 If you want to test the full install + setup flows without touching your real installation, run with:
 
 ```bash
-npx @happier-dev/stack@latest --sandbox-dir /tmp/hstack-sandbox where
+npx @piggercode/stack@latest --sandbox-dir /tmp/hstack-sandbox where
 ```
 
 In sandbox mode, hstack redirects **home/workspace/runtime/storage** under the sandbox folder (so you can `rm -rf` it to reset).

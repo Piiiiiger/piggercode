@@ -7,7 +7,7 @@ import {
     type ChangeCheckpointBlockedReason,
     type PlannedChangeActions,
 } from './changesPlanner';
-import { canonicalSessionDraftAddressV1, type SessionDraftAddressV1 } from '@happier-dev/protocol';
+import { canonicalSessionDraftAddressV1, type SessionDraftAddressV1 } from '@piggercode/protocol';
 import { runTasksWithLimit } from './runTasksWithLimit';
 
 export type TodoSocketUpdate = Readonly<{

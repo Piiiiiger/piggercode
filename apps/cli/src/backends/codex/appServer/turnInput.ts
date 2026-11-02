@@ -2,7 +2,7 @@ import {
     readHappierStructuredInputV1FromMeta,
     readStructuredInputMentionSourcesV1,
     type HappierStructuredInputV1Envelope,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type MetadataRecord = Record<string, unknown>;
 

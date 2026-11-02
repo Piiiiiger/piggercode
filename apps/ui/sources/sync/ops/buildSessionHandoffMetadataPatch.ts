@@ -1,6 +1,6 @@
-import type { AgentRuntimeDescriptorV1, DirectSessionsSource } from '@happier-dev/protocol';
+import type { AgentRuntimeDescriptorV1, DirectSessionsSource } from '@piggercode/protocol';
 
-import { projectCurrentAgentSessionView } from '@happier-dev/agents';
+import { projectCurrentAgentSessionView } from '@piggercode/agents';
 
 import { getAgentBehavior, type AgentId } from '@/agents/catalog/catalog';
 

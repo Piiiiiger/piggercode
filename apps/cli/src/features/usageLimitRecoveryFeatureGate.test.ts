@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@happier-dev/protocol';
+import { SessionUsageLimitRecoveryOperationResultV1Schema } from '@piggercode/protocol';
 
 import { usageLimitRecoveryFeatureDisabledResult } from './usageLimitRecoveryFeatureGate';
 

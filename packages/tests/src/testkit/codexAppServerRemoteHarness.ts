@@ -685,7 +685,7 @@ export async function startCodexAppServerRemoteHarness(params: Readonly<{
     args: [
       '-s',
       'workspace',
-      '@happier-dev/cli',
+      '@piggercode/cli',
       'dev',
       'codex',
       '--existing-session',

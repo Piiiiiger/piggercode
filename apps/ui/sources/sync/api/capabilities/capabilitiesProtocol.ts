@@ -8,8 +8,8 @@ import type {
     CapabilitiesDetectResponse,
     CapabilitiesInvokeRequest,
     CapabilitiesInvokeResponse,
-} from '@happier-dev/protocol/capabilities';
-import type { ChecklistId as ProtocolChecklistId } from '@happier-dev/protocol/checklists';
+} from '@piggercode/protocol/capabilities';
+import type { ChecklistId as ProtocolChecklistId } from '@piggercode/protocol/checklists';
 
 export type {
     CapabilityDetectRequest,

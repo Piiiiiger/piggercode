@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 
-import type { ActionInputFieldHint } from '@happier-dev/protocol';
+import type { ActionInputFieldHint } from '@piggercode/protocol';
 
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { t } from '@/text';

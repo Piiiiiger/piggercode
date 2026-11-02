@@ -9,7 +9,7 @@ import {
     defineSettingDefinitions,
     type ActionToolExposureMode,
     type ActionToolExposureSurface,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type ActionSettingsOverrideLike = Readonly<{
     enabled?: boolean;

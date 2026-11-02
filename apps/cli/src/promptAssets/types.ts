@@ -8,7 +8,7 @@ import type {
   PromptAssetTypeDescriptorV1,
   PromptAssetWriteDocRequest,
   PromptAssetWriteBundleRequest,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PromptAssetAdapter = Readonly<{
   descriptor: PromptAssetTypeDescriptorV1;

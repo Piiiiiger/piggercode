@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { isNativeProcessExited } from '../../../scripts/native_process_exit.cjs';

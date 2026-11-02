@@ -1,4 +1,4 @@
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 function parsePositiveIntOrDefault(value: string | undefined, fallback: number): number {
     if (typeof value !== 'string') return fallback;

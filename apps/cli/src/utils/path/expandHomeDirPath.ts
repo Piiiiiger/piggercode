@@ -1,4 +1,4 @@
 export {
   expandHomeDirPath,
   resolveHomeDirFromEnvironment,
-} from '@happier-dev/cli-common/providers';
+} from '@piggercode/cli-common/providers';

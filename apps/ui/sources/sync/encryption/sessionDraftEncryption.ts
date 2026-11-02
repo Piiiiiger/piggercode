@@ -7,7 +7,7 @@ import {
     type SessionDraftAddressV1,
     type SessionDraftDocumentV1,
     type SessionDraftStoredContentEnvelopeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { SessionDraftRepositoryCipher } from '@/sync/ops/sessionDrafts/sessionDraftRepository';
 import { SessionDraftContextUnavailableError } from '@/sync/ops/sessionDrafts/sessionDraftCipherError';

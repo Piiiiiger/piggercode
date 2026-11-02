@@ -4,7 +4,7 @@ import { createServerFeatureGatePreHandler } from "@/app/features/catalog/server
 import {
     AccountEncryptionModeResponseSchema,
     AccountEncryptionModeUpdateRequestSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { type Fastify } from "../../types";
 import { updateAccountEncryptionMode } from "./updateAccountEncryptionMode";
 

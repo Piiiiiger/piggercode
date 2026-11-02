@@ -18,7 +18,7 @@ function runCliCommonBuild(repoRoot, exec = execFileSync) {
 }
 
 /**
- * Loads a built `@happier-dev/cli-common` dist submodule after canonical stale-only admission.
+ * Loads a built `@piggercode/cli-common` dist submodule after canonical stale-only admission.
  * @param {{ repoRoot: string; subpath: string; execFileSync?: typeof execFileSync; importModule?: (url: string) => Promise<any>; }} options
  */
 export async function loadCliCommonDistModule(options) {

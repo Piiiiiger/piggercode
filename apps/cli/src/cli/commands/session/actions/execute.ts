@@ -6,8 +6,8 @@ import { createCliActionExecutor } from '@/session/actions/createCliActionExecut
 import { resolveSessionTransportContext } from '@/session/services/resolveSessionTransportContext';
 import { wantsJson, printJsonEnvelope, writeJsonStdout } from '@/cli/output/jsonEnvelope';
 import { hasFlag, readCommandPositionals, readFlagValue } from '@/cli/commands/shared/argvFlags';
-import type { ActionId } from '@happier-dev/protocol';
-import { cmd, fail } from '@happier-dev/cli-common/output';
+import type { ActionId } from '@piggercode/protocol';
+import { cmd, fail } from '@piggercode/cli-common/output';
 
 function parseInputJsonOrThrow(raw: string | null): unknown {
   const trimmed = (raw ?? '').trim();

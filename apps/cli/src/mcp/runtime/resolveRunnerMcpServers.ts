@@ -5,7 +5,7 @@ import { logger } from '@/ui/logger';
 import {
   readSessionMcpSelectionV1FromMetadata,
   type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readMcpServersSettingsFromAccountSettings } from '../servers/readMcpServersSettingsFromAccountSettings';
 import { resolveManagedSessionMcpSelectionForDirectory } from '../servers/resolveManagedSessionMcpSelectionForDirectory';

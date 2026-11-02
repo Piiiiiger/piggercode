@@ -31,7 +31,7 @@ import {
   GEMINI_ACP_AUTH_METHOD_ENV,
   GEMINI_ACP_AUTH_META_ENV,
 } from '@/backends/gemini/connectedServices/materializeGeminiConnectedServiceAuth';
-import { CHANGE_TITLE_TOOL_NAME_ALIASES } from '@happier-dev/protocol/tools/v2';
+import { CHANGE_TITLE_TOOL_NAME_ALIASES } from '@piggercode/protocol/tools/v2';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { resolveGeminiAcpFlag } from '@/backends/gemini/cli/detect';
 import { findConnectedServiceChildSelection } from '@/daemon/connectedServices/connectedServiceChildEnvironment';

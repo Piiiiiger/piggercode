@@ -1,4 +1,4 @@
-import { resolveReleaseAssetBundle } from '@happier-dev/release-runtime/assets';
+import { resolveReleaseAssetBundle } from '@piggercode/release-runtime/assets';
 
 export function resolveServerReleaseAssets({ release, os, arch }) {
   const resolved = resolveReleaseAssetBundle({

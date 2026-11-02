@@ -1,4 +1,4 @@
-import { isClaudeSlashCommandSupported, type SessionWorkStateV1 } from '@happier-dev/protocol';
+import { isClaudeSlashCommandSupported, type SessionWorkStateV1 } from '@piggercode/protocol';
 
 import { logger } from '@/ui/logger';
 

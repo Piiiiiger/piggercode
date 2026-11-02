@@ -7,12 +7,12 @@ import {
   getFirstPartyComponentCatalogEntry,
   installVersionedPayload,
   resolveFirstPartyComponentPublicReleaseVariant,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { resolveReleaseAssetBundle } from '@happier-dev/release-runtime/assets';
-import { extractFirstPartyReleaseArchiveToDirectory } from '@happier-dev/release-runtime/archiveExtraction';
-import { fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
-import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@happier-dev/release-runtime/minisign';
-import { downloadVerifiedReleaseAssetBundle } from '@happier-dev/release-runtime/verifiedDownload';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { resolveReleaseAssetBundle } from '@piggercode/release-runtime/assets';
+import { extractFirstPartyReleaseArchiveToDirectory } from '@piggercode/release-runtime/archiveExtraction';
+import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
+import { DEFAULT_MINISIGN_PUBLIC_KEY } from '@piggercode/release-runtime/minisign';
+import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
 
 import { findExtractedExecutableByName } from './findExtractedExecutableByName.mjs';
 

@@ -6,8 +6,8 @@ import { dirname, join } from 'node:path';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { writeExecutableShim } from '@/testkit/fs/executableShim';
 
-vi.mock('@happier-dev/cli-common/providers', async () => {
-  const actual = await vi.importActual<typeof import('@happier-dev/cli-common/providers')>('@happier-dev/cli-common/providers');
+vi.mock('@piggercode/cli-common/providers', async () => {
+  const actual = await vi.importActual<typeof import('@piggercode/cli-common/providers')>('@piggercode/cli-common/providers');
   return {
     ...actual,
     downloadGitHubReleaseAsset: async ({ destinationPath }: { destinationPath: string }) => {
@@ -17,8 +17,8 @@ vi.mock('@happier-dev/cli-common/providers', async () => {
   };
 });
 
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async () => {
-  const actual = await vi.importActual<typeof import('@happier-dev/cli-common/firstPartyRuntime')>('@happier-dev/cli-common/firstPartyRuntime');
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async () => {
+  const actual = await vi.importActual<typeof import('@piggercode/cli-common/firstPartyRuntime')>('@piggercode/cli-common/firstPartyRuntime');
   return {
     ...actual,
     extractReleasePayloadRootFromArchive: async ({ extractDir }: { extractDir: string }) => {

@@ -6,8 +6,8 @@ import {
     type SessionVendorPluginCatalogListResponseV1,
     type BackendTargetRefV1,
     type PreflightSessionCatalogsV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { storage } from '@/sync/domains/state/storage';
 import { MetadataSchema } from '@/sync/domains/state/storageTypes';

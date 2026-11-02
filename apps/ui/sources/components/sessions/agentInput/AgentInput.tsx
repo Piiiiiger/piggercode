@@ -49,7 +49,7 @@ import { t } from '@/text';
 import { Metadata } from '@/sync/domains/state/storageTypes';
 import { getProfileEnvironmentVariables, type AIBackendProfile } from '@/sync/domains/profiles/profileCompatibility';
 import { DEFAULT_AGENT_ID, getAgentBehavior, getAgentCore, type AgentId } from '@/agents/catalog/catalog';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
 // From the registry rather than the catalog facade: this narrows an id the picker
 // supplied, which is the same check the send control's presentation resolver makes.
@@ -136,7 +136,7 @@ import { WebDropTargetView } from '@/components/sessions/files/repositoryTree/We
 import { useWebFileDropZone } from '@/hooks/ui/useWebFileDropZone';
 import { useLocalSetting } from '@/sync/store/hooks';
 import { extractWebAttachmentFilesFromDataTransfer } from '@/utils/files/webAttachmentDataTransfer';
-import type { AcpConfigOptionOverridesV1 } from '@happier-dev/protocol';
+import type { AcpConfigOptionOverridesV1 } from '@piggercode/protocol';
 import type { ConnectedServiceQuotaGaugeViewModel } from '@/sync/domains/connectedServices/connectedServiceQuotaGauge';
 import type {
     AgentInputAttachment,

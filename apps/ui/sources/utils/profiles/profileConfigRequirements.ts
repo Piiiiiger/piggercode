@@ -1,2 +1,2 @@
-export { getMissingRequiredConfigEnvVarNames } from '@happier-dev/protocol';
+export { getMissingRequiredConfigEnvVarNames } from '@piggercode/protocol';
 

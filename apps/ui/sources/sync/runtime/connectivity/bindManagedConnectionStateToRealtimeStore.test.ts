@@ -1,4 +1,4 @@
-import type { ManagedConnectionState } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState } from '@piggercode/connection-supervisor';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { EndpointConnectivitySnapshot } from '@/sync/store/domains/realtime';

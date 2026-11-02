@@ -3,8 +3,8 @@ import {
     SessionAgentTransitionBriefPreviewV1Schema,
     type SessionAgentTransitionBriefPreviewV1,
     type BackendTargetRefV1,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { readRpcErrorCode } from '@/sync/runtime/rpcErrors';

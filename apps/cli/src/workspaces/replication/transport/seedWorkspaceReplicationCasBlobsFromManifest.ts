@@ -1,6 +1,6 @@
 import { join, resolve, sep } from 'node:path';
 
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { createWorkspaceReplicationCasStore } from '../cas/workspaceReplicationCasStore';
 

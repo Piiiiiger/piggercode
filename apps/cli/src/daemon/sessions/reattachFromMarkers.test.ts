@@ -1,4 +1,4 @@
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { configuration } from '@/configuration';
 

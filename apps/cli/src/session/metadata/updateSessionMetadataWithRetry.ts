@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { normalizeSessionMetadataForRead, projectSessionMetadataForWire } from '@happier-dev/protocol';
+import { normalizeSessionMetadataForRead, projectSessionMetadataForWire } from '@piggercode/protocol';
 import type { Socket } from 'socket.io-client';
 
 import { createAuthenticationHttpStatusError, isAuthenticationError } from '@/api/client/httpStatusError';

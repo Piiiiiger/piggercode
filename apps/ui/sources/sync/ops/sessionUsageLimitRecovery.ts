@@ -1,11 +1,11 @@
-import { RPC_ERROR_CODES, RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+import { RPC_ERROR_CODES, RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 import {
     type ConnectedServiceUxDiagnosticV1,
     normalizeSessionUsageLimitRecoveryOperationResultV1,
     type SessionUsageLimitRecoveryOperationResultErrorStatusV1,
     type SessionUsageLimitRecoveryOperationResultV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { storage } from '@/sync/domains/state/storage';
 import { resolvePreferredServerIdForSessionId } from '@/sync/runtime/orchestration/serverScopedRpc/resolvePreferredServerIdForSessionId';

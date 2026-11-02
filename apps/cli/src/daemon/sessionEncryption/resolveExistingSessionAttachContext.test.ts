@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { decodeBase64, encodeBase64 } from '@/api/encryption';
 import { createHttpStatusError } from '@/api/client/httpStatusError';
-import { sealEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { sealEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 
 import { createSessionRecordFixture } from '@/testkit/backends/sessionFixtures';
 import { encryptStoredSessionPayload, resolveSessionEncryptionContextFromCredentials } from '@/session/transport/encryption/sessionEncryptionContext';

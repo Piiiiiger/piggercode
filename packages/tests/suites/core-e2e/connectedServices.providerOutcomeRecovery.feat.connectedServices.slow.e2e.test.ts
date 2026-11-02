@@ -39,7 +39,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import { join, resolve } from 'node:path';
 
-import type { ConnectedServiceId, ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceId, ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 
 import {
   startConnectedServicesCodexDaemon,

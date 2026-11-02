@@ -25,10 +25,10 @@ describe('buildSharedDeps', () => {
         JSON.stringify(
           {
             bundledDependencies: [
-              '@happier-dev/cli-common',
-              '@happier-dev/release-runtime',
-              '@happier-dev/agents',
-              '@happier-dev/protocol',
+              '@piggercode/cli-common',
+              '@piggercode/release-runtime',
+              '@piggercode/agents',
+              '@piggercode/protocol',
             ],
           },
           null,
@@ -39,22 +39,22 @@ describe('buildSharedDeps', () => {
 
       const packageJsonByWorkspace: Record<string, Record<string, unknown>> = {
         protocol: {
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
         },
         agents: {
-          name: '@happier-dev/agents',
+          name: '@piggercode/agents',
           dependencies: {
-            '@happier-dev/protocol': '0.0.0',
+            '@piggercode/protocol': '0.0.0',
           },
         },
         'release-runtime': {
-          name: '@happier-dev/release-runtime',
+          name: '@piggercode/release-runtime',
         },
         'cli-common': {
-          name: '@happier-dev/cli-common',
+          name: '@piggercode/cli-common',
           dependencies: {
-            '@happier-dev/agents': '0.0.0',
-            '@happier-dev/release-runtime': '0.0.0',
+            '@piggercode/agents': '0.0.0',
+            '@piggercode/release-runtime': '0.0.0',
           },
         },
       };
@@ -89,19 +89,19 @@ describe('buildSharedDeps', () => {
       String(p).endsWith('/apps/cli/package.json') ||
       String(p).endsWith('/packages/protocol/package.json') ||
       String(p).endsWith('/packages/protocol/dist') ||
-      String(p).includes('/apps/cli/node_modules/@happier-dev/protocol/'),
+      String(p).includes('/apps/cli/node_modules/@piggercode/protocol/'),
     );
     const mkdirSync = vi.fn(() => undefined);
     const readFileSync = vi.fn((p: any) => {
       const text = String(p);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/protocol'],
+          bundledDependencies: ['@piggercode/protocol'],
         });
       }
       if (text.endsWith('/packages/protocol/package.json')) {
         return JSON.stringify({
-          name: '@happier-dev/protocol',
+          name: '@piggercode/protocol',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -120,8 +120,8 @@ describe('buildSharedDeps', () => {
     });
 
     expect(mkdirSync.mock.calls).toEqual([
-      ['/repo/apps/cli/node_modules/@happier-dev/protocol', { recursive: true }],
-      ['/repo/apps/cli/node_modules/@happier-dev/protocol', { recursive: true }],
+      ['/repo/apps/cli/node_modules/@piggercode/protocol', { recursive: true }],
+      ['/repo/apps/cli/node_modules/@piggercode/protocol', { recursive: true }],
     ]);
     expect(rmSync).toHaveBeenCalled();
     expect(cpSync).toHaveBeenCalledTimes(1);
@@ -132,7 +132,7 @@ describe('buildSharedDeps', () => {
         const [from, to, options] = call as [unknown, unknown, { recursive?: boolean; force?: boolean }];
         return from === '/repo/packages/protocol/dist'
           && typeof to === 'string'
-          && to.includes('/apps/cli/node_modules/@happier-dev/protocol/')
+          && to.includes('/apps/cli/node_modules/@piggercode/protocol/')
           && options.recursive === true
           && options.force === true;
       }),
@@ -145,19 +145,19 @@ describe('buildSharedDeps', () => {
     const existsSync = vi.fn((p: any) =>
       String(p).endsWith('/apps/cli/package.json') ||
       String(p).endsWith('/packages/protocol/package.json') ||
-      String(p).includes('/apps/cli/node_modules/@happier-dev/protocol/dist') ||
-      String(p).includes('/apps/stack/node_modules/@happier-dev/protocol/dist'),
+      String(p).includes('/apps/cli/node_modules/@piggercode/protocol/dist') ||
+      String(p).includes('/apps/stack/node_modules/@piggercode/protocol/dist'),
     );
     const readFileSync = vi.fn((p: any) => {
       const text = String(p);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/protocol'],
+          bundledDependencies: ['@piggercode/protocol'],
         });
       }
 
       return JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' }, './installables': { default: './dist/installables.js' } },
@@ -180,7 +180,7 @@ describe('buildSharedDeps', () => {
     const cliWriteCall = writeFileSync.mock.calls[0] as unknown as [string, string] | undefined;
     if (!cliWriteCall) throw new Error('expected cli package.json write');
     const [cliDestPath, cliPayload] = cliWriteCall;
-    expect(cliDestPath).toBe('/repo/apps/cli/node_modules/@happier-dev/protocol/package.json');
+    expect(cliDestPath).toBe('/repo/apps/cli/node_modules/@piggercode/protocol/package.json');
     const cliParsed = JSON.parse(String(cliPayload));
     expect(cliParsed.exports?.['./installables']).toBeTruthy();
     expect(cliParsed.private).toBe(true);
@@ -194,8 +194,8 @@ describe('buildSharedDeps', () => {
         text.endsWith('/apps/cli/package.json') ||
         text.endsWith('/packages/custom-bundle/package.json') ||
         text.endsWith('/packages/custom-bundle/dist') ||
-        text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/package.json') ||
-        text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/dist')
+        text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/package.json') ||
+        text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/dist')
       );
     });
     const mkdirSync = vi.fn(() => undefined);
@@ -204,12 +204,12 @@ describe('buildSharedDeps', () => {
       const text = String(p);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/custom-bundle', 'tweetnacl'],
+          bundledDependencies: ['@piggercode/custom-bundle', 'tweetnacl'],
         });
       }
       if (text.endsWith('/packages/custom-bundle/package.json')) {
         return JSON.stringify({
-          name: '@happier-dev/custom-bundle',
+          name: '@piggercode/custom-bundle',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -236,7 +236,7 @@ describe('buildSharedDeps', () => {
         const [from, to, options] = call as [unknown, unknown, { recursive?: boolean; force?: boolean }];
         return from === '/repo/packages/custom-bundle/dist'
           && typeof to === 'string'
-          && to.includes('/apps/cli/node_modules/@happier-dev/custom-bundle/')
+          && to.includes('/apps/cli/node_modules/@piggercode/custom-bundle/')
           && options.recursive === true
           && options.force === true;
       }),

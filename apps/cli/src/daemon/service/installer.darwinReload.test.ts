@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { resolveInstalledFirstPartyComponentPaths } from '@happier-dev/cli-common/firstPartyRuntime';
+import { resolveInstalledFirstPartyComponentPaths } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { withTempDir } from '@/testkit/fs/tempDir';
 import { previewDaemonServiceInstall } from './installer';

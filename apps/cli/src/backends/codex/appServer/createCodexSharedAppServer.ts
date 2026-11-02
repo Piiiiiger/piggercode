@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import { killProcessTree } from '@/agent/runtime/process/killProcessTree';
 import { logger } from '@/ui/logger';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import {
   createCodexAppServerClient,

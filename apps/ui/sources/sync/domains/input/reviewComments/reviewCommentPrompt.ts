@@ -1,4 +1,4 @@
-import type { WorkspaceAnchorResolutionV1 } from '@happier-dev/protocol';
+import type { WorkspaceAnchorResolutionV1 } from '@piggercode/protocol';
 
 import type { ReviewCommentAnchor, ReviewCommentDraft, ReviewCommentSnapshot } from './reviewCommentTypes';
 import {

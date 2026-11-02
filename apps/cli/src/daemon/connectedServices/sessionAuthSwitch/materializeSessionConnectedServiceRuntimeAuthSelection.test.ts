@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { PassThrough, Writable } from 'node:stream';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildConnectedServiceCredentialRecord, type ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import type { ApiClient } from '@/api/api';
 import type { TrackedSession } from '@/daemon/types';

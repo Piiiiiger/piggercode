@@ -3,7 +3,7 @@ import {
     STRUCTURED_QUESTION_LIMITS,
     StructuredQuestionAnswersV1Schema,
     normalizeStructuredQuestionDescriptors,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type RecordLike = Record<string, unknown>;
 

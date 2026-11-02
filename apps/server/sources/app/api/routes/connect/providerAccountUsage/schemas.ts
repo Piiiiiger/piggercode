@@ -9,7 +9,7 @@ import {
     ProviderAccountSubscriptionV1Schema,
     SealedProviderAccountUsageSnapshotV1Schema,
     buildProviderAccountUsageRecordId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import type { ProviderAccountUsagePayloadMode, ProviderAccountUsageStatus } from "./types";
 
 export const ProviderAccountUsagePayloadModeSchema = z.enum([

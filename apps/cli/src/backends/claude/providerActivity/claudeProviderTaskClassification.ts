@@ -1,4 +1,4 @@
-import type { BackgroundTaskKindV1 } from '@happier-dev/protocol';
+import type { BackgroundTaskKindV1 } from '@piggercode/protocol';
 
 /**
  * Claude provider-task classification vocabulary (PLAN 4.9.1 / 4.9.2).

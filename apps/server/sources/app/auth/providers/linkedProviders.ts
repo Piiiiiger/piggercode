@@ -1,7 +1,7 @@
 import { findIdentityProviderById } from "@/app/auth/providers/identityProviders/registry";
-import type { LinkedProvider } from "@happier-dev/protocol";
+import type { LinkedProvider } from "@piggercode/protocol";
 
-export type { LinkedProvider } from "@happier-dev/protocol";
+export type { LinkedProvider } from "@piggercode/protocol";
 
 export async function fetchLinkedProvidersForAccount(params: {
     tx: {

@@ -1,4 +1,4 @@
-import { isClaudeAsyncAgentLaunchToolResult } from '@happier-dev/protocol';
+import { isClaudeAsyncAgentLaunchToolResult } from '@piggercode/protocol';
 
 import type { ToolCall, ToolCallMessage } from '@/sync/domains/messages/messageTypes';
 

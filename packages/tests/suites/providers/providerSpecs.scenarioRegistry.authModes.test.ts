@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { E2eCliProviderScenarioRegistryV1Schema } from '@happier-dev/protocol';
+import { E2eCliProviderScenarioRegistryV1Schema } from '@piggercode/protocol';
 
 describe('providers: cli provider scenario registry (auth modes)', () => {
   it('preserves tiersByAuthMode when provided', () => {

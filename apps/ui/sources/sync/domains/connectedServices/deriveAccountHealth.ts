@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialHealthStatusV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialHealthStatusV1 } from '@piggercode/protocol';
 
 import type { MeterTone } from '@/components/ui/lists/MeterBar';
 

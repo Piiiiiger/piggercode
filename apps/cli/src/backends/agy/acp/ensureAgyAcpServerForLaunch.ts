@@ -1,5 +1,5 @@
-import type { AccountSettings } from '@happier-dev/protocol';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import { resolveExistingAgyAcpManagedBinPath } from '@/capabilities/deps/agyAcp';
 import { ensureRuntimeInstallablesForLaunch } from '@/installables/runtime/ensureRuntimeInstallablesForLaunch';

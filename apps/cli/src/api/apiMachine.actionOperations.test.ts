@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ACTION_OPERATION_RPC_METHODS_V1 } from '@happier-dev/protocol';
+import { ACTION_OPERATION_RPC_METHODS_V1 } from '@piggercode/protocol';
 import type { Machine } from '@/api/types';
 
 import { ApiMachineClient } from './apiMachine';

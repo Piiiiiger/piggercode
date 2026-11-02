@@ -2,7 +2,7 @@ import type { ProviderAttachEligibility } from '@/backends/types';
 import {
   resolvePersistedCodexRuntimeIdentity,
   resolvePersistedCodexVendorSessionId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export function evaluateCodexProviderAttachEligibility(params: Readonly<{
   metadata: Record<string, unknown>;

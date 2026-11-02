@@ -198,20 +198,20 @@ test('compareVersions orders preview prereleases by numeric run number', () => {
 
 test('resolveNpmPackageNameOverride uses fallback for invalid overrides', () => {
   assert.equal(
-    resolveNpmPackageNameOverride({ envValue: '@company/happier-cli', fallback: '@happier-dev/cli' }),
+    resolveNpmPackageNameOverride({ envValue: '@company/happier-cli', fallback: '@piggercode/cli' }),
     '@company/happier-cli',
   );
   assert.equal(
-    resolveNpmPackageNameOverride({ envValue: '../evil', fallback: '@happier-dev/cli' }),
-    '@happier-dev/cli',
+    resolveNpmPackageNameOverride({ envValue: '../evil', fallback: '@piggercode/cli' }),
+    '@piggercode/cli',
   );
   assert.equal(
-    resolveNpmPackageNameOverride({ envValue: '@scope/../evil', fallback: '@happier-dev/cli' }),
-    '@happier-dev/cli',
+    resolveNpmPackageNameOverride({ envValue: '@scope/../evil', fallback: '@piggercode/cli' }),
+    '@piggercode/cli',
   );
   assert.equal(
-    resolveNpmPackageNameOverride({ envValue: '', fallback: '@happier-dev/cli' }),
-    '@happier-dev/cli',
+    resolveNpmPackageNameOverride({ envValue: '', fallback: '@piggercode/cli' }),
+    '@piggercode/cli',
   );
 });
 
@@ -265,7 +265,7 @@ test('readNpmDistTagVersion resolves npm.cmd shims on Windows', async () => {
   try {
     await withPlatform('win32', async () => {
       const version = readNpmDistTagVersion({
-        packageName: '@happier-dev/cli',
+        packageName: '@piggercode/cli',
         distTag: 'latest',
         cwd: fixture.dir,
         env: {
@@ -288,7 +288,7 @@ test('installRuntimeFromNpm resolves npm.cmd shims on Windows', async () => {
       const runtimeDir = join(fixture.dir, 'runtime');
       const result = installRuntimeFromNpm({
         runtimeDir,
-        spec: '@happier-dev/cli@1.2.3',
+        spec: '@piggercode/cli@1.2.3',
         cwd: fixture.dir,
         env: {
           PATH: fixture.binDir,

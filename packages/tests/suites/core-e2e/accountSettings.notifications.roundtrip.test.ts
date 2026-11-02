@@ -6,7 +6,7 @@ import {
   accountSettingsParse,
   getNotificationsSettingsV1FromAccountSettings,
   resolveNotificationChannelsV1FromAccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

@@ -1,7 +1,7 @@
 import type {
   ConnectedServiceBindingsV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function buildConnectedServiceSwitchContinuationAttemptId(input: Readonly<{
   action: 'hot_applied' | 'restart_requested';

@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { FeatureId, SettingDefinitionMap } from '@happier-dev/protocol';
+import type { FeatureId, SettingDefinitionMap } from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/registry/registryCore';
 import type { TranslationKeyNoParams } from '@/text';

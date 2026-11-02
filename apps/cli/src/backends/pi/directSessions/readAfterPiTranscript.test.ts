@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import type { DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionsSource } from '@piggercode/protocol';
 
 import { decodePiForwardCursor, encodePiForwardCursor } from './pagePiTranscript';
 import { readAfterPiTranscript } from './readAfterPiTranscript';

@@ -156,7 +156,7 @@ test('installed SwiftBar assets resolve server-scoped daemon state without HAPPI
     fakeHome,
     'runtime',
     'node_modules',
-    '@happier-dev',
+    '@piggercode',
     'stack',
     'scripts',
     'utils'
@@ -279,7 +279,7 @@ test('installed SwiftBar assets prefer the stack repo helper from HAPPIER_STACK_
     fakeHome,
     'runtime',
     'node_modules',
-    '@happier-dev',
+    '@piggercode',
     'stack',
     'scripts',
     'utils',

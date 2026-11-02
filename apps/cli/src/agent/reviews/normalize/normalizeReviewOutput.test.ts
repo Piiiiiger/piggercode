@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ReviewFindingsV2Schema } from '@happier-dev/protocol';
+import { ReviewFindingsV2Schema } from '@piggercode/protocol';
 
 import { normalizeReviewOutput } from './normalizeReviewOutput';
 import { normalizeStrictJsonReviewOutput } from './normalizeStrictJsonReviewOutput';

@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 
-import { ActionOperationDomainRefV1Schema } from '@happier-dev/protocol';
+import { ActionOperationDomainRefV1Schema } from '@piggercode/protocol';
 import type {
   ActionOperationDomainRefV1,
   ActionOperationProgressV1,
   ActionOperationSnapshotV1,
-} from '@happier-dev/protocol';
-import type { ActionExecuteResult } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import type { ActionExecuteResult } from '@piggercode/protocol';
 
 import type { ActionOperationStore } from './actionOperationStore';
 import type {

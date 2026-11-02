@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConnectedServiceIdSchema } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema } from '@piggercode/protocol';
 
 const ioMock = vi.hoisted(() => vi.fn((_url: string, _options: { auth?: Record<string, unknown> }) => ({
   on: vi.fn(),

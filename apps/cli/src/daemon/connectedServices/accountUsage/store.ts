@@ -9,7 +9,7 @@ import {
   type ProviderAccountUsageRecordKeyV1,
   type ProviderAccountUsageSnapshotV1,
   type ProviderAccountUsageOrganizationContext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { computeProviderAccountUsageSnapshotMaterialRevision } from './fingerprint';
 

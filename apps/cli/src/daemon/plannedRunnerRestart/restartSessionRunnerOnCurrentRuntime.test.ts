@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { RestartAllSessionRunnersResultV1Schema, RestartSessionRunnerResultV1Schema } from '@happier-dev/protocol';
+import { RestartAllSessionRunnersResultV1Schema, RestartSessionRunnerResultV1Schema } from '@piggercode/protocol';
 
 import type { TrackedSession } from '@/daemon/types';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';

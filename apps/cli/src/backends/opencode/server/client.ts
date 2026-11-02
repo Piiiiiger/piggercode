@@ -1,6 +1,6 @@
 import { logger } from '@/ui/logger';
-import { normalizeOpenCodeCliGeneration } from '@happier-dev/agents';
-import { normalizeOpenCodeAppSkills } from '@happier-dev/protocol';
+import { normalizeOpenCodeCliGeneration } from '@piggercode/agents';
+import { normalizeOpenCodeAppSkills } from '@piggercode/protocol';
 import type { MessageBuffer } from '@/ui/ink/messageBuffer';
 import {
   OPEN_CODE_BROKER_LOAD_NONCE_ENV,

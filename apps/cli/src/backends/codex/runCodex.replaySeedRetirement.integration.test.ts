@@ -3,8 +3,8 @@ import {
   SESSION_CONFIG_OPTIONS_STATE_KEY,
   SESSION_MODELS_STATE_KEY,
   SESSION_MODES_STATE_KEY,
-} from '@happier-dev/agents';
-import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@happier-dev/protocol/rpc';
+} from '@piggercode/agents';
+import { RPC_ERROR_CODES, RPC_ERROR_MESSAGES } from '@piggercode/protocol/rpc';
 
 import type { Credentials } from '@/persistence';
 import {

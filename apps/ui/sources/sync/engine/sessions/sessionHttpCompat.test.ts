@@ -1,4 +1,4 @@
-import { V2SessionRecordSchema } from '@happier-dev/protocol';
+import { V2SessionRecordSchema } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { fetchSessionListPageCompat, parseCompatSessionByIdResponse } from './sessionHttpCompat';

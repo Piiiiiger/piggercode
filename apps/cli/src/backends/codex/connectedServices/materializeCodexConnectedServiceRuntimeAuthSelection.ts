@@ -1,6 +1,6 @@
-import { readSessionMetadataRuntimeDescriptor } from '@happier-dev/agents';
-import { ConnectedServiceCredentialRecordV1Schema, SessionConnectedServiceAuthApplyGenerationResponseV1Schema } from '@happier-dev/protocol';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { readSessionMetadataRuntimeDescriptor } from '@piggercode/agents';
+import { ConnectedServiceCredentialRecordV1Schema, SessionConnectedServiceAuthApplyGenerationResponseV1Schema } from '@piggercode/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { join } from 'node:path';
 
 import type { ConnectedServiceRuntimeAuthSelectionMaterializer } from '@/daemon/connectedServices/sessionAuthSwitch/runtimeAuthSelectionMaterializerTypes';

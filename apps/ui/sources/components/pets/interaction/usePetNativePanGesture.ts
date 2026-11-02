@@ -8,7 +8,7 @@ import Animated, {
     withSpring,
 } from 'react-native-reanimated';
 
-import type { PetAnimationStateV1 } from '@happier-dev/protocol';
+import type { PetAnimationStateV1 } from '@piggercode/protocol';
 
 import {
     PET_POSITION_SPRING_DAMPING_FRACTION,

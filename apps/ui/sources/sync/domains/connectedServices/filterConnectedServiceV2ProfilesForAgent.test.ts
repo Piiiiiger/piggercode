@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getAgentMediaCapabilities, UNSUPPORTED_AGENT_SESSION_CAPABILITIES, type AgentCore } from '@happier-dev/agents';
+import { getAgentMediaCapabilities, UNSUPPORTED_AGENT_SESSION_CAPABILITIES, type AgentCore } from '@piggercode/agents';
 
 import { filterConnectedServiceV2ProfilesForAgent } from './filterConnectedServiceV2ProfilesForAgent';
 

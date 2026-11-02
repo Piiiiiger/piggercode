@@ -1,4 +1,4 @@
-import type { PromptInvocationBehaviorV1 } from '@happier-dev/protocol';
+import type { PromptInvocationBehaviorV1 } from '@piggercode/protocol';
 
 export type PromptInvocationComposerSendAction = 'insert' | 'send';
 

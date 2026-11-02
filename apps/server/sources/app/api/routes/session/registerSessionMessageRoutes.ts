@@ -10,7 +10,7 @@ import {
     SessionTranscriptObservationProvenanceV1Schema,
     isSessionAgentTransitionDividerLocalId,
     type SessionMessageRole,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { parseSessionMessageRole } from "@/app/session/messageRole/resolveSessionMessageRole";
 import { createSessionMessage } from "@/app/session/sessionWriteService";
 import { parseSessionMessageSidechainId } from "@/app/session/parseSessionMessageSidechainId";

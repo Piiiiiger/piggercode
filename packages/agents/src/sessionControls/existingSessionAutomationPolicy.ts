@@ -3,7 +3,7 @@ import {
   buildBackendTargetKey,
   readAcpConfiguredBackendV1FromMetadata,
   type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { resolveAgentIdFromSessionMetadata } from '../resolveAgentIdFromSessionMetadata.js';
 import type { AgentId } from '../types.js';
 import {

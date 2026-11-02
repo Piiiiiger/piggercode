@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
     ConnectedServiceAuthGroupPolicyPatchV1Schema as ProtocolConnectedServiceAuthGroupPolicyPatchV1Schema,
     ConnectedServiceAuthGroupPolicyV1Schema as ProtocolConnectedServiceAuthGroupPolicyV1Schema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 export const ConnectedServiceAuthGroupPolicyV1Schema = ProtocolConnectedServiceAuthGroupPolicyV1Schema;
 

@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { describe, expect, it } from 'vitest';
-import type { SettingDefinitionMap } from '@happier-dev/protocol';
-import { getAllProviderSettingsDefinitions } from '@happier-dev/agents';
+import type { SettingDefinitionMap } from '@piggercode/protocol';
+import { getAllProviderSettingsDefinitions } from '@piggercode/agents';
 
 import { AGENT_IDS } from '@/agents/catalog/catalog';
 import type { ProviderSettingsPlugin } from '@/agents/providers/shared/providerSettingsPlugin';
@@ -138,7 +138,7 @@ describe('getProviderSettingsPlugin', () => {
         expect(getProviderSettingsPlugin('CLAUDE' as any)).not.toBeNull();
     });
 
-    it('covers shared provider-settings definitions from @happier-dev/agents', () => {
+    it('covers shared provider-settings definitions from @piggercode/agents', () => {
         for (const def of getAllProviderSettingsDefinitions()) {
             const plugin = getProviderSettingsPlugin(def.providerId);
             expect(plugin, `missing UI provider settings plugin for ${def.providerId}`).not.toBeNull();

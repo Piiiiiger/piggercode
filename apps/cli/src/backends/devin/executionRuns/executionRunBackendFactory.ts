@@ -1,4 +1,4 @@
-import { getAgentModelConfig } from '@happier-dev/agents';
+import { getAgentModelConfig } from '@piggercode/agents';
 
 import { createDevinBackend } from '@/backends/devin/acp/backend';
 import { permissionModeForExecutionRunPolicy } from '@/agent/executionRuns/policy/permissionModeForExecutionRunPolicy';

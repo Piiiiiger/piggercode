@@ -8,8 +8,8 @@ import { resolveServerReleaseAssets, resolveUiWebReleaseAssets } from '../src/re
 import { extractReleaseArchiveIntoCache } from '../src/archiveCache.mjs';
 import { resolveRunnerCacheRoot, resolveServerRunnerTarget } from '../src/target.mjs';
 import { parseRunnerInvocation } from '../src/runnerConfig.mjs';
-import { downloadVerifiedReleaseAssetBundle } from '@happier-dev/release-runtime/verifiedDownload';
-import { fetchGitHubReleaseByTag } from '@happier-dev/release-runtime/github';
+import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
+import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
 
 const OWNER = 'happier-dev';
 const REPO = 'happier';

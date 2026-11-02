@@ -1,4 +1,4 @@
-import { SessionSynopsisV1Schema } from '@happier-dev/protocol';
+import { SessionSynopsisV1Schema } from '@piggercode/protocol';
 
 import { extractSemanticTranscriptItem } from '../services/transcript/extractSemanticTranscriptItem';
 import type { TranscriptRawRow } from '../services/transcript/semanticTranscriptItem';

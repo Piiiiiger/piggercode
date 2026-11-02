@@ -5,7 +5,7 @@ import {
     buildSessionAgentActivityHeadline,
     type SessionAgentActivityEntryV1,
     type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     createDeferred,

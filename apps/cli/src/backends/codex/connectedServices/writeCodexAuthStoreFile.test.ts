@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { buildConnectedServiceCredentialRecord } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord } from '@piggercode/protocol';
 import { writeCodexAuthStoreFile } from './writeCodexAuthStoreFile';
 
 describe('writeCodexAuthStoreFile', () => {

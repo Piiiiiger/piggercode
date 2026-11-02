@@ -1,4 +1,4 @@
-import { isExecutionRunActive, type ExecutionRunPublicState } from '@happier-dev/protocol';
+import { isExecutionRunActive, type ExecutionRunPublicState } from '@piggercode/protocol';
 import * as React from 'react';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';

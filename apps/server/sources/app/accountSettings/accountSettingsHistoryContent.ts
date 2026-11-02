@@ -1,4 +1,4 @@
-import type { AccountSettingsStoredContentEnvelope } from "@happier-dev/protocol";
+import type { AccountSettingsStoredContentEnvelope } from "@piggercode/protocol";
 
 import { openPlainAccountSettingsDbValue } from "@/app/encryption/accountSettingsStorage";
 

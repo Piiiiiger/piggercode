@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { SessionDraftDocumentV1 } from '@happier-dev/protocol';
+import type { SessionDraftDocumentV1 } from '@piggercode/protocol';
 
 import { createExistingSessionDraftSemanticValues } from '@/sync/domains/input/drafts/existingSessionDraftSemanticValues';
 import {

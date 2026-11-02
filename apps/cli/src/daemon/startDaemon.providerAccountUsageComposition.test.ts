@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { ConnectedServiceUsageSourceV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceUsageSourceV1 } from '@piggercode/protocol';
 
 import { activateConnectedServiceQuotaAutomationAfterProviderAccountUsageHydration } from './connectedServices/accountUsage/startupActivation';
 

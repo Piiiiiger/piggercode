@@ -1,4 +1,4 @@
-import type { ConnectedServiceCredentialRevisionV1, ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceCredentialRevisionV1, ConnectedServiceId } from '@piggercode/protocol';
 
 import type { ConnectedServiceAccountTransitionVerificationResult } from './connectedServiceAccountTransition';
 

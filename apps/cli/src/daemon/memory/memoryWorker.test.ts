@@ -221,7 +221,7 @@ describe('memoryWorker', () => {
         resetActiveAccountSettingsSnapshotForTests,
         setActiveAccountSettingsSnapshot,
       } = await import('@/settings/accountSettings/activeAccountSettingsSnapshot');
-      const { accountSettingsParse } = await import('@happier-dev/protocol');
+      const { accountSettingsParse } = await import('@piggercode/protocol');
       resetActiveAccountSettingsSnapshotForTests();
       await writeMemorySettingsToDisk({
         v: 1,

@@ -1,6 +1,6 @@
 import type { Metadata } from '@/api/types';
 import type { FailTurnInput, SessionTurnLifecycle } from '@/agent/runtime/session/turn/types';
-import type { SessionRuntimeIssueV1, SessionTurnsProjectionV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueV1, SessionTurnsProjectionV1 } from '@piggercode/protocol';
 import {
     buildCodexAppServerRollbackEvidenceSet,
     resolveCodexAppServerRollbackPlan,
@@ -8,7 +8,7 @@ import {
     type CodexAppServerRollbackEvidenceEntry,
     type CodexAppServerRollbackEvidenceSet,
 } from './resolveCodexAppServerRollbackPlan';
-import type { SessionRollbackTarget } from '@happier-dev/protocol';
+import type { SessionRollbackTarget } from '@piggercode/protocol';
 
 const CODEX_APP_SERVER_SESSION_TURN_EVIDENCE_SESSION_ID = 'codex-app-server';
 const CODEX_APP_SERVER_BACKEND_ID = 'codex-app-server';

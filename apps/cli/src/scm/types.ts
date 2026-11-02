@@ -81,7 +81,7 @@ import type {
     ConnectedServiceId,
     WorkspaceCheckoutKind,
     WorkspaceLocationScm,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmSourceControllerCheckoutMaterializationRequest } from './sourceController/checkoutMaterialization';
 import type {

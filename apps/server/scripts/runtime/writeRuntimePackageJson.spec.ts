@@ -28,11 +28,11 @@ describe('writeRuntimePackageJson', () => {
     await writeFile(
       join(projectDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/server',
+        name: '@piggercode/server',
         version: '0.1.2',
         type: 'module',
         scripts: { build: 'tsc --noEmit' },
-        dependencies: { fastify: '^5.0.0', '@happier-dev/agents': '0.0.0', 'privacy-kit': '^0.0.25' },
+        dependencies: { fastify: '^5.0.0', '@piggercode/agents': '0.0.0', 'privacy-kit': '^0.0.25' },
       }) + '\n',
       'utf-8',
     );
@@ -64,13 +64,13 @@ describe('writeRuntimePackageJson', () => {
 
     const written = JSON.parse(await readFile(join(destRoot, 'package.json'), 'utf-8'));
     expect(written).toEqual({
-      name: '@happier-dev/server',
+      name: '@piggercode/server',
       version: '0.1.2',
       private: true,
       type: 'module',
       dependencies: {
         fastify: '^5.0.0',
-        '@happier-dev/agents': '0.0.0',
+        '@piggercode/agents': '0.0.0',
         'privacy-kit': '^0.0.25',
         '@noble/curves': '^1.9.0',
         '@stablelib/base64': '^2.0.1',

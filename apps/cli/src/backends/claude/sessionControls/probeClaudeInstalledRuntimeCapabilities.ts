@@ -1,8 +1,8 @@
 import { spawn } from 'node:child_process';
 import { statSync } from 'node:fs';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
-import { AsyncTtlCache } from '@happier-dev/protocol';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
+import { AsyncTtlCache } from '@piggercode/protocol';
 
 import { isClaudeCliJavaScriptFile } from '@/backends/claude/utils/resolveClaudeCliPath';
 import { requireJavaScriptRuntimeExecutable } from '@/runtime/js/requireJavaScriptRuntimeExecutable';

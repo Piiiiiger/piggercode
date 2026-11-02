@@ -1,7 +1,7 @@
 import type {
     SessionRuntimeActivityProjection,
     SessionRuntimeActivitySnapshot,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import type { Tx } from "@/storage/inTx";
 

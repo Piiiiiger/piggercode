@@ -7,7 +7,7 @@ import {
   V2SessionListResponseSchema,
   CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY,
   readConnectedServiceReaderSupport,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveApiHotEndpointRateLimit } from "@/app/api/utils/apiRateLimitCatalog";
 import { PROFILE_SELECT, toShareUserProfile } from "@/app/share/types";
 import { db } from "@/storage/db";

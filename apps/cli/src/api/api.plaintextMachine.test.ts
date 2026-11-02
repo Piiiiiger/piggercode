@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { deriveBoxPublicKeyFromSeed, encodePlainMachineStoredContent, MACHINE_PLAIN_DATA_KEY_MARKER } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed, encodePlainMachineStoredContent, MACHINE_PLAIN_DATA_KEY_MARKER } from '@piggercode/protocol';
 import { ApiClient } from './api';
 import { encodeBase64, encrypt } from './encryption';
 

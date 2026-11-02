@@ -7,7 +7,7 @@ import {
     SESSION_PERMISSION_MODES,
     SessionAgentSpawnPolicyV1Schema,
     type SessionAgentSpawnPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { DropdownMenu, type DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
 import { Switch } from '@/components/ui/forms/Switch';

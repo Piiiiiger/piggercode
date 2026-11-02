@@ -6,16 +6,16 @@ import { runYarnCommand } from './lib/runYarnCommand.ts';
 
 export const ROOT_TYPECHECK_COMMANDS = [
   { id: 'privacy-kit', args: ['workspace', 'privacy-kit', 'typecheck'] },
-  { id: 'protocol', args: ['workspace', '@happier-dev/protocol', 'typecheck'] },
-  { id: 'transfers', args: ['workspace', '@happier-dev/transfers', 'typecheck'] },
-  { id: 'agents', args: ['workspace', '@happier-dev/agents', 'typecheck'] },
-  { id: 'cli-common', args: ['workspace', '@happier-dev/cli-common', 'typecheck'] },
-  { id: 'connection-supervisor', args: ['workspace', '@happier-dev/connection-supervisor', 'typecheck'] },
-  { id: 'bootstrap', args: ['workspace', '@happier-dev/bootstrap', 'typecheck'] },
-  { id: 'app', args: ['workspace', '@happier-dev/app', 'typecheck'] },
-  { id: 'cli', args: ['workspace', '@happier-dev/cli', 'typecheck'] },
+  { id: 'protocol', args: ['workspace', '@piggercode/protocol', 'typecheck'] },
+  { id: 'transfers', args: ['workspace', '@piggercode/transfers', 'typecheck'] },
+  { id: 'agents', args: ['workspace', '@piggercode/agents', 'typecheck'] },
+  { id: 'cli-common', args: ['workspace', '@piggercode/cli-common', 'typecheck'] },
+  { id: 'connection-supervisor', args: ['workspace', '@piggercode/connection-supervisor', 'typecheck'] },
+  { id: 'bootstrap', args: ['workspace', '@piggercode/bootstrap', 'typecheck'] },
+  { id: 'app', args: ['workspace', '@piggercode/app', 'typecheck'] },
+  { id: 'cli', args: ['workspace', '@piggercode/cli', 'typecheck'] },
   { id: 'server', args: ['--cwd', 'apps/server', 'typecheck'] },
-  { id: 'tests', args: ['workspace', '@happier-dev/tests', 'typecheck'] },
+  { id: 'tests', args: ['workspace', '@piggercode/tests', 'typecheck'] },
 ] as const satisfies readonly CommandSuiteEntry[];
 
 export interface RunRootTypecheckOptions {

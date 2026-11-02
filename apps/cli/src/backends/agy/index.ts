@@ -1,10 +1,10 @@
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import type { AgentCatalogEntry } from '@/backends/types';
 import { createCatalogDefinedAcpEntry } from '@/agent/acp/catalog/createCatalogDefinedAcpEntry';
 import { createCatalogDefinedAcpBackend } from '@/agent/acp/catalog/createCatalogDefinedAcpBackend';
 import { createAgyAcpBackend } from './acp/backend';
-import type { AccountSettings } from '@happier-dev/protocol';
+import type { AccountSettings } from '@piggercode/protocol';
 import { agyDaemonSpawnHooks } from './daemon/spawnHooks';
 import { createAgyConnectedServicesMaterializer } from './connectedServices/createAgyConnectedServicesMaterializer';
 import { agyConnectedServiceStateSharingDescriptor } from './connectedServices/agyConnectedServiceStateSharingDescriptor';

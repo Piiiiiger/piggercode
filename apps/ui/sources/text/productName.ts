@@ -10,7 +10,7 @@ const UPSTREAM_CLI_COMMAND_NAME = 'happier';
 const LONG_NAME = /Happier[ -]Coder(?![A-Za-z0-9])/g;
 const PRODUCT_NAME = /(^|[^A-Za-z0-9])Happier(?![A-Za-z0-9])(?![ -](?:Voice|Cloud)(?![A-Za-z0-9]))/g;
 // Lowercase `happier` used as a command. Paths (`~/.happier`, `.happier/uploads`), links
-// (`happier://`), packages (`@happier-dev/cli`) and domains (`happier.dev`) keep their names.
+// (`happier://`), packages (`@piggercode/cli`) and domains (`happier.dev`) keep their names.
 const CLI_COMMAND_NAME = /(^|[^A-Za-z0-9_./@~-])happier(?![A-Za-z0-9_/:-])(?!\.[A-Za-z0-9])/g;
 
 /** The product name of this build (`extra.app.productName` from app.config.js). */

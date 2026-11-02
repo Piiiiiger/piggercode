@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { SessionWorkStateV1 } from '@happier-dev/protocol';
+import type { SessionWorkStateV1 } from '@piggercode/protocol';
 
 import { createClaudeGoalWorkStateSource } from './claudeGoalSource';
 

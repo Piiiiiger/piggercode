@@ -2,10 +2,10 @@ import type {
     ScmRemoteTarget,
     ScmRemoteRequest,
     ScmRemoteResponse,
-} from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
-import { parseScmUpstreamRef } from '@happier-dev/protocol';
-import { normalizeScmRemoteRequest } from '@happier-dev/protocol';
+} from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
+import { parseScmUpstreamRef } from '@piggercode/protocol';
+import { normalizeScmRemoteRequest } from '@piggercode/protocol';
 import { buildScmNonInteractiveEnv } from '../../shared/nonInteractiveEnv';
 import type { ScmBackendContext } from '../../../types';
 import { runScmCommand } from '../../../runtime';

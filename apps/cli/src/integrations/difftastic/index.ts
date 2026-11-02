@@ -7,7 +7,7 @@ import { existsSync } from 'node:fs';
 import { join, resolve } from 'path';
 import { platform } from 'os';
 import { projectPath } from '@/projectPath';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 import { ensureOptionalRuntime } from '@/installables/runtime/optionalRuntimeInstallables';
 import { resolveCliRuntimeAssetPath } from '@/runtime/assets/resolveCliRuntimeAssetPath';
 

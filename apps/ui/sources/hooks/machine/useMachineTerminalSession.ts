@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { DaemonTerminalLaunchIntent } from '@happier-dev/protocol';
+import type { DaemonTerminalLaunchIntent } from '@piggercode/protocol';
 
 import { createEmptyTerminalSurfaceState, readTerminalSurfaceState } from '@/components/sessions/terminal/terminalSurfaceStateCache';
 import {

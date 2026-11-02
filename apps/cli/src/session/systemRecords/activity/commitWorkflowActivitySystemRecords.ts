@@ -2,7 +2,7 @@ import type {
   SessionBackgroundTaskRecordV1,
   SessionSystemRecordUpsertRequest,
   SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type {
   SessionEncryptionContext,

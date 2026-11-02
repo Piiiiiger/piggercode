@@ -3,7 +3,7 @@ import type { ToolCall, Message } from '@/sync/domains/messages/messageTypes';
 import { t } from '@/text';
 import { ICON_TODO } from '../icons';
 import type { KnownToolDefinition } from '../_types';
-import { TodoResultV2Schema, TodoWriteInputV2Schema } from '@happier-dev/protocol';
+import { TodoResultV2Schema, TodoWriteInputV2Schema } from '@piggercode/protocol';
 
 export const coreTodoTools = {
     'TodoWrite': {

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { mkdir, readFile, realpath } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { buildBackendTargetKey } from '@happier-dev/protocol';
+import { buildBackendTargetKey } from '@piggercode/protocol';
 
 import { readCliAccessKey } from '../../src/testkit/cliAccessKey';
 import { CLAUDE_CODE_E2E_OAUTH_SCOPE, createConnectedServiceProfile, startConnectedServiceRecoveryTokenServer, type ConnectedServiceRecoveryTokenServer } from '../../src/testkit/connectedServicesRecovery';

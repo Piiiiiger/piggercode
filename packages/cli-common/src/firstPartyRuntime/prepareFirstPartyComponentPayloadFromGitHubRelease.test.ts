@@ -11,7 +11,7 @@ const {
   fetchGitHubReleaseByTagMock: vi.fn(),
 }));
 
-vi.mock('@happier-dev/release-runtime/github', () => ({
+vi.mock('@piggercode/release-runtime/github', () => ({
   fetchGitHubReleaseByTag: fetchGitHubReleaseByTagMock,
 }));
 

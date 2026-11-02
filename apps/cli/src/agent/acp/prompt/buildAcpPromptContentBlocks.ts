@@ -1,5 +1,5 @@
 import type { ContentBlock } from '@agentclientprotocol/sdk';
-import { sanitizeSessionUserMessageSendMeta } from '@happier-dev/protocol';
+import { sanitizeSessionUserMessageSendMeta } from '@piggercode/protocol';
 
 import { readTrustedSessionAttachmentLocalImages } from '@/session/attachments/resolveTrustedSessionAttachmentLocalImagePaths';
 

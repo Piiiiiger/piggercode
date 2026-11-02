@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ConnectedServiceAuthGroupPolicyV1Schema, type ConnectedServiceAuthGroupV1 } from '@happier-dev/protocol';
+import { ConnectedServiceAuthGroupPolicyV1Schema, type ConnectedServiceAuthGroupV1 } from '@piggercode/protocol';
 
 import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
 import {

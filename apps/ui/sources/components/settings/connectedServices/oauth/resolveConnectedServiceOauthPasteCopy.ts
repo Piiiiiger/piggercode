@@ -1,6 +1,6 @@
 import { t } from '@/text';
 
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export type ConnectedServiceOauthPasteCopy = Readonly<{
   connectWebDescription: string;

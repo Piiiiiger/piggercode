@@ -1,7 +1,7 @@
 import { getRandomBytes } from '@/platform/cryptoRandom';
 import { digest } from '@/platform/digest';
 import { encodeBase64 } from '@/encryption/base64';
-import { parseOauthAuthorizationResponse } from '@happier-dev/protocol';
+import { parseOauthAuthorizationResponse } from '@piggercode/protocol';
 
 export type PkceCodes = Readonly<{
   verifier: string;

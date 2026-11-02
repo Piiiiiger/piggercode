@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ConnectedServiceAuthGroupPolicyV1Schema } from '@happier-dev/protocol';
+import { ConnectedServiceAuthGroupPolicyV1Schema } from '@piggercode/protocol';
 
 import {
   DEFAULT_CONNECTED_SERVICE_AUTH_GROUP_POLICY_V1,

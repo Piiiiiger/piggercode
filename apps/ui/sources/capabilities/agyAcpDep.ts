@@ -1,5 +1,5 @@
 import type { CapabilitiesDetectRequest, CapabilityDetectResult, CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
-import { AGY_ACP_SERVER_DEP_ID } from '@happier-dev/protocol/installables';
+import { AGY_ACP_SERVER_DEP_ID } from '@piggercode/protocol/installables';
 
 export function getAgyAcpDetectResult(
     results: Partial<Record<CapabilityId, CapabilityDetectResult>> | null | undefined,

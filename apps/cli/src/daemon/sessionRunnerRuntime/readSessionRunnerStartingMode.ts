@@ -1,4 +1,4 @@
-import type { SessionRunnerStartingModeV1 } from '@happier-dev/protocol';
+import type { SessionRunnerStartingModeV1 } from '@piggercode/protocol';
 
 function normalizeString(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';

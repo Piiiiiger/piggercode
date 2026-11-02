@@ -56,45 +56,45 @@ test('CLI reload descriptors share the scoped runtime inventory and exclude gene
   await writeFile(
     join(cliDir, 'package.json'),
     JSON.stringify({
-      name: '@happier-dev/cli',
+      name: '@piggercode/cli',
       dependencies: {
-        '@happier-dev/agents': '0.0.0',
-        '@happier-dev/cli-common': '0.0.0',
-        '@happier-dev/connection-supervisor': '0.0.0',
-        '@happier-dev/protocol': '0.0.0',
-        '@happier-dev/release-runtime': '0.0.0',
-        '@happier-dev/transfers': '0.0.0',
+        '@piggercode/agents': '0.0.0',
+        '@piggercode/cli-common': '0.0.0',
+        '@piggercode/connection-supervisor': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
+        '@piggercode/transfers': '0.0.0',
       },
     }) + '\n',
     'utf-8',
   );
   await writeFile(
     join(agentsDir, 'package.json'),
-    JSON.stringify({ name: '@happier-dev/agents', dependencies: { '@happier-dev/protocol': '0.0.0' } }) + '\n',
+    JSON.stringify({ name: '@piggercode/agents', dependencies: { '@piggercode/protocol': '0.0.0' } }) + '\n',
     'utf-8',
   );
   await writeFile(
     join(cliCommonDir, 'package.json'),
     JSON.stringify({
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       dependencies: {
-        '@happier-dev/agents': '0.0.0',
-        '@happier-dev/protocol': '0.0.0',
-        '@happier-dev/release-runtime': '0.0.0',
+        '@piggercode/agents': '0.0.0',
+        '@piggercode/protocol': '0.0.0',
+        '@piggercode/release-runtime': '0.0.0',
       },
     }) + '\n',
     'utf-8',
   );
   await writeFile(
     join(connectionSupervisorDir, 'package.json'),
-    '{"name":"@happier-dev/connection-supervisor"}\n',
+    '{"name":"@piggercode/connection-supervisor"}\n',
     'utf-8',
   );
-  await writeFile(join(protocolDir, 'package.json'), '{"name":"@happier-dev/protocol"}\n', 'utf-8');
-  await writeFile(join(releaseRuntimeDir, 'package.json'), '{"name":"@happier-dev/release-runtime"}\n', 'utf-8');
+  await writeFile(join(protocolDir, 'package.json'), '{"name":"@piggercode/protocol"}\n', 'utf-8');
+  await writeFile(join(releaseRuntimeDir, 'package.json'), '{"name":"@piggercode/release-runtime"}\n', 'utf-8');
   await writeFile(
     join(transfersDir, 'package.json'),
-    '{"name":"@happier-dev/transfers","dependencies":{"@happier-dev/protocol":"0.0.0"}}\n',
+    '{"name":"@piggercode/transfers","dependencies":{"@piggercode/protocol":"0.0.0"}}\n',
     'utf-8',
   );
   for (const path of [

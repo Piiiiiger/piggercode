@@ -1,4 +1,4 @@
-import { buildBackendTargetKey, isBuiltInAgentTarget, type AcpCatalogSettingsV1, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, isBuiltInAgentTarget, type AcpCatalogSettingsV1, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/catalog/catalog';
 import { getAgentCore, isAgentId } from '@/agents/catalog/catalog';

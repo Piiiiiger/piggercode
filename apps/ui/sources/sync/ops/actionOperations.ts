@@ -7,7 +7,7 @@ import {
     type ActionOperationGetV1Response,
     type ActionOperationListV1Request,
     type ActionOperationListV1Response,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { createRpcCallError } from '@/sync/runtime/rpcErrors';

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_ERROR_CODES, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { createSocketIoAckTimeoutError } from '@/sync/runtime/socketIoAckTimeout';
 import { installVoiceAgentCommonModuleMocks } from './voiceAgentTestHelpers';
 
@@ -347,7 +347,7 @@ describe('DaemonVoiceAgentClient', () => {
   });
 
   it('forwards displayUserText separately from the execution payload when starting a turn stream', async () => {
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     vi.mocked(sessionRpcWithServerScope).mockResolvedValueOnce({ streamId: 'stream-1' } as any);
 
@@ -377,7 +377,7 @@ describe('DaemonVoiceAgentClient', () => {
   });
 
   it('uses the versioned stream-start method for exact outer-turn transcript custody', async () => {
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     vi.mocked(sessionRpcWithServerScope).mockResolvedValueOnce({ streamId: 'stream-1' } as any);
 
@@ -412,7 +412,7 @@ describe('DaemonVoiceAgentClient', () => {
   });
 
   it('fails closed before a legacy stream-start write when v2 transcript custody is unavailable', async () => {
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     vi.mocked(sessionRpcWithServerScope).mockRejectedValueOnce(
       Object.assign(new Error('RPC method not available'), {
@@ -447,7 +447,7 @@ describe('DaemonVoiceAgentClient', () => {
   });
 
   it('commits shortcut transcript custody through the versioned daemon writer method', async () => {
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     vi.mocked(sessionRpcWithServerScope).mockResolvedValueOnce({ ok: true } as any);
 
@@ -567,7 +567,7 @@ describe('DaemonVoiceAgentClient', () => {
       },
     };
 
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     vi.mocked(sessionRpcWithServerScope).mockImplementation(async (args: any) => {
       if (args?.method === SESSION_RPC_METHODS.EXECUTION_RUN_STREAM_START) {
@@ -612,7 +612,7 @@ describe('DaemonVoiceAgentClient', () => {
       },
     };
 
-    const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+    const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
     const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
     let readCount = 0;
     vi.mocked(sessionRpcWithServerScope).mockImplementation(async (args: any) => {
@@ -671,7 +671,7 @@ describe('DaemonVoiceAgentClient', () => {
         },
       };
 
-      const { SESSION_RPC_METHODS } = await import('@happier-dev/protocol/rpc');
+      const { SESSION_RPC_METHODS } = await import('@piggercode/protocol/rpc');
       const { sessionRpcWithServerScope } = await import('@/sync/runtime/orchestration/serverScopedRpc/serverScopedSessionRpc');
       vi.mocked(sessionRpcWithServerScope).mockImplementation(async (args: any) => {
         if (args?.method === SESSION_RPC_METHODS.EXECUTION_RUN_STREAM_START) {

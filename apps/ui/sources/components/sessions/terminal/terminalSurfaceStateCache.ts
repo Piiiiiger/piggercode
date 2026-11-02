@@ -1,4 +1,4 @@
-import type { DaemonTerminalStreamEventUrl } from '@happier-dev/protocol';
+import type { DaemonTerminalStreamEventUrl } from '@piggercode/protocol';
 
 export type TerminalSurfaceState = Readonly<{
     terminalId: string | null;

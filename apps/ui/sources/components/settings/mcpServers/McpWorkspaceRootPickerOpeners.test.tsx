@@ -7,7 +7,7 @@ import {
     installMcpServersCommonModuleMocks,
     resetMcpServersCommonModuleMockState,
 } from './mcpServersTestHelpers';
-import type { McpServerBindingV1 } from '@happier-dev/protocol';
+import type { McpServerBindingV1 } from '@piggercode/protocol';
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 

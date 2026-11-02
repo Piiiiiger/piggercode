@@ -23,7 +23,7 @@ import {
   type DaemonPetDiscoverResponseV1,
   type DaemonPetImportLocalPackageResponseV1,
   type DaemonPetReadPreviewAssetResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const run = createRunDirs({ runLabel: 'core' });
 const daemonStartupTimeoutMs = 90_000;

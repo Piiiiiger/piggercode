@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { SessionWorkStateGetResponseV1Schema } from '@happier-dev/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { SessionWorkStateGetResponseV1Schema } from '@piggercode/protocol';
 
 import {
   readFakeCodexAppServerRequestLog,
@@ -157,7 +157,7 @@ async function runCliSessionAction(params: Readonly<{
     args: [
       '-s',
       'workspace',
-      '@happier-dev/cli',
+      '@piggercode/cli',
       'dev',
       'session',
       'actions',

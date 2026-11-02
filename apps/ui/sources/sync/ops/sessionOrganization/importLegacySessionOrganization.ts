@@ -1,6 +1,6 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
 import { importLegacySessionOrganization as importLegacySessionOrganizationApi } from '@/sync/api/session/sessionOrganizationApi';
-import type { ImportLegacySessionOrganizationRequest } from '@happier-dev/protocol';
+import type { ImportLegacySessionOrganizationRequest } from '@piggercode/protocol';
 
 import { fetchAndApplySessionOrganizationSnapshot } from './fetchSessionOrganizationSnapshot';
 import { prepareSessionOrganizationDisplayEnvelopeForWrite } from './sessionOrganizationDisplayEnvelope';

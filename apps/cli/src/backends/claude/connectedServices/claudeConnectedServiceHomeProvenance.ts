@@ -5,7 +5,7 @@ import {
   ConnectedServiceCredentialRevisionV1Schema,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceCredentialRevisionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';
 

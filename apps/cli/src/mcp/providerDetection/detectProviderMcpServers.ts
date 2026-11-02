@@ -1,4 +1,4 @@
-import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1, McpDetectedProviderV1 } from '@happier-dev/protocol';
+import type { DaemonMcpServersDetectWarningV1, DetectedMcpServerV1, McpDetectedProviderV1 } from '@piggercode/protocol';
 
 import { detectClaudeMcpServers } from '@/backends/claude/mcp/detectClaudeMcpServers';
 import { detectCodexMcpServers } from '@/backends/codex/mcp/detectCodexMcpServers';

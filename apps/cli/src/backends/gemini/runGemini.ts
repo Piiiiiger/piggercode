@@ -11,7 +11,7 @@ import os from 'node:os';
 import { resolve } from 'node:path';
 
 import { logger } from '@/ui/logger';
-import { isConditionalPendingSteerClaim } from '@happier-dev/protocol';
+import { isConditionalPendingSteerClaim } from '@piggercode/protocol';
 import { resolveHasTTY } from '@/ui/tty/resolveHasTTY';
 import { Credentials } from '@/persistence';
 import { createSessionMetadata } from '@/agent/runtime/createSessionMetadata';
@@ -61,7 +61,7 @@ import { shouldSendReadyPushNotification } from '@/settings/notifications/notifi
 import { resolveAttachedRunRuntimeContext } from '@/agent/runtime/resolveAttachedRunRuntimeContext';
 import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { startSessionHeartbeatLoop } from '@/agent/runtime/session/startSessionHeartbeatLoop';
-import { readNewestSessionModelsMetadataStateV1 } from '@happier-dev/agents';
+import { readNewestSessionModelsMetadataStateV1 } from '@piggercode/agents';
 
 import type { GeminiBackendResult } from '@/backends/gemini/acp/backend';
 import type { AcpTurnOutcome } from '@/agent/acp/backend/turn/_types';

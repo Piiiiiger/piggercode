@@ -8,7 +8,7 @@ import {
     type AccountPetDeleteResponseV1,
     type AccountPetLibraryEntryV1,
     type PetAssetMediaTypeV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import type { PrivateFilesBackend } from "@/storage/privateFiles/privateFiles";
 

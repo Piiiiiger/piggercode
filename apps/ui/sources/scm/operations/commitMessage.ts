@@ -1,4 +1,4 @@
-import { SCM_COMMIT_MESSAGE_MAX_LENGTH } from '@happier-dev/protocol';
+import { SCM_COMMIT_MESSAGE_MAX_LENGTH } from '@piggercode/protocol';
 
 export type CommitMessageValidationResult =
     | { ok: true; message: string }

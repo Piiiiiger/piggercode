@@ -1,4 +1,4 @@
-import type { SessionUsageLimitRecoveryV1 } from '@happier-dev/protocol';
+import type { SessionUsageLimitRecoveryV1 } from '@piggercode/protocol';
 
 export const USAGE_LIMIT_RECOVERY_MAX_ATTEMPTS_EXHAUSTED_ERROR =
   'usage_limit_recovery_max_attempts_exhausted' as const;

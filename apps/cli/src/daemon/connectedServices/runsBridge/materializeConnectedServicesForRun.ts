@@ -1,5 +1,5 @@
 import type { CatalogAgentId } from '@/backends/types';
-import type { ExecutionRunRetentionPolicy } from '@happier-dev/protocol';
+import type { ExecutionRunRetentionPolicy } from '@piggercode/protocol';
 import {
   HAPPIER_SESSION_CONNECTED_SERVICE_BROKER_SELECTION_IDENTITY_ENV_KEY,
   readSessionConnectedServiceBrokerSelectionIdentity,

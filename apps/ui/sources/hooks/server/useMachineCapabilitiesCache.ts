@@ -5,7 +5,7 @@ import {
     type MachineCapabilitiesDetectResult,
 } from '@/sync/ops';
 import type { CapabilitiesDetectRequest, CapabilitiesDetectResponse, CapabilityDetectResult, CapabilityId } from '@/sync/api/capabilities/capabilitiesProtocol';
-import { CHECKLIST_IDS, resumeChecklistId } from '@happier-dev/protocol/checklists';
+import { CHECKLIST_IDS, resumeChecklistId } from '@piggercode/protocol/checklists';
 import { AGENT_IDS } from '@/agents/catalog/catalog';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { stableJsonStringify } from '@/utils/json/stableJsonStringify';

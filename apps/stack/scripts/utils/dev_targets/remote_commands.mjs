@@ -358,7 +358,7 @@ export function buildRemoteStackCommand(target, options) {
         `$stackEnvPath = ${powershellQuote(invocation.stackEnvPath)}`,
         `@(${invocation.stackEnvLines.map(powershellQuote).join(', ')}) | Set-Content -LiteralPath $stackEnvPath -Encoding Ascii`,
         `Set-Location -LiteralPath ${powershellQuote(target.repoDir)}`,
-        `corepack yarn workspace @happier-dev/stack stack dev ${powershellQuote(invocation.stackName)} ${invocation.devArgs.map(formatPowerShellDevArg).join(' ')}`,
+        `corepack yarn workspace @piggercode/stack stack dev ${powershellQuote(invocation.stackName)} ${invocation.devArgs.map(formatPowerShellDevArg).join(' ')}`,
         'exit $LASTEXITCODE',
       ].join('; '),
     );
@@ -379,14 +379,14 @@ export function buildRemoteStackCommand(target, options) {
       `install -d -m 700 -- ${posixQuote(invocation.stackBaseDir)}`,
       `printf '%s\\n' ${invocation.stackEnvLines.map(posixQuote).join(' ')} > ${posixQuote(invocation.stackEnvPath)}`,
       `cd -- ${posixQuote(target.repoDir)}`,
-      `exec corepack yarn workspace @happier-dev/stack stack dev ${posixQuote(invocation.stackName)} ${invocation.devArgs.map(formatPosixDevArg).join(' ')}`,
+      `exec corepack yarn workspace @piggercode/stack stack dev ${posixQuote(invocation.stackName)} ${invocation.devArgs.map(formatPosixDevArg).join(' ')}`,
     ].join('; '),
   );
 }
 
 export function buildRemoteStackStopCommand(target, options) {
   const invocation = resolveRemoteStackInvocation(target, options);
-  const command = `corepack yarn workspace @happier-dev/stack stack stop ${target.platform === 'windows'
+  const command = `corepack yarn workspace @piggercode/stack stack stop ${target.platform === 'windows'
     ? powershellQuote(invocation.stackName)
     : posixQuote(invocation.stackName)} --yes --no-docker --preserve-daemon`;
   if (target.platform === 'windows') {

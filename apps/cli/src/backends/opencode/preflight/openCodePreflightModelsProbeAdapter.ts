@@ -5,7 +5,7 @@ import {
   type OpenCodeCliLaunchSpec,
 } from '@/backends/opencode/utils/resolveOpenCodeCliCommand';
 import { prepareOpenCodeConnectedAuthAssets } from '@/backends/opencode/brokerPlugin';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 import { spawn } from 'node:child_process';
 
 import { asRecord, normalizeString } from '../server/openCodeParsing';

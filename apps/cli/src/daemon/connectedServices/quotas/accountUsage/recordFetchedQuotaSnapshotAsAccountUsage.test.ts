@@ -1,4 +1,4 @@
-import type { ConnectedServiceQuotaSnapshotV1 } from '@happier-dev/protocol';
+import type { ConnectedServiceQuotaSnapshotV1 } from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { createProviderAccountUsageStore } from '../../accountUsage/store';

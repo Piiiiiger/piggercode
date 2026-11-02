@@ -1,7 +1,7 @@
 import {
     buildClaudeRemoteOutgoingMessageMetaExtras,
     CLAUDE_REMOTE_PROVIDER_FIELDS,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import type { ProviderSettingsPlugin } from '@/agents/providers/shared/providerSettingsPlugin';
 

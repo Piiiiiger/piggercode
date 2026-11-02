@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSessionArchivePending } from '@/hooks/session/useSessionArchivePending';
 import { Pressable, View } from 'react-native';
-import { listActionSpecs } from '@happier-dev/protocol';
+import { listActionSpecs } from '@piggercode/protocol';
 import { useUnistyles } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 

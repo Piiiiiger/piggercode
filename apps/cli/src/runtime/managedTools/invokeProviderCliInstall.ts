@@ -1,11 +1,11 @@
-import type { AgentId, ProviderCliRuntimeInstallPlatform } from '@happier-dev/agents';
+import type { AgentId, ProviderCliRuntimeInstallPlatform } from '@piggercode/agents';
 import {
   installProviderCli as installProviderCliDefault,
   resolvePlatformFromNodePlatform,
   type InstallProviderCliResult,
   type ProviderCliCommandResolution,
   type ProviderCliInstallIntent,
-} from '@happier-dev/cli-common/providers';
+} from '@piggercode/cli-common/providers';
 
 export type ProviderCliInstallInvocationParams = Readonly<{
   dryRun?: boolean;

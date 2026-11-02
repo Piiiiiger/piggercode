@@ -5,7 +5,7 @@ import {
     TaskOutputResultV2Schema,
     TaskStopInputV2Schema,
     TaskStopResultV2Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ICON_TASK_OUTPUT, ICON_TASK_STOP } from '../icons';
 import type { KnownToolDefinition } from '../_types';

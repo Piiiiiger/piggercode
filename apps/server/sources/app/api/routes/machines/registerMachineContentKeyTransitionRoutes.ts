@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MachineContentKeyTransitionInputV1Schema } from '@happier-dev/protocol';
+import { MachineContentKeyTransitionInputV1Schema } from '@piggercode/protocol';
 import type { Fastify } from '../../types';
 import { transitionMachineContentKey } from '@/app/machines/transitionMachineContentKey';
 import { createServerFeatureGatePreHandler } from '@/app/features/catalog/serverFeatureGate';

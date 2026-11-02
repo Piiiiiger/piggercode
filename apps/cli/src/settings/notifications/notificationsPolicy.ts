@@ -2,7 +2,7 @@ import {
   DEFAULT_NOTIFICATIONS_SETTINGS_V1,
   resolveNotificationChannelsV1FromAccountSettings,
   type AccountSettings,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function resolveNotifications(settings: AccountSettings | null | undefined): AccountSettings['notificationsSettingsV1'] {
   return settings?.notificationsSettingsV1 ?? DEFAULT_NOTIFICATIONS_SETTINGS_V1;

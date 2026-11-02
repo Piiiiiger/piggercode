@@ -2,12 +2,12 @@ import { access, mkdir, writeFile } from 'node:fs/promises';
 import { basename, isAbsolute, join } from 'node:path';
 import { constants } from 'node:fs';
 
-import { resolveHappyHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { resolveHappyHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 import {
   extractTailscaleInstallerDownloadUrl,
   resolveTailscaleBin,
   resolveTailscaleInstallStrategy,
-} from '@happier-dev/cli-common/tailscale';
+} from '@piggercode/cli-common/tailscale';
 
 import { runCommandCapture, type CommandExecutionResult } from '../../systemTasks/taskRuntime.js';
 

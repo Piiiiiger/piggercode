@@ -4,7 +4,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
 import { ActivitySpinner } from '@/components/ui/feedback/ActivitySpinner';
 
-import type { DaemonExecutionRunEntry } from '@happier-dev/protocol';
+import type { DaemonExecutionRunEntry } from '@piggercode/protocol';
 
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';

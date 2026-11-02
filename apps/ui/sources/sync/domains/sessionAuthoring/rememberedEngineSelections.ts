@@ -3,7 +3,7 @@ import {
     buildBackendTargetKey,
     type AcpConfigOptionOverridesV1,
     type BackendTargetRefV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 import {
     opaqueSessionControlIdentifierSchema,

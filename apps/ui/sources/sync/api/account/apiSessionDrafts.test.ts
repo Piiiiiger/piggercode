@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     SessionDraftMutateResponseV1Schema,
     SessionDraftReadResponseV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const mocks = vi.hoisted(() => ({ serverFetch: vi.fn() }));
 vi.mock('@/sync/http/client', () => ({ serverFetch: mocks.serverFetch }));

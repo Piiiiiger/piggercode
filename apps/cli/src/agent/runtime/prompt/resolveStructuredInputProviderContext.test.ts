@@ -6,7 +6,7 @@ import {
     HAPPIER_VENDOR_PLUGIN_MENTIONS_METADATA_KEY,
     MENTION_KIND_V1,
     buildMentionRefForKindV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { buildCodexAppServerTurnInput } from '@/backends/codex/appServer/turnInput';
 import { buildOpenCodePromptParts } from '@/backends/opencode/server/promptParts';

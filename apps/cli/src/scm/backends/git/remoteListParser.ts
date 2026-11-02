@@ -1,4 +1,4 @@
-import type { ScmRemoteInfo } from '@happier-dev/protocol';
+import type { ScmRemoteInfo } from '@piggercode/protocol';
 
 const GIT_REMOTE_VERBOSE_LINE = /^(\S+)\s+(.+?)\s+\((fetch|push)\)$/;
 

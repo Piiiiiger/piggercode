@@ -1,5 +1,5 @@
 import { Expo, type ExpoPushMessage } from "expo-server-sdk";
-import { collectExpoPushTokensMarkedUnregistered } from "@happier-dev/protocol";
+import { collectExpoPushTokensMarkedUnregistered } from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { log } from "@/utils/logging/log";

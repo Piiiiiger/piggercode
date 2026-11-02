@@ -4,7 +4,7 @@ import {
   resolveFeatureBuildPolicyFromEnvOrEmbedded,
   type FeatureBuildPolicyEvaluation,
   type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function getCliFeatureBuildPolicyDecision(featureId: FeatureId, env: NodeJS.ProcessEnv): FeatureBuildPolicyEvaluation {
   const embeddedEnv = resolveEmbeddedFeaturePolicyEnv(

@@ -1,4 +1,4 @@
-import type { StructuredQuestionAnswersV1 } from '@happier-dev/protocol';
+import type { StructuredQuestionAnswersV1 } from '@piggercode/protocol';
 
 /**
  * Projects Happier's canonical lossless arrays to Claude Code's scalar

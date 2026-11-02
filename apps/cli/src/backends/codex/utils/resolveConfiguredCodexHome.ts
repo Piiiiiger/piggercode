@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
+import { expandHomeDirPath, resolveHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
 
 export function resolveConfiguredCodexHome(env: NodeJS.ProcessEnv): string {
   const override = expandHomeDirPath(typeof env.CODEX_HOME === 'string' ? env.CODEX_HOME.trim() : '', env);

@@ -1,4 +1,4 @@
-import { isSubAgentTranscriptToolName, type ParticipantRecipientV1 } from '@happier-dev/protocol';
+import { isSubAgentTranscriptToolName, type ParticipantRecipientV1 } from '@piggercode/protocol';
 import * as React from 'react';
 import { View } from 'react-native';
 import type { TextStyle, ViewStyle } from 'react-native';

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { ApprovalRequestV1, ActionExecutorDeps } from '@happier-dev/protocol';
+import type { ApprovalRequestV1, ActionExecutorDeps } from '@piggercode/protocol';
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 
 import { createCliActionExecutorHarness } from './createCliActionExecutorHarness';

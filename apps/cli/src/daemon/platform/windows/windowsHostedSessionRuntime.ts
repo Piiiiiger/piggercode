@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import {
   normalizeWindowsTerminalWindowName as normalizeProtocolWindowsTerminalWindowName,
   DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { randomBytes } from 'node:crypto';
 
 type WindowsHostedActualMode = 'windows_terminal' | 'windows_console';

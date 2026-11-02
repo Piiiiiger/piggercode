@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
-import type { V2SessionRecord } from '@happier-dev/protocol';
+import type { V2SessionRecord } from '@piggercode/protocol';
 
 import { fetchAndApplySessions, type SessionListEncryption } from './sessionSnapshot';
 

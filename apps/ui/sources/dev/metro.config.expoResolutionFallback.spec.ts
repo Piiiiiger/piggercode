@@ -155,7 +155,7 @@ describe('apps/ui/metro.config.js (Expo resolution fallbacks)', () => {
         const config = requireFreshMetroConfig();
         const agentsEntry = path.resolve(__dirname, '../../../../packages/agents/src/index.ts');
 
-        expect(config.resolver.resolveRequest({}, '@happier-dev/agents', 'web')).toEqual({
+        expect(config.resolver.resolveRequest({}, '@piggercode/agents', 'web')).toEqual({
             type: 'sourceFile',
             filePath: agentsEntry,
         });

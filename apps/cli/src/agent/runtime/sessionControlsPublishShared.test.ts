@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   computeNextPermissionIntentMetadata,
   computeNextMetadataStringOverrideV1,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 describe('sessionControls publish helpers (shared)', () => {
   it('canonicalizes permission intent aliases and stamps updatedAt when newer', () => {

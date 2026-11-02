@@ -3,8 +3,8 @@ import { useMachineCliDetectionTarget } from '@/sync/domains/state/storage';
 import { useDaemonScopedMachineCapabilitiesCache } from '@/hooks/server/useDaemonScopedMachineCapabilitiesCache';
 import type { CapabilitiesDetectRequest, CapabilityDetectResult, CliAuthStatusData, CliCapabilityData, TmuxCapabilityData } from '@/sync/api/capabilities/capabilitiesProtocol';
 import { AGENT_IDS, type AgentId } from '@/agents/catalog/catalog';
-import { isAgentAuthProbeSafeForBackgroundChecks } from '@happier-dev/agents';
-import { CHECKLIST_IDS } from '@happier-dev/protocol/checklists';
+import { isAgentAuthProbeSafeForBackgroundChecks } from '@piggercode/agents';
+import { CHECKLIST_IDS } from '@piggercode/protocol/checklists';
 import { stableJsonStringify } from '@/utils/json/stableJsonStringify';
 import { buildAgentCliCapabilityId } from '@/capabilities/agentCliCapabilityId';
 

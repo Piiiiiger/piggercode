@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
 
-import { getBuiltInAcpConfig } from '@happier-dev/agents';
+import { getBuiltInAcpConfig } from '@piggercode/agents';
 
 import { getAgentCore } from '@/agents/catalog/catalog';
 import { Item } from '@/components/ui/lists/Item';

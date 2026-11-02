@@ -95,7 +95,7 @@ describe('providers parallel run script args', () => {
     expect(resolveProviderRunYarnInvocation).toBeTypeOf('function');
     if (!resolveProviderRunYarnInvocation) throw new Error('missing provider run Yarn invocation resolver');
 
-    const invocation = resolveProviderRunYarnInvocation(['-s', 'workspace', '@happier-dev/server', 'generate:providers'], {
+    const invocation = resolveProviderRunYarnInvocation(['-s', 'workspace', '@piggercode/server', 'generate:providers'], {
       platform: 'win32',
       npmExecPath: 'C:\\npm\\node_modules\\npm\\bin\\npm-cli.js',
       comspec: 'C:\\Windows\\System32\\cmd.exe',

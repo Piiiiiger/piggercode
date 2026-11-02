@@ -37,7 +37,7 @@ function isLikelyHappierCliEntrypointToken(token: string): boolean {
   const normalized = normalizeShellPathLike(token);
   const base = getShellPathBasename(token);
   if (base.includes('happier')) return true;
-  if (normalized.includes('/@happier-dev/cli/')) return true;
+  if (normalized.includes('/@piggercode/cli/')) return true;
   if (normalized.includes('/apps/cli/')) return true;
   return (base === 'index.mjs' || base === 'index.ts') && normalized.includes('/cli/');
 }

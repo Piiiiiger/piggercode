@@ -1,7 +1,7 @@
 import type { Credentials } from '@/persistence';
 import { requireEncryptionCredentials } from '@/persistence';
 
-import { sealEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { sealEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 import { getRandomBytes } from '../encryption';
 
 export type EncryptionContext = {

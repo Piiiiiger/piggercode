@@ -15,8 +15,8 @@ import {
     type QuerySessionFolderSessionsResponse,
     type SessionFolderAssignment,
     type SetSessionFolderAssignmentResponse,
-} from '@happier-dev/protocol/sessionFolders';
-import type { SessionFolderAssignmentListResponse } from '@happier-dev/protocol';
+} from '@piggercode/protocol/sessionFolders';
+import type { SessionFolderAssignmentListResponse } from '@piggercode/protocol';
 import type { z } from 'zod';
 
 export type SessionFolderAssignmentResponse = SessionFolderAssignment;

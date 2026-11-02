@@ -1,4 +1,4 @@
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
 import type { ScmBackendContext } from '../../../types';
 
 import { getGitSnapshot } from '../repository';

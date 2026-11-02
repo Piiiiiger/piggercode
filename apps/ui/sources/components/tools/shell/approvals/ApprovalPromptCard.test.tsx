@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { describe, expect, it, vi } from 'vitest';
-import type { ApprovalRequestV1 } from '@happier-dev/protocol';
+import type { ApprovalRequestV1 } from '@piggercode/protocol';
 
 import { collectRenderedTestIds, renderScreen } from '@/dev/testkit';
 import type { DecryptedArtifact } from '@/sync/domains/artifacts/artifactTypes';

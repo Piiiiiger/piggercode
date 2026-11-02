@@ -6,7 +6,7 @@ import {
   type ActionInputFieldHint,
   type ActionSpec,
   type VoiceGuidanceAvailability,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function normalizeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';

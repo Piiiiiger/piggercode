@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import type { SessionChangeSet, TurnChangeSet } from '@happier-dev/protocol';
+import type { SessionChangeSet, TurnChangeSet } from '@piggercode/protocol';
 
 import { useSession, useSessionMessages } from '@/sync/domains/state/storage';
 

@@ -1,6 +1,6 @@
 import type {
     WorkspaceCheckoutKind,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { t } from '@/text';
 

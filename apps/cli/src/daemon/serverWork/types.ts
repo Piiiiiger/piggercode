@@ -1,4 +1,4 @@
-import type { ManagedConnectionState } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState } from '@piggercode/connection-supervisor';
 
 export type DaemonServerWorkPurpose =
   | 'connectedServiceQuotaPersistence'

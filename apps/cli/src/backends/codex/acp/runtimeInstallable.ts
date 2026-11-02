@@ -1,5 +1,5 @@
-import { compareVersions } from '@happier-dev/cli-common/update';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { compareVersions } from '@piggercode/cli-common/update';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 import {
   getCodexAcpDepStatus,

@@ -1,7 +1,7 @@
 import {
   DaemonPetDiscoverRequestV1Schema,
   type DaemonPetDiscoverResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { discoverCodexPets } from '../discovery/discoverCodexPets';
 import { createPetSourceKey } from '../discovery/createPetSourceKey';

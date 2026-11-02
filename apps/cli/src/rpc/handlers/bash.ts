@@ -2,7 +2,7 @@ import { logger } from '@/ui/logger';
 import { exec, ExecOptions, spawn, SpawnOptions } from 'child_process';
 import { promisify } from 'util';
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import type { FilesystemAccessPolicy } from './fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from './fileSystem/accessPolicy/filesystemPathAuthorization';
 

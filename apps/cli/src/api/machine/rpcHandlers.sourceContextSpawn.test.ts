@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   ConnectedServiceMaterializationIdentityV1Schema,
   SPAWN_SESSION_ERROR_CODES,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 
 /**

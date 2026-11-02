@@ -1,7 +1,7 @@
 import {
   OPENAI_CODEX_OAUTH_CLIENT_ID,
   OPENAI_CODEX_OAUTH_TOKEN_URL,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { buildSafeOauthProviderFailureMessage } from '@/cloud/safeOauthProviderError';
 

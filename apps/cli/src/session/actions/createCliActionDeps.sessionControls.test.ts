@@ -5,8 +5,8 @@ import { configuration } from '@/configuration';
 import {
   ReviewStartInputSchema,
   SessionUsageLimitRecoveryOperationResultV1Schema,
-} from '@happier-dev/protocol';
-import { RPC_METHODS, SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS, SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 
 const mocks = vi.hoisted(() => ({
   axiosGet: vi.fn(async (): Promise<unknown> => ({ status: 200, data: { id: 'acct_1', connectedServicesV2: [] } })),

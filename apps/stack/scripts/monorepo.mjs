@@ -10,7 +10,7 @@ import { run, runCapture } from './utils/proc/proc.mjs';
 import { happyMonorepoSubdirForComponent, isHappyMonorepoRoot } from './utils/paths/paths.mjs';
 import { parseGithubPullRequest } from './utils/git/refs.mjs';
 import { isTty, prompt, promptSelect, withRl } from './utils/cli/wizard.mjs';
-import { createStepPrinter } from '@happier-dev/cli-common/output';
+import { createStepPrinter } from '@piggercode/cli-common/output';
 import { bold, cyan, dim, green, red, yellow } from './utils/ui/ansi.mjs';
 import { banner } from './utils/ui/layout.mjs';
 import { clipboardAvailable, copyTextToClipboard } from './utils/ui/clipboard.mjs';

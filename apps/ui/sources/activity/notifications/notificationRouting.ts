@@ -1,4 +1,4 @@
-import { isLoopbackHostname, PUSH_NOTIFICATION_ACTION_IDS } from '@happier-dev/protocol';
+import { isLoopbackHostname, PUSH_NOTIFICATION_ACTION_IDS } from '@piggercode/protocol';
 
 import { normalizeServerUrl } from '@/sync/domains/server/activeServerSwitch';
 import { coerceRelativeRoute } from '@/utils/path/routeUtils';

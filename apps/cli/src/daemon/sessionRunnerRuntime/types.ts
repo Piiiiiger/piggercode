@@ -4,7 +4,7 @@ import type {
   SessionRunnerRuntimeStateV1,
   SessionRunnerRuntimeStatusSourceV1,
   SessionRunnerVersionStateV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type SessionRunnerEntrypointIdentitySource =
   SessionRunnerEntrypointSourceV1;

@@ -1,5 +1,5 @@
 import type { TrackedSession } from '@/daemon/types';
-import { hasActiveSessionRuntimeActivity, type SessionRunnerRestartDisabledReason, type SessionRuntimeActivityState } from '@happier-dev/protocol';
+import { hasActiveSessionRuntimeActivity, type SessionRunnerRestartDisabledReason, type SessionRuntimeActivityState } from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 import { readTerminalAttachmentInfo } from '@/terminal/attachment/terminalAttachmentInfo';
 

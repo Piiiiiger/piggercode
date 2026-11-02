@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
-import { McpServersSettingsV1Schema, resolveEffectiveServersV1 } from '@happier-dev/protocol';
+import { McpServersSettingsV1Schema, resolveEffectiveServersV1 } from '@piggercode/protocol';
 
 import { probeMcpStdioServerTools } from './probeMcpStdioServerTools';
 import { materializeMcpServerConfigRecord } from './materializeMcpServerConfigRecord';

@@ -17,9 +17,9 @@ import {
   type FirstPartyComponentId,
   type PreparedFirstPartyComponentPayload,
   type FirstPartyAcquisitionOptions,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { SystemTaskExecutionError } from '@happier-dev/cli-common/systemTasks';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { SystemTaskExecutionError } from '@piggercode/cli-common/systemTasks';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 /**
  * Where a local first-party command came from — an INSTALL-OWNERSHIP record, not verified

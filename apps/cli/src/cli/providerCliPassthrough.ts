@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 
-import type { AgentId } from '@happier-dev/agents';
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import type { AgentId } from '@piggercode/agents';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 

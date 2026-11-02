@@ -17,7 +17,7 @@ import {
   resolveAcpToolPermissionPromptExpectation,
   yoloFlagForPermissionMode,
 } from '../permissions/acpPermissionPrompts';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { withCapabilityProbeRetry } from '../harness/capabilityRetry';
 import { enrichCapabilityProbeError } from '../harness/capabilityProbeFailure';
 import {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CodexAcpDepData } from '@/sync/api/capabilities/capabilitiesProtocol';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 
 import {
     buildCodexAcpLatestVersionDetectRequest,

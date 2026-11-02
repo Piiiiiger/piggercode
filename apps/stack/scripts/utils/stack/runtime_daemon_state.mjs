@@ -1,5 +1,5 @@
 import { dirname, join } from 'node:path';
-import { readProcessInstanceFingerprintSync } from '@happier-dev/cli-common/processInstance';
+import { readProcessInstanceFingerprintSync } from '@piggercode/cli-common/processInstance';
 import { resolvePidStackOwnership } from '../proc/ownership.mjs';
 import {
   isPidAlive,

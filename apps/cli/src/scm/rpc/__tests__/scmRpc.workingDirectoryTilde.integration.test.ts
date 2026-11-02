@@ -3,7 +3,7 @@ import { mkdtempSync, realpathSync, writeFileSync } from 'fs';
 import { tmpdir, homedir } from 'os';
 import { join, relative } from 'path';
 
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import { createTestRpcManager, runGit as git } from './testRpcHarness';
 

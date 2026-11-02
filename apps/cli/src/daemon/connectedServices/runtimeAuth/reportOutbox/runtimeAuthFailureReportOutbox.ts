@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import {
   SessionUsageLimitRecoveryResumePromptModeV1Schema,
   type SessionUsageLimitRecoveryResumePromptModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
 import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';

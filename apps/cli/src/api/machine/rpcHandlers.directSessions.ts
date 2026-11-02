@@ -1,5 +1,5 @@
-import type { DirectSessionTakeoverRequest, DirectSessionTakeoverPersistRequest } from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import type { DirectSessionTakeoverRequest, DirectSessionTakeoverPersistRequest } from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
   DIRECT_SESSION_TAKEOVER_ACTION_IDS,
   DirectSessionAttachRequestSchema,
@@ -28,7 +28,7 @@ import {
   type DirectSessionsCandidatesListResponse,
   type DirectTranscriptPageResponse,
   type DirectTranscriptReadAfterResponse,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { readCredentials } from '@/persistence';
 import { listSessionMarkers } from '@/daemon/sessionRegistry';

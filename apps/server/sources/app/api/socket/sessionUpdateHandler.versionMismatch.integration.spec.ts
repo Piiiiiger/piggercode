@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { UpdateMetadataAckResponseSchema, UpdateStateAckResponseSchema } from "@happier-dev/protocol/updates";
+import { UpdateMetadataAckResponseSchema, UpdateStateAckResponseSchema } from "@piggercode/protocol/updates";
 import { createFakeSocket, getSocketHandler } from "../testkit/socketHarness";
 
 const updateSessionMetadata = vi.fn();

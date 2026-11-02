@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { McpServerBindingV1, McpServerCatalogEntryV1, McpServersSettingsV1 } from '@happier-dev/protocol';
+import type { McpServerBindingV1, McpServerCatalogEntryV1, McpServersSettingsV1 } from '@piggercode/protocol';
 
 import {
     addMcpServerBindingV1,

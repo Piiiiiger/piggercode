@@ -2,7 +2,7 @@ import { copyFileSync, linkSync, mkdirSync, rmSync } from 'node:fs';
 import { mkdir, rm, symlink } from 'node:fs/promises';
 import { dirname, relative } from 'node:path';
 
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import type { FirstPartyComponentId } from './componentCatalog.js';
 import { resolveDesiredShimTargets } from './resolveDesiredShimTargets.js';

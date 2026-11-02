@@ -3,7 +3,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { chmod, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { deriveSettingsSecretsKeyV1, sealSecretsDeepV1 } from '@happier-dev/protocol';
+import { deriveSettingsSecretsKeyV1, sealSecretsDeepV1 } from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
@@ -294,7 +294,7 @@ await connection.closed;
       args: [
         '-s',
         'workspace',
-        '@happier-dev/cli',
+        '@piggercode/cli',
         'dev',
         'opencode',
         '--existing-session',

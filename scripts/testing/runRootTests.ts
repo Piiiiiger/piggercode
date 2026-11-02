@@ -7,14 +7,14 @@ import { runYarnCommand } from './lib/runYarnCommand.ts';
 const commands = {
   unit: [
     { id: 'shared-packages', args: ['-s', 'test:shared-packages:local'] },
-    { id: 'ui', args: ['workspace', '@happier-dev/app', 'test'] },
-    { id: 'cli', args: ['workspace', '@happier-dev/cli', 'test:unit'] },
+    { id: 'ui', args: ['workspace', '@piggercode/app', 'test'] },
+    { id: 'cli', args: ['workspace', '@piggercode/cli', 'test:unit'] },
     { id: 'server', args: ['--cwd', 'apps/server', 'test:unit'] },
     { id: 'stack', args: ['--cwd', 'apps/stack', 'test:unit'] },
   ],
   integration: [
-    { id: 'ui', args: ['workspace', '@happier-dev/app', 'test:integration'] },
-    { id: 'cli', args: ['workspace', '@happier-dev/cli', 'test:integration'] },
+    { id: 'ui', args: ['workspace', '@piggercode/app', 'test:integration'] },
+    { id: 'cli', args: ['workspace', '@piggercode/cli', 'test:integration'] },
     { id: 'server', args: ['--cwd', 'apps/server', 'test:integration'] },
     { id: 'stack', args: ['--cwd', 'apps/stack', 'test:integration'] },
   ],

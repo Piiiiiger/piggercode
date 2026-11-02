@@ -5,7 +5,7 @@ import {
     type FeatureBuildPolicy,
     type FeatureBuildPolicyEvaluation,
     type FeatureId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 let cachedBuildPolicy: FeatureBuildPolicy | null = null;
 let cachedBuildPolicyKey: string | null = null;

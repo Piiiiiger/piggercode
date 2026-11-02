@@ -2,7 +2,7 @@ import type {
   PromptAssetMutationErrorCodeV1,
   PromptAssetMutationResponseV1,
   PromptAssetReadResponseV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type PromptAssetMutationErrorResponseV1 = Extract<PromptAssetMutationResponseV1, { ok: false }>;
 export type PromptAssetReadErrorResponseV1 = Extract<PromptAssetReadResponseV1, { ok: false }>;

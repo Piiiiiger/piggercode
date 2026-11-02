@@ -572,9 +572,9 @@ backend selection are unchanged.
 
 ## Internal dependency closure
 
-`vendorBundledPackageRuntimeDependencies(...)` vendors external dependencies only. It intentionally ignores `@happier-dev/*`.
+`vendorBundledPackageRuntimeDependencies(...)` vendors external dependencies only. It intentionally ignores `@piggercode/*`.
 
-If a bundled workspace imports another internal workspace at runtime, the host package must also bundle that internal dependency. For example, a host that bundles `@happier-dev/cli-common` may also need `@happier-dev/agents` and `@happier-dev/protocol` if they are in the runtime import closure.
+If a bundled workspace imports another internal workspace at runtime, the host package must also bundle that internal dependency. For example, a host that bundles `@piggercode/cli-common` may also need `@piggercode/agents` and `@piggercode/protocol` if they are in the runtime import closure.
 
 ## Adding a bundled internal workspace to CLI
 
@@ -592,7 +592,7 @@ Internal package `exports` point at `dist/**`. If `dist` is missing, consumers c
 Fix by building the workspace, for example:
 
 ```bash
-yarn workspace @happier-dev/protocol build
+yarn workspace @piggercode/protocol build
 ```
 
 Stack builds should fail fast or build missing internal workspace outputs through the stack build helpers.

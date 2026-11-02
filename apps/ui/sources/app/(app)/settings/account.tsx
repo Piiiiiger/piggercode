@@ -42,7 +42,7 @@ import { buildContentKeyBinding } from '@/auth/oauth/contentKeyBinding';
 import { buildAccountEncryptionMigrateToE2eeRequest } from '@/sync/ops/account/buildAccountEncryptionMigrateToE2eeRequest';
 import { getConnectedServiceCredentialPlain } from '@/sync/api/account/apiConnectedServicesV3';
 import { isWebMobileLikeQrScannerHost } from '@/utils/platform/webMobileHeuristics';
-import { AccountEncryptionMigrateInvalidParamsReasonSchema } from '@happier-dev/protocol';
+import { AccountEncryptionMigrateInvalidParamsReasonSchema } from '@piggercode/protocol';
 import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { Icon } from '@/components/ui/icons/Icon';
 import { getActiveServerAccountScope } from '@/sync/domains/scope/activeServerAccountScope';

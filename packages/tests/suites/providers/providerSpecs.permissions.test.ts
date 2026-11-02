@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { E2eCliProviderSpecV1Schema } from '@happier-dev/protocol';
+import { E2eCliProviderSpecV1Schema } from '@piggercode/protocol';
 
 describe('providers: providerSpec permissions', () => {
   it('preserves permissions.acp.expectToolPermissionPrompts from providerSpec.json', () => {

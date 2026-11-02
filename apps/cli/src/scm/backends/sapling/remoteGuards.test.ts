@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { ScmWorkingSnapshot } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmWorkingSnapshot } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import { evaluateSaplingRemoteMutationPreconditions } from './remoteGuards';
 

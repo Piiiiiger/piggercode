@@ -1,4 +1,4 @@
-import { buildBackendTargetKey, decryptSecretValueWithKeysV1, getProfileEnvironmentVariables, type AIBackendProfile } from '@happier-dev/protocol';
+import { buildBackendTargetKey, decryptSecretValueWithKeysV1, getProfileEnvironmentVariables, type AIBackendProfile } from '@piggercode/protocol';
 
 import { isPermissionMode, type PermissionMode } from '@/api/types';
 import { expandEnvironmentVariables } from '@/utils/expandEnvVars';

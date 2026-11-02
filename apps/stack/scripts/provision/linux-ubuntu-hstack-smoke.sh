@@ -13,8 +13,8 @@ set -euo pipefail
 #     && HSTACK_VERSION=latest /tmp/linux-ubuntu-hstack-smoke.sh
 #
 # Env overrides:
-# - HSTACK_VERSION: npm dist-tag or semver for @happier-dev/stack (default: latest)
-# - HSTACK_TGZ: path to a local @happier-dev/stack tarball inside the VM (overrides HSTACK_VERSION)
+# - HSTACK_VERSION: npm dist-tag or semver for @piggercode/stack (default: latest)
+# - HSTACK_TGZ: path to a local @piggercode/stack tarball inside the VM (overrides HSTACK_VERSION)
 # - HSTACK_SMOKE_DIR: where to store the sandbox + logs (default: /tmp/hstack-smoke-<timestamp>)
 # - HSTACK_SMOKE_KEEP: set to 1 to keep the sandbox dir on exit (default: 0)
 
@@ -56,7 +56,7 @@ hstack() {
   if [[ -n "$STACK_TGZ" ]]; then
     spec="$STACK_TGZ"
   else
-    spec="-p @happier-dev/stack@${STACK_VERSION}"
+    spec="-p @piggercode/stack@${STACK_VERSION}"
   fi
   # shellcheck disable=SC2086
   npm_config_cache="$NPM_CACHE" \
@@ -79,7 +79,7 @@ echo "[smoke] node: $(node --version)"
 echo "[smoke] npm:  $(npm --version)"
 echo "[smoke] git:  $(git --version)"
 echo "[smoke] jq:   $(jq --version)"
-echo "[smoke] pkg:  @happier-dev/stack@${STACK_VERSION}"
+echo "[smoke] pkg:  @piggercode/stack@${STACK_VERSION}"
 
 say "hstack help (sanity)"
 hstack --help >/dev/null

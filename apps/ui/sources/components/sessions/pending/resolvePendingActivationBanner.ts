@@ -1,4 +1,4 @@
-import type { PendingActivationAuthorizationV1 } from '@happier-dev/protocol';
+import type { PendingActivationAuthorizationV1 } from '@piggercode/protocol';
 
 import type { PendingMessage } from '@/sync/domains/state/storageTypes';
 

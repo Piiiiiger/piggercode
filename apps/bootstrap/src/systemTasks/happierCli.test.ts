@@ -13,8 +13,8 @@ const { preparePayloadMock, installPayloadMock, runCommandCaptureMock } = vi.hoi
 // Only the two genuine boundaries are replaced: the release download and the payload install that
 // writes outside the test's control. Path resolution and the install record it reads stay real, so
 // a fixture that does not look like a real install is classified like one.
-vi.mock('@happier-dev/cli-common/firstPartyRuntime', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@happier-dev/cli-common/firstPartyRuntime')>();
+vi.mock('@piggercode/cli-common/firstPartyRuntime', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@piggercode/cli-common/firstPartyRuntime')>();
   return {
     ...actual,
     prepareFirstPartyComponentPayloadFromGitHubRelease: preparePayloadMock,
@@ -47,9 +47,9 @@ vi.mock('./taskRuntime.js', async (importOriginal) => {
   };
 });
 
-import { writeHappierCliChoice } from '@happier-dev/cli-common/firstPartyRuntime';
+import { writeHappierCliChoice } from '@piggercode/cli-common/firstPartyRuntime';
 
-import { SystemTaskExecutionError } from '@happier-dev/cli-common/systemTasks';
+import { SystemTaskExecutionError } from '@piggercode/cli-common/systemTasks';
 
 import {
   describeUnservedCliChoiceFailure,
@@ -550,9 +550,9 @@ describe('the one-CLI question (R12)', () => {
   /** An npm global install of the CLI: `<prefix>/bin/happier` → the package's own entry. */
   function withNpmCli(run: (params: Readonly<{ command: string; processEnv: NodeJS.ProcessEnv }>) => Promise<void>) {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-choice-'));
-    const packageRoot = join(rootDir, 'npm-global', 'lib', 'node_modules', '@happier-dev', 'cli');
+    const packageRoot = join(rootDir, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
-    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@happier-dev/cli' }), 'utf8');
+    writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
     writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '#!/bin/sh\n', 'utf8');
     chmodSync(join(packageRoot, 'bin', 'happier.mjs'), 0o755);
     const npmBin = join(rootDir, 'npm-global', 'bin');
@@ -575,8 +575,8 @@ describe('the one-CLI question (R12)', () => {
           command,
           version: '0.2.13',
           origin: 'npm',
-          removalCommand: 'npm uninstall -g @happier-dev/cli',
-          updateCommand: 'npm install -g @happier-dev/cli@latest',
+          removalCommand: 'npm uninstall -g @piggercode/cli',
+          updateCommand: 'npm install -g @piggercode/cli@latest',
           belowSetupFloor: false,
           missing: false,
           keepBlockedBy: null,
@@ -687,7 +687,7 @@ describe('the one-CLI question (R12)', () => {
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'stable', processEnv }, { readVersion })).rejects.toMatchObject({
         code: 'cli_own_below_setup_floor',
-        message: expect.stringContaining('npm install -g @happier-dev/cli@latest'),
+        message: expect.stringContaining('npm install -g @piggercode/cli@latest'),
       });
       expect(preparePayloadMock).not.toHaveBeenCalled();
     });
@@ -728,7 +728,7 @@ describe('the one-CLI question (R12)', () => {
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'stable', processEnv }, { readVersion })).rejects.toMatchObject({
         code: 'cli_own_below_setup_floor',
-        message: expect.stringContaining('npm install -g @happier-dev/cli@latest'),
+        message: expect.stringContaining('npm install -g @piggercode/cli@latest'),
       });
       expect(preparePayloadMock).not.toHaveBeenCalled();
       expect(installPayloadMock).not.toHaveBeenCalled();

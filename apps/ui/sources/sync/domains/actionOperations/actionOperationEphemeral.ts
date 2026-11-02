@@ -3,7 +3,7 @@ import {
     openAccountScopedBlobCiphertext,
     type ActionOperationRevisionEphemeralV1,
     type ActionOperationSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function openActionOperationRevisionEphemeral(params: Readonly<{
     update: ActionOperationRevisionEphemeralV1;

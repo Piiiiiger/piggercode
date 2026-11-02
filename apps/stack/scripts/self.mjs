@@ -4,9 +4,9 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
-import { normalizePublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
-import { compareVersions, installRuntimeFromNpm, readNpmDistTagVersion, resolveNpmPackageNameOverride } from '@happier-dev/cli-common/update';
-import { installVersionedPayload } from '@happier-dev/cli-common/firstPartyRuntime';
+import { normalizePublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
+import { compareVersions, installRuntimeFromNpm, readNpmDistTagVersion, resolveNpmPackageNameOverride } from '@piggercode/cli-common/update';
+import { installVersionedPayload } from '@piggercode/cli-common/firstPartyRuntime';
 
 import { parseArgs } from './utils/cli/args.mjs';
 import { pathExists } from './utils/fs/fs.mjs';

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import fastify from 'fastify';
 import { readFile } from 'node:fs/promises';
 import tweetnacl from 'tweetnacl';
-import { sealTerminalProvisioningV3TokenOnlyPayload } from '@happier-dev/protocol';
+import { sealTerminalProvisioningV3TokenOnlyPayload } from '@piggercode/protocol';
 
 import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { withTempDir } from '@/testkit/fs/tempDir';

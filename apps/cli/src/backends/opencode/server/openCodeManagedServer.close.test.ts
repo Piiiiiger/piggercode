@@ -32,7 +32,7 @@ vi.mock('@/ui/logger', () => ({
   logger: { debug: vi.fn() },
 }));
 
-vi.mock('@happier-dev/cli-common/process', () => ({
+vi.mock('@piggercode/cli-common/process', () => ({
   resolveWindowsCommandInvocation: resolveWindowsCommandInvocationMock,
 }));
 

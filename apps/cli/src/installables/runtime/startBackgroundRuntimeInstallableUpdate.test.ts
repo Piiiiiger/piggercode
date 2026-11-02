@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 import { logger } from '@/ui/logger';
 
 import { startBackgroundRuntimeInstallableUpdate } from './startBackgroundRuntimeInstallableUpdate';

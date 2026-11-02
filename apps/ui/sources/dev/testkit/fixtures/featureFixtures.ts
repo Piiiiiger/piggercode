@@ -3,7 +3,7 @@ import {
     DEFAULT_SESSION_CAPABILITIES,
     RELEASED_CONNECTED_SERVICE_IDS,
     type FeaturesResponse as RootLayoutFeatures,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 type RootLayoutFeaturesOverrides = Omit<Partial<RootLayoutFeatures>, 'features' | 'capabilities'> & Readonly<{
     features?: Omit<

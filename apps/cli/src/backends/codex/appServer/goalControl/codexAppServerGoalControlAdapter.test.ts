@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { buildCodexAgentRuntimeDescriptor } from '@happier-dev/agents';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { buildCodexAgentRuntimeDescriptor } from '@piggercode/agents';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { describe, expect, it } from 'vitest';
 
 import { withTempDir } from '@/testkit/fs/tempDir';

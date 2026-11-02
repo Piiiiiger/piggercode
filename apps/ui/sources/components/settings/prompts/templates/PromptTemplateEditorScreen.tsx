@@ -7,7 +7,7 @@ import {
   PromptInvocationEntryV1Schema,
   normalizePromptInvocationTokenV1,
   listActionSpecs,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { SETTINGS_TEXT_INPUT_METRICS } from '@/components/ui/forms/settingsTextInputMetrics';
 import { Item } from '@/components/ui/lists/Item';

@@ -6,7 +6,7 @@ import {
     CONNECTED_SERVICE_READER_SUPPORT_QUERY_KEY,
     projectConnectedServiceProfileForReader,
     readConnectedServiceReaderSupport,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { type Fastify } from "../../types";
 import { resolveApiHotEndpointRateLimit } from "@/app/api/utils/apiRateLimitCatalog";
 import {

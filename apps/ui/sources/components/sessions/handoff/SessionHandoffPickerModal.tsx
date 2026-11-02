@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
-import { evaluateSessionHandoffWorkspaceTransferSourcePathSafety, getActionSpec } from '@happier-dev/protocol';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
+import { evaluateSessionHandoffWorkspaceTransferSourcePathSafety, getActionSpec } from '@piggercode/protocol';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import type { CustomModalInjectedProps } from '@/modal';

@@ -4,7 +4,7 @@ import {
     type SessionSystemRecord,
     type SessionSystemRecordKind,
     type SessionSystemRecordNamespace,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { apiSocket } from '@/sync/api/session/apiSocket';
 import { runtimeFetchWithServerReachability } from '@/sync/runtime/connectivity/serverReachabilityRuntimeFetch';

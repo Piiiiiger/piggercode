@@ -9681,7 +9681,7 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
       '#!/usr/bin/env bash',
       'set -euo pipefail',
       `echo "yarn $*" >> ${JSON.stringify(yarnLog)}`,
-      'if [[ "${1:-}" == "workspace" && "${2:-}" == "@happier-dev/cli" && "${3:-}" == "build" ]]; then',
+      'if [[ "${1:-}" == "workspace" && "${2:-}" == "@piggercode/cli" && "${3:-}" == "build" ]]; then',
       `  printf 'built\\n' > ${JSON.stringify(buildMarker)}`,
       '  exit 0',
       'fi',
@@ -9758,7 +9758,7 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const yarnOut = await readFile(yarnLog, 'utf8');
-  assert.match(yarnOut, /yarn workspace @happier-dev\/cli build/);
+  assert.match(yarnOut, /yarn workspace @piggercode\/cli build/);
 
   const hostOut = await readFile(hostLog, 'utf8');
   assert.match(hostOut, /happier\.mjs.*daemon status/);
@@ -9937,7 +9937,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon status stay
   assert.notEqual(summary.status, 0, `expected nonzero summary.status (got ${summary.status})`);
 
   const yarnOut = await readFile(yarnLog, 'utf8').catch(() => '');
-  assert.match(yarnOut, /yarn workspace @happier-dev\/cli build/);
+  assert.match(yarnOut, /yarn workspace @piggercode\/cli build/);
 });
 
 test('macos wsrepl lima matrix wrapper seeds server-routed max-bytes env for the host daemon from server /v1/features when unset', async () => {

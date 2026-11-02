@@ -12,7 +12,7 @@
  * - Stream model output and events
  */
 
-import type { AgentId as CatalogAgentId } from '@happier-dev/agents';
+import type { AgentId as CatalogAgentId } from '@piggercode/agents';
 import type { AgentMessageHandler, SessionId } from './AgentMessage';
 import type { AgentPromptPayload } from './AgentPromptPayload';
 

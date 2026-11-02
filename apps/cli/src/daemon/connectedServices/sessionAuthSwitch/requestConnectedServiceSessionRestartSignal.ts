@@ -1,4 +1,4 @@
-import { CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES } from '@happier-dev/protocol';
+import { CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES } from '@piggercode/protocol';
 
 import { buildConnectedServiceUxDiagnostic } from '../diagnostics/connectedServiceUxDiagnostics';
 

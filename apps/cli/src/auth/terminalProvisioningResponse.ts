@@ -3,7 +3,7 @@ import {
   openBoxBundle,
   openTerminalProvisioningV3Response,
   parseTerminalProvisioningV2Plaintext,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type TerminalPairingAuthentication = Readonly<{
   secret: Uint8Array;

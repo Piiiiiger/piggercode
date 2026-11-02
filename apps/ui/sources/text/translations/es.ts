@@ -10665,7 +10665,7 @@ settingsSession: {
     detectedCliDetected: "Detectado",
     detectedCliNotDetected: "No detectado",
     detectedCliUnknown: "Desconocido",
-    detectedCliNotSupported: "No compatible (actualiza @happier-dev/cli)",
+    detectedCliNotSupported: "No compatible (actualiza @piggercode/cli)",
     untitledSession: "Sesión sin título",
     back: "Atrás",
     notFound: "Máquina no encontrada",

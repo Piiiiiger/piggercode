@@ -1,5 +1,5 @@
 import type { Tx } from "@/storage/inTx";
-import { ChangeKindSchema, type ChangeKind } from "@happier-dev/protocol/changes";
+import { ChangeKindSchema, type ChangeKind } from "@piggercode/protocol/changes";
 
 function compactHint(_kind: ChangeKind, hint: unknown): unknown {
     if (!hint || typeof hint !== "object" || Array.isArray(hint)) {

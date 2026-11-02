@@ -1,4 +1,4 @@
-import { SYSTEM_TASK_PROTOCOL_VERSION } from '@happier-dev/protocol';
+import { SYSTEM_TASK_PROTOCOL_VERSION } from '@piggercode/protocol';
 import { describe, expect, it } from 'vitest';
 
 import { inspectionFromResult } from './desktopSetupCoordinator';

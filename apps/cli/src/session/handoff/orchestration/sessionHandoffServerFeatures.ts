@@ -1,4 +1,4 @@
-import type { FeaturesResponse } from '@happier-dev/protocol';
+import type { FeaturesResponse } from '@piggercode/protocol';
 
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
 import { observeServerFeaturesSnapshot } from '@/features/serverFeaturesClient';

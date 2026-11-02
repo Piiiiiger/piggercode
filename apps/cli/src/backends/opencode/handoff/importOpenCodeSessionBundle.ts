@@ -4,9 +4,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
-import { buildOpenCodeAgentRuntimeDescriptor } from '@happier-dev/agents';
+import { buildOpenCodeAgentRuntimeDescriptor } from '@piggercode/agents';
 import { buildOpenCodeSessionEnvironmentVariables } from '../utils/opencodeSessionAffinity';
 import { resolveOpenCodeCliLaunchSpec } from '../utils/resolveOpenCodeCliCommand';
 import type { ImportedSessionHandoffBundle, OpenCodeSessionBundle } from '../../../session/handoff/types';

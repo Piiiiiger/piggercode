@@ -1,4 +1,4 @@
-import type { SessionWorkflowRunSnapshotV1 } from '@happier-dev/protocol';
+import type { SessionWorkflowRunSnapshotV1 } from '@piggercode/protocol';
 
 import { isPermanentRequestError } from '@/api/client/httpStatusError';
 import { resolveSessionMutationRetryDelayMs } from '@/api/session/mutations/sessionMutationBackoff';

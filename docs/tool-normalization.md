@@ -115,8 +115,8 @@ The canonical **V2 tool contract** (tool names + per-tool input/result schemas +
 
 Preferred imports:
 
-- `@happier-dev/protocol/tools/v2` (subpath export)
-- or `@happier-dev/protocol` (re-exported from root)
+- `@piggercode/protocol/tools/v2` (subpath export)
+- or `@piggercode/protocol` (re-exported from root)
 
 This shared package is the place to look if you want to answer: “what is the normalized schema the app expects?”.
 
@@ -229,7 +229,7 @@ Fixtures are not a brittle “exact output snapshot” of every field; they are 
 Run:
 
 ```bash
-yarn workspace @happier-dev/cli test
+yarn workspace @piggercode/cli test
 ```
 
 ### Provider contract baselines (optional, e2e-style)
@@ -367,8 +367,8 @@ When a provider changes tool shapes, the recommended workflow is:
 4) Update CLI normalization (`families/*` + canonical name mapping) and add/adjust tests.
 5) Ensure the app still renders legacy + Claude local-control sessions (fallback normalization should remain conservative).
 6) Run stack-scoped tests:
-   - `yarn workspace @happier-dev/cli test`
-   - `yarn workspace @happier-dev/app test` (app test suite)
+   - `yarn workspace @piggercode/cli test`
+   - `yarn workspace @piggercode/app test` (app test suite)
 
 The canonical rule:
 

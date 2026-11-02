@@ -1,4 +1,4 @@
-import type { ConnectedServiceBindingsV1, ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceBindingsV1, ConnectedServiceId } from '@piggercode/protocol';
 
 type AuthGroupLookup = Readonly<{
   getConnectedServiceAuthGroup(input: Readonly<{ serviceId: ConnectedServiceId; groupId: string }>):

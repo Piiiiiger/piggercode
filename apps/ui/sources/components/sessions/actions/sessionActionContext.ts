@@ -2,7 +2,7 @@ import { getSessionStorageKind } from '@/sync/domains/session/sessionStorageKind
 import { resolveSessionReadStateAction } from '@/sync/domains/session/readState/sessionReadState';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
-import { resolveTerminalControlServiceabilityPolicy } from '@happier-dev/protocol';
+import { resolveTerminalControlServiceabilityPolicy } from '@piggercode/protocol';
 import {
     canContinueSessionWithFreshSpawn,
     canResumeSessionWithOptions,

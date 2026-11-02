@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CODEX_ACP_DEP_ID } from '@happier-dev/protocol/installables';
+import { CODEX_ACP_DEP_ID } from '@piggercode/protocol/installables';
 import { flushHookEffects, renderSettingsView } from '@/dev/testkit';
 import type { InstallableDepInstallerProps } from './InstallableDepInstaller';
 import { installMachineComponentCommonModuleMocks } from './machineComponentTestHelpers';

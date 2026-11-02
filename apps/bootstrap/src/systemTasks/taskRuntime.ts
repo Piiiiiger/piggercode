@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { runCommandCapture as runProcessCommandCapture } from '@happier-dev/cli-common/process';
+import { runCommandCapture as runProcessCommandCapture } from '@piggercode/cli-common/process';
 
 export interface CommandExecutionResult {
   status: number;

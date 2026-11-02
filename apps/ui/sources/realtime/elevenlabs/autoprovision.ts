@@ -1,5 +1,5 @@
 import { elevenLabsFetchJson } from './elevenLabsApi';
-import { buildElevenLabsVoiceAgentPrompt } from '@happier-dev/agents';
+import { buildElevenLabsVoiceAgentPrompt } from '@piggercode/agents';
 import { DEFAULT_ELEVENLABS_VOICE_ID } from './defaults';
 import { storage } from '@/sync/domains/state/storage';
 import { resolveElevenLabsRequiredClientTools } from './requiredClientTools';

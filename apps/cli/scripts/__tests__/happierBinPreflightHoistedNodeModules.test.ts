@@ -24,7 +24,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
 
       copyCliBinRuntimeFiles({ binDir });
       writeProtocolBundleStub({
-        packageDir: join(tmp, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: join(tmp, 'node_modules', '@piggercode', 'protocol'),
       });
       writeNodeModuleStub({
         packageDir: join(tmp, 'node_modules', 'tweetnacl'),
@@ -52,7 +52,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
     }
   });
 
-  it('allows @happier-dev/protocol to be hoisted to the repo root node_modules', () => {
+  it('allows @piggercode/protocol to be hoisted to the repo root node_modules', () => {
     const { rootDir: tmp, cleanup } = createCliBinPreflightSandbox('happier-bin-preflight-');
     try {
       const projectRoot = join(tmp, 'apps', 'cli');
@@ -66,7 +66,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
 
       // Simulate the `hstack` clone setup behavior: only root node_modules exist.
       writeProtocolBundleStub({
-        packageDir: join(tmp, 'node_modules', '@happier-dev', 'protocol'),
+        packageDir: join(tmp, 'node_modules', '@piggercode', 'protocol'),
       });
       writeNodeModuleStub({
         packageDir: join(tmp, 'node_modules', 'tweetnacl'),
@@ -94,7 +94,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
     }
   });
 
-  it('prints a helpful error if @happier-dev/protocol cannot be resolved', () => {
+  it('prints a helpful error if @piggercode/protocol cannot be resolved', () => {
     const { rootDir: tmp, cleanup } = createCliBinPreflightSandbox('happier-bin-preflight-');
     try {
       const projectRoot = join(tmp, 'apps', 'cli');
@@ -109,8 +109,8 @@ describe('apps/cli bin/happier.mjs preflight', () => {
       const res = runHappierBin({ binDir, cwd: projectRoot, args: ['--help'] });
 
       expect(res.status).toBe(1);
-      expect(res.stderr).toContain('Missing bundled package: @happier-dev/protocol');
-      expect(res.stderr).toContain('Reinstall @happier-dev/cli to repair your installation.');
+      expect(res.stderr).toContain('Missing bundled package: @piggercode/protocol');
+      expect(res.stderr).toContain('Reinstall @piggercode/cli to repair your installation.');
     } finally {
       cleanup();
     }
@@ -121,7 +121,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
     try {
       const projectRoot = join(tmp, 'apps', 'cli');
       const binDir = join(projectRoot, 'bin');
-      const bundledProtocolDir = join(projectRoot, 'node_modules', '@happier-dev', 'protocol');
+      const bundledProtocolDir = join(projectRoot, 'node_modules', '@piggercode', 'protocol');
       const scriptsDir = join(tmp, 'scripts', 'workspaces');
       const syncCalledPath = join(tmp, '.project', 'tmp', 'sync-called');
       const lockPath = join(tmp, '.project', 'tmp', 'cli-dist-build.lock');
@@ -140,7 +140,7 @@ describe('apps/cli bin/happier.mjs preflight', () => {
       );
       writeFileSync(
         join(projectRoot, 'package.json'),
-        `${JSON.stringify({ name: '@happier-dev/cli', bundledDependencies: ['@happier-dev/protocol'] }, null, 2)}\n`,
+        `${JSON.stringify({ name: '@piggercode/cli', bundledDependencies: ['@piggercode/protocol'] }, null, 2)}\n`,
         'utf8',
       );
       copyCliBinRuntimeFiles({ binDir });

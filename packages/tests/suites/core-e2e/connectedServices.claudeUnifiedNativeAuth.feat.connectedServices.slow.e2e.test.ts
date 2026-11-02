@@ -2,7 +2,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { mkdir, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { upsertEncryptedAccountSettingsV2 } from '../../src/testkit/accountSettings';

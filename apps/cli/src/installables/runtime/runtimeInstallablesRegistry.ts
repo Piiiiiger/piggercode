@@ -1,5 +1,5 @@
-import type { InstallableKey } from '@happier-dev/protocol';
-import { INSTALLABLE_KEYS } from '@happier-dev/protocol';
+import type { InstallableKey } from '@piggercode/protocol';
+import { INSTALLABLE_KEYS } from '@piggercode/protocol';
 
 export type RuntimeInstallableLaunchAvailability =
   | Readonly<{ ok: true }>

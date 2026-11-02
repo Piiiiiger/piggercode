@@ -15,7 +15,7 @@ import { isMachineOnline } from '@/utils/sessions/machineUtils';
 import { getActiveServerId } from '@/sync/domains/server/serverProfiles';
 import { CAPABILITIES_REQUEST_MACHINE_DETAILS } from '@/capabilities/requests';
 import { getInstallablesRegistryEntries, type InstallableAutoUpdateMode } from '@/capabilities/installablesRegistry';
-import { resolveInstallablePolicy, applyInstallablePolicyOverride } from '@happier-dev/protocol/installablesPolicy';
+import { resolveInstallablePolicy, applyInstallablePolicyOverride } from '@piggercode/protocol/installablesPolicy';
 import { useUnistyles } from 'react-native-unistyles';
 import { t } from '@/text';
 

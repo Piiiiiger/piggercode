@@ -17,4 +17,4 @@ export {
   table,
   terminalPresentation,
   warn,
-} from '@happier-dev/cli-common/output';
+} from '@piggercode/cli-common/output';

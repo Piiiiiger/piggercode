@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 
 import { formatClaudeTeamRoutedPrompt } from './formatClaudeTeamRoutedPrompt';
 

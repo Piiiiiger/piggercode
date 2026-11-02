@@ -11,7 +11,7 @@ import { t } from '@/text';
 import { useMountedRef } from '@/hooks/ui/useMountedRef';
 import { openExternalUrl } from '@/utils/url/openExternalUrl';
 import type { PullRequestUiModel } from '@/components/sessions/sourceControl/pullRequests/pullRequestUiModel';
-import type { ScmPullRequestRunStackedResponse } from '@happier-dev/protocol';
+import type { ScmPullRequestRunStackedResponse } from '@piggercode/protocol';
 
 type ExistingPullRequestModel = Extract<PullRequestUiModel, { kind: 'existing_pull_request' }>;
 type ReadyPullRequestModel = Extract<PullRequestUiModel, { kind: 'ready_to_create' }>;

@@ -5,7 +5,7 @@ import type { SessionRuntimeActivitySnapshotPublisher } from '@/session/runtimeA
 import { DeferredApiSessionClient, type DeferredApiSessionTarget } from './DeferredApiSessionClient';
 import type { Metadata } from '@/api/types';
 import { registerSessionHandlers } from '@/rpc/handlers/registerSessionHandlers';
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
 import { createClaudeUnifiedUserMessageHandler } from '@/backends/claude/startup/createClaudeUnifiedUserMessageHandler';
 
 function createMetadataStub(overrides?: Partial<Metadata>): Metadata {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@happier-dev/agents';
+import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@piggercode/agents';
 
 import { buildClaudeSubscriptionAuthorizationUrl, CLAUDE_SUBSCRIPTION_OAUTH } from './claudeSubscriptionOauth';
 

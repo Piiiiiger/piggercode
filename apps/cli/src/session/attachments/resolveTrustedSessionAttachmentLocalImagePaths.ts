@@ -3,7 +3,7 @@ import { constants as bufferConstants } from 'node:buffer';
 import { open } from 'node:fs/promises';
 import path from 'node:path';
 
-import { readAttachmentEnvelopeLocalImagePaths } from '@happier-dev/protocol';
+import { readAttachmentEnvelopeLocalImagePaths } from '@piggercode/protocol';
 import { configuration } from '@/configuration';
 
 export const SESSION_ATTACHMENT_FILE_EXCEEDS_UPLOAD_LIMIT = 'SESSION_ATTACHMENT_FILE_EXCEEDS_UPLOAD_LIMIT';

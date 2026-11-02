@@ -6,9 +6,9 @@ import { execFileSync } from 'node:child_process';
 import {
   processInstanceFingerprintMatches,
   readProcessInstanceFingerprintSync,
-} from '@happier-dev/cli-common/processInstance';
-import { isLoopbackHostname } from '@happier-dev/protocol';
-import { readOpenCodeSessionAffinityFromMetadata } from '@happier-dev/agents';
+} from '@piggercode/cli-common/processInstance';
+import { isLoopbackHostname } from '@piggercode/protocol';
+import { readOpenCodeSessionAffinityFromMetadata } from '@piggercode/agents';
 
 import { configuration } from '@/configuration';
 import { resolveOpenCodeCliLaunchSpec, type ProviderCliLaunchSpec } from '@/backends/opencode/utils/resolveOpenCodeCliCommand';

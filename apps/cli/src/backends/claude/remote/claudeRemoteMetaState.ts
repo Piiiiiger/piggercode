@@ -4,7 +4,7 @@ import {
     CLAUDE_UNIFIED_TERMINAL_RESUME_CHOICES,
     type ClaudeUnifiedTerminalHost,
     type ClaudeUnifiedTerminalResumeChoice,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 export type ClaudeRemoteMetaState = Readonly<{
     claudeRemoteAgentSdkEnabled: boolean;

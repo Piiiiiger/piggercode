@@ -5,7 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
     SESSION_AGENT_TRANSITION_DIVIDER_MESSAGE,
     buildSessionAgentTransitionDividerLocalId,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

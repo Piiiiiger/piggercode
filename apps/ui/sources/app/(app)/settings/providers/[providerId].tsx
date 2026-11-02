@@ -28,8 +28,8 @@ import {
     type ConnectedServicesDefaultAuthByAgentIdV1,
     buildConnectedServicesDefaultAuthSettingsPatch,
     type ConnectedServicesProviderStateSharingSettingsV1,
-} from '@happier-dev/protocol';
-import { getAgentSessionModeDescriptor, getAgentStaticModels, getProviderCliRuntimeSpec, isAgentAuthProbeSafeForBackgroundChecks } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { getAgentSessionModeDescriptor, getAgentStaticModels, getProviderCliRuntimeSpec, isAgentAuthProbeSafeForBackgroundChecks } from '@piggercode/agents';
 import {
     buildCatalogModelList,
     classifySessionModeDescriptor,

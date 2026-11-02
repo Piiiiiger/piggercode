@@ -1,10 +1,10 @@
-export type { ConnectedServiceId } from '@happier-dev/protocol';
+export type { ConnectedServiceId } from '@piggercode/protocol';
 import {
     SESSION_PERMISSION_MODES,
     type ConnectedServiceId,
     type ConnectedServicesProviderConfigSharingModeV1,
     type ConnectedServicesProviderStateSharingModeV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { AnyAgentRuntimeKindsManifest } from './runtimeKinds.js';
 
 export const AGENT_IDS = ['claude', 'codex', 'opencode', 'gemini', 'auggie', 'qwen', 'kimi', 'kilo', 'kiro', 'devin', 'customAcp', 'pi', 'copilot', 'cursor', 'grok', 'agy', 'fx', 'droid', 'codebuddy'] as const;

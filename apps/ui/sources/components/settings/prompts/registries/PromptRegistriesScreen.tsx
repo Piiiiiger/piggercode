@@ -9,7 +9,7 @@ import {
   type PromptRegistryConfiguredSourceV1,
   type PromptRegistryItemSummaryV1,
   type PromptRegistrySourceDescriptorV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ContextBar } from '@/components/settings/contextBar/ContextBar';
 import { InlineAddExpander } from '@/components/ui/forms/InlineAddExpander';

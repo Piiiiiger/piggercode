@@ -6,7 +6,7 @@ import {
   ConnectedServiceAuthGroupPolicyV1Schema,
   buildConnectedServiceCredentialRecord,
   type ConnectedServiceBindingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { ApiClient } from '@/api/api';

@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { RELEASED_CONNECTED_SERVICE_IDS, readConnectedServiceReaderSupport } from "@happier-dev/protocol";
+import { RELEASED_CONNECTED_SERVICE_IDS, readConnectedServiceReaderSupport } from "@piggercode/protocol";
 import { CURRENT_CONNECTED_SERVICE_READER_ROOM, RELEASED_CONNECTED_SERVICE_READER_ROOM } from "../api/socketRooms";
 import { projectConnectedServiceUpdateForReader } from "./projectConnectedServiceUpdateForReader";
 import { type HappierSocketData } from "../api/socket/socketData";

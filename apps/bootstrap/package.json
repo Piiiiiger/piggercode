@@ -1,5 +1,5 @@
 {
-  "name": "@happier-dev/bootstrap",
+  "name": "@piggercode/bootstrap",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,8 +15,8 @@
     "test": "yarn -s build:shared && node ../../node_modules/vitest/vitest.mjs run --config vitest.config.ts"
   },
   "dependencies": {
-    "@happier-dev/cli-common": "0.0.0",
-    "@happier-dev/protocol": "0.0.0",
+    "@piggercode/cli-common": "0.0.0",
+    "@piggercode/protocol": "0.0.0",
     "zod": "4.6.7"
   },
   "devDependencies": {

@@ -3,8 +3,8 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import type { runCommandCapture } from '@happier-dev/cli-common/process';
-import { installProviderCli } from '@happier-dev/cli-common/providers';
+import type { runCommandCapture } from '@piggercode/cli-common/process';
+import { installProviderCli } from '@piggercode/cli-common/providers';
 
 import { cliCapability as claudeCliCapability } from '@/backends/claude/cli/capability';
 import { applyEnvValues, restoreEnvValues, snapshotEnvValues } from '@/testkit/env/envSnapshot';

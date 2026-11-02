@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { DirectSessionActivityV1, DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
+import type { DirectSessionActivityV1, DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
 
 import { machineDirectSessionsCandidatesList } from '@/sync/ops/machineDirectSessions';
 import { t } from '@/text';

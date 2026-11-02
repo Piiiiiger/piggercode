@@ -25,7 +25,7 @@ import {
     type SessionMessageAttentionImpact,
     type SessionTranscriptObservationProvenanceV1,
     SessionTranscriptObservationProvenanceV1Schema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveEncryptionWriteRejectionCode, type EncryptionPolicyRejectionCode } from "@/app/session/encryptionRejectionCodes";
 import { isDeepStrictEqual } from "node:util";
 import { parseSessionMessageSidechainId } from "./parseSessionMessageSidechainId";

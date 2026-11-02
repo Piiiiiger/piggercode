@@ -1,9 +1,9 @@
 import { realpathSync } from 'node:fs';
 import { isAbsolute, resolve } from 'node:path';
 
-import { isAcpSessionListingDeclared, type AgentId } from '@happier-dev/agents';
-import type { DirectSessionsProviderId, DirectSessionsSource } from '@happier-dev/protocol';
-import { expandHomeDirPath } from '@happier-dev/cli-common/providers';
+import { isAcpSessionListingDeclared, type AgentId } from '@piggercode/agents';
+import type { DirectSessionsProviderId, DirectSessionsSource } from '@piggercode/protocol';
+import { expandHomeDirPath } from '@piggercode/cli-common/providers';
 
 import {
   resolveConfiguredClaudeConfigDir,

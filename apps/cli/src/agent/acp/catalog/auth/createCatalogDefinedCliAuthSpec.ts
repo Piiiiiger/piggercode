@@ -1,4 +1,4 @@
-import { getAgentAuthProbeConfig, type AgentId } from '@happier-dev/agents';
+import { getAgentAuthProbeConfig, type AgentId } from '@piggercode/agents';
 
 import { createCatalogCliAuthSpec } from '@/capabilities/cliAuth/createCatalogCliAuthSpec';
 import { createUnknownCliAuthSpec } from '@/capabilities/cliAuth/createUnknownCliAuthSpec';

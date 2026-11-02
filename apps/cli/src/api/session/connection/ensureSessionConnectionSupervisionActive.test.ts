@@ -2,7 +2,7 @@ import {
     createManagedConnectionSupervisor,
     type ManagedConnectionTransport,
     type TransportDisconnectEvent,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ensureSessionConnectionSupervisionActive } from './ensureSessionConnectionSupervisionActive';

@@ -6,7 +6,7 @@ import {
     parseSerializedJsonValue,
     sealBoxBundle,
     stringifySerializedJsonValue,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export function getPublicKeyForBox(secretKey: Uint8Array): Uint8Array {
     return deriveBoxPublicKeyFromSeed(secretKey);

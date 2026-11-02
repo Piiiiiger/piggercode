@@ -14,7 +14,7 @@ import { registerExternalAuthFinalizeKeylessRoute } from "./oauthExternal/regist
 import { registerExternalAuthTokenExchangeRoute } from "./oauthExternal/registerExternalAuthTokenExchangeRoute";
 import { authPendingSchema } from "./oauthExternal/oauthExternalSchemas";
 import { deleteOAuthPendingBestEffort, loadValidOAuthPending } from "./connectRoutes.oauthPending";
-import { ExternalOAuthErrorResponseSchema, ExternalOAuthParamsResponseSchema } from "@happier-dev/protocol";
+import { ExternalOAuthErrorResponseSchema, ExternalOAuthParamsResponseSchema } from "@piggercode/protocol";
 import { readAuthOauthKeylessFeatureEnv } from "@/app/features/catalog/readFeatureEnv";
 import { resolveKeylessAccountsAvailability } from "@/app/features/e2ee/resolveKeylessAccountsEnabled";
 import { resolveWebAppOAuthReturnUrlFromRequestHeaders } from "./oauthExternal/oauthExternalConfig";

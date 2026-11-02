@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import { DEFAULT_ACTIONS_SETTINGS_V1, type ActionsSettingsV1 } from '@happier-dev/protocol';
+import { DEFAULT_ACTIONS_SETTINGS_V1, type ActionsSettingsV1 } from '@piggercode/protocol';
 
 import { t } from '@/text';
 

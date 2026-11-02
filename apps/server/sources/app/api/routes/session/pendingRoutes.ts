@@ -29,7 +29,7 @@ import {
     PendingRequestedActionV1Schema,
     PendingActivationFailureRequestV1Schema,
     SessionStoredMessageContentSchema,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { resolveApiHotEndpointRateLimit } from "@/app/api/utils/apiRateLimitCatalog";
 import {
     emitPendingChanged,

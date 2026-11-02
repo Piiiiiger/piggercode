@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useAuth } from '@/auth/context/AuthContext';
 import { listConnectedServiceAuthGroupsV3 } from '@/sync/api/account/apiConnectedServiceAuthGroupsV3';
 import { useConnectedServiceGroupsRefreshSignal } from '@/sync/domains/connectedServices/connectedServiceGroupsRefreshSignal';
-import type { ConnectedServiceAuthGroupV1, ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceAuthGroupV1, ConnectedServiceId } from '@piggercode/protocol';
 
 export type ConnectedServiceAuthGroupsLoadStatus = 'idle' | 'loading' | 'refreshing' | 'loaded' | 'error';
 

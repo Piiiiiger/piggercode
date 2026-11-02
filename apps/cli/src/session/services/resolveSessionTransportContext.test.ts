@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed, sealEncryptedDataKeyEnvelopeV1 } from '@piggercode/protocol';
 import { encodeBase64, encrypt } from '@/api/encryption';
 
 const { resolveSessionIdOrPrefix, fetchSessionById } = vi.hoisted(() => ({

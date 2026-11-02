@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { encodeBase64 } from '@/encryption/base64';
 import { decodeHex } from '@/encryption/hex';
-import { parseSerializedJsonValue } from '@happier-dev/protocol';
+import { parseSerializedJsonValue } from '@piggercode/protocol';
 
 import { AES256Encryption, SecretBoxEncryption } from './encryptor';
 import { UI_CRYPTO_GOLDEN_VECTORS } from './nativeCryptoWorker/cryptoGoldenVectors';

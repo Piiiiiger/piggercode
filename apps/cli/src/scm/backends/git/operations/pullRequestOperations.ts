@@ -15,7 +15,7 @@ import {
     type ScmPullRequestRunStackedRequest,
     type ScmPullRequestRunStackedResponse,
     type ScmWorkingSnapshot,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import { defaultPrStatusCache } from '../../../hostingProviders/prStatusCache';

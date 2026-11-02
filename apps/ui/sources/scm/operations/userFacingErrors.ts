@@ -1,5 +1,5 @@
-import type { ScmOperationErrorCode } from '@happier-dev/protocol';
-import { classifyScmOperationErrorCode, SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmOperationErrorCode } from '@piggercode/protocol';
+import { classifyScmOperationErrorCode, SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 export function getScmUserFacingError(input: {
     errorCode?: ScmOperationErrorCode;

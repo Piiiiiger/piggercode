@@ -6,7 +6,7 @@ import {
   type PromptAssetInstallModeV1,
   type PromptAssetScopeV1,
   type PromptAssetTypeDescriptorV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { ContextBar } from '@/components/settings/contextBar/ContextBar';
 import { useContextBarSelection } from '@/components/settings/contextBar/useContextBarSelection';

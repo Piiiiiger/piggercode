@@ -5,7 +5,7 @@ import {
   readDaemonServiceStartFailure,
   type DaemonStatusSnapshot,
 } from './localDaemonCli.js';
-import { resolveServingThisComputerService } from '@happier-dev/cli-common/service';
+import { resolveServingThisComputerService } from '@piggercode/cli-common/service';
 
 /**
  * How one of this computer's background services stands for its relay, judged against the account

@@ -3,7 +3,7 @@ import {
   HAPPIER_REPLAY_RECENT_MESSAGES_MIN_COUNT,
   HAPPIER_REPLAY_SEED_MAX_CHARS,
   HAPPIER_REPLAY_SEED_MIN_CHARS,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { settingsDefaults, type Settings } from '@/sync/domains/settings/settings';
 

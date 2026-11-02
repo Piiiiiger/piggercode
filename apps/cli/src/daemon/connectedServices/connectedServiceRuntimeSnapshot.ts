@@ -3,7 +3,7 @@ import {
   ConnectedServiceMaterializationIdentityV1Schema,
   type ConnectedServiceBindingsV1,
   type ConnectedServiceMaterializationIdentityV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type ConnectedServiceRuntimeSnapshot = Readonly<{
   connectedServices?: ConnectedServiceBindingsV1;

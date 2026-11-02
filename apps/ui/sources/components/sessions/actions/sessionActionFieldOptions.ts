@@ -1,4 +1,4 @@
-import type { ActionInputFieldHint } from '@happier-dev/protocol';
+import type { ActionInputFieldHint } from '@piggercode/protocol';
 
 import {
     buildAvailableReviewEngineOptions,

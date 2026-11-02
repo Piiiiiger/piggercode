@@ -88,7 +88,7 @@ describe('actionOperationRunner start and shared admission', () => {
       request: { actionId: 'session.direct.takeover_persist', input: {}, scope: { sessionId: 's1' } },
       scope, scopeSessionId: 's1', exclusiveKey: 'takeover:s1',
       title: 'Import history', cancellation: 'supported' as const,
-      execute: async ({ signal, update }: { signal: AbortSignal; update: (value: { progress?: import('@happier-dev/protocol').ActionOperationProgressV1; cancellation?: 'supported' | 'unsupported' }) => void }) => {
+      execute: async ({ signal, update }: { signal: AbortSignal; update: (value: { progress?: import('@piggercode/protocol').ActionOperationProgressV1; cancellation?: 'supported' | 'unsupported' }) => void }) => {
         effects += 1;
         update({ progress: { kind: 'determinate', current: 1, total: 2 } });
         await pending;

@@ -7,7 +7,7 @@
  *
  * Enable locally:
  *   HAPPIER_RUN_REAL_CLAUDE_TUI_PROBES=1 \
- *     yarn -s workspace @happier-dev/tests test:providers claude.unifiedTuiRuntimeControl.realProbe
+ *     yarn -s workspace @piggercode/tests test:providers claude.unifiedTuiRuntimeControl.realProbe
  *
  * SETTINGS SAFETY / CLEANUP CONTRACT (G7):
  * - The probe uses an ISOLATED temporary `CLAUDE_CONFIG_DIR` so the operator's real `~/.claude` is never

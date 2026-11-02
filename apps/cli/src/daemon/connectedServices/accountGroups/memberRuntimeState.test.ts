@@ -2,7 +2,7 @@ import type {
   ConnectedServiceAuthGroupMemberStateV1,
   ConnectedServiceAuthGroupV1,
   ConnectedServiceId,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ConnectedServiceAuthGroupRuntimeStateRevisionConflictError } from '@/api/connectedServices/connectedServiceCredentialApi';

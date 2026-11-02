@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { createServerUrlComparableKey, type RestartSessionRunnerResultV1 } from '@happier-dev/protocol';
+import { createServerUrlComparableKey, type RestartSessionRunnerResultV1 } from '@piggercode/protocol';
 
 import {
   checkIfDaemonRunningAndCleanupStaleState,
@@ -48,7 +48,7 @@ import { resolveDaemonServiceCliRuntimeFromEnv } from '@/daemon/service/cli';
 
 import type { CommandContext } from '@/cli/commandRegistry';
 import { writeJsonStdout } from '@/cli/output/jsonEnvelope';
-import { cmd, createStepPrinter, definitionList, errorFrame, fail, ok, warn } from '@happier-dev/cli-common/output';
+import { cmd, createStepPrinter, definitionList, errorFrame, fail, ok, warn } from '@piggercode/cli-common/output';
 
 async function printDaemonJson(payload: unknown): Promise<void> {
   await writeJsonStdout(payload);

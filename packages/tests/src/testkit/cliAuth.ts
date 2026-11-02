@@ -7,7 +7,7 @@ import {
   createServerUrlComparableKey,
   deriveBoxPublicKeyFromSeed,
   type MachineReplacementReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 const CLI_HOME_DIR_MODE = 0o700;
 const CLI_HOME_FILE_MODE = 0o600;

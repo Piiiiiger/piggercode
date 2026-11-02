@@ -5,7 +5,7 @@ import {
     deriveSessionListMeaningfulActivityAt,
     resolveSessionListSecondaryLineMode,
 } from './deriveSessionListActivity';
-import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { PrimaryTurnStatusV1, SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 const runtimeIssue: SessionRuntimeIssueV1 = {
     v: 1,

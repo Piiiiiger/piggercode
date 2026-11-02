@@ -8,7 +8,7 @@ import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { machineMcpServersPreview } from '@/sync/ops/machineMcpServers';
 import { isRpcMethodNotAvailableError, isRpcMethodNotFoundError } from '@/sync/runtime/rpcErrors';
 import { t } from '@/text';
-import type { DaemonMcpServersPreviewResponse, SessionMcpSelectionV1 } from '@happier-dev/protocol';
+import type { DaemonMcpServersPreviewResponse, SessionMcpSelectionV1 } from '@piggercode/protocol';
 
 type PreviewSuccess = Extract<DaemonMcpServersPreviewResponse, { ok: true }>;
 

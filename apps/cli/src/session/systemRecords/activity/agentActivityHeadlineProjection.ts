@@ -4,7 +4,7 @@ import {
   fromWorkflowRunStatus,
   type SessionAgentActivityEntryV1,
   type SessionWorkflowRunSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Project durable workflow run detail into unified agent-activity headline entries.

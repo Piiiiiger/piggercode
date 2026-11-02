@@ -4,7 +4,7 @@ import {
   ExecutionRunIntentSchema,
   ExecutionRunStartRequestSchema,
   normalizeConnectedServiceSelectionForRunStart,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   defaultIoModeForExecutionRunIntent,
   defaultPermissionModeForExecutionRunIntent,

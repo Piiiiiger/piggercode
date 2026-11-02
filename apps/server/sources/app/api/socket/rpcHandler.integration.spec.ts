@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from "vitest";
-import { RPC_ERROR_CODES, RPC_METHODS } from "@happier-dev/protocol/rpc";
-import { SOCKET_RPC_EVENTS } from "@happier-dev/protocol/socketRpc";
+import { RPC_ERROR_CODES, RPC_METHODS } from "@piggercode/protocol/rpc";
+import { SOCKET_RPC_EVENTS } from "@piggercode/protocol/socketRpc";
 import { createFakeSocket, getSocketHandler } from "../testkit/socketHarness";
 import { createEnvReset } from "../testkit/env";
 

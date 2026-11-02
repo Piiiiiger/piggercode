@@ -10,7 +10,7 @@ import {
   StopSessionResultSchema,
   type SessionStopOutcome,
   type SessionStopResult as SessionStopCommandResult,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
   StopSessionResult,
 } from '@/daemon/sessions/stopSessionContract';
@@ -34,8 +34,8 @@ import {
   RPC_ERROR_CODES,
   RPC_METHODS,
   SOCKET_RPC_AUTHORIZATION_CONTEXT_KINDS,
-} from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 type StopSessionAttemptResult = StopSessionResult | Readonly<{
   status: 'incomplete';

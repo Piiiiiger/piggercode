@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { FeaturesResponseSchema } from '@happier-dev/protocol';
+import { FeaturesResponseSchema } from '@piggercode/protocol';
 
 describe('featureDecisionRuntime (feat.voice.agent)', () => {
     it('disables a feature when a dependency is locally disabled', async () => {

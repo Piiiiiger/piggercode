@@ -6,7 +6,7 @@ import {
   PET_PACKAGE_LIMITS_V1,
   type PetAssetMediaTypeV1,
   type PetPackageSourceV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { createPetSourceKey } from '../discovery/createPetSourceKey';
 import { validatePetManifestBytes } from '../validation/validatePetManifest';

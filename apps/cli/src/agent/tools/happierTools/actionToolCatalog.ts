@@ -5,7 +5,7 @@ import {
   type ActionId,
   type ActionSurfaceAvailability,
   type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { HappierBuiltInToolDefinition } from './types';
 

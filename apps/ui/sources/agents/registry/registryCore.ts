@@ -1,7 +1,7 @@
 import type { ModelMode } from '@/sync/domains/permissions/permissionTypes';
 import type { TranslationKey, TranslationKeyNoParams } from '@/text';
 import type { Href } from 'expo-router';
-import type { ConnectedServiceId } from '@happier-dev/protocol';
+import type { ConnectedServiceId } from '@piggercode/protocol';
 
 import {
     AGENT_IDS as SHARED_AGENT_IDS,
@@ -14,7 +14,7 @@ import {
     type AgentToolsDelivery,
     type AgentToolsSupportLevel,
     type VendorResumeIdField,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { CLAUDE_CORE } from '@/agents/providers/claude/core';
 import { CODEX_CORE } from '@/agents/providers/codex/core';
@@ -69,7 +69,7 @@ export type AgentCoreConfig = Readonly<{
         experimental: boolean;
     }>;
     /**
-     * Shared Happier Connected Services compatibility from `@happier-dev/agents`.
+     * Shared Happier Connected Services compatibility from `@piggercode/agents`.
      */
     connectedServices: SharedAgentCore['connectedServices'];
     uiConnectedService: Readonly<{
@@ -145,7 +145,7 @@ export type AgentCoreConfig = Readonly<{
     /**
      * Model selection capabilities and static suggestions.
      *
-     * Source of truth lives in `@happier-dev/agents` so CLI + UI don’t drift.
+     * Source of truth lives in `@piggercode/agents` so CLI + UI don’t drift.
      * UI may still prefer dynamic ACP lists (`metadata.acpSessionModelsV1`) when present.
      */
     model: AgentModelConfig;

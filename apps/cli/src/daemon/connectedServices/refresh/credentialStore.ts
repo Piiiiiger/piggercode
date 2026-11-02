@@ -4,7 +4,7 @@ import {
   sealConnectedServiceCredentialCiphertext,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceCredentialRevisionBoundaryV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { randomBytes } from 'node:crypto';
 
 import type { ApiClient } from '@/api/api';

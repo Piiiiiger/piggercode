@@ -6,7 +6,7 @@ import {
   type ConnectedServiceCredentialHealthStatusV1,
   type ProviderAccountSubscriptionV1,
   type ConnectedServiceAuthGroupPolicyV1 as ProtocolConnectedServiceAuthGroupPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
   reconcileMemberRuntimeStateWithFreshQuotaEvidence,
   reconcileMemberRuntimeStateWithPositiveEvidence,

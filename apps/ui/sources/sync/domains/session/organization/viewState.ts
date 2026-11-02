@@ -4,8 +4,8 @@ import {
     buildSessionWorkspaceOrderScopeKey,
     type SessionWorkspaceOrderV1,
 } from '@/sync/domains/session/listing/sessionWorkspaceOrderStateV1';
-import type { ReorderSessionOrganizationRequest } from '@happier-dev/protocol';
-import type { SessionAttentionStanding } from '@happier-dev/protocol';
+import type { ReorderSessionOrganizationRequest } from '@piggercode/protocol';
+import type { SessionAttentionStanding } from '@piggercode/protocol';
 
 import type { SessionOrganizationProjection } from './types';
 import { buildSessionOrganizationTagLabelById } from './tagLabels';

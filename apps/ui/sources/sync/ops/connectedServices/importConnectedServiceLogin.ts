@@ -2,9 +2,9 @@ import {
     ConnectedServiceImportResponseV1Schema,
     type ConnectedServiceImportRequestV1,
     type ConnectedServiceImportResponseV1,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_METHODS, isRpcMethodNotFoundResult } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS, isRpcMethodNotFoundResult } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 

@@ -9,7 +9,7 @@ import {
     materializeNextPendingMessageForCurrentPublisher,
     resolveAcceptedPendingDelivery,
 } from "./pendingMessageService";
-import type { PendingRequestedActionV1 } from "@happier-dev/protocol";
+import type { PendingRequestedActionV1 } from "@piggercode/protocol";
 import { createSessionPublisherPresence } from "@/app/presence/sessionPublisherPresence";
 
 type EnqueuePendingTestParams = Parameters<typeof enqueuePendingMessageOwner>[0] extends infer T

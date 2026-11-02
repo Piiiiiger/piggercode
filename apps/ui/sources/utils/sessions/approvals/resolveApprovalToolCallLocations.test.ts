@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ApprovalRequestV1 } from '@happier-dev/protocol';
+import type { ApprovalRequestV1 } from '@piggercode/protocol';
 
 import type { ToolCallMessage } from '@/sync/domains/messages/messageTypes';
 import { buildMessageRouteId } from '@/sync/domains/messages/messageRouteIds';

@@ -3,7 +3,7 @@ import {
     fromWorkflowRunStatus,
     type SessionWorkflowActivityHeadlineV1,
     type SessionWorkflowRunHeadlineV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { AgentActivityHeadlineEntry } from '../types';
 

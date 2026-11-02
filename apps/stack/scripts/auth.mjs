@@ -50,11 +50,11 @@ import {
 } from './utils/auth/credentials_paths.mjs';
 import { decodeJwtPayloadUnsafe } from './utils/auth/decode_jwt_payload_unsafe.mjs';
 import { fileHasContent } from './utils/fs/file_has_content.mjs';
-import { buildConfigureServerLinks } from '@happier-dev/cli-common/links';
+import { buildConfigureServerLinks } from '@piggercode/cli-common/links';
 import {
   renderPrismaCompatibleSqliteDatabaseUrl,
   resolveServerLightSqliteDatabaseUrlOptionsFromEnv,
-} from '@happier-dev/cli-common/firstPartyRuntime';
+} from '@piggercode/cli-common/firstPartyRuntime';
 import { getStackRuntimeStatePath, isPidAlive as isRuntimePidAlive, readStackRuntimeStateFile } from './utils/stack/runtime_state.mjs';
 import { resolveStackRuntimeLaunchContext } from './runtime/launch/resolveStackRuntimeLaunchContext.mjs';
 import { applyEffectiveDbProviderEnv } from './utils/server/effective_db_provider.mjs';

@@ -1,4 +1,4 @@
-import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@happier-dev/connection-supervisor';
+import type { ManagedConnectionState, ManagedConnectionSupervisor } from '@piggercode/connection-supervisor';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { HttpStatusError } from '@/api/client/httpStatusError';

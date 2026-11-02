@@ -32,7 +32,7 @@ import {
   type ConnectedServiceId,
   type ConnectedServiceOauthCredentialRawMetadata,
   type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { upsertEncryptedAccountSettingsV2 } from './accountSettings';
 import { createTestAuth, type TestAuth } from './auth';

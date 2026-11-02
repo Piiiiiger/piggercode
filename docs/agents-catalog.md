@@ -1,4 +1,4 @@
-# Agents catalog (CLI + app + `@happier-dev/agents`)
+# Agents catalog (CLI + app + `@piggercode/agents`)
 
 This doc explains how the **Agents catalog** works end-to-end in Happier, and how to add a new agent/provider.
 
@@ -13,13 +13,13 @@ The goal is that both surfaces:
 ## Key concepts (shared language)
 
 - **AgentId**: canonical id for an agent across packages (CLI + app + server).
-  - Source of truth: `@happier-dev/agents` (`packages/agents/src/manifest.ts`).
+  - Source of truth: `@piggercode/agents` (`packages/agents/src/manifest.ts`).
 - **detectKey**: CLI executable name used for detection UX and `command -v <detectKey>`-style probes.
-  - Source of truth: `@happier-dev/agents` (`AGENTS_CORE[agentId].detectKey`).
+  - Source of truth: `@piggercode/agents` (`AGENTS_CORE[agentId].detectKey`).
 - **cliSubcommand**: the primary CLI subcommand for this agent (usually the same as `AgentId`).
-  - Source of truth: `@happier-dev/agents` (`AGENTS_CORE[agentId].cliSubcommand`).
+  - Source of truth: `@piggercode/agents` (`AGENTS_CORE[agentId].cliSubcommand`).
 - **flavorAliases**: extra strings we accept for parsing/migration (e.g. `codex-acp`).
-  - Source of truth: `@happier-dev/agents` (`AGENTS_CORE[agentId].flavorAliases`).
+  - Source of truth: `@piggercode/agents` (`AGENTS_CORE[agentId].flavorAliases`).
 - **Capabilities**: machine/runtime checks produced by the daemon (implemented by CLI) and consumed by the app.
   - Convention (CLI): `cli.<agentId>`, `tool.<name>`, `dep.<name>`.
 - **Checklists**: higher-level groupings of capabilities that the app can render as guided setup steps.
@@ -29,7 +29,7 @@ The goal is that both surfaces:
 
 ## What lives where (sources of truth)
 
-### 1) Shared manifest + runtime metadata: `@happier-dev/agents`
+### 1) Shared manifest + runtime metadata: `@piggercode/agents`
 
 Where:
 - `packages/agents/src/manifest.ts`
@@ -68,7 +68,7 @@ context counts; a mode descriptor or model name cannot supply usage telemetry.
 ### Session identity in UI (development source)
 
 Session presentation reads `resolveAgentIdFromSessionMetadata` from
-`@happier-dev/agents`: a declared runtime identity wins over `flavor`, followed
+`@piggercode/agents`: a declared runtime identity wins over `flavor`, followed
 by an unambiguous vendor resume key. Resolve this identity before projecting
 compact list metadata or writing its warm cache; the compact `flavor` field
 carries that resolved identity, not a competing interpretation of raw metadata.
@@ -79,7 +79,7 @@ policy reads the running Session's canonical identity. A policy default for an
 unidentified existing Session is not presentation evidence; an explicit new-Session
 selection or armed continuation still supplies its own identity.
 
-### 2) Cross-boundary contracts: `@happier-dev/protocol`
+### 2) Cross-boundary contracts: `@piggercode/protocol`
 
 Where:
 - `packages/protocol/src/*`
@@ -107,7 +107,7 @@ Generic ACP runtime/catalog machinery lives under:
 That split is intentional:
 - `apps/cli/src/backends/**` is for provider-owned implementations
 - `apps/cli/src/agent/acp/**` is for provider-agnostic ACP plumbing
-- built-in generic ACP agents such as Kiro are declared in `@happier-dev/agents` and consumed by the generic ACP layer
+- built-in generic ACP agents such as Kiro are declared in `@piggercode/agents` and consumed by the generic ACP layer
 
 ### 4) App agents catalog: `apps/ui/sources/agents/catalog/catalog.ts`
 
@@ -129,7 +129,7 @@ There are three layers inside `apps/ui/sources/agents/`:
 
 1) **Core registry** (`registry/registryCore.ts`)
    - identity + app-facing config (translations, settings gating, permissions, connected service UX, resume config, etc.)
-   - consumes canonical ids from `@happier-dev/agents`
+   - consumes canonical ids from `@piggercode/agents`
 
 2) **UI registry** (`registry/registryUi.ts`)
    - app-only visuals (icons, tints, avatar overlay sizing, glyphs)
@@ -225,7 +225,7 @@ Agents whose ACP server advertises `session/list` expose their own sessions as *
 ### Dynamic model lists
 
 Whether a provider's model list is resolved at runtime is one catalog fact:
-`AGENT_MODEL_CONFIG.<agentId>.dynamicProbe` in `@happier-dev/agents`.
+`AGENT_MODEL_CONFIG.<agentId>.dynamicProbe` in `@piggercode/agents`.
 
 - `'static-only'` — the curated `staticModels` list is the whole truth. The app does not run the
   preflight models probe and ignores any `sessionModelsV1` the session publishes.
@@ -438,7 +438,7 @@ Prefer:
 
 If you need variants, use `flavorAliases` (and keep canonical ids stable).
 
-### Step 1 — add/extend the canonical manifest (`@happier-dev/agents`)
+### Step 1 — add/extend the canonical manifest (`@piggercode/agents`)
 
 Edit:
 - `packages/agents/src/manifest.ts`
@@ -469,7 +469,7 @@ Common files (as needed):
 If the built-in agent is generic ACP-backed, do not add a bespoke backend folder just to shell out to ACP.
 
 Instead:
-- add its built-in metadata in `@happier-dev/agents`
+- add its built-in metadata in `@piggercode/agents`
 - let `apps/cli/src/agent/acp/catalog/**` instantiate it generically
 - when provider-owned ACP behavior needs the live Happier session, expose it through the catalog entry's `getAcpRuntimeBackendOptionsResolver`; the generic catalog runner is the single place that resolves and passes those backend options. Do not branch on the agent id in the generic runner or create a second session-notification path.
 - keep static ACP differences on the built-in ACP definition: model config-option application, permission-intent-to-agent-mode mapping, and whether Happier MCP descriptors are passed through the standard ACP request. A `null` permission mapping is an intentional no-op, not a fallback mode. When an agent ignores the standard ACP MCP field but has a native MCP config model, keep that wire fact as `drop` and use one provider-owned, process-scoped config adapter rather than disabling Happier tools or mutating the user's files.
@@ -493,7 +493,7 @@ For provider-specific agents, create:
 Pattern:
 
 ```ts
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 import type { AgentCatalogEntry } from '../types';
 
 export const agent = {
@@ -532,7 +532,7 @@ Wire them into registries:
 - add `*_UI` to `apps/ui/sources/agents/registry/registryUi.ts`
 - add `*_UI_BEHAVIOR_OVERRIDE` to `apps/ui/sources/agents/registry/registryUiBehavior.ts` (only if you have overrides)
 
-### Step 5 — update `@happier-dev/protocol` only when the boundary truly changes
+### Step 5 — update `@piggercode/protocol` only when the boundary truly changes
 
 If you need new daemon/app fields, add them to:
 - `packages/protocol/src/*`

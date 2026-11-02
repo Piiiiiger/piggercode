@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { encryptSecretStringV1 } from '@happier-dev/protocol';
+import { encryptSecretStringV1 } from '@piggercode/protocol';
 
 import { resolveOperationalMemoryEmbeddingsSettings } from '@/daemon/memory/resolveOperationalMemoryEmbeddingsSettings';
 

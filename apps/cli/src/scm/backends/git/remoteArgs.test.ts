@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import {
     buildGitPullArgs,

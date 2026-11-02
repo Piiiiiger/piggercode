@@ -6,7 +6,7 @@ import { wantsJson, printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { resolveMcpCommandDeps, type McpCommandDeps } from './mcp/deps';
 import { runMcpServeCommand } from './mcp/serve';
 import { runMcpServersSubcommand } from './mcp/servers/subcommands';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 function isHelpToken(value: string): boolean {
   const trimmed = String(value ?? '').trim();

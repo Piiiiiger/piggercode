@@ -2,7 +2,7 @@ import {
   resolveDirectTranscriptContinuation,
   type DirectTranscriptRawMessageV1,
   type DirectTranscriptTruncationReason,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export type DirectTranscriptImportPage = Readonly<{
   items: DirectTranscriptRawMessageV1[];

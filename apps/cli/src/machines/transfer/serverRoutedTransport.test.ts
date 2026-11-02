@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { deriveBoxPublicKeyFromSeed, type MachineTransferReceiveEnvelope, type MachineTransferSendEnvelope } from '@happier-dev/protocol';
+import { deriveBoxPublicKeyFromSeed, type MachineTransferReceiveEnvelope, type MachineTransferSendEnvelope } from '@piggercode/protocol';
 
 import { registerServerRoutedTransferResponder } from './serverRoutedTransport';
 
@@ -217,7 +217,7 @@ describe('server routed machine transfer', () => {
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
     const { createFileTransferPayloadSource } = await import('./transferPayloadSource');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const unregister = registerServerRoutedTransferResponder({
       machineTransferChannel: source,
@@ -290,7 +290,7 @@ describe('server routed machine transfer', () => {
     const dispose = vi.fn(async () => undefined);
 
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const unregister = registerServerRoutedTransferResponder({
       machineTransferChannel: source,
@@ -353,7 +353,7 @@ describe('server routed machine transfer', () => {
     });
 
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const unregister = registerServerRoutedTransferResponder({
       machineTransferChannel: source,
@@ -565,7 +565,7 @@ describe('server routed machine transfer', () => {
   it('fails closed before loading the payload when the open envelope uses a pathological transfer id (and does not echo it in the abort reason)', async () => {
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const pathologicalTransferId = 'x'.repeat(2048);
     const recipientSecretKeySeed = new Uint8Array(32).fill(7);
@@ -613,7 +613,7 @@ describe('server routed machine transfer', () => {
     process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const recipientSecretKeySeed = new Uint8Array(32).fill(9);
     const recipientPublicKeyBase64 = Buffer.from(deriveBoxPublicKeyFromSeed(recipientSecretKeySeed)).toString('base64');
@@ -661,7 +661,7 @@ describe('server routed machine transfer', () => {
     process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '16';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const recipientSecretKeySeed = new Uint8Array(32).fill(9);
     const recipientPublicKeyBase64 = Buffer.from(deriveBoxPublicKeyFromSeed(recipientSecretKeySeed)).toString('base64');
@@ -712,7 +712,7 @@ describe('server routed machine transfer', () => {
     process.env.HAPPIER_MACHINE_TRANSFER_SERVER_ROUTED_OPEN_PAYLOAD_MAX_BYTES = '1024';
     const { source, target, sentEnvelopes } = createLoopbackChannels();
     const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-    const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+    const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
     const observedOpenPayloads: unknown[] = [];
 
@@ -1094,7 +1094,7 @@ describe('server routed machine transfer', () => {
       const dispose = vi.fn(async () => undefined);
 
       const { registerServerRoutedTransferResponder } = await import('./serverRoutedTransport');
-      const { deriveBoxPublicKeyFromSeed } = await import('@happier-dev/protocol');
+      const { deriveBoxPublicKeyFromSeed } = await import('@piggercode/protocol');
 
       const unregister = registerServerRoutedTransferResponder({
         machineTransferChannel: source,

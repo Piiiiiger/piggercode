@@ -8,7 +8,7 @@ import { Modal } from '@/modal';
 import { useAuth } from '@/auth/context/AuthContext';
 import { t } from '@/text';
 import { getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
-import { ConnectedServiceCredentialRecordV1Schema, ConnectedServiceIdSchema, supportsConnectedServiceOperation, type ConnectedServiceCredentialRecordV1, type ConnectedServiceId } from '@happier-dev/protocol';
+import { ConnectedServiceCredentialRecordV1Schema, ConnectedServiceIdSchema, supportsConnectedServiceOperation, type ConnectedServiceCredentialRecordV1, type ConnectedServiceId } from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
 import { fireAndForget } from '@/utils/system/fireAndForget';

@@ -245,13 +245,13 @@ Profile `bare` (no changes at all):
 
 After provisioning (common next commands):
   - Dev monorepo wizard (clones + bootstraps a workspace):
-      npx --yes -p @happier-dev/stack@latest hstack setup-from-source --profile=dev --bind=loopback
+      npx --yes -p @piggercode/stack@latest hstack setup-from-source --profile=dev --bind=loopback
   - Selfhost (lighter; good for quickly validating server/UI boot without auth):
-      npx --yes -p @happier-dev/stack@latest hstack setup-from-source --profile=selfhost --no-auth --no-tailscale --no-autostart --no-menubar --bind=loopback
+      npx --yes -p @piggercode/stack@latest hstack setup-from-source --profile=selfhost --no-auth --no-tailscale --no-autostart --no-menubar --bind=loopback
 
 Tips:
   - Open printed URLs on your host via http://localhost:<port> or http://*.localhost:<port>.
-  - For `npx --yes -p @happier-dev/stack hstack tools review-pr ...` inside the VM, pass `--vm-ports` so stack ports land in the forwarded ranges.
+  - For `npx --yes -p @piggercode/stack hstack tools review-pr ...` inside the VM, pass `--vm-ports` so stack ports land in the forwarded ranges.
   - Override guest provision versions (profile=happier):
       HAPPIER_PROVISION_NODE_MAJOR=24 HAPPIER_PROVISION_YARN_VERSION=1.22.22 /tmp/linux-ubuntu-provision.sh --profile=happier
 EOF

@@ -6,7 +6,7 @@
  * - Validates the SendMessage broadcast tool_use input + tool_result acknowledgement (JSON preferred when present).
  *
  * Enable locally:
- *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @happier-dev/tests test:providers claude.agentTeams.broadcast.resultShape.realProbe.test.ts
+ *   HAPPIER_TEST_REAL_CLAUDE=1 HAPPIER_TEST_REAL_CLAUDE_FULL=1 yarn -s workspace @piggercode/tests test:providers claude.agentTeams.broadcast.resultShape.realProbe.test.ts
  */
 
 import { describe, expect, it } from 'vitest';

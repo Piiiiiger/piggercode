@@ -16,7 +16,7 @@ vi.mock("@/app/events/eventRouter", async () => {
 });
 
 import { db } from "@/storage/db";
-import { ConnectedServiceAuthGroupResponseV1Schema } from "@happier-dev/protocol";
+import { ConnectedServiceAuthGroupResponseV1Schema } from "@piggercode/protocol";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";
 import { connectRoutes } from "./connectRoutes";
 import { DEFAULT_CONNECTED_SERVICE_AUTH_GROUP_POLICY_V1 } from "./connectedServicesV3/authGroupPolicy";

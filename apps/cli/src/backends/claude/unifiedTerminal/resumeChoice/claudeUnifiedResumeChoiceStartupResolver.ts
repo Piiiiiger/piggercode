@@ -1,4 +1,4 @@
-import type { ClaudeUnifiedTerminalResumeChoice } from '@happier-dev/agents';
+import type { ClaudeUnifiedTerminalResumeChoice } from '@piggercode/agents';
 import type { TerminalControlPort } from '@/integrations/terminalHost/controlTypes';
 
 import type { EnhancedMode } from '../../loop';

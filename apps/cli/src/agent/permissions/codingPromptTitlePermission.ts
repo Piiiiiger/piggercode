@@ -1,8 +1,8 @@
 import {
   isCodingPromptSessionTitleUpdatesEnabled,
   parseHappierToolsShellBridgeCommand,
-} from '@happier-dev/protocol';
-import { isChangeTitleToolLikeName } from '@happier-dev/protocol/tools/v2';
+} from '@piggercode/protocol';
+import { isChangeTitleToolLikeName } from '@piggercode/protocol/tools/v2';
 
 import { extractShellCommand } from './permissionToolIdentifier';
 

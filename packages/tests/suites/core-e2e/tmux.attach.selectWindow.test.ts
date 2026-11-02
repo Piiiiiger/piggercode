@@ -94,7 +94,7 @@ describe('core e2e: tmux attach selects the correct window (isolated tmux server
         TMUX_PANE: '%0',
       };
 
-      const invocation = resolveYarnCommandInvocation(['-s', 'workspace', '@happier-dev/cli', 'dev', 'attach', sessionId], {
+      const invocation = resolveYarnCommandInvocation(['-s', 'workspace', '@piggercode/cli', 'dev', 'attach', sessionId], {
         npmExecPath: envForAttach.npm_execpath,
       });
       const attachRes = spawnSync(invocation.command, invocation.args, {

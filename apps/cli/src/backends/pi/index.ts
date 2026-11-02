@@ -1,4 +1,4 @@
-import { AGENTS_CORE } from '@happier-dev/agents';
+import { AGENTS_CORE } from '@piggercode/agents';
 
 import { PI_BROKER_SELECTIONS_ENV, parsePiBrokerSelections } from '@/backends/pi/brokerExtension';
 import { checklists } from './cli/checklists';

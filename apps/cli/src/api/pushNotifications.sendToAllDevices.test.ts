@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { logger } from '@/ui/logger';
 import { PushNotificationClient } from './pushNotifications';
-import { PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS, PUSH_NOTIFICATION_CATEGORY_IDS } from '@happier-dev/protocol';
+import { PUSH_NOTIFICATION_ANDROID_CHANNEL_IDS, PUSH_NOTIFICATION_CATEGORY_IDS } from '@piggercode/protocol';
 
 type MockExpoPushTicket = Readonly<{
   status: string;

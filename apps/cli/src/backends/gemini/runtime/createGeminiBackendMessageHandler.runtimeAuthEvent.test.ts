@@ -1,4 +1,4 @@
-import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import { buildUsageLimitIssueFingerprint, type SessionRuntimeIssueV1 } from '@piggercode/protocol';
 import { createSessionTurnLifecycle } from '@/agent/runtime/session/turn/lifecycle';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 

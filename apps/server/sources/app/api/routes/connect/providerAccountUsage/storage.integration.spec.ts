@@ -4,7 +4,7 @@ import {
     buildProviderAccountUsageRecordId,
     ProviderAccountUsageSnapshotV1Schema,
     type ConnectedServiceUsageSourceV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { db } from "@/storage/db";
 import { createLightSqliteHarness, type LightSqliteHarness } from "@/testkit/lightSqliteHarness";

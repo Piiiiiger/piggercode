@@ -5,8 +5,8 @@ import {
   WorkspaceFaviconResolveRequestV1Schema,
   type WorkspaceFaviconMimeTypeV1,
   type WorkspaceFaviconResolveResponseV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';

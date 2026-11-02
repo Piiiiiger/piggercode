@@ -5,7 +5,7 @@ import { mapUnknownErrorToControlError } from '@/cli/control/controlErrorMapping
 
 import { showServerHelp } from './server/help';
 import { runServerSubcommand } from './server/subcommands';
-import { fail } from '@happier-dev/cli-common/output';
+import { fail } from '@piggercode/cli-common/output';
 
 export async function handleServerCommand(args: string[]): Promise<void> {
   const json = wantsJson(args);

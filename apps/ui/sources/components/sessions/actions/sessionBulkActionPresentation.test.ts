@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ActionsSettingsV1Schema } from '@happier-dev/protocol';
+import { ActionsSettingsV1Schema } from '@piggercode/protocol';
 
 import {
     SESSION_BULK_ACTION_IDS,

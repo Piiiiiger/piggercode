@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stringifySerializedJsonValue } from '@happier-dev/protocol';
+import { stringifySerializedJsonValue } from '@piggercode/protocol';
 
 import { encryptDataKeyBase64 } from '../../src/testkit/rpcCrypto';
 

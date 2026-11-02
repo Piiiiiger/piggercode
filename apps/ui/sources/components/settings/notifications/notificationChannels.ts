@@ -7,7 +7,7 @@ import {
     type NotificationChannelsV1,
     type NotificationsSettingsV1,
     type WebhookNotificationChannelV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 function slugifyWebhookChannelId(url: string): string {
     const slug = url

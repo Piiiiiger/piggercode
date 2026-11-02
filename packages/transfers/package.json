@@ -1,5 +1,5 @@
 {
-  "name": "@happier-dev/transfers",
+  "name": "@piggercode/transfers",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -25,7 +25,7 @@
     "typecheck": "node ../../scripts/workspaces/runTypeScriptCli.mjs -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@happier-dev/protocol": "0.0.0"
+    "@piggercode/protocol": "0.0.0"
   },
   "devDependencies": {
     "@types/node": ">=20",

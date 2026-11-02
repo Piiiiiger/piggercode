@@ -5,7 +5,7 @@ import {
   readAgentRuntimeDescriptorV1,
   SessionMcpSelectionV1Schema,
   SPAWN_SESSION_ERROR_CODES,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveCanonicalCodexBackendMode } from '@/rpc/handlers/codexBackendMode';
 import type { SpawnSessionOptions, SpawnSessionResult } from '@/rpc/handlers/registerSessionHandlers';

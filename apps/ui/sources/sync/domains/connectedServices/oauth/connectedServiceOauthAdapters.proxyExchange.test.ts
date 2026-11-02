@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ConnectedServiceIdSchema, decodeBase64, encodeBase64, sealBoxBundle } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, decodeBase64, encodeBase64, sealBoxBundle } from '@piggercode/protocol';
 import { createRootLayoutFeaturesResponse } from '@/dev/testkit/fixtures/featureFixtures';
 
 afterEach(() => {

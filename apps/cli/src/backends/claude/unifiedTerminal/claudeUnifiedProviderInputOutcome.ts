@@ -4,7 +4,7 @@ import type {
   SessionProviderInputOutcomeProducer,
 } from '@/api/session/sessionClient';
 import { readNonBlankOpaqueIdentifier } from '@/utils/opaqueIdentifiers';
-import { readPendingLocalId } from '@happier-dev/protocol';
+import { readPendingLocalId } from '@piggercode/protocol';
 import { readClaudeActiveUnifiedTerminalHost } from '../utils/readClaudeActiveTerminalMode';
 
 function createClaudeUnifiedProviderInputProducer(

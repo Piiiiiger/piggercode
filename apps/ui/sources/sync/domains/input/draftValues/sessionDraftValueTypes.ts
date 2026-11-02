@@ -1,9 +1,9 @@
-import type { ParticipantRecipientV1 } from '@happier-dev/protocol';
+import type { ParticipantRecipientV1 } from '@piggercode/protocol';
 import {
     ComposerAgentContinuationIntentV1Schema,
     ParticipantRecipientV1Schema,
     SessionAgentTransitionInputV1Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { z } from 'zod';
 
 export const SessionComposerExecutionRunDeliveryModeSchema = z.enum([

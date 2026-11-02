@@ -18,7 +18,7 @@ import {
     type SessionMessageRole,
     type SessionPendingQueueDeliveryTiming,
     type SessionStoredContentKind,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 import { didSessionActivityBadgeContributionChange } from "@/app/activity/accountActivityBadge";
 import { resolveSessionMessageRole } from "@/app/session/messageRole/resolveSessionMessageRole";
 import { resolvePendingTranscriptCompatibility } from "@/app/session/pending/pendingMessageTranscriptCommit";

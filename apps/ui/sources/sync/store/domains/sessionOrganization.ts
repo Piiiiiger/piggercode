@@ -6,7 +6,7 @@ import type {
     SessionOrganizationPin,
     SessionOrganizationSnapshot,
     SessionOrganizationTag,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import {
     buildSessionOrganizationLabelKey,

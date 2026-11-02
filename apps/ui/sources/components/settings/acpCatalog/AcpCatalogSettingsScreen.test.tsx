@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { AcpCatalogSettingsV1 } from '@happier-dev/protocol';
+import type { AcpCatalogSettingsV1 } from '@piggercode/protocol';
 import { createUseSettingMock } from '@/dev/testkit';
 import { renderSettingsView } from '@/dev/testkit/harness/settingsViewHarness';
 import { installAcpCatalogSettingsCommonModuleMocks } from './acpCatalogSettingsTestHelpers';

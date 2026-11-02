@@ -24,7 +24,7 @@ const listeners = new Map<string, (event: any) => void>();
 const audioStreamStart = vi.fn<(...args: any[]) => Promise<{ streamId: string }>>();
 const audioStreamStop = vi.fn(async (_params: { streamId: string }) => {});
 
-vi.mock('@happier-dev/audio-stream-native', () => ({
+vi.mock('@piggercode/audio-stream-native', () => ({
   getOptionalHappierAudioStreamNativeModule: () => ({
     start: audioStreamStart,
     stop: audioStreamStop,
@@ -46,7 +46,7 @@ const sherpaStreamingPushFrame = vi.fn(
     }),
 );
 
-vi.mock('@happier-dev/sherpa-native', () => ({
+vi.mock('@piggercode/sherpa-native', () => ({
   getOptionalHappierSherpaNativeModule: () => ({
     createStreamingRecognizer: sherpaStreamingCreate,
     pushAudioFrame: sherpaStreamingPushFrame,

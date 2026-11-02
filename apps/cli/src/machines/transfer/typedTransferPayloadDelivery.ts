@@ -1,4 +1,4 @@
-import type { TransferEndpointCandidate } from '@happier-dev/protocol';
+import type { TransferEndpointCandidate } from '@piggercode/protocol';
 
 import type { MachineTransferStrategy } from './types';
 import type { TransferPayloadSource } from './transferPayloadSource';

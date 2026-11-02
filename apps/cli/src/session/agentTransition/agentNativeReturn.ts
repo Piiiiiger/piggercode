@@ -4,7 +4,7 @@ import {
   projectCurrentAgentSessionView,
   resolveVendorResumeIdFromSessionMetadata,
   type AgentId,
-} from '@happier-dev/agents';
+} from '@piggercode/agents';
 
 import { configuration } from '@/configuration';
 import {

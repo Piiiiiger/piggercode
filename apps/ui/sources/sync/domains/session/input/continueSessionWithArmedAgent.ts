@@ -5,8 +5,8 @@ import {
     type SessionAgentTransitionInputV1,
     type SessionAgentTransitionRejectedCodeV1,
     type SessionAgentTransitionResultV1,
-} from '@happier-dev/protocol';
-import { parsePermissionIntentAlias } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { parsePermissionIntentAlias } from '@piggercode/agents';
 
 import { machineCapabilitiesDetect } from '@/sync/ops/capabilities';
 import { runSessionAgentTransitionOnMachine } from '@/sync/ops/sessionAgentTransition';

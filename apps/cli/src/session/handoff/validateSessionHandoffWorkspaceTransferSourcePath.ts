@@ -1,7 +1,7 @@
 import {
   evaluateSessionHandoffWorkspaceTransferSourcePathSafety,
   type SessionHandoffWorkspaceTransferPathSafetyReasonCode,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type { SessionHandoffWorkspaceTransferInput } from './sessionHandoffWorkspaceTransferInput';
 
 export type SessionHandoffWorkspaceTransferSourcePathValidationResult = Readonly<

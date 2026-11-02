@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
-import type { WorkspaceManifest } from '@happier-dev/protocol';
+import type { WorkspaceManifest } from '@piggercode/protocol';
 
 import { hashWorkspaceFile } from './workspaceExportPackaging/hashWorkspaceFile';
 import { scanWorkspaceManifest } from './workspaceExportPackaging/scanWorkspaceManifest';

@@ -1,4 +1,4 @@
-import type { ScmBackendId, ScmBackendPreference, ScmRepoMode } from '@happier-dev/protocol';
+import type { ScmBackendId, ScmBackendPreference, ScmRepoMode } from '@piggercode/protocol';
 
 import type { ScmBackend, ScmRepoDetection } from './types';
 

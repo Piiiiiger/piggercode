@@ -3,7 +3,7 @@ import {
   type McpServersSettingsV1,
   type ResolveManagedSessionMcpSelectionV1Result,
   type SessionMcpSelectionV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { createRealpathNormalizer } from './createRealpathNormalizer';
 
 export function resolveManagedSessionMcpSelectionForDirectory(params: Readonly<{

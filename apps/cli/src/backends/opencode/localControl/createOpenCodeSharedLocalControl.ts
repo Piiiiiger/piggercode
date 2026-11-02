@@ -2,7 +2,7 @@ import { createSharedProviderLocalControl } from '@/agent/localControl/createSha
 import type { ApiSessionClient } from '@/api/session/sessionClient';
 import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFlags';
 import { logger } from '@/ui/logger';
-import type { SessionProviderCliAttachPrepareRequestV1, SessionProviderCliAttachPrepareResultV1 } from '@happier-dev/protocol';
+import type { SessionProviderCliAttachPrepareRequestV1, SessionProviderCliAttachPrepareResultV1 } from '@piggercode/protocol';
 
 import { createOpenCodeTuiSupervisor, type OpenCodeTuiSupervisor, type OpenCodeTuiAttachTarget } from './openCodeTuiSupervisor';
 import type { OpenCodeLocalControlSupport } from './resolveOpenCodeLocalControlSupport';

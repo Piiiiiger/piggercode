@@ -1,4 +1,4 @@
-import { resolveMetadataStringOverrideV1 } from '@happier-dev/agents';
+import { resolveMetadataStringOverrideV1 } from '@piggercode/agents';
 
 import type { Session } from '../state/storageTypes';
 import { readNonBlankSessionControlIdentifier } from '@/sync/domains/sessionControl/opaqueIdentifiers';

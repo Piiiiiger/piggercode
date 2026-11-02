@@ -2,7 +2,7 @@ import {
     selectConnectedServiceQuotaMetersForLimitSelection,
     type ConnectedServiceAuthGroupQuotaLimitSelectionV1,
     type ConnectedServiceQuotaSnapshotV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 /**
  * Projects an account snapshot through the owning pool's allowance policy.

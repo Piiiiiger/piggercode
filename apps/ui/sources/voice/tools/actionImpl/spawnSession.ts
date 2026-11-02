@@ -7,7 +7,7 @@ import { supportsSpawnPendingFirstInput } from '@/sync/domains/session/spawn/spa
 import { buildSafeWorkspaceLabel } from '@/utils/worktree/workspaceHandles';
 import type { Machine, Session } from '@/sync/domains/state/storageTypes';
 import type { StorageState } from '@/sync/store/types';
-import type { ActionExecutorDeps } from '@happier-dev/protocol';
+import type { ActionExecutorDeps } from '@piggercode/protocol';
 
 import { normalizeNonEmptyString, resolveVoiceMachineLabel } from './shared';
 import { postprocessSpawnedSession } from './spawnSessionPostProcess';

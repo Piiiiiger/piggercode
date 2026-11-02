@@ -1,4 +1,4 @@
-import { isExecutionRunActive } from '@happier-dev/protocol';
+import { isExecutionRunActive } from '@piggercode/protocol';
 
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { canSendMessagesToExecutionRun } from '@/sync/domains/executionRuns/canSendMessagesToExecutionRun';

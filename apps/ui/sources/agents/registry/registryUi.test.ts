@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AGENT_IDS as SHARED_AGENT_IDS } from '@happier-dev/agents';
+import { AGENT_IDS as SHARED_AGENT_IDS } from '@piggercode/agents';
 
 import { AGENTS_UI } from './registryUi';
 import { getAgentPickerIconScale } from './registryUi';

@@ -69,7 +69,7 @@ import { cyan, dim, green } from './utils/ui/ansi.mjs';
 import { isSandboxed } from './utils/env/sandbox.mjs';
 import { installExitCleanup } from './utils/proc/exit_cleanup.mjs';
 import { expandHome } from './utils/paths/canonical_home.mjs';
-import { buildConfigureServerLinks } from '@happier-dev/cli-common/links';
+import { buildConfigureServerLinks } from '@piggercode/cli-common/links';
 import { spawnStackOwnerDeathWatchdog } from './utils/stack/owner_death_watchdog.mjs';
 import { completeInterruptedStackStopBeforeStart } from './utils/stack/stop.mjs';
 import { resolveTauriPaneInvocation } from './utils/tui/tauri_mode.mjs';

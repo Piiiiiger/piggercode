@@ -3,7 +3,7 @@ import type {
     SessionRuntimeActivityProjection,
     SessionRuntimeActivitySnapshot,
     SessionRuntimeIssueV1,
-} from "@happier-dev/protocol";
+} from "@piggercode/protocol";
 
 import { readAccountChangeCursors } from "@/app/changes/readAccountChangeCursors";
 import type { SessionParticipantCursor } from "@/app/session/changeTracking/markSessionParticipantsChanged";

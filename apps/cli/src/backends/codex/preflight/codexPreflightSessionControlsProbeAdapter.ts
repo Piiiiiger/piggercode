@@ -3,7 +3,7 @@ import { withCodexAppServerControlClient } from '@/backends/codex/appServer/cont
 import { readCodexAppServerSessionControls } from '@/backends/codex/appServer/sessionControlsMetadata';
 import { readCodexEnvironmentAuthState } from '@/backends/codex/cli/auth/readCodexEnvironmentAuthState';
 import { listCodexAppServerSkills } from '@/backends/codex/appServer/pluginAndSkillCatalog';
-import { resolveCodexSessionBackendMode } from '@happier-dev/agents';
+import { resolveCodexSessionBackendMode } from '@piggercode/agents';
 import { probeAcpCatalogs } from '@/capabilities/probes/probeAcpCatalogs';
 
 async function readControls(params: Readonly<{

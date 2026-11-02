@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { ConnectedServiceId, ConnectedServiceProfileId } from '@happier-dev/protocol';
+import type { ConnectedServiceId, ConnectedServiceProfileId } from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
 import { normalizeMaterializationKeyForPath } from '../materialize/normalizeMaterializationKeyForPath';

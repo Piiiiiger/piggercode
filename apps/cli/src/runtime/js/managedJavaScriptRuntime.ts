@@ -5,4 +5,4 @@ export {
   readExplicitJavaScriptRuntimeCommand,
   resolveExplicitJavaScriptRuntimeCommand,
   resolveExistingManagedJavaScriptRuntimeCommand,
-} from '@happier-dev/cli-common/providers/managedJavaScriptRuntime';
+} from '@piggercode/cli-common/providers/managedJavaScriptRuntime';

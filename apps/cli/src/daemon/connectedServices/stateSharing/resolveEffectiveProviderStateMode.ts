@@ -1,4 +1,4 @@
-import type { ConnectedServicesProviderStateSharingModeV1 } from '@happier-dev/protocol';
+import type { ConnectedServicesProviderStateSharingModeV1 } from '@piggercode/protocol';
 
 import type { ConnectedServiceStateSharingDescriptor } from '@/backends/types';
 

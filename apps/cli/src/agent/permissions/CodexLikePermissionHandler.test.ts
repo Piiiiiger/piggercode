@@ -4,7 +4,7 @@ import { CodexLikePermissionHandler } from './CodexLikePermissionHandler';
 import { SessionPermissionRpcRouter } from './sessionPermissionRpcRouter';
 import { createRunScopedExecutionPermissionHandler } from '@/agent/executionRuns/runtime/runScopedExecutionPermissionHandler';
 import { createExecutionRunPermissionHandler } from '@/agent/executionRuns/policy/executionRunPermissionDecision';
-import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@happier-dev/protocol/rpcErrors';
+import { PUBLIC_RPC_HANDLER_ERROR_CODES } from '@piggercode/protocol/rpcErrors';
 
 class FakeRpcHandlerManager {
   handlers = new Map<string, (payload: any) => any>();

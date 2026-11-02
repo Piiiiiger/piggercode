@@ -2,7 +2,7 @@ import type { Metadata } from '@/api/types';
 import { logger } from '@/ui/logger';
 
 import { resolveModelOverrideFromMetadataSnapshot } from './permission/permissionModeFromMetadata';
-import { computeNextMetadataStringOverrideV1 } from '@happier-dev/agents';
+import { computeNextMetadataStringOverrideV1 } from '@piggercode/agents';
 import { isDefinitiveSessionControlApplyError } from './sessionControlApplyError';
 
 export function createModelOverrideSynchronizer(params: Readonly<{

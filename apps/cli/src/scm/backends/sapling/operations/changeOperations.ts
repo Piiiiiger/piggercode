@@ -1,8 +1,8 @@
 import { rmSync } from 'fs';
 import path from 'node:path';
 
-import type { ScmChangeApplyResponse, ScmChangeDiscardRequest, ScmChangeDiscardResponse } from '@happier-dev/protocol';
-import { SCM_OPERATION_ERROR_CODES } from '@happier-dev/protocol';
+import type { ScmChangeApplyResponse, ScmChangeDiscardRequest, ScmChangeDiscardResponse } from '@piggercode/protocol';
+import { SCM_OPERATION_ERROR_CODES } from '@piggercode/protocol';
 
 import type { ScmBackendContext } from '../../../types';
 import { normalizePathspec, runScmCommand } from '../../../runtime';

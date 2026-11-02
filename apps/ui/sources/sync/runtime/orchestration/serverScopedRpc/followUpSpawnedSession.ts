@@ -208,7 +208,7 @@ function getDefaultActiveSync() {
             text: string,
             displayText?: string,
             metaOverrides?: Record<string, unknown>,
-            options?: Readonly<{ localId?: string | null; requestedAction: import('@happier-dev/protocol').PendingRequestedActionV1 }>,
+            options?: Readonly<{ localId?: string | null; requestedAction: import('@piggercode/protocol').PendingRequestedActionV1 }>,
         ) => await sync.enqueuePendingMessage(sessionId, text, displayText, metaOverrides, options),
     };
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { createHash } from 'node:crypto';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConnectedServiceIdSchema, decodeBase64, encodeBase64, openConnectedServiceCredentialCiphertext, sealBoxBundle } from '@happier-dev/protocol';
+import { ConnectedServiceIdSchema, decodeBase64, encodeBase64, openConnectedServiceCredentialCiphertext, sealBoxBundle } from '@piggercode/protocol';
 import { changeTextTestInstance, renderScreen } from '@/dev/testkit';
 import { flushHookEffects } from '@/dev/testkit/hooks/flushHookEffects';
 import { createRootLayoutFeaturesResponse } from '@/dev/testkit/fixtures/featureFixtures';

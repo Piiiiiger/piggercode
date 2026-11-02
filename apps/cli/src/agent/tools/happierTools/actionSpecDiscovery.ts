@@ -12,7 +12,7 @@ import {
   type ActionSurfaceAvailability,
   type ActionsSettingsV1,
   type ResolvedActionOption,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 export const actionSpecSearchSchema = z.object({
   query: z.string().optional(),

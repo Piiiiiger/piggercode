@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { Metadata } from '@/api/types';
 import { createTestMetadata } from '@/testkit/backends/sessionMetadata';
-import { readOpenCodeSessionRuntimeHandleFromMetadata } from '@happier-dev/agents';
+import { readOpenCodeSessionRuntimeHandleFromMetadata } from '@piggercode/agents';
 import { maybeUpdateOpenCodeSessionIdMetadata, type OpenCodeSessionMetadataPublicationState } from './opencodeSessionIdMetadata';
 
 describe('maybeUpdateOpenCodeSessionIdMetadata', () => {

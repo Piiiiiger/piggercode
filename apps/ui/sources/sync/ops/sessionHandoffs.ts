@@ -10,7 +10,7 @@ import {
     SessionHandoffTargetResumeResponseV2Schema,
     SPAWN_SESSION_ERROR_CODES,
     readAcpConfiguredBackendV1FromMetadata,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import type {
     AgentRuntimeDescriptorV1,
     BackendTargetRefV1,
@@ -21,9 +21,9 @@ import type {
     SessionHandoffStorageMode,
     SessionHandoffTransportStrategy,
     SessionHandoffWorkspaceTransfer,
-} from '@happier-dev/protocol';
-import { RPC_ERROR_CODES, RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { resolveAgentIdFromSessionMetadata } from '@happier-dev/agents';
+} from '@piggercode/protocol';
+import { RPC_ERROR_CODES, RPC_METHODS } from '@piggercode/protocol/rpc';
+import { resolveAgentIdFromSessionMetadata } from '@piggercode/agents';
 
 import { buildCodexBackendTransportFields } from '../domains/session/codexBackendTransport';
 

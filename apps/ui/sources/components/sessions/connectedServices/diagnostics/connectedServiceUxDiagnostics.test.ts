@@ -5,7 +5,7 @@ import {
     CONNECTED_SERVICE_UX_DIAGNOSTIC_CODES,
     ConnectedServiceUxDiagnosticCodeV1Schema,
     type ConnectedServiceUxDiagnosticV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { resolveConnectedServiceUxDiagnosticPresentation } from './connectedServiceUxDiagnostics';
 

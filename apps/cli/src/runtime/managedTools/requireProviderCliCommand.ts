@@ -1,4 +1,4 @@
-import type { AgentId } from '@happier-dev/agents';
+import type { AgentId } from '@piggercode/agents';
 
 import { readProviderCliOverride, resolveProviderCliCommand } from './providerCliResolution';
 

@@ -1,6 +1,6 @@
 import type { Metadata, PermissionMode, UserMessage } from '@/api/types';
 import { isPermissionMode } from '@/api/types';
-import { resolveLatestPermissionIntent } from '@happier-dev/agents';
+import { resolveLatestPermissionIntent } from '@piggercode/agents';
 
 export function resolvePermissionIntentPrecedence(opts: {
   metadata: Metadata | null | undefined;

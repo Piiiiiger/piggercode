@@ -1,4 +1,4 @@
-import type { ActionId } from '@happier-dev/protocol';
+import type { ActionId } from '@piggercode/protocol';
 
 import type { ExecutionRunActionPermissionMode } from './executionRunActionPermissionMode';
 

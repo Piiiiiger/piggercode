@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pressable } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { buildBackendTargetKey, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import { buildBackendTargetKey, type BackendTargetRefV1, type ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { resolveProviderAgentIdForBackendTarget } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { getAgentCore } from '@/agents/catalog/catalog';

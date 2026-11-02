@@ -1,4 +1,4 @@
-import type { SystemTaskJsonObject, SystemTaskJsonValue } from '@happier-dev/protocol';
+import type { SystemTaskJsonObject, SystemTaskJsonValue } from '@piggercode/protocol';
 
 import { SystemTaskExecutionError } from '../runSystemTask.js';
 import { redactSensitiveSystemTaskJsonValue, type InteractiveSystemTaskKind } from '../interactiveTaskKinds.js';

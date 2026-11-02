@@ -1,4 +1,4 @@
-import { computeNextPermissionIntentMetadata, type PermissionIntent } from '@happier-dev/agents';
+import { computeNextPermissionIntentMetadata, type PermissionIntent } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 

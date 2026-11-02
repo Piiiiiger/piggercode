@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import { profileDefaults } from '@/sync/domains/profiles/profile';
 import { createAccountSettingsScope } from '@/sync/domains/settings/scope/accountSettingsScope';
-import { sealAccountScopedBlobCiphertext } from '@happier-dev/protocol';
+import { sealAccountScopedBlobCiphertext } from '@piggercode/protocol';
 
 vi.mock('expo-constants', () => ({
     default: {},

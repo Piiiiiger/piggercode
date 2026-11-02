@@ -8,7 +8,7 @@ import {
     AgentTeamDeleteResultV2Schema,
     AgentTeamSendMessageInputV2Schema,
     AgentTeamSendMessageResultV2Schema,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import type { ToolViewProps } from '@/components/tools/renderers/core/_registry';
 import { ToolSectionView } from '@/components/tools/shell/presentation/ToolSectionView';

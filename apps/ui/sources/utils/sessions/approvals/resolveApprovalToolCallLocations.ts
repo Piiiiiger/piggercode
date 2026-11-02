@@ -1,4 +1,4 @@
-import type { ApprovalRequestV1 } from '@happier-dev/protocol';
+import type { ApprovalRequestV1 } from '@piggercode/protocol';
 
 import type { Message, ToolCallMessage } from '@/sync/domains/messages/messageTypes';
 import type { PermissionToolCallMessageLocation } from '@/utils/sessions/permissions/permissionToolCallLocationTypes';

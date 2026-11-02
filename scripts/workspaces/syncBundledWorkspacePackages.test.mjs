@@ -18,7 +18,7 @@ test('bootstrap publication preserves conditional package imports without compil
   try {
     const scriptsDir = resolve(repoRoot, 'scripts', 'workspaces');
     const sourceDir = resolve(repoRoot, 'packages', 'fixture');
-    const destinationDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'fixture');
+    const destinationDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'fixture');
     mkdirSync(scriptsDir, { recursive: true });
     for (const file of ['syncBundledWorkspacePackages.mjs', 'vendorBundledWorkspaceRuntimeDependenciesFallback.mjs']) {
       cpSync(resolve(sourceRepoRoot, 'scripts', 'workspaces', file), resolve(scriptsDir, file));
@@ -26,7 +26,7 @@ test('bootstrap publication preserves conditional package imports without compil
     mkdirSync(resolve(sourceDir, 'dist'), { recursive: true });
     mkdirSync(resolve(sourceDir, 'runtime'), { recursive: true });
     const imports = { '#http': { node: './runtime/node.js', default: './dist/fetch.js' }, '#fs': 'fs', '#disabled': null };
-    writeFileSync(resolve(sourceDir, 'package.json'), JSON.stringify({ name: '@happier-dev/fixture', version: '0.0.0', type: 'module', exports: { '.': './dist/connect.js' }, imports }));
+    writeFileSync(resolve(sourceDir, 'package.json'), JSON.stringify({ name: '@piggercode/fixture', version: '0.0.0', type: 'module', exports: { '.': './dist/connect.js' }, imports }));
     writeFileSync(resolve(sourceDir, 'dist/connect.js'), 'export { transport } from "#http";\n');
     writeFileSync(resolve(sourceDir, 'dist/fetch.js'), 'export const transport = "fetch";\n');
     writeFileSync(resolve(sourceDir, 'runtime/node.js'), 'export const transport = "node";\n');
@@ -42,7 +42,7 @@ test('bootstrap publication preserves conditional package imports without compil
 
 test('sanitizeBundledWorkspacePackageJson keeps publish-time runtime fields only', () => {
   const sanitized = sanitizeBundledWorkspacePackageJson({
-    name: '@happier-dev/protocol',
+    name: '@piggercode/protocol',
     version: '0.0.0',
     private: false,
     type: 'module',
@@ -50,14 +50,14 @@ test('sanitizeBundledWorkspacePackageJson keeps publish-time runtime fields only
     module: './dist/index.js',
     types: './dist/index.d.ts',
     exports: { '.': { default: './dist/index.js' } },
-    dependencies: { '@happier-dev/internal': '0.0.0', zod: '^1.0.0' },
-    optionalDependencies: { '@happier-dev/optional-internal': '0.0.0', fsevents: '^2.0.0' },
+    dependencies: { '@piggercode/internal': '0.0.0', zod: '^1.0.0' },
+    optionalDependencies: { '@piggercode/optional-internal': '0.0.0', fsevents: '^2.0.0' },
     devDependencies: { vitest: '^3.0.0' },
     scripts: { build: 'tsup' },
   });
 
   assert.deepEqual(sanitized, {
-    name: '@happier-dev/protocol',
+    name: '@piggercode/protocol',
     version: '0.0.0',
     private: true,
     type: 'module',
@@ -84,8 +84,8 @@ test('syncBundledWorkspacePackages derives the default bundled workspace set fro
         text.endsWith('/apps/cli/package.json') ||
         text.endsWith('/packages/custom-bundle/package.json') ||
         text.endsWith('/packages/custom-bundle/dist') ||
-        text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/package.json') ||
-        text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/dist')
+        text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/package.json') ||
+        text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/dist')
       );
     },
     mkdirSync: () => {},
@@ -96,13 +96,13 @@ test('syncBundledWorkspacePackages derives the default bundled workspace set fro
       const text = String(path);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/custom-bundle', 'tweetnacl'],
+          bundledDependencies: ['@piggercode/custom-bundle', 'tweetnacl'],
         });
       }
 
       if (text.endsWith('/packages/custom-bundle/package.json')) {
         return JSON.stringify({
-          name: '@happier-dev/custom-bundle',
+          name: '@piggercode/custom-bundle',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -122,7 +122,7 @@ test('rmDirSafeSync retries transient ENOTEMPTY errors before removing a directo
   assert.equal(typeof rmDirSafeSync, 'function');
 
   let calls = 0;
-  rmDirSafeSync('/repo/apps/cli/node_modules/@happier-dev/agents/node_modules/zod/v4/locales', {
+  rmDirSafeSync('/repo/apps/cli/node_modules/@piggercode/agents/node_modules/zod/v4/locales', {
     rmSync() {
       calls += 1;
       if (calls <= 2) {
@@ -151,17 +151,17 @@ test('syncBundledWorkspacePackages updates bundled copies for every configured h
     existsSync: (candidate) =>
       String(candidate).includes('/packages/protocol/package.json') ||
       String(candidate).includes('/packages/protocol/dist') ||
-      String(candidate).includes('/apps/cli/node_modules/@happier-dev/protocol/dist') ||
-      String(candidate).includes('/apps/stack/node_modules/@happier-dev/protocol/dist') ||
-      String(candidate).endsWith('/apps/cli/node_modules/@happier-dev/protocol/package.json') ||
-      String(candidate).endsWith('/apps/stack/node_modules/@happier-dev/protocol/package.json'),
+      String(candidate).includes('/apps/cli/node_modules/@piggercode/protocol/dist') ||
+      String(candidate).includes('/apps/stack/node_modules/@piggercode/protocol/dist') ||
+      String(candidate).endsWith('/apps/cli/node_modules/@piggercode/protocol/package.json') ||
+      String(candidate).endsWith('/apps/stack/node_modules/@piggercode/protocol/package.json'),
     mkdirSync: () => {},
     rmSync: () => {},
     cpSync: (...args) => cpCalls.push(args),
     renameSync: (...args) => renameCalls.push(args),
     readFileSync: () =>
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -171,34 +171,34 @@ test('syncBundledWorkspacePackages updates bundled copies for every configured h
 
   assert.equal(cpCalls.length, 2);
   assert.equal(cpCalls[0][0], '/repo/packages/protocol/dist');
-  assert.equal(String(cpCalls[0][1]), '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1');
+  assert.equal(String(cpCalls[0][1]), '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1');
   assert.deepEqual(cpCalls[0][2], { recursive: true, force: true });
   assert.equal(cpCalls[1][0], '/repo/packages/protocol/dist');
-  assert.equal(String(cpCalls[1][1]), '/repo/apps/stack/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1');
+  assert.equal(String(cpCalls[1][1]), '/repo/apps/stack/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1');
   assert.deepEqual(cpCalls[1][2], { recursive: true, force: true });
 
   assert.deepEqual(renameCalls, [
     [
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist',
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_backup__.sync-1',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_backup__.sync-1',
     ],
     [
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1',
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist',
     ],
     [
-      '/repo/apps/stack/node_modules/@happier-dev/protocol/dist',
-      '/repo/apps/stack/node_modules/@happier-dev/protocol/dist.__sync_backup__.sync-1',
+      '/repo/apps/stack/node_modules/@piggercode/protocol/dist',
+      '/repo/apps/stack/node_modules/@piggercode/protocol/dist.__sync_backup__.sync-1',
     ],
     [
-      '/repo/apps/stack/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1',
-      '/repo/apps/stack/node_modules/@happier-dev/protocol/dist',
+      '/repo/apps/stack/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1',
+      '/repo/apps/stack/node_modules/@piggercode/protocol/dist',
     ],
   ]);
 
   assert.equal(writeCalls.length, 2);
-  assert.equal(writeCalls[0][0], '/repo/apps/cli/node_modules/@happier-dev/protocol/package.json');
-  assert.equal(writeCalls[1][0], '/repo/apps/stack/node_modules/@happier-dev/protocol/package.json');
+  assert.equal(writeCalls[0][0], '/repo/apps/cli/node_modules/@piggercode/protocol/package.json');
+  assert.equal(writeCalls[1][0], '/repo/apps/stack/node_modules/@piggercode/protocol/package.json');
 });
 
 test('syncBundledWorkspacePackages refreshes a complete existing dist directory in place when replaceExisting is false', () => {
@@ -216,21 +216,21 @@ test('syncBundledWorkspacePackages refreshes a complete existing dist directory 
       if (text.endsWith('/packages/custom-bundle/package.json')) return true;
       if (text.endsWith('/packages/custom-bundle/dist')) return true;
       if (text.endsWith('/packages/custom-bundle/dist/index.js')) return true;
-      if (text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/package.json')) return true;
-      if (text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/dist')) return true;
-      if (text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/dist/index.js')) return true;
+      if (text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/package.json')) return true;
+      if (text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/dist')) return true;
+      if (text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/dist/index.js')) return true;
       return false;
     },
     readFileSync: (path) => {
       const text = String(path);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/custom-bundle'],
+          bundledDependencies: ['@piggercode/custom-bundle'],
         });
       }
       if (text.endsWith('/packages/custom-bundle/package.json')) {
         return JSON.stringify({
-          name: '@happier-dev/custom-bundle',
+          name: '@piggercode/custom-bundle',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -248,7 +248,7 @@ test('syncBundledWorkspacePackages refreshes a complete existing dist directory 
   assert.deepEqual(cpCalls, [
     [
       '/repo/packages/custom-bundle/dist',
-      '/repo/apps/cli/node_modules/@happier-dev/custom-bundle/dist',
+      '/repo/apps/cli/node_modules/@piggercode/custom-bundle/dist',
       { recursive: true, force: true },
     ],
   ]);
@@ -269,20 +269,20 @@ test('syncBundledWorkspacePackages repairs an incomplete existing dist directory
       if (text.endsWith('/apps/cli/package.json')) return true;
       if (text.endsWith('/packages/custom-bundle/package.json')) return true;
       if (text.endsWith('/packages/custom-bundle/dist')) return true;
-      if (text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/package.json')) return true;
-      if (text.endsWith('/apps/cli/node_modules/@happier-dev/custom-bundle/dist')) return true;
+      if (text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/package.json')) return true;
+      if (text.endsWith('/apps/cli/node_modules/@piggercode/custom-bundle/dist')) return true;
       return false;
     },
     readFileSync: (path) => {
       const text = String(path);
       if (text.endsWith('/apps/cli/package.json')) {
         return JSON.stringify({
-          bundledDependencies: ['@happier-dev/custom-bundle'],
+          bundledDependencies: ['@piggercode/custom-bundle'],
         });
       }
       if (text.endsWith('/packages/custom-bundle/package.json')) {
         return JSON.stringify({
-          name: '@happier-dev/custom-bundle',
+          name: '@piggercode/custom-bundle',
           version: '0.0.0',
           type: 'module',
           exports: { '.': { default: './dist/index.js' } },
@@ -307,7 +307,7 @@ test('syncBundledWorkspacePackages vendors runtime dependencies in preflight mod
     const srcPackageDir = resolve(repoRoot, 'packages', 'protocol');
     const srcDist = resolve(srcPackageDir, 'dist');
     const srcZodDir = resolve(srcPackageDir, 'node_modules', 'zod');
-    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const destZodPackageJson = resolve(destPackageDir, 'node_modules', 'zod', 'package.json');
 
@@ -317,7 +317,7 @@ test('syncBundledWorkspacePackages vendors runtime dependencies in preflight mod
     writeFileSync(
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -355,7 +355,7 @@ test('syncBundledWorkspacePackages skips complete runtime dependencies in prefli
     const srcPackageDir = resolve(repoRoot, 'packages', 'protocol');
     const srcDist = resolve(srcPackageDir, 'dist');
     const srcZodDir = resolve(srcPackageDir, 'node_modules', 'zod');
-    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const destZodDir = resolve(destPackageDir, 'node_modules', 'zod');
     const vendorCalls = [];
@@ -367,7 +367,7 @@ test('syncBundledWorkspacePackages skips complete runtime dependencies in prefli
     writeFileSync(
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -409,7 +409,7 @@ test('syncBundledWorkspacePackages revendors runtime dependencies with missing b
     const srcPackageDir = resolve(repoRoot, 'packages', 'protocol');
     const srcDist = resolve(srcPackageDir, 'dist');
     const srcBase64Dir = resolve(srcPackageDir, 'node_modules', 'base64-js');
-    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const destBase64Dir = resolve(destPackageDir, 'node_modules', 'base64-js');
     const vendorCalls = [];
@@ -421,7 +421,7 @@ test('syncBundledWorkspacePackages revendors runtime dependencies with missing b
     writeFileSync(
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -459,7 +459,7 @@ test('syncBundledWorkspacePackages revendors complete but stale runtime dependen
     const srcPackageDir = resolve(repoRoot, 'packages', 'protocol');
     const srcDist = resolve(srcPackageDir, 'dist');
     const srcZodDir = resolve(srcPackageDir, 'node_modules', 'zod');
-    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const destZodDir = resolve(destPackageDir, 'node_modules', 'zod');
     const vendorCalls = [];
@@ -471,7 +471,7 @@ test('syncBundledWorkspacePackages revendors complete but stale runtime dependen
     writeFileSync(
       resolve(srcPackageDir, 'package.json'),
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -550,16 +550,16 @@ test('syncBundledWorkspacePackages vendors runtime dependencies when cli-common 
         "  const srcPackageDir = resolve(repoRoot, 'packages', 'protocol');",
         "  const srcDist = resolve(srcPackageDir, 'dist');",
         "  const srcZodDir = resolve(srcPackageDir, 'node_modules', 'zod');",
-        "  const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'protocol');",
+        "  const destPackageDir = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'protocol');",
         "  mkdirSync(srcDist, { recursive: true });",
         "  mkdirSync(srcZodDir, { recursive: true });",
         "  writeFileSync(resolve(srcPackageDir, 'package.json'), JSON.stringify({",
-        "    name: '@happier-dev/protocol',",
+        "    name: '@piggercode/protocol',",
         "    version: '0.0.0',",
         "    type: 'module',",
         "    exports: { '.': { default: './dist/index.js' } },",
-        "    dependencies: { '@happier-dev/agents': '0.0.0', zod: '4.3.6' },",
-        "    optionalDependencies: { '@happier-dev/optional-runtime': '0.0.0' },",
+        "    dependencies: { '@piggercode/agents': '0.0.0', zod: '4.3.6' },",
+        "    optionalDependencies: { '@piggercode/optional-runtime': '0.0.0' },",
         "  }));",
         "  writeFileSync(resolve(srcDist, 'index.js'), 'export const ok = true;\\n', 'utf8');",
         "  writeFileSync(resolve(srcZodDir, 'package.json'), JSON.stringify({",
@@ -597,13 +597,13 @@ test('syncBundledWorkspacePackages preserves the previous bundled dist when copy
   try {
     const srcDist = resolve(repoRoot, 'packages', 'cli-common', 'dist');
     const srcPackageJsonPath = resolve(repoRoot, 'packages', 'cli-common', 'package.json');
-    const destDist = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@happier-dev', 'cli-common', 'dist');
+    const destDist = resolve(repoRoot, 'apps', 'stack', 'node_modules', '@piggercode', 'cli-common', 'dist');
     const destMarkerPath = resolve(destDist, 'links.js');
 
     mkdirSync(srcDist, { recursive: true });
     mkdirSync(destDist, { recursive: true });
     writeFileSync(srcPackageJsonPath, JSON.stringify({
-      name: '@happier-dev/cli-common',
+      name: '@piggercode/cli-common',
       version: '0.0.0',
       type: 'module',
       exports: { './links': { default: './dist/links.js' } },
@@ -633,12 +633,12 @@ test('syncBundledWorkspacePackages prunes stale bundled dist files during refres
   try {
     const srcDist = resolve(repoRoot, 'packages', 'protocol', 'dist');
     const srcPackageJsonPath = resolve(repoRoot, 'packages', 'protocol', 'package.json');
-    const destDist = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol', 'dist');
+    const destDist = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol', 'dist');
 
     mkdirSync(srcDist, { recursive: true });
     mkdirSync(destDist, { recursive: true });
     writeFileSync(srcPackageJsonPath, JSON.stringify({
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
       version: '0.0.0',
       type: 'module',
       exports: { '.': { default: './dist/index.js' } },
@@ -673,15 +673,15 @@ test('syncBundledWorkspacePackages refreshes existing bundled dist directories v
     existsSync: (candidate) =>
       String(candidate).includes('/packages/protocol/package.json')
       || String(candidate).includes('/packages/protocol/dist')
-      || String(candidate).includes('/apps/cli/node_modules/@happier-dev/protocol/dist')
-      || String(candidate).endsWith('/apps/cli/node_modules/@happier-dev/protocol/package.json'),
+      || String(candidate).includes('/apps/cli/node_modules/@piggercode/protocol/dist')
+      || String(candidate).endsWith('/apps/cli/node_modules/@piggercode/protocol/package.json'),
     mkdirSync: () => {},
     rmSync: (...args) => rmCalls.push(args),
     renameSync: (...args) => renameCalls.push(args),
     cpSync: (...args) => cpCalls.push(args),
     readFileSync: () =>
       JSON.stringify({
-        name: '@happier-dev/protocol',
+        name: '@piggercode/protocol',
         version: '0.0.0',
         type: 'module',
         exports: { '.': { default: './dist/index.js' } },
@@ -692,23 +692,23 @@ test('syncBundledWorkspacePackages refreshes existing bundled dist directories v
   assert.equal(cpCalls.length, 1);
   assert.deepEqual(cpCalls[0], [
     '/repo/packages/protocol/dist',
-    '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1',
+    '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1',
     { recursive: true, force: true },
   ]);
   assert.deepEqual(renameCalls, [
     [
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist',
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_backup__.sync-1',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_backup__.sync-1',
     ],
     [
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1',
-      '/repo/apps/cli/node_modules/@happier-dev/protocol/dist',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1',
+      '/repo/apps/cli/node_modules/@piggercode/protocol/dist',
     ],
   ]);
   assert.deepEqual(rmCalls, [
-    ['/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_tmp__.sync-1', { recursive: true, force: true }],
-    ['/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_backup__.sync-1', { recursive: true, force: true }],
-    ['/repo/apps/cli/node_modules/@happier-dev/protocol/dist.__sync_backup__.sync-1', { recursive: true, force: true }],
+    ['/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_tmp__.sync-1', { recursive: true, force: true }],
+    ['/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_backup__.sync-1', { recursive: true, force: true }],
+    ['/repo/apps/cli/node_modules/@piggercode/protocol/dist.__sync_backup__.sync-1', { recursive: true, force: true }],
   ]);
 });
 
@@ -717,7 +717,7 @@ test('syncBundledWorkspacePackages removes stale staged sync directories before 
   try {
     const srcDist = resolve(repoRoot, 'packages', 'protocol', 'dist');
     const srcPackageJsonPath = resolve(repoRoot, 'packages', 'protocol', 'package.json');
-    const destPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const staleTmpDir = resolve(destPackageDir, 'dist.__sync_tmp__.old-staging');
     const staleBackupDir = resolve(destPackageDir, 'dist.__sync_backup__.old-staging');
@@ -727,7 +727,7 @@ test('syncBundledWorkspacePackages removes stale staged sync directories before 
     mkdirSync(staleTmpDir, { recursive: true });
     mkdirSync(staleBackupDir, { recursive: true });
     writeFileSync(srcPackageJsonPath, JSON.stringify({
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
       version: '0.0.0',
       type: 'module',
       exports: { '.': { default: './dist/index.js' } },
@@ -760,7 +760,7 @@ test('syncBundledWorkspacePackages preserves fresh staged sync directories owned
   try {
     const srcDist = resolve(repoRoot, 'packages', 'protocol', 'dist');
     const srcPackageJsonPath = resolve(repoRoot, 'packages', 'protocol', 'package.json');
-    const destPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'protocol');
+    const destPackageDir = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'protocol');
     const destDist = resolve(destPackageDir, 'dist');
     const liveTmpDir = resolve(destPackageDir, 'dist.__sync_tmp__.12345.1');
 
@@ -768,7 +768,7 @@ test('syncBundledWorkspacePackages preserves fresh staged sync directories owned
     mkdirSync(destDist, { recursive: true });
     mkdirSync(liveTmpDir, { recursive: true });
     writeFileSync(srcPackageJsonPath, JSON.stringify({
-      name: '@happier-dev/protocol',
+      name: '@piggercode/protocol',
       version: '0.0.0',
       type: 'module',
       exports: { '.': { default: './dist/index.js' } },
@@ -805,7 +805,7 @@ test('syncBundledWorkspacePackages syncs non-dist exported file targets referenc
     writeFileSync(resolve(srcDist, 'index.js'), 'export const ok = true;\n', 'utf8');
     writeFileSync(srcExtra, 'module.exports = { ring: \"stable\" };\n', 'utf8');
     writeFileSync(srcPackageJsonPath, JSON.stringify({
-      name: '@happier-dev/release-runtime',
+      name: '@piggercode/release-runtime',
       version: '0.0.0',
       type: 'module',
       exports: {
@@ -820,7 +820,7 @@ test('syncBundledWorkspacePackages syncs non-dist exported file targets referenc
       hostApps: ['cli'],
     });
 
-    const destExtra = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@happier-dev', 'release-runtime', 'releaseRings.cjs');
+    const destExtra = resolve(repoRoot, 'apps', 'cli', 'node_modules', '@piggercode', 'release-runtime', 'releaseRings.cjs');
     assert.equal(existsSync(destExtra), true);
     assert.equal(readFileSync(destExtra, 'utf8'), 'module.exports = { ring: \"stable\" };\n');
   } finally {

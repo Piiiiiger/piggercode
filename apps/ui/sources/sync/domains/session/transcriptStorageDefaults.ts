@@ -1,4 +1,4 @@
-import { BackendTargetKeySchema, buildBackendTargetKey, type BackendTargetRefV1 } from '@happier-dev/protocol';
+import { BackendTargetKeySchema, buildBackendTargetKey, type BackendTargetRefV1 } from '@piggercode/protocol';
 import type { AgentId } from '@/agents/catalog/catalog';
 
 export const SESSION_TRANSCRIPT_STORAGE_MODES = ['persisted', 'direct'] as const;

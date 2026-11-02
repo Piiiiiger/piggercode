@@ -10,7 +10,7 @@ import {
   SessionMediaUnavailableV1Schema,
   type SessionMediaItemV1,
   type SessionMediaUnavailableV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { logger } from '@/ui/logger';
 
 import {

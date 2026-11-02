@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { startConnectedServiceQuotasLoop } from './startConnectedServiceQuotasLoop';
-import { buildConnectedServiceCredentialRecord, projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@happier-dev/protocol';
+import { buildConnectedServiceCredentialRecord, projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 import { createAgyQuotaFetcher } from '@/backends/agy/connectedServices/quotaFetcher';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';

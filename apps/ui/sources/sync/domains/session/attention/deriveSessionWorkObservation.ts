@@ -1,4 +1,4 @@
-import type { SessionRuntimeIssueSourceV1, SessionRuntimeIssueV1 } from '@happier-dev/protocol';
+import type { SessionRuntimeIssueSourceV1, SessionRuntimeIssueV1 } from '@piggercode/protocol';
 
 import {
     SESSION_RUNTIME_STATUS_STALE_SIGNAL_MS,

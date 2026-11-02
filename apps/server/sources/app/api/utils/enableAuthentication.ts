@@ -2,7 +2,7 @@ import { Fastify } from "../types";
 import { log } from "@/utils/logging/log";
 import { auth } from "@/app/auth/auth";
 import { enforceLoginEligibility } from "@/app/auth/enforceLoginEligibility";
-import { redactPublicShareCapabilityUrl } from "@happier-dev/protocol";
+import { redactPublicShareCapabilityUrl } from "@piggercode/protocol";
 
 function shouldLogAuthDecoratorDiagnostics(): boolean {
     return process.env.HAPPIER_AUTH_DECORATOR_DIAGNOSTIC_LOGS === "1"

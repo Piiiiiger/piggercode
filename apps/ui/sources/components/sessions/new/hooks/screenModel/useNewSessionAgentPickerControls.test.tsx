@@ -3,7 +3,7 @@ import { describe, expect, it, vi, afterEach } from 'vitest';
 
 import { renderHook } from '@/dev/testkit/hooks/renderHook';
 import { installNewSessionScreenModelCommonModuleMocks } from '../newSessionScreenModelTestHelpers';
-import type { AccountProfile, ConnectedServiceBindingsV1 } from '@happier-dev/protocol';
+import type { AccountProfile, ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 import { useNewSessionAgentPickerControls } from './useNewSessionAgentPickerControls';
 import { buildRememberedEngineSelectionScopeKey } from '@/sync/domains/sessionAuthoring/rememberedEngineSelections';

@@ -5,14 +5,14 @@ import {
     type StructuredQuestionDescriptor,
     type StructuredQuestionAnswersV1,
     type StructuredQuestionLike,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import {
     PUBLIC_RPC_HANDLER_ERROR_CODES,
     PublicRpcHandlerError,
     type PublicRpcHandlerErrorCode,
-} from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol/rpcErrors';
 
-export type { StructuredQuestionLike } from '@happier-dev/protocol';
+export type { StructuredQuestionLike } from '@piggercode/protocol';
 
 function addCandidate(candidates: Map<string, readonly string[]>, candidate: readonly string[]): void {
     candidates.set(JSON.stringify(candidate), candidate);

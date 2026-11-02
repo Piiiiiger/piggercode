@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isExpoPushNotificationChannelEnabled } from '@happier-dev/protocol';
+import { isExpoPushNotificationChannelEnabled } from '@piggercode/protocol';
 
 import { useIsDataReady, useSettings } from '@/sync/domains/state/storage';
 import { sync } from '@/sync/sync';

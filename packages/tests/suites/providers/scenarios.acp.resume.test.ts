@@ -5,7 +5,7 @@ import {
   makeAcpResumeLoadSessionScenario,
 } from '../../src/testkit/providers/scenarios/scenarios.acp';
 import { acpResumeMetadataKey } from '../../src/testkit/providers/scenarios/scenarioCatalogSupport';
-import { AGENT_IDS, AGENTS_CORE } from '@happier-dev/agents';
+import { AGENT_IDS, AGENTS_CORE } from '@piggercode/agents';
 
 describe('providers: ACP scenario builders (resume)', () => {
   it('resume scenarios accept execute fixture aliases (Bash/Terminal/execute)', () => {

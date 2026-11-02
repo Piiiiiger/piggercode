@@ -1,6 +1,6 @@
 import { resolve as resolvePath } from 'node:path';
 
-import { systemTasks } from '@happier-dev/cli-common';
+import { systemTasks } from '@piggercode/cli-common';
 import {
   formatPinnedDaemonServiceRestartCommand,
   planServiceDaemonsRestartAfterCliUpdate,
@@ -8,10 +8,10 @@ import {
   STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS,
   type ServiceDaemonBeforeCliUpdate,
   type ManagedCliUpdateRestart,
-} from '@happier-dev/cli-common/firstPartyRuntime';
-import { resolveHappyHomeDirFromEnvironment } from '@happier-dev/cli-common/providers';
-import { createServerUrlComparableKey, DoctorSnapshotDaemonStatusSchema, type DoctorSnapshotDaemonStatus } from '@happier-dev/protocol';
-import type { PublicReleaseRingId } from '@happier-dev/release-runtime/releaseRings';
+} from '@piggercode/cli-common/firstPartyRuntime';
+import { resolveHappyHomeDirFromEnvironment } from '@piggercode/cli-common/providers';
+import { createServerUrlComparableKey, DoctorSnapshotDaemonStatusSchema, type DoctorSnapshotDaemonStatus } from '@piggercode/protocol';
+import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRings';
 
 import {
   readLocalHappierCliChoiceFacts,

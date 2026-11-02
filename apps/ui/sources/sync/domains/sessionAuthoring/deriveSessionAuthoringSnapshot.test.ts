@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CodexBackendMode } from '@happier-dev/agents';
+import type { CodexBackendMode } from '@piggercode/agents';
 
 import { deriveSessionAuthoringSnapshot } from './deriveSessionAuthoringSnapshot';
 

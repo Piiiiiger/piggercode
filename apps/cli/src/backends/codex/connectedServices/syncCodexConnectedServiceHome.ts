@@ -7,7 +7,7 @@ import {
   resolveConnectedServicesProviderStateSharingPolicyV1,
   type AccountSettings,
   type ConnectedServicesProviderStateSharingPolicyV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { codexConnectedServiceStateSharingDescriptor } from '@/backends/codex/connectedServices/codexConnectedServiceStateSharingDescriptor';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';

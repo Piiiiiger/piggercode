@@ -24,8 +24,8 @@ import { backoff } from '@/utils/time';
 import { createConnectedServicesProjectionRetryScheduler } from './connectedServices/connectedServicesProjectionRetryScheduler';
 import { isConnectedServiceGenerationReconciliationNotAcknowledgeableError } from '@/daemon/connectedServices/accountGroups/generation/reconcileConnectedServiceAuthGroupGenerations';
 import { RpcHandlerManager, type RpcHandlerRegistrationReadiness } from './rpc/RpcHandlerManager';
-import { SOCKET_RPC_EVENTS } from '@happier-dev/protocol/socketRpc';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
+import { SOCKET_RPC_EVENTS } from '@piggercode/protocol/socketRpc';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import {
     sealAccountScopedBlobCiphertext,
     type ActionOperationSnapshotV1,
@@ -34,7 +34,7 @@ import {
     type MachineTransferSendEnvelope,
     type ConnectedServiceExecutionAuthorityV1,
     type ExactSessionTurnEndMutationV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 import { fetchChanges, fetchChangesAccountId } from './changes';
 import { readAccountChangesCursor, writeAccountChangesCursor } from '@/persistence';
 import { createAuthenticationHttpStatusError, isAuthenticationError, isAuthenticationStatus } from './client/httpStatusError';
@@ -62,7 +62,7 @@ import {
     type ManagedConnectionState,
     type ManagedConnectionSupervisor,
     type ReadinessProbeResult,
-} from '@happier-dev/connection-supervisor';
+} from '@piggercode/connection-supervisor';
 import { createLoopbackReadinessProbe } from '@/api/connection/createLoopbackReadinessProbe';
 import { createMachineSocketTransport } from '@/api/machine/connection/createMachineSocketTransport';
 import { readCliClientUpgradeRequired } from '@/api/clientCompatibility/cliClientCompatibility';

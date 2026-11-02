@@ -3,8 +3,8 @@ import { randomBytes } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { SESSION_RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { ExecutionRunEnsureOrStartResponseSchema, ExecutionRunStopResponseSchema, ExecutionRunTurnStreamReadResponseSchema, ExecutionRunTurnStreamStartResponseSchema } from '@happier-dev/protocol';
+import { SESSION_RPC_METHODS } from '@piggercode/protocol/rpc';
+import { ExecutionRunEnsureOrStartResponseSchema, ExecutionRunStopResponseSchema, ExecutionRunTurnStreamReadResponseSchema, ExecutionRunTurnStreamStartResponseSchema } from '@piggercode/protocol';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';

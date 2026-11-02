@@ -1,6 +1,6 @@
 import { basename, join } from 'node:path';
 
-import { getAgentAuthProbeConfig } from '@happier-dev/agents';
+import { getAgentAuthProbeConfig } from '@piggercode/agents';
 import { createCatalogCliAuthSpec } from '@/capabilities/cliAuth/createCatalogCliAuthSpec';
 import { readJsonFileSafe, readStringField } from '@/capabilities/cliAuth/shared';
 import { parseClaudeCodeCredentialFile } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialFile';

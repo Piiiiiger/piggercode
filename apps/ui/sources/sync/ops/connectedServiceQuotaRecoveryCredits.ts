@@ -5,9 +5,9 @@ import {
     type ConnectedServiceId,
     type ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1,
     type ConnectedServiceQuotaRecoveryCreditConsumeResponseV1,
-} from '@happier-dev/protocol';
-import { RPC_METHODS } from '@happier-dev/protocol/rpc';
-import { readRpcErrorCode } from '@happier-dev/protocol/rpcErrors';
+} from '@piggercode/protocol';
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { readRpcErrorCode } from '@piggercode/protocol/rpcErrors';
 
 import { t } from '@/text';
 import { sanitizeEndpointErrorMessage } from '@/sync/runtime/connectivity/sanitizeEndpointErrorMessage';

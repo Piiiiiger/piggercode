@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 
-import { resolveWindowsCommandInvocation } from '@happier-dev/cli-common/process';
+import { resolveWindowsCommandInvocation } from '@piggercode/cli-common/process';
 
 import { isVersionAtLeast, parseCodexVersionInfo } from '../mcp/version';
 import { resolveCodexCliInvocation } from '../utils/resolveCodexCliInvocation';

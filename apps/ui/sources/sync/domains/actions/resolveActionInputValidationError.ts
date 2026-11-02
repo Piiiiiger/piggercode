@@ -1,4 +1,4 @@
-import type { ActionInputFieldHint, ActionSpec } from '@happier-dev/protocol';
+import type { ActionInputFieldHint, ActionSpec } from '@piggercode/protocol';
 
 import { t } from '@/text';
 

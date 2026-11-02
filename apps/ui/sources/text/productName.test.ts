@@ -22,12 +22,12 @@ describe('applyProductName', () => {
     it('runs commands under the configured command name and keeps paths, links and packages', () => {
         expect(applyProductName(
             'Run `happier attach`, add happier to PATH, or type $ happier. '
-            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @happier-dev/cli, happier.dev and happier-dev.',
+            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @piggercode/cli, happier.dev and happier-dev.',
             'PiggerCode',
             'piggercode',
         )).toBe(
             'Run `piggercode attach`, add piggercode to PATH, or type $ piggercode. '
-            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @happier-dev/cli, happier.dev and happier-dev.',
+            + 'Keep ~/.happier, .happier/uploads, happier://terminal, @piggercode/cli, happier.dev and happier-dev.',
         );
     });
 

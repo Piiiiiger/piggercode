@@ -7,7 +7,7 @@ import {
     type ActionToolExposureSurface,
     type ActionUiPlacement,
     type ActionsSettingsV1,
-} from '@happier-dev/protocol';
+} from '@piggercode/protocol';
 
 import { normalizeActionsSettings } from './normalizeActionsSettings';
 import { getActionSettingsTargetDefinition, type ActionSettingsTargetId } from './actionSettingsTargetDefinitions';
