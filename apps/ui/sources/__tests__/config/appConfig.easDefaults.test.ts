@@ -257,14 +257,14 @@ describe('app.config.js', () => {
         ]);
     });
 
-    it('names and versions the app as PiggerCode 0.0.0 with the piggercode command', () => {
+    it('names and versions the app as PiggerCode with the piggercode command', () => {
         const exp = withCleanEnv(() => {
             process.env.APP_ENV = 'production';
             return getPublicConfig();
         });
 
         expect(exp.name).toBe('PiggerCode');
-        expect(exp.version).toBe('0.2.0');
+        expect(exp.version).toBe('0.3.0');
         expect(exp.extra?.app?.productName).toBe('PiggerCode');
         expect(exp.extra?.app?.cliCommandName).toBe('piggercode');
         expect(exp.extra?.app?.agentIds).toEqual(['claude', 'codex']);
