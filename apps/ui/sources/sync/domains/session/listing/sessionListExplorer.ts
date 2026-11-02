@@ -450,7 +450,7 @@ export function buildSessionExplorerItems(input: BuildSessionExplorerInput): Ses
             explorerNodeKind: node.kind,
             explorerExpanded: expanded,
             explorerCanCreateFolder: managesFolders,
-            explorerCanDeleteFolder: managesFolders
+            explorerCanChangeFolder: managesFolders
                 && node.kind === 'folder'
                 && node.path !== null
                 && !explorerPathHoldsHomeFolder(node.path, machine.homeDir),

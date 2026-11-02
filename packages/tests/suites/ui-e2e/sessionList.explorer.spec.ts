@@ -292,10 +292,13 @@ test.describe('ui e2e: session list folder explorer', () => {
       await expect(page.getByTestId(`session-list-item-${greetingSession}`)).toHaveCount(1);
       await page.screenshot({ path: join(screenshotDir, '7-other-locations.png') });
 
-      // A folder's ⋯ makes a folder on the machine; the top folder offers no delete.
+      // A folder's ⋯ menu starts sessions and makes folders; the top folder cannot be renamed or deleted.
       const codeTestId = `session-list-header:explorer:${serverId}:${machineId}:${join(machineHome, 'code')}`;
       await page.getByTestId(`${codeTestId}:menu`).click();
       await expect(page.getByTestId('session-explorer-folder-new-folder')).toHaveCount(1, { timeout: 60_000 });
+      await expect(page.locator('[data-testid^="session-explorer-folder-new-session"]').first()).toBeVisible();
+      await expect(page.getByTestId('session-explorer-folder-copy-path')).toHaveCount(1);
+      await expect(page.getByTestId('session-explorer-folder-rename')).toHaveCount(0);
       await expect(page.getByTestId('session-explorer-folder-delete')).toHaveCount(0);
       await page.screenshot({ path: join(screenshotDir, '8-folder-menu.png') });
       await page.getByTestId('session-explorer-folder-new-folder').click();
@@ -307,14 +310,33 @@ test.describe('ui e2e: session list folder explorer', () => {
       await expect.poll(() => existsSync(scratchDirPath), { timeout: 30_000 }).toBe(true);
       await page.screenshot({ path: join(screenshotDir, '9-folder-created.png') });
 
+      // A right-click opens the same menu: rename the new folder in place on the machine.
+      await scratchDir.click({ button: 'right' });
+      await expect(page.getByTestId('session-explorer-folder-rename')).toBeVisible({ timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, '10-folder-right-click.png') });
+      await page.getByTestId('session-explorer-folder-rename').click();
+      await expect(page.getByTestId('web-prompt-input')).toHaveValue('scratch-dir');
+      await page.getByTestId('web-prompt-input').fill('scratch-renamed');
+      await page.getByTestId('web-prompt-confirm').click();
+      const renamedPath = join(machineHome, 'code', 'scratch-renamed');
+      const renamed = folder(renamedPath);
+      await expect(renamed).toHaveCount(1, { timeout: 60_000 });
+      await expect(scratchDir).toHaveCount(0);
+      await expect.poll(() => existsSync(renamedPath) && !existsSync(scratchDirPath), { timeout: 30_000 }).toBe(true);
+
       // Deleting it asks first, then removes it from the machine and the tree.
-      await scratchDir.hover();
-      await page.getByTestId(`session-list-header:explorer:${serverId}:${machineId}:${scratchDirPath}:menu`).click();
+      await renamed.click({ button: 'right' });
       await page.getByTestId('session-explorer-folder-delete').click();
       await page.getByTestId('web-modal-confirm').click();
-      await expect(scratchDir).toHaveCount(0, { timeout: 60_000 });
-      await expect.poll(() => existsSync(scratchDirPath), { timeout: 30_000 }).toBe(false);
+      await expect(renamed).toHaveCount(0, { timeout: 60_000 });
+      await expect.poll(() => existsSync(renamedPath), { timeout: 30_000 }).toBe(false);
       await expect(happier).toHaveCount(1);
+
+      // A right-click on a session opens its ⋯ menu.
+      await page.getByTestId(`session-list-item-${sidebarSession}`).click({ button: 'right' });
+      await expect(page.getByTestId('dropdown-option-ui_session_rename')).toBeVisible({ timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, '11-session-right-click.png') });
+      await page.keyboard.press('Escape');
     } catch (error) {
       throw appendBrowserDiagnostics(error, diagnostics());
     }

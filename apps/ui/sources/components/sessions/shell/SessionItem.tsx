@@ -88,7 +88,7 @@ import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { canForkConversation } from '@/sync/domains/sessionFork/forkUiSupport';
 import { resolveMachineTargetForSessionFromState } from '@/sync/ops/sessionMachineTarget';
 import { fireAndForget } from '@/utils/system/fireAndForget';
-import { sessionExplorerIconInset } from './explorer/SessionExplorerRows';
+import { sessionExplorerIconInset } from './explorer/sessionExplorerLayout';
 
 const SESSION_LIST_MINIMAL_IDENTITY_GAP = 8;
 const CONTEXT_MENU_PRESS_SUPPRESSION_TIMEOUT_MS = 600;
@@ -1149,6 +1149,16 @@ const SessionItemContent = React.memo(
             archiving: sessionStatus.state === 'archiving',
         });
 
+        // Web: a right-click opens the row's ⋯ menu instead of the browser's (phones use a long press).
+        const hasMoreMenu = moreMenuItems.length > 0;
+        const rowContextMenuProps = isWeb && hasMoreMenu ? {
+            onContextMenu: (event: { preventDefault?: () => void; stopPropagation?: () => void }) => {
+                event.preventDefault?.();
+                event.stopPropagation?.();
+                setMoreMenuOpen(true);
+            },
+        } : {};
+
         const handleSwipeAction = React.useCallback(async () => {
             swipeableRef.current?.close();
             await handleMoreMenuSelect(SESSION_ACTION_ARCHIVE_ID);
@@ -1833,6 +1843,7 @@ const SessionItemContent = React.memo(
                     style={containerStyles}
                     onPointerEnter={isWeb ? handleRowPointerEnter : undefined}
                     onPointerLeave={isWeb ? handleRowPointerLeave : undefined}
+                    {...rowContextMenuProps}
                 >
                     {itemContent}
                     {menuNodes}
@@ -1856,6 +1867,7 @@ const SessionItemContent = React.memo(
                 style={containerStyles}
                 onPointerEnter={isWeb ? handleRowPointerEnter : undefined}
                 onPointerLeave={isWeb ? handleRowPointerLeave : undefined}
+                {...rowContextMenuProps}
             >
                 <Swipeable
                     ref={swipeableRef}

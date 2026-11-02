@@ -59,7 +59,9 @@ import { ProjectGroupHeader } from './ProjectGroupHeader';
 import { SessionExplorerFolderRow, SessionExplorerStatusRow } from './explorer/SessionExplorerRows';
 import { SessionExplorerMenuButton } from './explorer/SessionExplorerMenuButton';
 import { refreshExplorerFolder, refreshExplorerListings } from './explorer/explorerDirectoryListings';
-import { createExplorerFolder, deleteExplorerFolder, explorerFolderTarget } from './explorer/explorerFolderActions';
+import { createExplorerFolder, deleteExplorerFolder, explorerFolderTarget, renameExplorerFolder } from './explorer/explorerFolderActions';
+import type { SessionExplorerFolderActions } from './explorer/SessionExplorerFolderMenu';
+import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 import { clearCachedMachineFileBrowserEntries } from '@/sync/domains/input/machineFileBrowser';
 import { openMachinePathBrowserModal } from '@/components/ui/pathBrowser/openMachinePathBrowserModal';
 import { sessionExplorerMachineKey, type SessionExplorerMachine } from '@/sync/domains/session/listing/sessionListExplorer';
@@ -1141,19 +1143,25 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         sessionListAgentSelection,
     };
 
-    // An explorer folder starts the session in that exact folder with the picked agent. The seed (the
-    // folder's newest session, which the picker already narrowed to that agent) carries the last choices.
-    const handleCreateSessionInExplorerFolder = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>) => {
+    // An explorer folder starts the session in that exact folder with the picked agent, or the agent chosen
+    // in its menu. The seed (the folder's newest session, which the picker already narrowed to the picked
+    // agent) carries the last choices, so it only comes along for that agent.
+    const handleCreateSessionInExplorerFolder = React.useCallback((
+        item: Extract<SessionListViewItem, { type: 'header' }>,
+        chosenAgentId?: AgentId,
+    ) => {
         const workspaceScopeHint = item.workspaceScopeHint ?? null;
         if (!workspaceScopeHint) return;
         const current = explorerActionStateRef.current;
+        const agentId = chosenAgentId ?? current.sessionListAgentSelection;
         const seedSessionId = typeof item.seedSessionId === 'string' ? item.seedSessionId.trim() : '';
+        const seedFits = agentId === current.sessionListAgentSelection;
         launchNewSessionInDirectory({
             serverId: workspaceScopeHint.serverId,
             machineId: workspaceScopeHint.machineId,
             directory: workspaceScopeHint.rootPath,
-            seedSessionId: current.rememberLastProjectSessionSelections && seedSessionId ? seedSessionId : null,
-            agentId: current.sessionListAgentSelection,
+            seedSessionId: current.rememberLastProjectSessionSelections && seedSessionId && seedFits ? seedSessionId : null,
+            agentId,
         });
     }, [launchNewSessionInDirectory]);
 
@@ -1299,6 +1307,15 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         }
         refreshExplorerFolder(item.workspaceScopeHint);
     }, [setCollapsedGroupKeysV1]);
+
+    // Rename: the folder that holds it lists again under the new name; the old name's listing is dropped.
+    const handleRenameExplorerFolder = React.useCallback(async (item: Extract<SessionListViewItem, { type: 'header' }>) => {
+        const target = explorerFolderTarget(item.workspaceScopeHint, explorerActionStateRef.current.explorerMachines);
+        if (!target || !await renameExplorerFolder(target, Object.values(storage.getState().sessions))) return;
+        clearCachedMachineFileBrowserEntries({ machineId: target.machineId, serverId: target.serverId, directoryPath: target.path });
+        const parentPath = target.path.slice(0, target.path.lastIndexOf('/')) || '/';
+        refreshExplorerFolder({ serverId: target.serverId, machineId: target.machineId, rootPath: parentPath });
+    }, []);
 
     // Delete folder: the folder that held it lists again; its own listing is gone with it.
     const handleDeleteExplorerFolder = React.useCallback(async (item: Extract<SessionListViewItem, { type: 'header' }>) => {
@@ -1949,6 +1966,39 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
     const handleCloseExplorerFolder = React.useCallback(() => {
         setExplorerRootPaths({});
     }, [setExplorerRootPaths]);
+    // A folder's menu: Open as top folder makes it the top of its machine's tree, like Open folder… does.
+    const handleOpenExplorerFolderAsTop = React.useCallback((hint: Readonly<{ serverId: string; machineId: string; rootPath: string }>) => {
+        const key = sessionExplorerMachineKey(hint.serverId, hint.machineId);
+        setExplorerRootPaths({ ...explorerActionStateRef.current.explorerRootPaths, [key]: hint.rootPath });
+    }, [setExplorerRootPaths]);
+    const handleCopyExplorerPath = React.useCallback(async (path: string) => {
+        if (!await setClipboardStringSafe(path)) Modal.alert(t('common.error'), t('items.failedToCopyToClipboard'));
+    }, []);
+    // What a folder row's ⋯ and right-click menu offer; the header flags say where folders can change.
+    const explorerFolderActionsFor = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>): SessionExplorerFolderActions | null => {
+        const hint = item.workspaceScopeHint;
+        if (!hint) return null;
+        return {
+            newSession: {
+                machineId: hint.machineId,
+                preferredAgentId: explorerActionStateRef.current.sessionListAgentSelection,
+                start: (agentId) => handleCreateSessionInExplorerFolder(item, agentId),
+            },
+            onNewFolder: item.explorerCanCreateFolder ? () => { void handleCreateExplorerSubfolder(item); } : null,
+            onCopyPath: () => { void handleCopyExplorerPath(hint.rootPath); },
+            onOpenAsTop: item.explorerNodeKind === 'folder' ? () => handleOpenExplorerFolderAsTop(hint) : null,
+            onRefresh: item.explorerCanCreateFolder ? () => refreshExplorerFolder(hint) : null,
+            onRename: item.explorerCanChangeFolder ? () => { void handleRenameExplorerFolder(item); } : null,
+            onDelete: item.explorerCanChangeFolder ? () => { void handleDeleteExplorerFolder(item); } : null,
+        };
+    }, [
+        handleCopyExplorerPath,
+        handleCreateExplorerSubfolder,
+        handleCreateSessionInExplorerFolder,
+        handleDeleteExplorerFolder,
+        handleOpenExplorerFolderAsTop,
+        handleRenameExplorerFolder,
+    ]);
     const explorerFolderOpened = Object.keys(explorerRootPaths).length > 0;
     // Closes every open folder the explorer shows; machines and their `~` and `/` folders stay open.
     const handleCollapseAllExplorerFolders = React.useCallback(() => {
@@ -2060,8 +2110,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                         activeSessionCount={item.activeSessionCount ?? 0}
                         onToggle={() => handleToggleExplorerFolder(item)}
                         onCreateSession={item.workspaceScopeHint ? () => handleCreateSessionInExplorerFolder(item) : null}
-                        onNewFolder={item.explorerCanCreateFolder ? () => { void handleCreateExplorerSubfolder(item); } : null}
-                        onDeleteFolder={item.explorerCanDeleteFolder ? () => { void handleDeleteExplorerFolder(item); } : null}
+                        folderActions={explorerFolderActionsFor(item)}
                     />
                 </SessionListHeaderFrame>
             );
@@ -2198,8 +2247,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleCreateSessionFromProject,
         handleCreateSessionInExplorerFolder,
         handleToggleExplorerFolder,
-        handleCreateExplorerSubfolder,
-        handleDeleteExplorerFolder,
+        explorerFolderActionsFor,
         handleCreateSessionFromFolder,
         handleDeleteSessionFolder,
         handleA11yDragStart,

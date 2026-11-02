@@ -112,3 +112,42 @@ describe('deleteExplorerFolder', () => {
         expect(machineRpc).not.toHaveBeenCalled();
     });
 });
+
+describe('renameExplorerFolder', () => {
+    const notes = { ...code, path: '/home/u/code/notes' };
+
+    it('renames the folder where it is once given a new name', async () => {
+        const { Modal, renameExplorerFolder } = await load();
+        Modal.prompt.mockResolvedValueOnce('journal');
+        machineRpc.mockResolvedValueOnce({ success: true });
+
+        await expect(renameExplorerFolder(notes, [])).resolves.toBe('/home/u/code/journal');
+        expect(Modal.prompt).toHaveBeenLastCalledWith(
+            'sessionsList.renameFolderPromptTitle',
+            expect.any(String),
+            expect.objectContaining({ defaultValue: 'notes' }),
+        );
+        expect(rpcCalls(RPC_METHODS.RENAME_PATH)).toEqual([
+            expect.objectContaining({
+                machineId: 'm1',
+                serverId: 's1',
+                payload: { from: '/home/u/code/notes', to: '/home/u/code/journal', overwrite: false },
+            }),
+        ]);
+    });
+
+    it('keeps the name while sessions started in the folder, for the same name and for a name with a path', async () => {
+        const { Modal, renameExplorerFolder } = await load();
+        const sessionsInside = [{ active: false, metadata: { machineId: 'm1', path: '/home/u/code/notes/app' } }];
+        await expect(renameExplorerFolder(notes, sessionsInside)).resolves.toBeNull();
+        expect(Modal.alert).toHaveBeenLastCalledWith('sessionsList.renameFolderPromptTitle', 'sessionsList.explorerRenameFolderHasSessions');
+        expect(Modal.prompt).not.toHaveBeenCalled();
+
+        Modal.prompt.mockResolvedValueOnce('notes');
+        await expect(renameExplorerFolder(notes, [])).resolves.toBeNull();
+        Modal.prompt.mockResolvedValueOnce('a/b');
+        await expect(renameExplorerFolder(notes, [])).resolves.toBeNull();
+        expect(Modal.alert).toHaveBeenLastCalledWith('sessionsList.renameFolderPromptTitle', 'sessionsList.explorerRenameFolderInvalid');
+        expect(machineRpc).not.toHaveBeenCalled();
+    });
+});

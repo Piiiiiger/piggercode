@@ -2,28 +2,30 @@ import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { ContextMenu } from '@/components/ui/forms/dropdown/ContextMenu';
-import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
-import { Icon, ICON_SIZE, type IconName } from '@/components/ui/icons/Icon';
+import { Icon, type IconName } from '@/components/ui/icons/Icon';
 import { Text } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import type { SessionListViewItem } from '@/sync/domains/state/storage';
 import { t } from '@/text';
 import { isHoverCapablePrimaryPointer } from '@/utils/platform/webMobileHeuristics';
 
+import {
+    SESSION_EXPLORER_CHEVRON_GAP,
+    SESSION_EXPLORER_CHEVRON_SLOT,
+    sessionExplorerIconInset,
+} from './sessionExplorerLayout';
+import {
+    hasSessionExplorerFolderActions,
+    SessionExplorerFolderMenu,
+    type SessionExplorerFolderActions,
+} from './SessionExplorerFolderMenu';
+
 type ExplorerHeader = Extract<SessionListViewItem, { type: 'header' }>;
 export type SessionExplorerNodeKind = NonNullable<ExplorerHeader['explorerNodeKind']>;
 export type SessionExplorerStatusKind = NonNullable<ExplorerHeader['explorerStatus']>;
 
-const INDENT_BASE = 12;
-const INDENT_STEP = 14;
-const CHEVRON_SLOT = 16;
-const CHEVRON_GAP = 2;
-
-/** Where a row's icon starts at `depth`: a folder's icon, a session's agent mark and a note line up. */
-export function sessionExplorerIconInset(depth: number): number {
-    return INDENT_BASE + Math.max(0, Math.trunc(depth)) * INDENT_STEP + CHEVRON_SLOT + CHEVRON_GAP;
-}
+const CHEVRON_SLOT = SESSION_EXPLORER_CHEVRON_SLOT;
+const CHEVRON_GAP = SESSION_EXPLORER_CHEVRON_GAP;
 
 const stylesheet = StyleSheet.create((theme) => ({
     row: {
@@ -124,54 +126,41 @@ export type SessionExplorerFolderRowProps = Readonly<{
     onToggle: () => void;
     /** Starts a session in this folder; null where no session can start (a machine row). */
     onCreateSession: (() => void) | null;
-    /** Makes a folder inside this one; null where the row does not list a machine's folders. */
-    onNewFolder?: (() => void) | null;
-    /** Deletes this folder and what it holds; null for top folders and folders that cannot change. */
-    onDeleteFolder?: (() => void) | null;
+    /** What the folder's ⋯ and right-click (long-press on phones) menu offers; null for no menu. */
+    folderActions?: SessionExplorerFolderActions | null;
     testID?: string;
 }>;
 
 /**
  * One folder of the session explorer, VS Code style: chevron, folder, name, then how many sessions
  * sit below it and a dot while one runs. Pressing the row opens or closes it; + starts a session
- * in the folder and ⋯ makes or deletes folders. On a pointer that hovers, both show on hover, focus,
- * open folders and while the menu is open; elsewhere always. The menu itself mounts only while open.
+ * in the folder; ⋯, a right-click or a long press opens the folder's menu. On a pointer that hovers,
+ * + and ⋯ show on hover, focus, open folders and while the menu is open; elsewhere always. The menu
+ * itself mounts only while open.
  */
 export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolderRow(props: SessionExplorerFolderRowProps) {
     const styles = stylesheet;
     const { theme } = useUnistyles();
     const [hovered, setHovered] = React.useState(false);
     const [focused, setFocused] = React.useState(false);
-    const [menuOpen, setMenuOpen] = React.useState(false);
-    const menuAnchorRef = React.useRef<View>(null);
+    // Where the open menu hangs: from ⋯, or below the row after a right-click or long press.
+    const [menuAnchor, setMenuAnchor] = React.useState<'button' | 'row' | null>(null);
+    const rowRef = React.useRef<View>(null);
+    const menuButtonRef = React.useRef<View>(null);
     const hoverReveal = React.useMemo(() => isHoverCapablePrimaryPointer(), []);
     const isWeb = Platform.OS === 'web';
     const iconColor = theme.colors.text.secondary;
-    const dangerColor = theme.colors.state.danger.foreground;
-    const showCreate = !hoverReveal || hovered || focused || props.expanded || menuOpen;
-
-    const canMakeFolder = Boolean(props.onNewFolder);
-    const canDeleteFolder = Boolean(props.onDeleteFolder);
-    const menuItems = React.useMemo((): DropdownMenuItem[] => [
-        ...(canMakeFolder ? [{
-            id: 'new-folder',
-            testID: 'session-explorer-folder-new-folder',
-            title: t('files.createFolderPromptTitle'),
-            icon: <Icon name="folder" size={ICON_SIZE.sm} color={iconColor} />,
-        }] : []),
-        ...(canDeleteFolder ? [{
-            id: 'delete-folder',
-            testID: 'session-explorer-folder-delete',
-            title: t('files.repositoryTree.deleteFolder.confirm'),
-            icon: <Icon name="trash" size={ICON_SIZE.sm} color={dangerColor} />,
-            destructive: true,
-        }] : []),
-    ], [canDeleteFolder, canMakeFolder, dangerColor, iconColor]);
-    const { onDeleteFolder, onNewFolder } = props;
-    const handleMenuSelect = React.useCallback((itemId: string) => {
-        if (itemId === 'new-folder') onNewFolder?.();
-        else if (itemId === 'delete-folder') onDeleteFolder?.();
-    }, [onDeleteFolder, onNewFolder]);
+    const showCreate = !hoverReveal || hovered || focused || props.expanded || menuAnchor !== null;
+    const hasMenu = hasSessionExplorerFolderActions(props.folderActions);
+    const closeMenu = React.useCallback(() => setMenuAnchor(null), []);
+    // Web only: a right-click opens the folder's menu instead of the browser's.
+    const rowContextMenuProps = isWeb && hasMenu ? {
+        onContextMenu: (event: { preventDefault?: () => void; stopPropagation?: () => void }) => {
+            event.preventDefault?.();
+            event.stopPropagation?.();
+            setMenuAnchor('row');
+        },
+    } : {};
     const a11yLabel = props.kind === 'machine'
         ? t('sessionsList.explorerMachineA11y', { name: props.title, count: props.sessionCount })
         : t('sessionsList.explorerFolderA11y', { name: props.title, count: props.sessionCount });
@@ -179,13 +168,18 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
     // The toggle and + are sibling buttons: a button inside another is merged into it by screen readers.
     return (
         <View
+            ref={rowRef}
+            collapsable={false}
+            testID={props.testID ? `${props.testID}:row` : undefined}
             style={[styles.row, hovered ? styles.rowHovered : null, { paddingLeft: sessionExplorerIconInset(props.depth) - CHEVRON_SLOT - CHEVRON_GAP - 4 }]}
             onPointerEnter={isWeb ? () => setHovered(true) : undefined}
             onPointerLeave={isWeb ? () => setHovered(false) : undefined}
+            {...rowContextMenuProps}
         >
             <Pressable
                 testID={props.testID}
                 onPress={props.onToggle}
+                onLongPress={!isWeb && hasMenu ? () => setMenuAnchor('row') : undefined}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 style={({ pressed }) => [styles.toggle, pressed ? styles.pressed : null]}
@@ -237,13 +231,13 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                     <Icon name="plus" size={14} color={iconColor} />
                 </Pressable>
             ) : null}
-            {menuItems.length > 0 ? (
+            {hasMenu ? (
                 <Pressable
-                    ref={menuAnchorRef}
+                    ref={menuButtonRef}
                     testID={props.testID ? `${props.testID}:menu` : undefined}
                     onPress={(event) => {
                         event?.stopPropagation?.();
-                        setMenuOpen((open) => !open);
+                        setMenuAnchor((anchor) => (anchor ? null : 'button'));
                     }}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
@@ -259,17 +253,14 @@ export const SessionExplorerFolderRow = React.memo(function SessionExplorerFolde
                     <Icon name="dots-three" size={14} color={iconColor} />
                 </Pressable>
             ) : null}
-            <ContextMenu
-                open={menuOpen && menuItems.length > 0}
-                onOpenChange={setMenuOpen}
-                anchorRef={menuAnchorRef}
-                items={menuItems}
-                onSelect={handleMenuSelect}
-                placement="left"
-                variant="slim"
-                maxWidthCap={220}
-                popoverPortalWebTarget="body"
-            />
+            {menuAnchor && props.folderActions ? (
+                <SessionExplorerFolderMenu
+                    actions={props.folderActions}
+                    anchorRef={menuAnchor === 'row' ? rowRef : menuButtonRef}
+                    placement={menuAnchor === 'row' ? 'bottom' : 'left'}
+                    onClose={closeMenu}
+                />
+            ) : null}
         </View>
     );
 });

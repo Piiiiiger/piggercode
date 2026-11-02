@@ -246,8 +246,8 @@ describe('buildSessionExplorerItems', () => {
         expect(opened.openFolders.map((target) => target.path)).toEqual(['/home/u/code', '/home/u/code/happier']);
     });
 
-    it('lets folders be made where the tree lists an online machine and deleted only below the home folder', () => {
-        const flags = (header: Header | undefined) => [header?.explorerCanCreateFolder, header?.explorerCanDeleteFolder];
+    it('lets folders be made where the tree lists an online machine, and renamed or deleted only below the home folder', () => {
+        const flags = (header: Header | undefined) => [header?.explorerCanCreateFolder, header?.explorerCanChangeFolder];
         const input: Partial<BuildSessionExplorerInput> = {
             items: [row('a', '/home/u/code/happier'), row('o', '/srv/app')],
             getListing: listings({

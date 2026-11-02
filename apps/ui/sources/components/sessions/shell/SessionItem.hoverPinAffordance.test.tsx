@@ -256,6 +256,34 @@ describe('SessionItem pin hover affordance (web)', () => {
         await screen.unmount();
     });
 
+    it('opens the row menu on a right-click instead of the browser menu', async () => {
+        const screen = await renderSessionItem({
+            session: createSession('sess_ctx'),
+            serverId: 'server_a',
+            pinned: false,
+            onTogglePinned: vi.fn(),
+            selected: false,
+            isFirst: true,
+            isLast: true,
+            isSingle: true,
+            variant: 'default',
+            compact: false,
+        });
+        const container = findSessionRowContainer(screen, 'sess_ctx');
+        const event = { preventDefault: vi.fn(), stopPropagation: vi.fn() };
+
+        await act(async () => {
+            container.props.onContextMenu(event);
+        });
+
+        expect(event.preventDefault).toHaveBeenCalled();
+        const openMenus = screen.findAllByType('DropdownMenu').filter((node) => node.props.open === true);
+        expect(openMenus).toHaveLength(1);
+        expect(openMenus[0]!.props.items.length).toBeGreaterThan(0);
+
+        await screen.unmount();
+    });
+
     it('shows the actions when hovered and hides them when leaving the row', async () => {
         const screen = await renderSessionItem({
             session: createSession('sess_2'),

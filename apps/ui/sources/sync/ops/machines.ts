@@ -930,6 +930,32 @@ export async function machineCreateDirectory(
     }
 }
 
+/** Renames or moves a file or folder; refuses when something is already at `to`. */
+export async function machineRenamePath(
+    machineId: string,
+    from: string,
+    to: string,
+    options?: { serverId?: string | null },
+): Promise<
+    | { success: true }
+    | { success: false; error: string; errorCode?: string }
+> {
+    try {
+        return await machineRpcWithServerScope<{ success: true } | { success: false; error: string }, { from: string; to: string; overwrite: boolean }>({
+            machineId,
+            method: RPC_METHODS.RENAME_PATH,
+            payload: { from, to, overwrite: false },
+            serverId: options?.serverId,
+        });
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            errorCode: readRpcErrorCode(error),
+        };
+    }
+}
+
 /** Deletes a file, or a folder with everything in it when `recursive` is set. */
 export async function machineDeletePath(
     machineId: string,

@@ -6,7 +6,7 @@ import {
     type SessionExplorerMachine,
     type SessionExplorerPlacement,
 } from '@/sync/domains/session/listing/sessionListExplorer';
-import { machineCreateDirectory, machineDeletePath } from '@/sync/ops/machines';
+import { machineCreateDirectory, machineDeletePath, machineRenamePath } from '@/sync/ops/machines';
 import { t } from '@/text';
 import { formatPathRelativeToHome } from '@/utils/sessions/formatPathRelativeToHome';
 
@@ -60,6 +60,51 @@ export async function createExplorerFolder(parent: ExplorerFolderTarget): Promis
     const result = await machineCreateDirectory(parent.machineId, path, { serverId: parent.serverId });
     if (!result.success) {
         Modal.alert(t('common.error'), result.error || t('files.createFolderFailed'));
+        return null;
+    }
+    return path;
+}
+
+/**
+ * Asks for a new name and renames `folder` where it is. Refuses while sessions started in it (they would
+ * lose their folder) and never renames the home folder or a folder holding it. Resolves to the new path, or null.
+ */
+export async function renameExplorerFolder(
+    folder: ExplorerFolderTarget,
+    sessions: Iterable<SessionExplorerPlacement>,
+): Promise<string | null> {
+    if (explorerPathHoldsHomeFolder(folder.path, folder.homeDir)) return null;
+    const title = t('sessionsList.renameFolderPromptTitle');
+    const inside = countSessionsInExplorerFolder(sessions, folder);
+    if (inside.total > 0) {
+        Modal.alert(title, t('sessionsList.explorerRenameFolderHasSessions', { count: inside.total }));
+        return null;
+    }
+    const slash = folder.path.lastIndexOf('/');
+    const parentPath = folder.path.slice(0, slash) || '/';
+    const currentName = folder.path.slice(slash + 1);
+    const typed = await Modal.prompt(title, shownPath(folder), {
+        defaultValue: currentName,
+        placeholder: t('promptLibrary.folderPlaceholder'),
+        confirmText: t('common.rename'),
+        cancelText: t('common.cancel'),
+    });
+    if (typeof typed !== 'string' || typed.trim().length === 0 || typed.trim() === currentName) return null;
+    // A new name keeps the folder where it is: one name, no path.
+    const path = explorerChildFolderPath(parentPath, typed);
+    if (!path || (path.slice(0, path.lastIndexOf('/')) || '/') !== parentPath) {
+        Modal.alert(title, t('sessionsList.explorerRenameFolderInvalid'));
+        return null;
+    }
+    const name = path.slice(path.lastIndexOf('/') + 1);
+    const listing = readExplorerListing({ serverId: folder.serverId, machineId: folder.machineId, path: parentPath });
+    if (listing?.dirs?.includes(name)) {
+        Modal.alert(title, t('sessionsList.explorerFolderExists', { name }));
+        return null;
+    }
+    const result = await machineRenamePath(folder.machineId, folder.path, path, { serverId: folder.serverId });
+    if (!result.success) {
+        Modal.alert(t('common.error'), result.error || t('files.repositoryTree.rename.failed'));
         return null;
     }
     return path;

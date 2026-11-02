@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { act } from 'react-test-renderer';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderScreen, standardCleanup } from '@/dev/testkit';
@@ -15,8 +16,13 @@ vi.mock('@expo/vector-icons', () => ({
     Ionicons: (props: React.Attributes & Record<string, unknown>) => React.createElement('Ionicons', props),
 }));
 
+vi.mock('@/agents/registry/AgentIcon', () => ({
+    AgentIcon: (props: Record<string, unknown>) => React.createElement('AgentIcon', props),
+}));
+
 type CapturedMenu = Readonly<{
     open: boolean;
+    placement?: string;
     items: ReadonlyArray<{ id: string; destructive?: boolean }>;
     onSelect: (id: string) => void;
 }>;
@@ -88,10 +94,21 @@ describe('SessionExplorerFolderRow', () => {
         expect(screen.findByTestId('folder:new-session')).toBeNull();
     });
 
-    it('makes and deletes folders from its ⋯ menu, with Delete in red', async () => {
+    function folderActions() {
+        return {
+            newSession: { machineId: 'm1', preferredAgentId: 'claude' as const, start: vi.fn() },
+            onNewFolder: vi.fn(),
+            onCopyPath: vi.fn(),
+            onOpenAsTop: vi.fn(),
+            onRefresh: vi.fn(),
+            onRename: vi.fn(),
+            onDelete: vi.fn(),
+        };
+    }
+
+    it('offers the folder menu from ⋯, VS Code style with Delete last in red, and runs the picked action', async () => {
         const { SessionExplorerFolderRow } = await import('./SessionExplorerRows');
-        const onNewFolder = vi.fn();
-        const onDeleteFolder = vi.fn();
+        const actions = folderActions();
         const screen = await renderScreen(
             <SessionExplorerFolderRow
                 testID="folder"
@@ -103,24 +120,29 @@ describe('SessionExplorerFolderRow', () => {
                 activeSessionCount={0}
                 onToggle={vi.fn()}
                 onCreateSession={vi.fn()}
-                onNewFolder={onNewFolder}
-                onDeleteFolder={onDeleteFolder}
+                folderActions={actions}
             />,
         );
 
         await screen.pressByTestIdAsync('folder:menu');
         expect(menuState.current?.open).toBe(true);
         expect(menuState.current?.items.map((item) => [item.id, item.destructive === true])).toEqual([
+            ['new-session:claude', false],
             ['new-folder', false],
+            ['copy-path', false],
+            ['open-as-top', false],
+            ['refresh', false],
+            ['rename-folder', false],
             ['delete-folder', true],
         ]);
-        menuState.current?.onSelect('new-folder');
-        expect(onNewFolder).toHaveBeenCalledTimes(1);
+        menuState.current?.onSelect('new-session:claude');
+        expect(actions.newSession.start).toHaveBeenCalledWith('claude');
+        menuState.current?.onSelect('rename-folder');
         menuState.current?.onSelect('delete-folder');
-        expect(onDeleteFolder).toHaveBeenCalledTimes(1);
+        expect([actions.onRename.mock.calls.length, actions.onDelete.mock.calls.length]).toEqual([1, 1]);
     });
 
-    it('offers only a new folder in a top folder and no menu where folders cannot change', async () => {
+    it('opens the same menu from a long press, leaves out what a top folder cannot do, and has none without actions', async () => {
         const { SessionExplorerFolderRow } = await import('./SessionExplorerRows');
         const top = await renderScreen(
             <SessionExplorerFolderRow
@@ -133,12 +155,14 @@ describe('SessionExplorerFolderRow', () => {
                 activeSessionCount={0}
                 onToggle={vi.fn()}
                 onCreateSession={vi.fn()}
-                onNewFolder={vi.fn()}
-                onDeleteFolder={null}
+                folderActions={{ ...folderActions(), onOpenAsTop: null, onRename: null, onDelete: null }}
             />,
         );
-        await top.pressByTestIdAsync('top:menu');
-        expect(menuState.current?.items.map((item) => item.id)).toEqual(['new-folder']);
+        await act(async () => {
+            top.findByTestId('top')?.props.onLongPress();
+        });
+        expect(menuState.current?.placement).toBe('bottom');
+        expect(menuState.current?.items.map((item) => item.id)).toEqual(['new-session:claude', 'new-folder', 'copy-path', 'refresh']);
 
         const other = await renderScreen(
             <SessionExplorerFolderRow
@@ -154,6 +178,7 @@ describe('SessionExplorerFolderRow', () => {
             />,
         );
         expect(other.findByTestId('other:menu')).toBeNull();
+        expect(other.findByTestId('other')?.props.onLongPress).toBeUndefined();
     });
 });
 
