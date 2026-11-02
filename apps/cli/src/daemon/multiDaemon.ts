@@ -444,7 +444,7 @@ export async function stopAllDaemonsBestEffort(opts: StopDaemonOptions = {}): Pr
  * keep it from running beside this daemon for the same relay.
  *
  * Daemons of other relay profiles live in other lifecycle directories and are never touched: one
- * daemon per relay on one machine is the supported topology (`happier daemon status --all`).
+ * daemon per relay on one machine is the supported topology (`piggercode daemon status --all`).
  */
 export async function reapCurrentLifecycleDaemonOrphansBeforeStart(
   opts: Readonly<{

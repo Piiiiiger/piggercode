@@ -568,7 +568,7 @@ describe('pageCodexTranscript', () => {
     });
 
     expect(JSON.stringify(page.items)).not.toContain('session_media.v1');
-    await expect(stat(join(root, '.happier', 'uploads', 'generated'))).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(stat(join(root, '.piggercode', 'uploads', 'generated'))).rejects.toMatchObject({ code: 'ENOENT' });
     await expect(readFile(providerImagePath, 'utf8')).resolves.toBe('provider image bytes');
   });
 });

@@ -27,7 +27,7 @@ vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
     };
 });
 
-describe('happier relay host status warnings', () => {
+describe('piggercode relay host status warnings', () => {
     let home = '';
     let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 

@@ -135,8 +135,8 @@ export async function handleResumeCommand(
 
   const credentials = await readCredentialsFn();
   if (!credentials) {
-    console.error(warn('Not authenticated with Happier'));
-    console.error(chalk.gray('  Please run "happier auth login" first'));
+    console.error(warn('Not authenticated with PiggerCode'));
+    console.error(chalk.gray('  Please run "piggercode auth login" first'));
     process.exit(1);
   }
 
@@ -150,7 +150,7 @@ export async function handleResumeCommand(
     if (!canUseInkSelectorFn()) {
       console.error(fail('Interactive session selection is not available (raw TTY mode not supported).'));
       console.log('');
-      console.log('Hint: run `happier session list` and then `happier resume <session-id>`.');
+      console.log('Hint: run `piggercode session list` and then `piggercode resume <session-id>`.');
       process.exit(1);
     }
 
@@ -173,7 +173,7 @@ export async function handleResumeCommand(
   if (!sessionIdOrPrefix) {
     console.error(fail('Missing session ID.'));
     console.log('');
-    console.log('Usage: happier resume <sessionId>');
+    console.log('Usage: piggercode resume <sessionId>');
     process.exit(1);
   }
 
@@ -303,7 +303,7 @@ export async function handleResumeCommand(
     const handler = await resolveAgentHandlerFn(agentId);
     const context: CommandContext = {
       args: [agentId, '--existing-session', rawSession.id, '--resume', vendorResume.vendorResumeId, '--started-by', 'terminal'],
-      rawArgv: deps?.rawArgv ?? ['happier', 'resume', rawSession.id],
+      rawArgv: deps?.rawArgv ?? ['piggercode', 'resume', rawSession.id],
       terminalRuntime: deps?.terminalRuntime ?? null,
     };
     await handler(context);

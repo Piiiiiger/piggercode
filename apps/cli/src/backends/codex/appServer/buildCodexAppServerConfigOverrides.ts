@@ -39,15 +39,15 @@ function assignInjectedServerKeys(serverNames: readonly string[]): Map<string, s
     for (const serverName of [...serverNames].sort((left, right) => left.localeCompare(right))) {
         // Prefer stable, prompt-friendly keys for our own built-in Happier MCP servers.
         // This keeps Codex tool names aligned with the canonical system-prompt guidance
-        // (e.g. `mcp__happier__change_title`) and avoids awkward double-prefix names like
-        // `happier__happier` for the internal Happier server.
-        if ((serverName === 'happier' || serverName === 'happy') && !usedKeys.has(serverName)) {
+        // (e.g. `mcp__piggercode__change_title`) and avoids awkward double-prefix names like
+        // `piggercode__piggercode` for the internal Happier server.
+        if ((serverName === 'piggercode' || serverName === 'happy') && !usedKeys.has(serverName)) {
             usedKeys.add(serverName);
             assigned.set(serverName, serverName);
             continue;
         }
 
-        const baseKey = `happier__${sanitizeServerKeyFragment(serverName)}`;
+        const baseKey = `piggercode__${sanitizeServerKeyFragment(serverName)}`;
         let candidate = baseKey;
         let suffix = 2;
         while (usedKeys.has(candidate)) {
@@ -90,7 +90,7 @@ export function buildCodexAppServerConfigOverrides(
     }
 
     const hasFirstPartyHappierMcpServer = serverNames.some(
-        (serverName) => serverName === 'happier' || serverName === 'happy',
+        (serverName) => serverName === 'piggercode' || serverName === 'happy',
     );
     const happierMcpStartupTimeoutMs = readCodexAppServerStartupRpcTimeoutMs(options.processEnv ?? {});
     if (hasFirstPartyHappierMcpServer) {
@@ -118,7 +118,7 @@ export function buildCodexAppServerConfigOverrides(
             overrides.push(`mcp_servers.${injectedKey}.env=${serializeTomlInlineTable(config.env)}`);
         }
         overrides.push(`mcp_servers.${injectedKey}.enabled=true`);
-        if (serverName === 'happier' || serverName === 'happy') {
+        if (serverName === 'piggercode' || serverName === 'happy') {
             overrides.push(`mcp_servers.${injectedKey}.startup_timeout_sec=${happierMcpStartupTimeoutMs / 1_000}`);
             const timeoutMs = options.happierMcpToolCallTimeoutMs
                 ?? DEFAULT_CODEX_PIGGERCODE_MCP_TOOL_CALL_TIMEOUT_MS;

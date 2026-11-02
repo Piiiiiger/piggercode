@@ -277,7 +277,7 @@ describe('createClaudeUnifiedTuiControlController — feature gate (B15)', () =>
 });
 
 describe('createClaudeUnifiedTuiControlController — lock, reconcile, dispose', () => {
-  it('owns only the recognized dialog for the active Happier slash control', async () => {
+  it('owns only the recognized dialog for the active PiggerCode slash control', async () => {
     let releaseWait!: () => void;
     let held = false;
     const wait = vi.fn(() => {

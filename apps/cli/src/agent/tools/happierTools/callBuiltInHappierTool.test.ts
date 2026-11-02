@@ -371,7 +371,7 @@ describe('callBuiltInHappierTool', () => {
     expect(result).toEqual({
       ok: false,
       errorCode: 'unknown_tool',
-      error: 'Unknown built-in Happier tool: review_start',
+      error: 'Unknown built-in PiggerCode tool: review_start',
     });
     expect(execute).not.toHaveBeenCalled();
   });

@@ -214,12 +214,12 @@ describe('persistSessionMediaItem', () => {
       });
       if (!result?.success) throw new Error('expected persistence to succeed');
       expect(result.item.name).toBe('Generated Image_.png');
-      expect(result.item.path).toMatch(/^\.happier\/uploads\/generated\/message-1\/[0-9a-f-]+-Generated Image_\.png$/);
+      expect(result.item.path).toMatch(/^\.piggercode\/uploads\/generated\/message-1\/[0-9a-f-]+-Generated Image_\.png$/);
       expect(isAbsolute(result.item.path)).toBe(false);
       expect(result.item.path).not.toContain('file://');
       expect(JSON.stringify(result.item)).not.toContain(pngBytes.toString('base64'));
       await expect(readFile(resolve(workingDirectory, result.item.path))).resolves.toEqual(pngBytes);
-      await expect(readFile(join(workingDirectory, '.git', 'info', 'exclude'), 'utf8')).resolves.toContain('/.happier/uploads/');
+      await expect(readFile(join(workingDirectory, '.git', 'info', 'exclude'), 'utf8')).resolves.toContain('/.piggercode/uploads/');
       expect(readAllowedDirs.current).toEqual([]);
       expect(writeAllowedDirs.current).toEqual([]);
     } finally {
@@ -265,7 +265,7 @@ describe('persistSessionMediaItem', () => {
         },
       });
       if (!result?.success) throw new Error('expected persistence to succeed');
-      expect(result.item.path).toMatch(/^\.happier\/uploads\/artifacts\/tool-call-1\/[0-9a-f-]+-chart\.gif$/);
+      expect(result.item.path).toMatch(/^\.piggercode\/uploads\/artifacts\/tool-call-1\/[0-9a-f-]+-chart\.gif$/);
       expect(result.item.path).not.toContain(sourcePath);
       await expect(readFile(resolve(workingDirectory, result.item.path))).resolves.toEqual(gifBytes);
       await expect(readFile(sourcePath)).resolves.toEqual(gifBytes);

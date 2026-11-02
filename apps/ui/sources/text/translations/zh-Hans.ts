@@ -103,7 +103,7 @@ const mcpServersUxTranslationExtension = {
   mcpServersDeliveryNativeTitle: '原生 MCP',
   mcpServersDeliveryNativeSubtitle: '此后端将 Happier 工具作为原生 MCP 服务器接收。',
   mcpServersDeliveryShellBridgeTitle: 'Happier Shell 桥接',
-  mcpServersDeliveryShellBridgeSubtitle: '此后端通过 `happier tools` 桥接调用 Happier 工具。',
+  mcpServersDeliveryShellBridgeSubtitle: '此后端通过 `piggercode tools` 桥接调用 Happier 工具。',
   mcpServersDeliveryUnsupportedTitle: '不支持',
   mcpServersDeliveryUnsupportedSubtitle: '此后端当前不接收 Happier 工具。',
 } as const;
@@ -210,7 +210,7 @@ const settingsAppearanceTranslationExtension = {
     previewSubtitle: 'A local sandbox preview of surfaces, text, controls, state, and syntax colors.',
     previewButton: 'Primary action',
     previewStatus: 'Ready',
-    previewCode: 'const theme = "happier";',
+    previewCode: 'const theme = "piggercode";',
     colorInputPlaceholder: '#RRGGBB, rgba(...), transparent',
     tokenSubtitle: 'Public color token override',
     recentColors: 'Recent colors',
@@ -1356,8 +1356,8 @@ export const zhHans: TranslationStructure = {
     generateNewQrCode: "生成新的二维码",
     pairingQrExpired: "此二维码已过期。请生成新的二维码。",
     openMachine: "打开机器",
-    terminalUrlPlaceholder: "happier://terminal?...",
-    accountUrlPlaceholder: "happier:///account?...",
+    terminalUrlPlaceholder: "piggercode://terminal?...",
+    accountUrlPlaceholder: "piggercode:///account?...",
     restoreQrInstructions: "在已登录的设备上前往 设置 → 账户 并扫描此二维码。",
     externalAuthVerifiedTitle: ({ provider }: { provider: string }) =>
       `${provider} 验证完成`,
@@ -1385,7 +1385,7 @@ export const zhHans: TranslationStructure = {
       runCommandInTerminal: "在终端中运行以下命令：",
       runCommandInTerminalWithCommand: ({ command }: { command: string }) =>
         `在终端中运行以下命令：\n\n${command}`,
-      command: ({ name }: { name: string }) => `happier connect ${name}`,
+      command: ({ name }: { name: string }) => `piggercode connect ${name}`,
     },
   },
 
@@ -2159,7 +2159,7 @@ export const zhHans: TranslationStructure = {
       copyReportSubtitle: "复制已脱敏的 JSON 报告用于支持",
     },
     pasteDoctorJson: {
-      footer: "提示：在电脑上运行 `happier doctor --json` 并粘贴到这里。",
+      footer: "提示：在电脑上运行 `piggercode doctor --json` 并粘贴到这里。",
       placeholder: '{ "capturedAt": "...", ... }',
       parse: "验证粘贴的 JSON",
       ok: "粘贴的 doctor JSON 看起来有效。",
@@ -3067,7 +3067,7 @@ export const zhHans: TranslationStructure = {
         promptMessage:
           "请输入工作区相对目录（不允许绝对路径，不允许 ..）。",
         invalidDirectoryTitle: "目录无效",
-        invalidDirectoryMessage: "请使用相对路径，例如 `.happier/uploads`。",
+        invalidDirectoryMessage: "请使用相对路径，例如 `.piggercode/uploads`。",
       },
     },
     sourceControlIgnore: {
@@ -6214,7 +6214,7 @@ export const zhHans: TranslationStructure = {
         unpinSession: "取消置顶",
         pinLimitExceeded: ({ count }: { count: number }) => `最多可置顶 ${count.toLocaleString()} 个会话。请取消置顶另一个会话后重试。`,
     copyResumeCommand: "复制恢复命令",
-    resumeCommand: ({ sessionId }: { sessionId: string }) => `happier resume ${sessionId}`,
+    resumeCommand: ({ sessionId }: { sessionId: string }) => `piggercode resume ${sessionId}`,
     viewMachine: "查看设备",
     viewMachineSubtitle: "查看设备详情和会话",
     killSessionSubtitle: "立即终止会话",
@@ -6289,7 +6289,7 @@ export const zhHans: TranslationStructure = {
       runIt: "运行它",
       scanQrCode: "扫描二维码",
       openCamera: "打开相机",
-      runCommand: "$ happier",
+      runCommand: "$ piggercode",
     },
     emptyMessages: {
       noMessagesYet: "暂无消息",
@@ -7816,7 +7816,7 @@ settingsSession: {
         title: 'Windows',
         defaultModeTitle: '默认 Windows 远程会话模式',
         windowNameTitle: 'Windows Terminal 窗口名称',
-        windowNamePlaceholder: 'happier',
+        windowNamePlaceholder: 'piggercode',
         windowNameHint: '在 Windows Terminal 中打开的会话会使用这个命名窗口，因此新会话可以显示为标签页。',
       },
     advanced: {
@@ -9927,7 +9927,7 @@ settingsSession: {
     launchNewSessionInDirectory: "在目录中启动新会话",
     offlineUnableToSpawn: "设备离线时无法启动",
     offlineHelp:
-      "• 确保您的计算机在线\n• 运行 `happier daemon status` 进行诊断\n• 您是否在运行最新的 CLI 版本？请运行 `happier self update`",
+      "• 确保您的计算机在线\n• 运行 `piggercode daemon status` 进行诊断\n• 您是否在运行最新的 CLI 版本？请运行 `piggercode self update`",
     daemon: "守护进程",
     status: "状态",
     customPathPlaceholder: "输入自定义路径",
@@ -9986,13 +9986,13 @@ settingsSession: {
     cliPath: {
       title: "终端",
       footer: "Happier Desktop 只会添加或移除它自己创建的 PATH 条目；由 shell 安装脚本写入的条目保持不变。",
-      addTitle: "将 happier 添加到 PATH",
-      addSubtitle: "让 happier 命令在新终端中可用。",
-      removeTitle: "从 PATH 中移除 happier",
+      addTitle: "将 piggercode 添加到 PATH",
+      addSubtitle: "让 piggercode 命令在新终端中可用。",
+      removeTitle: "从 PATH 中移除 piggercode",
       removeSubtitle: "仅移除 Happier Desktop 添加的 PATH 条目。",
-      added: "已添加。打开新终端即可使用 happier。",
-      alreadyPresent: "happier 已在你的 PATH 中。",
-      existingCommand: ({ path }: { path: string }) => `另一个 happier（${path}）已在你的终端中生效，因此没有添加任何内容。`,
+      added: "已添加。打开新终端即可使用 piggercode。",
+      alreadyPresent: "piggercode 已在你的 PATH 中。",
+      existingCommand: ({ path }: { path: string }) => `另一个 piggercode（${path}）已在你的终端中生效，因此没有添加任何内容。`,
       removed: "已移除 Happier Desktop 添加的 PATH 条目。",
       nothingToRemove: "Happier Desktop 未添加任何 PATH 条目。",
     },

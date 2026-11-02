@@ -100,7 +100,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.happier\\self-host\\current\\happier-server.exe', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.piggercode\\self-host\\current\\happier-server.exe', versionId: 'publicdev-1' }),
       });
 
       const status = await engine.readStatus({
@@ -207,7 +207,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       const status = await engine.readStatus({
@@ -307,7 +307,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       await expect(engine.control({
@@ -403,7 +403,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       const controlPromise = engine.control({
@@ -506,7 +506,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       const controlPromise = engine.control({
@@ -598,7 +598,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       await expect(engine.control({
@@ -652,7 +652,7 @@ describe('RelayHostEngine (local health control)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'publicdev-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'publicdev-1' }),
       });
 
       await expect(engine.control({

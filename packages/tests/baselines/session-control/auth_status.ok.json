@@ -8,7 +8,7 @@
     "machineRegistered": true,
     "machineId": "mid_123",
     "host": "example-host",
-    "happyHomeDir": "/home/example/.happier",
+    "happyHomeDir": "/home/example/.piggercode",
     "daemonRunning": false
   }
 }

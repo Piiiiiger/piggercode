@@ -34,7 +34,7 @@ describe.skipIf(process.platform === 'win32')('setup-floor managed replacement',
         service: { installed: true, running: true },
         auth: { authenticated: true, machineRegistered: true, machineId: 'local', needsAuth: false, accountId: 'acct' },
       };
-      await writeFile(join(payloadRoot, 'happier'), `#!${process.execPath}
+      await writeFile(join(payloadRoot, 'piggercode'), `#!${process.execPath}
 const fs = require('node:fs');
 const args = process.argv.slice(2);
 if (${broken}) process.exit(3);
@@ -52,7 +52,7 @@ else if (args.join(' ') === 'daemon status --json') {
   console.log(JSON.stringify({ ok: true }));
 }
 `);
-      await chmod(join(payloadRoot, 'happier'), 0o755);
+      await chmod(join(payloadRoot, 'piggercode'), 0o755);
       return payloadRoot;
     }
     await installVersionedPayload({ componentId: 'happier-cli', processEnv, releaseRing: 'stable', versionId: '0.2.12', payloadRoot: await payload('0.2.12') });

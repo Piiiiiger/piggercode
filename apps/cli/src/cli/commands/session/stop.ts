@@ -15,7 +15,7 @@ export async function cmdSessionStop(
   const json = wantsJson(argv);
   const [idOrPrefix = ''] = readCommandPositionals(argv, { startIndex: 1 });
   if (!idOrPrefix) {
-    throw new Error('Usage: happier session stop <session-id-or-prefix> [--json]');
+    throw new Error('Usage: piggercode session stop <session-id-or-prefix> [--json]');
   }
 
   const credentials = await deps.readCredentialsFn();
@@ -24,7 +24,7 @@ export async function cmdSessionStop(
       await printJsonEnvelope({ ok: false, kind: 'session_stop', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

@@ -42,7 +42,7 @@ function createDeps(overrides: Partial<BugReportCommandDependencies> = {}): BugR
     submitBugReport: async () => ({
       reportId: 'report-1',
       issueNumber: 123,
-      issueUrl: 'https://github.com/happier-dev/happier/issues/123',
+      issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/123',
     }),
     searchSimilarIssues: async () => ({ issues: [] }),
     isInteractiveTerminal: () => false,
@@ -66,7 +66,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-gh',
           issueNumber: 11,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/11',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/11',
         };
       },
     });
@@ -126,7 +126,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-2',
           issueNumber: 456,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/456',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/456',
         };
       },
     });
@@ -144,7 +144,7 @@ describe('runBugReportCommand', () => {
       throw new Error('expected submitted result');
     }
     expect(result.issueNumber).toBe(456);
-    expect(result.issueUrl).toBe('https://github.com/happier-dev/happier/issues/456');
+    expect(result.issueUrl).toBe('https://github.com/Piiiiiger/piggercode/issues/456');
     expect(result.diagnosticsIncluded).toBe(true);
     expect(submissions).toHaveLength(1);
     expect(submissions[0]).toMatchObject({
@@ -181,7 +181,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-3',
           issueNumber: 789,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/789',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/789',
         };
       },
     });
@@ -217,7 +217,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-existing',
           issueNumber: 99,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/99',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/99',
         };
       },
     });
@@ -250,7 +250,7 @@ describe('runBugReportCommand', () => {
             owner: 'happier-dev',
             repo: 'happier',
             number: 55,
-            url: 'https://github.com/happier-dev/happier/issues/55',
+            url: 'https://github.com/Piiiiiger/piggercode/issues/55',
             title: 'Similar issue',
             state: 'open' as const,
             updatedAt: new Date().toISOString(),
@@ -262,7 +262,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-similar',
           issueNumber: 55,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/55',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/55',
         };
       },
     });
@@ -469,7 +469,7 @@ describe('runBugReportCommand', () => {
     const submitSpy = vi.fn(async () => ({
       reportId: 'report-unexpected',
       issueNumber: 999,
-      issueUrl: 'https://github.com/happier-dev/happier/issues/999',
+      issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/999',
     }));
     const collectDiagnosticsSpy = vi.fn(async () => ({
       artifacts: [],
@@ -506,7 +506,7 @@ describe('runBugReportCommand', () => {
     if (result.mode !== 'fallback') {
       throw new Error('expected fallback mode');
     }
-    expect(result.issueUrl).toContain('github.com/happier-dev/happier/issues/new');
+    expect(result.issueUrl).toContain('github.com/Piiiiiger/piggercode/issues/new');
     expect(submitSpy).not.toHaveBeenCalled();
     expect(collectDiagnosticsSpy).not.toHaveBeenCalled();
   });
@@ -582,7 +582,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-no-diags',
           issueNumber: 777,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/777',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/777',
         };
       },
     });
@@ -619,7 +619,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-repro',
           issueNumber: 888,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/888',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/888',
         };
       },
     });
@@ -652,7 +652,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'report-summary',
           issueNumber: 333,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/333',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/333',
         };
       },
     });
@@ -690,7 +690,7 @@ describe('runBugReportCommand', () => {
     if (result.mode === 'fallback') {
       expect(result.reason).toBe('submit-failed');
       expect(result.errorMessage).toContain('Unable to connect');
-      expect(result.issueUrl).toMatch(/^https:\/\/github\.com\/happier-dev\/happier\/issues\/new/);
+      expect(result.issueUrl).toMatch(/^https:\/\/github\.com\/Piiiiiger\/piggercode\/issues\/new/);
     }
   });
 
@@ -711,7 +711,7 @@ describe('runBugReportCommand', () => {
     if (result.mode === 'fallback') {
       expect(result.reason).toBe('feature-fetch-failed');
       expect(result.errorMessage).toContain('Active server unreachable');
-      expect(result.issueUrl).toMatch(/^https:\/\/github\.com\/happier-dev\/happier\/issues\/new/);
+      expect(result.issueUrl).toMatch(/^https:\/\/github\.com\/Piiiiiger\/piggercode\/issues\/new/);
     }
   });
 
@@ -759,7 +759,7 @@ describe('runBugReportCommand', () => {
         return {
           reportId: 'r-sid',
           issueNumber: 999,
-          issueUrl: 'https://github.com/happier-dev/happier/issues/999',
+          issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/999',
         };
       },
     });
@@ -774,7 +774,7 @@ describe('runBugReportCommand', () => {
     expect(submissions).toHaveLength(1);
     expect(submissions[0]).toMatchObject({
       form: {
-        summary: expect.stringContaining('Happier session id: sess_abcdef123456'),
+        summary: expect.stringContaining('PiggerCode session id: sess_abcdef123456'),
       },
     });
   });

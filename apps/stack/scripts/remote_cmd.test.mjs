@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 import { runRemoteDaemonSetupWithDeps, runRemoteServerSetupWithDeps } from './remote_cmd.mjs';
 
-test('remote daemon setup delegates to happier machine setup with relay targeting and user service defaults', async () => {
+test('remote daemon setup delegates to piggercode machine setup with relay targeting and user service defaults', async () => {
   const invocations = [];
 
   await runRemoteDaemonSetupWithDeps(
@@ -29,7 +29,7 @@ test('remote daemon setup delegates to happier machine setup with relay targetin
   ]);
 });
 
-test('remote daemon setup forwards service none and release channel flags to happier machine setup', async () => {
+test('remote daemon setup forwards service none and release channel flags to piggercode machine setup', async () => {
   const invocations = [];
 
   await runRemoteDaemonSetupWithDeps(
@@ -53,7 +53,7 @@ test('remote daemon setup forwards service none and release channel flags to hap
   ]);
 });
 
-test('remote daemon setup forwards --yes to happier machine setup for non-interactive prompts', async () => {
+test('remote daemon setup forwards --yes to piggercode machine setup for non-interactive prompts', async () => {
   const invocations = [];
 
   await runRemoteDaemonSetupWithDeps(
@@ -89,7 +89,7 @@ test('remote daemon setup rejects --known-hosts-path when daemon setup does not 
   );
 });
 
-test('remote server setup forwards ssh trust flags to happier relay host install', async () => {
+test('remote server setup forwards ssh trust flags to piggercode relay host install', async () => {
   const invocations = [];
 
   await runRemoteServerSetupWithDeps(

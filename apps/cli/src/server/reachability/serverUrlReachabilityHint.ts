@@ -8,7 +8,7 @@ import {
  * What to tell someone about a relay URL that their phone probably cannot reach.
  *
  * One wording, shared by every surface that hands a relay URL to a user: sign-in
- * (`happier auth login`) and relay installation both end with "here is your
+ * (`piggercode auth login`) and relay installation both end with "here is your
  * relay URL", and both have to be honest about who can actually reach it.
  *
  * Returns the lines to print, or an empty list when the URL needs no caveat.

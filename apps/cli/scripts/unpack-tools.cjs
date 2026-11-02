@@ -29,7 +29,7 @@ const TOOL_ARCHIVE_MANIFEST = [
     { tool: 'zellij', platformDir: 'x64-linux', archiveName: 'zellij-no-web-x86_64-unknown-linux-musl.tar.gz', archiveType: 'tar.gz', binaryName: 'zellij', version: '0.44.3', licenseName: 'zellij-LICENSE' },
 ];
 
-const VERSION_MARKER_NAME = '.happier-tools-manifest.json';
+const VERSION_MARKER_NAME = '.piggercode-tools-manifest.json';
 
 /**
  * Get the platform-specific directory name

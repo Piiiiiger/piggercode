@@ -84,7 +84,7 @@ it('converges an instance-only pinned install for an environment-selected relay 
                         startedWithCliVersion: currentVersion,
                         startedWithPublicReleaseChannel: 'stable',
                         startupSource: 'background-service',
-                        serviceLabel: 'com.happier.cli.daemon.full-live-qa-b',
+                        serviceLabel: 'com.piggercode.cli.daemon.full-live-qa-b',
                     } satisfies DaemonLocallyPersistedState));
                 }
                 return {
@@ -105,7 +105,7 @@ it('converges an instance-only pinned install for an environment-selected relay 
         try {
             await runDaemonServiceCliCommand({ argv: ['install', '--instance', 'full-live-qa-b', '--autostart', 'on-demand', '--json'] });
             expect(output.json().ok).toBe(true);
-            expect((await readDaemonState())?.serviceLabel).toBe('com.happier.cli.daemon.full-live-qa-b');
+            expect((await readDaemonState())?.serviceLabel).toBe('com.piggercode.cli.daemon.full-live-qa-b');
         } finally {
             output.restore();
         }

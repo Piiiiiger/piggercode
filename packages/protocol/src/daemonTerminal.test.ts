@@ -30,7 +30,7 @@ describe('DaemonTerminalEnsureRequestSchema session attach launch', () => {
   it('rejects a raw initial command beside the typed session attach intent', () => {
     expect(DaemonTerminalEnsureRequestSchema.safeParse({
       launch: { kind: 'session_attach', sessionId: 'session-1' },
-      initialCommand: 'happier attach session-1',
+      initialCommand: 'piggercode attach session-1',
     }).success).toBe(false);
   });
 });

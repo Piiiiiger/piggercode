@@ -64,12 +64,12 @@ function resolveBinaryPath(componentId, channel) {
   const suffix = normalizeChannel(channel);
   if (componentId === 'happier-cli') {
     return suffix === 'stable'
-      ? '$HOME/.happier/cli/current/happier'
-      : '$HOME/.happier/cli-' + suffix + '/current/happier';
+      ? '$HOME/.piggercode/cli/current/piggercode'
+      : '$HOME/.piggercode/cli-' + suffix + '/current/piggercode';
   }
   return suffix === 'stable'
-    ? '$HOME/.happier/stack/current/hstack'
-    : '$HOME/.happier/stack-' + suffix + '/current/hstack';
+    ? '$HOME/.piggercode/stack/current/hstack'
+    : '$HOME/.piggercode/stack-' + suffix + '/current/hstack';
 }
 
 export async function installRemoteFirstPartyComponent({ componentId, channel, target }) {
@@ -106,7 +106,7 @@ export function resolveRemoteInstalledFirstPartyBinaryPath({ componentId, channe
 function writeFakeHappier({ tmp }) {
   return writeLoggedJsonBin({
     root: tmp,
-    name: 'happier',
+    name: 'piggercode',
     logEnvVar: 'REMOTE_DAEMON_SETUP_LOG',
     body: `
 const args = process.argv.slice(2);

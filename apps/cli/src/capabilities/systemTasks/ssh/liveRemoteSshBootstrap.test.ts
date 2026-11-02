@@ -87,7 +87,7 @@ describe('createLiveRemoteSshBootstrapTaskKind', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     installRemoteFirstPartyComponentMock.mockResolvedValue({
-      binaryPath: '$HOME/.happier/cli-preview/current/happier',
+      binaryPath: '$HOME/.piggercode/cli-preview/current/happier',
       versionId: 'mock-version',
       source: 'https://example.test/happier.tgz',
     });
@@ -160,7 +160,7 @@ describe('createLiveRemoteSshBootstrapTaskKind', () => {
       if (remoteCommand.includes('prismaEnginePath')) {
         return jsonResult({
           hasNodeModules: true,
-          prismaEnginePath: '/home/leeroy/.happier/server/current/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node',
+          prismaEnginePath: '/home/leeroy/.piggercode/server/current/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node',
         });
       }
       if (remoteCommand.includes('"arch"')) {

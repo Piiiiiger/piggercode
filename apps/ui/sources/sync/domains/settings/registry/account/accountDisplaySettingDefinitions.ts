@@ -151,7 +151,7 @@ export const ACCOUNT_DISPLAY_SETTING_DEFINITIONS = defineSettingDefinitions({
     },
     attachmentsUploadsWorkspaceRelativeDir: {
         schema: z.string(),
-        default: '.happier/uploads',
+        default: '.piggercode/uploads',
         description: 'Workspace-relative directory for attachments when uploadLocation=workspace',
         storageScope: 'account',
     },

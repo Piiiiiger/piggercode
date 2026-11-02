@@ -14,7 +14,7 @@ function buildOwner(overrides: Partial<CurrentDaemonOwner> = {}): CurrentDaemonO
       startedWithCliVersion: '0.0.0-test',
       startedWithPublicReleaseChannel: 'preview',
       startupSource: 'background-service',
-      serviceLabel: 'happier-daemon.preview',
+      serviceLabel: 'piggercode-daemon.preview',
     },
     currentCliVersion: '0.0.0-current',
     currentPublicReleaseChannel: 'preview',

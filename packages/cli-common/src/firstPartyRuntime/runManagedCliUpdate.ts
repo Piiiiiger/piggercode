@@ -151,11 +151,11 @@ async function recordLastUpdate(
 }
 
 function reportWarning(message: string): void {
-  process.stderr.write(`[happier] ${message}\n`);
+  process.stderr.write(`[piggercode] ${message}\n`);
 }
 
 function reportRecordFailure(error: unknown): void {
-  process.stderr.write(`[happier] Could not record the CLI update outcome: ${describeError(error)}\n`);
+  process.stderr.write(`[piggercode] Could not record the CLI update outcome: ${describeError(error)}\n`);
 }
 
 /**
@@ -184,7 +184,7 @@ function resolveStagedBinaryPath(payloadRoot: string): string {
 }
 
 /**
- * The one first-party CLI update transaction (plan R13 f), used by `happier self update`, the
+ * The one first-party CLI update transaction (plan R13 f), used by `piggercode self update`, the
  * desktop's `cli.update.v1` and the daemon-hosted remote `cli.update.v1` (which runs
  * `self update` detached from the daemon). It always runs from the version being replaced.
  *
@@ -251,7 +251,7 @@ async function acquireActivateAndProve(params: ManagedCliUpdateParams, layout: F
     if (reported !== targetVersion) {
       throw new ManagedCliUpdateError(
         'cli_update_smoke_failed',
-        `The downloaded Happier CLI ${targetVersion} did not start on this machine`
+        `The downloaded PiggerCode CLI ${targetVersion} did not start on this machine`
           + ` (it reported ${reported ? `version ${reported}` : 'no version'}); nothing was changed.`,
         targetVersion,
       );
@@ -296,7 +296,7 @@ async function activateAndProve(input: Readonly<{
       try {
         await restart({ expectedVersion: targetVersion, phase: 'activated' });
       } catch (error) {
-        const message = `Happier CLI ${targetVersion} is installed, but the background service did not restart onto it: ${describeError(error)}`;
+        const message = `PiggerCode CLI ${targetVersion} is installed, but the background service did not restart onto it: ${describeError(error)}`;
         await record({ targetVersion, outcome: 'failed', message });
         return { outcome: 'failed', previousVersion: currentVersionId, targetVersion, message };
       }
@@ -318,7 +318,7 @@ async function activateAndProve(input: Readonly<{
    * proven (or none was running), `failed` naming whatever could not be recovered.
    */
   const rollBack = async (failure: unknown): Promise<ManagedCliUpdateResult> => {
-    const reason = `Happier CLI ${targetVersion} did not start on this machine (${describeError(failure)})`;
+    const reason = `PiggerCode CLI ${targetVersion} did not start on this machine (${describeError(failure)})`;
     if (!previousVersion) {
       const message = `${reason}, and no previous version was installed to restore.`;
       await record({ targetVersion, outcome: 'failed', message });
@@ -375,7 +375,7 @@ async function activateAndProve(input: Readonly<{
     currentVersionId: targetVersion,
     previousVersionId: previousVersion,
   }).catch((error: unknown) => {
-    (params.onWarning ?? reportWarning)(`Happier CLI ${targetVersion} is installed; an older version could not be removed: ${describeError(error)}`);
+    (params.onWarning ?? reportWarning)(`PiggerCode CLI ${targetVersion} is installed; an older version could not be removed: ${describeError(error)}`);
   });
   await record({ targetVersion, outcome: 'succeeded', message: null });
   return { outcome: 'succeeded', previousVersion, targetVersion, restarted: restart !== null, changed: true };

@@ -31,7 +31,7 @@ describe('spawnDetachedDaemonStartSync', () => {
       PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: undefined,
     });
     // Simulate invoking the CLI via the dev shim name.
-    process.argv = ['node', '/Users/alice/.happier/bin/hdev', 'daemon', 'start'];
+    process.argv = ['node', '/Users/alice/.piggercode/bin/hdev', 'daemon', 'start'];
 
     const spawnMock: Mock<(typeof import('child_process'))['spawn']> = vi.fn(() => ({ unref() {} }) as any);
     vi.doMock('child_process', () => ({

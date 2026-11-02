@@ -16,7 +16,7 @@ import { createScpReadyPayloadArchive } from './createScpReadyPayloadArchive';
 describe('remote payload archive process', () => {
   it('hides the background tar process while keeping the prepared payload available until cleanup', async () => {
     const payload = await mkdtemp(join(tmpdir(), 'happier-archive-console-'));
-    await writeFile(join(payload, 'happier.exe'), 'fixture');
+    await writeFile(join(payload, 'piggercode.exe'), 'fixture');
     execFileMock.mockImplementation((...call: unknown[]) => {
       const callback = call.at(-1);
       if (typeof callback === 'function') callback(null, '', '');

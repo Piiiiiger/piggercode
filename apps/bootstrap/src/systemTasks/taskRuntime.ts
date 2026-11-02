@@ -92,7 +92,7 @@ export function parseFirstJsonObject(text: string): unknown {
 }
 
 export function resolveDefaultKnownHostsPath(): string {
-  return `${process.env.HOME ?? process.env.USERPROFILE ?? '/tmp'}/.happier/ssh/known_hosts`;
+  return `${process.env.HOME ?? process.env.USERPROFILE ?? '/tmp'}/.piggercode/ssh/known_hosts`;
 }
 
 export function extractSshHost(target: string): string {

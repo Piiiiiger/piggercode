@@ -253,10 +253,10 @@ describe('formatResumeSelectionFooter', () => {
     expect(formatResumeSelectionFooter({ ineligibleCount: 0, resumableCount: 3, activeRunningCount: 0 })).toBeNull();
   });
 
-  it('mentions running sessions and points the user to happier attach', () => {
+  it('mentions running sessions and points the user to piggercode attach', () => {
     const text = formatResumeSelectionFooter({ ineligibleCount: 0, resumableCount: 1, activeRunningCount: 2 });
     expect(text).toMatch(/2 sessions running/i);
-    expect(text).toMatch(/happier attach/i);
+    expect(text).toMatch(/piggercode attach/i);
   });
 
   it('mentions ineligible sessions when present', () => {

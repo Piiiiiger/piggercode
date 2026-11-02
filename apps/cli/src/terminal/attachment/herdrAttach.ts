@@ -46,7 +46,7 @@ export async function runHerdrAttach(params: Readonly<{
     // grant Happier attachment ownership or rewrite Session metadata.
     pane = await client.getPane(recordedPaneId);
     if (pane.paneId !== recordedPaneId) throw new Error('The recorded Herdr pane is unavailable');
-    if (!insideHerdr) console.log('Opening the preserved Herdr pane; its Happier session still needs to reconnect.');
+    if (!insideHerdr) console.log('Opening the preserved Herdr pane; its PiggerCode session still needs to reconnect.');
   }
 
   if (insideHerdr) {

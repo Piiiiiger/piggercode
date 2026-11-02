@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CLI entry point for happier command
+ * CLI entry point for piggercode command
  *
  * Simple argument parsing without any CLI framework dependencies
  */

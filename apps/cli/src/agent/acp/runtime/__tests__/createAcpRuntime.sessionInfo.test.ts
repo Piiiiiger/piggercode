@@ -83,7 +83,7 @@ describe('createAcpRuntime provider session info', () => {
 
     await Promise.resolve(session.updateMetadata((metadata) => ({
       ...metadata,
-      summary: { text: 'Explicit Happier title', updatedAt: 200 },
+      summary: { text: 'Explicit PiggerCode title', updatedAt: 200 },
     })));
     backend.emit({
       type: 'event',
@@ -91,7 +91,7 @@ describe('createAcpRuntime provider session info', () => {
       payload: { title: 'Changed provider title' },
     });
 
-    expect(getMetadata().summary).toEqual({ text: 'Explicit Happier title', updatedAt: 200 });
+    expect(getMetadata().summary).toEqual({ text: 'Explicit PiggerCode title', updatedAt: 200 });
     expect(getMetadata().providerSessionInfoV1?.title).toBe('Changed provider title');
   });
 

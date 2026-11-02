@@ -25,7 +25,7 @@ const IDENTITY_CASES: ReadonlyArray<Readonly<{ label: string; item: Record<strin
     id: 'vendor:codex:review',
   },
   {
-    label: 'a projected happier skill',
+    label: 'a projected piggercode skill',
     item: { name: 'triage', origin: 'happier_projected' },
     id: 'happier:happier_projected:triage',
   },

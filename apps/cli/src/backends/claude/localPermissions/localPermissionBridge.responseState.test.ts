@@ -498,7 +498,7 @@ describe('ClaudeLocalPermissionBridge (response state)', () => {
     bridge.dispose();
   });
 
-  it('keeps no Happier timeout for an interactive answer delivered before the provider hook ceiling', async () => {
+  it('keeps no PiggerCode timeout for an interactive answer delivered before the provider hook ceiling', async () => {
     const { session, client } = createPermissionHandlerSessionStub('session-interactive-in-window');
     const bridge = new ClaudeLocalPermissionBridge(session, { responseTimeoutMs: 5_000 });
     bridge.activate();

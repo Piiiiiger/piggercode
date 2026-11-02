@@ -55,11 +55,11 @@ describe('/scan/account', () => {
         expect(typeof lastScannerProps?.onScan).toBe('function');
 
         await act(async () => {
-            await lastScannerProps.onScan('happier:///account?abc123');
+            await lastScannerProps.onScan('piggercode:///account?abc123');
         });
 
         expect(processAccountAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('happier:///account?abc123');
+        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('piggercode:///account?abc123');
         expect(processTerminalAuthUrlSpy).not.toHaveBeenCalled();
     });
 
@@ -71,16 +71,16 @@ describe('/scan/account', () => {
         expect(typeof lastScannerProps?.onScan).toBe('function');
 
         await act(async () => {
-            await lastScannerProps.onScan('happier://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
+            await lastScannerProps.onScan('piggercode://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
         });
 
         expect(processTerminalAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processTerminalAuthUrlSpy).toHaveBeenCalledWith('happier://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
+        expect(processTerminalAuthUrlSpy).toHaveBeenCalledWith('piggercode://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
         expect(processAccountAuthUrlSpy).not.toHaveBeenCalled();
     });
 
     it('supports manually entering an account link URL when the scanner is unavailable', async () => {
-        promptSpy.mockResolvedValueOnce(' happier:///account?manual ');
+        promptSpy.mockResolvedValueOnce(' piggercode:///account?manual ');
 
         const { default: Screen } = await import('@/app/(app)/scan/account');
 
@@ -110,7 +110,7 @@ describe('/scan/account', () => {
 
         expect(promptSpy).toHaveBeenCalledTimes(1);
         expect(processAccountAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('happier:///account?manual');
+        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('piggercode:///account?manual');
         expect(processTerminalAuthUrlSpy).not.toHaveBeenCalled();
     });
 });

@@ -125,7 +125,7 @@ describe('registerMachineRpcHandlers pets', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.png',
     }));
     await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));

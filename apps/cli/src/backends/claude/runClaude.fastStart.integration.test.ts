@@ -1465,7 +1465,7 @@ describe('runClaude fast-start', () => {
     }
   });
 
-  it('exposes the current Claude permission mode to the Happier MCP bridge', async () => {
+  it('exposes the current Claude permission mode to the PiggerCode MCP bridge', async () => {
     vi.resetModules();
     loopStarted = createDeferred<void>();
     loopExit = createDeferred<number>();
@@ -1841,7 +1841,7 @@ describe('runClaude fast-start', () => {
     const previousHome = process.env.HOME;
     const previousUserProfile = process.env.USERPROFILE;
     const homeDir = join(configuration.happyHomeDir, 'fast-start-home');
-    const attachBaseDir = join(homeDir, '.happier-attach');
+    const attachBaseDir = join(homeDir, '.piggercode-attach');
     await mkdir(attachBaseDir, { recursive: true });
     const attachPath = join(attachBaseDir, 'fast-start-attach.json');
     await writeFile(
@@ -1856,7 +1856,7 @@ describe('runClaude fast-start', () => {
     await chmod(attachPath, 0o600);
     process.env.HOME = homeDir;
     process.env.USERPROFILE = homeDir;
-    process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.happier-attach/fast-start-attach.json';
+    process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.piggercode-attach/fast-start-attach.json';
 
     const { runClaude } = await import('./runClaude');
     const credentials = createLegacyCredentials();

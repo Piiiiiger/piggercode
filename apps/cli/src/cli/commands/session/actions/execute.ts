@@ -50,7 +50,7 @@ export async function cmdSessionActionsExecute(
     throw new Error('Invalid --resume-action-request without --action-request-id.');
   }
   if (!idOrPrefix || !actionId) {
-    throw new Error('Usage: happier session actions execute <session-id-or-prefix> <action-id> [--input-json <json>] [--action-request-id <id>] [--resume-action-request] [--json]');
+    throw new Error('Usage: piggercode session actions execute <session-id-or-prefix> <action-id> [--input-json <json>] [--action-request-id <id>] [--resume-action-request] [--json]');
   }
 
   const credentials = await deps.readCredentialsFn();
@@ -59,7 +59,7 @@ export async function cmdSessionActionsExecute(
       await printJsonEnvelope({ ok: false, kind: 'session_actions_execute', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

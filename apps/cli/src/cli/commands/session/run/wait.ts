@@ -19,7 +19,7 @@ export async function cmdSessionRunWait(
     valueFlags: ['--timeout'],
   });
   if (!idOrPrefix || !runId) {
-    throw new Error('Usage: happier session run wait <session-id-or-prefix> <run-id> [--timeout <seconds>] [--json]');
+    throw new Error('Usage: piggercode session run wait <session-id-or-prefix> <run-id> [--timeout <seconds>] [--json]');
   }
 
   const timeoutSecondsRaw = readIntFlagValue(argv, '--timeout', { min: 1 });
@@ -34,7 +34,7 @@ export async function cmdSessionRunWait(
       await printJsonEnvelope({ ok: false, kind: 'session_run_wait', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

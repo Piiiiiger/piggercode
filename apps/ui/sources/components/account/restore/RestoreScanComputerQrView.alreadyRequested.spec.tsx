@@ -100,7 +100,7 @@ vi.mock('@/constants/Typography', () => ({
 }));
 
 vi.mock('@/auth/pairing/pairingUrl', () => ({
-    buildPairingDeepLink: () => 'happier:///pair?v=1&pairId=p&secret=s',
+    buildPairingDeepLink: () => 'piggercode:///pair?v=1&pairId=p&secret=s',
     parsePairingDeepLink: () => ({ pairId: 'pair_123', secret: 'secret_123', serverUrl: null }),
 }));
 
@@ -146,7 +146,7 @@ describe('RestoreScanComputerQrView (already requested)', () => {
             expect(typeof lastScannerProps?.onScan).toBe('function');
 
             await act(async () => {
-                await lastScannerProps.onScan('happier:///pair?v=1&pairId=pair_123&secret=secret_123');
+                await lastScannerProps.onScan('piggercode:///pair?v=1&pairId=pair_123&secret=secret_123');
             });
 
             expect(modalAlertAsyncSpy).toHaveBeenCalledWith(

@@ -2,7 +2,7 @@ import type { SavedSecret } from '@/sync/domains/settings/savedSecretTypes';
 
 import type { McpServersSettingsV1 } from '@piggercode/protocol';
 
-const RESERVED_SERVER_NAMES = new Set(['happier', '__proto__', 'prototype', 'constructor']);
+const RESERVED_SERVER_NAMES = new Set(['piggercode', 'happier', '__proto__', 'prototype', 'constructor']);
 
 export function normalizeMcpServerNameCandidate(raw: string): string {
     const base = String(raw ?? '')

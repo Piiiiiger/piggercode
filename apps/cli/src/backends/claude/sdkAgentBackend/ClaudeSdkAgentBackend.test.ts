@@ -547,7 +547,7 @@ describe('ClaudeSdkAgentBackend', () => {
         toolName: 'Bash',
         toolInput: {
           command:
-            'for d in happier agent-os intent leeroy-wip tool-demo; do if [ -d "/Users/leeroy/$d/.git" ]; then echo "$d: git repo"; else echo "$d: not a git repo"; fi; done',
+            'for d in piggercode agent-os intent leeroy-wip tool-demo; do if [ -d "/Users/leeroy/$d/.git" ]; then echo "$d: git repo"; else echo "$d: not a git repo"; fi; done',
         },
       },
       async ({ backend }) => {

@@ -120,7 +120,7 @@ describe('protected local state Windows ACL boundary', () => {
     });
     const boundary = createWindowsProtectedLocalStateAclBoundary({ runCommand: run });
 
-    await boundary.applyAndVerify({ path: 'C:\\Users\\user\\.happier\\authority', kind: 'directory' });
+    await boundary.applyAndVerify({ path: 'C:\\Users\\user\\.piggercode\\authority', kind: 'directory' });
 
     expect(run.mock.calls.map(([command]) => command)).toEqual([
       'whoami.exe',

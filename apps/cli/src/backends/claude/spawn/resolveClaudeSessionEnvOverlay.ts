@@ -10,6 +10,6 @@ export function resolveClaudeSessionEnvOverlay(params: Readonly<{
     // Claude Code 2.1.283/2.1.296 rewrite cli to sdk-cli on noninteractive runs.
     // Happier attribution survives and avoids the SDK history exclusion without
     // rewriting provider-owned transcripts.
-    ...(params.claudeCodeIncludeInNativeHistory === true ? { CLAUDE_CODE_ENTRYPOINT: 'happier' } : {}),
+    ...(params.claudeCodeIncludeInNativeHistory === true ? { CLAUDE_CODE_ENTRYPOINT: 'piggercode' } : {}),
   };
 }

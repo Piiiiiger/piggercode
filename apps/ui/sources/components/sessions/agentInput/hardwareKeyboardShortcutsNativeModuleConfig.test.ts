@@ -40,7 +40,7 @@ function findIosProjectFiles(): string[] {
         .filter((path) => existsSync(path));
 }
 
-describe('happier hardware keyboard shortcuts local Expo module config', () => {
+describe('piggercode hardware keyboard shortcuts local Expo module config', () => {
     it('declares an iOS and Android app-local module package for autolinking', () => {
         const packageJson = readJson(join(moduleRoot, 'package.json'));
         const config = readJson(join(moduleRoot, 'expo-module.config.json'));

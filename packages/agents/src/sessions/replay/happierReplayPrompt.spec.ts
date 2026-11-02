@@ -635,7 +635,7 @@ describe('the range claim never outlives the lines it names', () => {
   // Shaped like the real invocation the host renders: the cursor is a quoted
   // decimal inside a JSON payload that carries other numbers.
   const renderInvocation = (cursorSeq: number | null): string =>
-    `happier tools call session.transcript.get --input '{"sessionId":"${sessionId}","direction":"before","cursor":"${cursorSeq ?? ''}","limit":100}'`;
+    `piggercode tools call session.transcript.get --input '{"sessionId":"${sessionId}","direction":"before","cursor":"${cursorSeq ?? ''}","limit":100}'`;
 
   const buildSeed = (dialog: ReadonlyArray<ClaimRow>): string =>
     buildHappierReplayPromptFromDialog({

@@ -67,7 +67,7 @@ function normalizeBootstrapReleaseChannel(raw: unknown): PublicReleaseRingId {
 
 function normalizeRemoteHomeDir(raw: unknown): string {
   const trimmed = String(raw ?? '').trim();
-  const normalized = trimmed || '$HOME/.happier';
+  const normalized = trimmed || '$HOME/.piggercode';
   if (normalized === '~') {
     return '$HOME';
   }

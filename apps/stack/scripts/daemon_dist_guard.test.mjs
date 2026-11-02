@@ -48,7 +48,7 @@ test('watch startup admits a validated prior CLI publication without waiting for
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-last-green-cli-startup-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -84,7 +84,7 @@ test('watch startup retries a transient atomic CLI publication gap before waitin
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-last-green-cli-publication-gap-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -120,7 +120,7 @@ test('source admission forces one last-chance build when builds are disabled and
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-disabled-cli-bootstrap-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   const calls = [];
@@ -151,7 +151,7 @@ test('source admission does not force a disabled build when prior dist is valid'
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-disabled-cli-valid-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -186,7 +186,7 @@ test('source admission exposes an unchanged runnable prior dist as degraded when
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-cli-build-failed-fallback-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -218,7 +218,7 @@ test('source admission uses a successful current build without entering degraded
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-cli-current-build-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -245,7 +245,7 @@ test('source admission exposes a successful but superseded build as degraded wit
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-cli-superseded-build-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -278,7 +278,7 @@ test('source admission never promotes a different dist identity from a failed re
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-cli-build-failed-mutated-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -310,7 +310,7 @@ test('source admission rejects a manifest-valid prior dist when its runtime impo
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-cli-build-failed-probe-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -337,7 +337,7 @@ test('source admission fails closed when the disabled-build recovery cannot prod
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-disabled-cli-failed-bootstrap-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   const calls = [];
 
@@ -361,7 +361,7 @@ test('source daemon admission reuses an exact watcher-admitted dist without a se
   const repoDir = await mkdtemp(join(tmpdir(), 'hstack-watcher-admitted-cli-build-'));
   t.after(async () => rm(repoDir, { recursive: true, force: true }));
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   await mkdir(dirname(cliBin), { recursive: true });
   await mkdir(dirname(distEntrypoint), { recursive: true });
@@ -432,7 +432,7 @@ const { resolveCliDistBuildLockPath, withCliDistBuildLock } = await import(${JSO
 const root = ${JSON.stringify(fixtureRoot)};
 const repoDir = join(root, 'repo');
 const cliDir = join(repoDir, 'apps', 'cli');
-const cliBin = join(cliDir, 'bin', 'happier.mjs');
+const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
 const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
 const manifestPath = join(cliDir, 'dist', '.build-manifest.json');
 const cliHomeDir = join(root, 'home');
@@ -547,7 +547,7 @@ test('source daemon lifecycle commands run after the CLI publication lock is rel
   t.after(async () => rm(fixtureRoot, { recursive: true, force: true }));
   const repoDir = join(fixtureRoot, 'repo');
   const cliDir = join(repoDir, 'apps', 'cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const distEntrypoint = join(cliDir, 'dist', 'index.mjs');
   const lockPath = join(repoDir, '.project', 'tmp', 'cli-dist-build.lock');
   const eventsPath = join(fixtureRoot, 'events.jsonl');
@@ -864,7 +864,7 @@ function startFakePingAwareDaemon(statePath) {
 
 async function writeStubHappyCli({ cliDir }) {
   // Dist entrypoint exists, but package.json intentionally has no build script.
-  // startLocalDaemonWithAuth should launch the daemon via dist (not via bin/happier.mjs).
+  // startLocalDaemonWithAuth should launch the daemon via dist (not via bin/piggercode.mjs).
   const distScript = `
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
@@ -920,10 +920,10 @@ process.exit(0);
   const { cliBinDir } = await writeStubHappierCliFiles(monoRoot, {
     packageJsonContent: '{}\n',
     distIndexScript: distScript.trimStart(),
-    // If the implementation accidentally invokes bin/happier.mjs instead of dist/index.mjs, fail loudly.
+    // If the implementation accidentally invokes bin/piggercode.mjs instead of dist/index.mjs, fail loudly.
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 async function writeSlowStartStubHappyCli({ cliDir }) {
@@ -979,7 +979,7 @@ process.exit(0);
     distIndexScript: distScript.trimStart(),
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 async function writeDelayedStopStubHappyCli({ cliDir }) {
@@ -1051,7 +1051,7 @@ process.exit(0);
     distIndexScript: distScript.trimStart(),
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 async function writePidOnlyFalseReadyStubHappyCli({ cliDir }) {
@@ -1097,7 +1097,7 @@ process.exit(0);
     distIndexScript: distScript.trimStart(),
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 test('pid-only false-ready fixture publishes daemon command identity and cleans up its child', async () => {
@@ -1264,7 +1264,7 @@ async function writeRuntimeSnapshotHappyCliJsCommand({ snapshotDir }) {
   const cliDir = join(snapshotDir, 'cli');
   await mkdir(cliDir, { recursive: true });
   const cliBin = join(cliDir, 'happier');
-  const cliCommand = join(cliDir, 'happier.mjs');
+  const cliCommand = join(cliDir, 'piggercode.mjs');
 
   const distScript = `
 import { spawn } from 'node:child_process';
@@ -2034,7 +2034,7 @@ process.exit(0);
     await writeFile(join(cliHomeDir, 'access.key'), 'dummy\n', 'utf-8');
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
-    const cliBin = join(cliBinDir, 'happier.mjs');
+    const cliBin = join(cliBinDir, 'piggercode.mjs');
     const env = buildDaemonDistGuardEnv({
       PIGGERCODE_STACK_CLI_BUILD: '1',
       PIGGERCODE_STACK_TUI: '0',
@@ -2186,7 +2186,7 @@ process.exit(0);
     await writeFile(join(cliHomeDir, 'access.key'), 'dummy\n', 'utf-8');
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
 
-    const cliBin = join(cliBinDir, 'happier.mjs');
+    const cliBin = join(cliBinDir, 'piggercode.mjs');
     const env = buildDaemonDistGuardEnv({
       PIGGERCODE_STACK_CLI_BUILD: '1',
       PIGGERCODE_STACK_HOME_DIR: join(tmp, 'hstack-home'),

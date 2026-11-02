@@ -53,15 +53,15 @@ test('getPublicServerUrlEnvOverride falls back to PIGGERCODE_STACK_SERVER_URL wh
 test('getPublicServerUrlEnvOverride expands ~/ explicit env file overrides against HOME', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'hstack-server-urls-'));
   const homeDir = join(dir, 'home');
-  const envPath = join(homeDir, '.happier', 'stacks', 'dev', 'env');
-  await mkdir(join(homeDir, '.happier', 'stacks', 'dev'), { recursive: true });
+  const envPath = join(homeDir, '.piggercode', 'stacks', 'dev', 'env');
+  await mkdir(join(homeDir, '.piggercode', 'stacks', 'dev'), { recursive: true });
   await writeFile(envPath, 'PIGGERCODE_STACK_SERVER_URL=https://stack-share.example.test\n', 'utf-8');
 
   const out = getPublicServerUrlEnvOverride({
     env: {
       HOME: homeDir,
       PIGGERCODE_STACK_STACK: 'dev',
-      PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+      PIGGERCODE_STACK_ENV_FILE: '~/.piggercode/stacks/dev/env',
       PIGGERCODE_STACK_SERVER_URL: 'https://stack-share.example.test',
     },
     serverPort: 3005,

@@ -1,6 +1,6 @@
-# Happier Server
+# PiggerCode 中继服务器
 
-Minimal backend for open-source end-to-end encrypted Claude Code clients.
+PiggerCode 的中继：在 CLI、守护进程和网页端之间转发端到端加密的会话数据，自己看不到内容。代码来自上游的 Happier Server，下面的英文说明沿用上游文档，只改了和本仓库不符的地方。
 
 ## What is Happier?
 
@@ -12,7 +12,7 @@ Happier Server is the synchronization backbone for secure Claude Code clients. I
 - 🎯 **Minimal Surface** - Only essential features for secure sync, nothing more
 - 🕵️ **Privacy First** - No analytics, no tracking, no data mining
 - 📖 **Open Source** - Transparent implementation you can audit and self-host
-- 🔑 **Cryptographic Auth** - No passwords stored, only public key signatures
+- 🔑 **Cryptographic Auth** - Public key signatures; the optional username/password login stores only a verifier derived in the browser, never the password
 - ⚡ **Real-time Sync** - WebSocket-based synchronization across all your devices
 - 📱 **Multi-device** - Seamless session management across phones, tablets, and computers
 - 🤝 **Session Sharing** - Collaborate on conversations with granular access control
@@ -39,12 +39,6 @@ Happier Server supports secure collaboration through two sharing methods:
 
 All sharing maintains end-to-end encryption - encrypted data keys are distributed to authorized users, and the server never sees unencrypted content.
 
-## Hosting
-
-**You don't need to self-host!** Our hosted Happier Server at `api.happier.dev` is just as secure as running your own. Since all data is end-to-end encrypted before it reaches our servers, we literally cannot read your messages even if we wanted to. The encryption happens on your device, and only you have the keys.
-
-That said, Happier Server is open source and self-hostable if you prefer running your own infrastructure. The security model is identical whether you use our servers or your own.
-
 ## Server flavors
 
 Happier Server supports two flavors that share the same API + internal logic. Flavors are **presets** (defaults); you can override individual backends via env vars.
@@ -69,7 +63,7 @@ The full flavor expects these env vars to be set:
 - `HANDY_MASTER_SECRET` (used to derive auth/encryption secrets)
 - Public file storage:
   - Choose a backend via `PIGGERCODE_FILES_BACKEND=local|s3` (default: `s3` in full flavor, `local` in light flavor)
-  - If `PIGGERCODE_FILES_BACKEND=local` (filesystem-backed public files), the server stores files under `~/.happier/server-light/files` by default.
+  - If `PIGGERCODE_FILES_BACKEND=local` (filesystem-backed public files), the server stores files under `~/.piggercode/server-light/files` by default.
     - Override the directory with `PIGGERCODE_SERVER_LIGHT_FILES_DIR=/absolute/path`.
     - Files are served by the API under `GET /files/*` (same public route used by light flavor).
     - Ensure the server process has read/write permissions for the selected directory.

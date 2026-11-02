@@ -206,7 +206,7 @@ export async function buildCliBinaryArtifactPayload({
     repoRoot,
     hostPackageDir: cliDir,
   });
-  const executableName = resolveExecutableName({ baseName: 'happier', target });
+  const executableName = resolveExecutableName({ baseName: 'piggercode', target });
   const mergedExternals = [...new Set([...CLI_RUNTIME_BUNDLED_PACKAGES, ...CLI_OPTIONAL_RUNTIME_PACKAGES, ...externals.map((value) => String(value ?? '').trim()).filter(Boolean)])];
 
   await withCliDistBuildLock(async ({ heldLockValue }) => {

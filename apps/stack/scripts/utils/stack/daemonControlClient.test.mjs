@@ -74,7 +74,7 @@ test('pingDaemon bootstraps Windows ownership from an authenticated matching dae
 
   const result = await pingDaemon(
     {
-      cliHomeDir: 'C:/Users/test/.happier/target',
+      cliHomeDir: 'C:/Users/test/.piggercode/target',
       serverUrl: 'http://127.0.0.1:3009',
       stackName: 'remote-windows',
     },
@@ -114,7 +114,7 @@ test('restartDaemonViaControlServer reuses the authenticated Windows runtime pro
   ];
 
   const result = await restartDaemonViaControlServer({
-    cliHomeDir: 'C:/Users/test/.happier/target',
+    cliHomeDir: 'C:/Users/test/.piggercode/target',
     internalServerUrl: 'http://127.0.0.1:3009',
     stackName: 'remote-windows',
     timeoutMs: 100,

@@ -9,7 +9,7 @@ import { normalizeActionExecuteResult } from '@/cli/commands/session/shared/norm
 import { tryHandleApprovalRequestCreated } from '@/cli/commands/session/shared/tryHandleApprovalRequestCreated';
 import { cmd, fail } from '@piggercode/cli-common/output';
 
-const SESSION_LIST_USAGE = 'Usage: happier session list [--active] [--archived] [--limit N] [--cursor C] [--include-system] [--resumable] [--plain] [--json]';
+const SESSION_LIST_USAGE = 'Usage: piggercode session list [--active] [--archived] [--limit N] [--cursor C] [--include-system] [--resumable] [--plain] [--json]';
 const SESSION_LIST_BOOLEAN_FLAGS = new Set(['--active', '--archived', '--include-system', '--resumable', '--plain', '--json']);
 const SESSION_LIST_VALUE_FLAGS = new Set(['--limit', '--cursor']);
 
@@ -57,7 +57,7 @@ export async function cmdSessionList(
       await printJsonEnvelope({ ok: false, kind: 'session_list', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

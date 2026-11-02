@@ -26,7 +26,7 @@ function createSessionHarness() {
 }
 
 describe('createCodexSharedLocalControl', () => {
-  it('keeps Happier writable while the native Codex TUI is attached to the same thread', async () => {
+  it('keeps PiggerCode writable while the native Codex TUI is attached to the same thread', async () => {
     const harness = createSessionHarness();
     let attached = false;
     const supervisor: CodexSharedTuiSupervisor = {

@@ -12,7 +12,7 @@ afterEach(async () => {
   if (root) await rm(root, { recursive: true, force: true });
 });
 
-it('applies Happier attribution to metadata probes and isolates cached catalogs by attribution', async () => {
+it('applies PiggerCode attribution to metadata probes and isolates cached catalogs by attribution', async () => {
   root = await mkdtemp(join(tmpdir(), 'happier-claude-metadata-entrypoint-'));
   const configDir = join(root, 'claude');
   const claudePath = join(root, 'claude.cjs');
@@ -40,7 +40,7 @@ it('applies Happier attribution to metadata probes and isolates cached catalogs 
   vi.resetModules();
   const { extractSDKMetadata } = await import('./metadataExtractor');
   expect(await extractSDKMetadata()).toMatchObject({ tools: ['default', 'clean'] });
-  expect(await extractSDKMetadata({ claudeCodeIncludeInNativeHistory: true })).toMatchObject({ tools: ['happier', 'clean'] });
+  expect(await extractSDKMetadata({ claudeCodeIncludeInNativeHistory: true })).toMatchObject({ tools: ['piggercode', 'clean'] });
   expect(await extractSDKMetadata({ claudeCodeIncludeInNativeHistory: false })).toMatchObject({ tools: ['default', 'clean'] });
   expect(await import('node:fs/promises').then(fs => fs.readdir(configDir))).not.toContain('probe.jsonl');
 });

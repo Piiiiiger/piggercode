@@ -282,7 +282,7 @@ export class MachineContentPublicKeyMismatchError extends Error {
     super(
       `Machine registration rejected by server (reason=${reason}). ` +
         'This usually means your local encryption key does not match your current account credentials. ' +
-        'Try `happier auth logout` then `happier auth login`.',
+        'Try `piggercode auth logout` then `piggercode auth login`.',
     );
     this.name = 'MachineContentPublicKeyMismatchError';
     this.machineId = machineId;

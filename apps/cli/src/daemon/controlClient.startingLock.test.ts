@@ -132,7 +132,7 @@ describe('daemon control client startup lock inspection', () => {
     const classifyDaemonLifecycleProcessByPid = vi.fn()
       .mockResolvedValueOnce({
         kind: 'daemon' as const,
-        process: { pid: 424245, command: 'happier daemon start-sync', type: 'dev-daemon' },
+        process: { pid: 424245, command: 'piggercode daemon start-sync', type: 'dev-daemon' },
       })
       .mockResolvedValueOnce({ kind: 'unknown' as const });
     vi.doMock('@/daemon/doctor', () => ({ classifyDaemonLifecycleProcessByPid }));
@@ -181,7 +181,7 @@ describe('daemon control client startup lock inspection', () => {
     vi.doMock('@/daemon/doctor', () => ({
       classifyDaemonLifecycleProcessByPid: vi.fn(async () => ({
         kind: 'daemon' as const,
-        process: { pid: 424244, command: 'happier daemon start-sync', type: 'dev-daemon' },
+        process: { pid: 424244, command: 'piggercode daemon start-sync', type: 'dev-daemon' },
       })),
     }));
 

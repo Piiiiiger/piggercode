@@ -89,9 +89,9 @@ function createHarness(providerTasks?: SessionRuntimeActivityContributionHandle,
     path: '/tmp',
     host: 'localhost',
     homeDir: '/tmp/home',
-    happyHomeDir: '/tmp/.happier',
-    happyLibDir: '/tmp/.happier/lib',
-    happyToolsDir: '/tmp/.happier/tools',
+    happyHomeDir: '/tmp/.piggercode',
+    happyLibDir: '/tmp/.piggercode/lib',
+    happyToolsDir: '/tmp/.piggercode/tools',
   };
   let hasMetadata = false;
 
@@ -505,7 +505,7 @@ describe.sequential('claudeRemoteLauncher legacy Runtime Activity subscriber', (
     }
   });
 
-  it.each(['claude-current', null])('keeps daemon registration under the Happier identity (provider ID: %s)', async (providerSessionId) => {
+  it.each(['claude-current', null])('keeps daemon registration under the PiggerCode identity (provider ID: %s)', async (providerSessionId) => {
     const { session, switchHandlerReady } = createHarness();
     session.sessionId = providerSessionId;
     const transcriptDir = await mkdtemp(join(tmpdir(), 'claude-daemon-identity-'));

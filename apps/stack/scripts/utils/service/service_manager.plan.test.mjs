@@ -131,10 +131,10 @@ test('uninstallService removes definitions only after backend-confirmed teardown
             await assert.rejects(access(definition.path));
             const invocations = await readFile(logPath, 'utf8');
             if (command === 'systemctl') {
-              assert.match(invocations, /--user show dev\.happier\.stack\.test\.service/);
+              assert.match(invocations, /--user show dev\.piggercode\.stack\.test\.service/);
               assert.doesNotMatch(invocations, /disable|daemon-reload/);
             } else if (command === 'launchctl') {
-              assert.match(invocations, /print gui\/501\/dev\.happier\.stack\.test/);
+              assert.match(invocations, /print gui\/501\/dev\.piggercode\.stack\.test/);
               assert.doesNotMatch(invocations, /bootout|disable|\.plist/);
             } else {
               assert.match(invocations, /Get-ScheduledTask/);
@@ -175,9 +175,9 @@ test('uninstallService tears down a registered launchd orphan by label when its 
   await uninstallService({ platform: 'darwin', mode: 'user', homeDir: tempRoot, spec, uid: 501 });
 
   const invocations = await readFile(logPath, 'utf8');
-  assert.match(invocations, /print gui\/501\/dev\.happier\.stack\.orphan/);
-  assert.match(invocations, /bootout gui\/501\/dev\.happier\.stack\.orphan/);
-  assert.match(invocations, /disable gui\/501\/dev\.happier\.stack\.orphan/);
+  assert.match(invocations, /print gui\/501\/dev\.piggercode\.stack\.orphan/);
+  assert.match(invocations, /bootout gui\/501\/dev\.piggercode\.stack\.orphan/);
+  assert.match(invocations, /disable gui\/501\/dev\.piggercode\.stack\.orphan/);
   assert.doesNotMatch(invocations, /\.plist/);
 });
 

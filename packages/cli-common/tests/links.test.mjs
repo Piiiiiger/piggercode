@@ -15,7 +15,7 @@ test('buildTerminalConnectLinks adds server param to web + mobile links', () => 
   );
   assert.equal(
     out.mobileUrl,
-    'happier://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test',
+    'piggercode://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test',
   );
 });
 
@@ -39,7 +39,7 @@ test('buildTerminalConnectLinks carries optional authenticated-pairing context i
   );
   assert.equal(
     out.mobileUrl,
-    `happier://terminal?key=terminal-key&server=https%3A%2F%2Fstack.example.test${suffix}`,
+    `piggercode://terminal?key=terminal-key&server=https%3A%2F%2Fstack.example.test${suffix}`,
   );
 });
 
@@ -54,7 +54,7 @@ test('buildConfigureServerLinks encodes server URL', () => {
   );
   assert.equal(
     out.mobileUrl,
-    'happier://server?url=https%3A%2F%2Fstack.example.test',
+    'piggercode://server?url=https%3A%2F%2Fstack.example.test',
   );
 });
 
@@ -70,7 +70,7 @@ test('buildTerminalConnectLinks omits loopback server URL from shareable links',
   );
   assert.equal(
     out.mobileUrl,
-    'happier://terminal?key=abcDEF_123-zzz',
+    'piggercode://terminal?key=abcDEF_123-zzz',
   );
 });
 
@@ -86,7 +86,7 @@ test('buildTerminalConnectLinks keeps loopback server URL for local web auth lin
   );
   assert.equal(
     out.mobileUrl,
-    'happier://terminal?key=abcDEF_123-zzz',
+    'piggercode://terminal?key=abcDEF_123-zzz',
   );
 });
 
@@ -96,7 +96,7 @@ test('buildConfigureServerLinks omits loopback server URL from shareable links',
 
   const out = buildConfigureServerLinks({ webappUrl, serverUrl });
   assert.equal(out.webUrl, 'https://app.happier.dev');
-  assert.equal(out.mobileUrl, 'happier://server');
+  assert.equal(out.mobileUrl, 'piggercode://server');
 });
 
 test('buildConfigureServerLinks keeps loopback server URL for local webapp links only', () => {
@@ -105,7 +105,7 @@ test('buildConfigureServerLinks keeps loopback server URL for local webapp links
 
   const out = buildConfigureServerLinks({ webappUrl, serverUrl });
   assert.equal(out.webUrl, 'http://127.0.0.1:8082/?server=http%3A%2F%2F127.0.0.1%3A3010');
-  assert.equal(out.mobileUrl, 'happier://server');
+  assert.equal(out.mobileUrl, 'piggercode://server');
 });
 
 test('mobile links omit a relay address no other device can reach', () => {
@@ -129,7 +129,7 @@ test('mobile links omit a relay address no other device can reach', () => {
     const out = buildTerminalConnectLinks({ webappUrl, serverUrl, publicKeyB64Url });
     assert.equal(
       out.mobileUrl,
-      `happier://terminal?key=${publicKeyB64Url}`,
+      `piggercode://terminal?key=${publicKeyB64Url}`,
       `expected no server param for ${serverUrl}`,
     );
     assert.ok(!out.mobileUrl.includes('server='), `leaked server param for ${serverUrl}`);

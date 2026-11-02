@@ -99,7 +99,7 @@ async function expectPathRemoved(path: string): Promise<void> {
   expect(await pathExists(path)).toBe(false);
 }
 
-describe('happier resume', () => {
+describe('piggercode resume', () => {
   const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
     throw new Error(`process.exit(${code ?? 0})`);
   }) as any);
@@ -123,7 +123,7 @@ describe('happier resume', () => {
       expect(exitSpy).not.toHaveBeenCalled();
 
       const output = logSpy.mock.calls.flat().join('\n');
-      expect(output).toContain('happier resume');
+      expect(output).toContain('piggercode resume');
     } finally {
       logSpy.mockRestore();
       errorSpy.mockRestore();
@@ -261,7 +261,7 @@ describe('happier resume', () => {
     });
   });
 
-  it('attaches an active Happier session through the existing terminal attach path without vendor-resuming it', async () => {
+  it('attaches an active PiggerCode session through the existing terminal attach path without vendor-resuming it', async () => {
     const credentials: Credentials = {
       token: 'token-1',
       encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },

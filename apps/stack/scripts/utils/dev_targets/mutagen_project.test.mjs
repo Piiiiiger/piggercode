@@ -13,7 +13,7 @@ const targets = [
     platform: 'posix',
     ssh: 'happier-stack-linux',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier-stack/dev-targets/linux',
+    cliHomeDir: '/home/dev/.piggercode-stack/dev-targets/linux',
     remoteServerPort: null,
   },
   {
@@ -21,7 +21,7 @@ const targets = [
     platform: 'windows',
     ssh: 'happier-stack-windows',
     repoDir: 'C:/Users/test_qa/happier',
-    cliHomeDir: 'C:/Users/test_qa/.happier-stack/dev-targets/windows',
+    cliHomeDir: 'C:/Users/test_qa/.piggercode-stack/dev-targets/windows',
     remoteServerPort: null,
   },
 ];
@@ -53,7 +53,7 @@ test('renderMutagenProject creates one-way source replicas while retaining targe
     '.backup.*',
     'packages/plugin-sdk/.example-builds',
     '.project',
-    '.happier',
+    '.piggercode',
     'coverage',
     '/output',
     '.reviews',

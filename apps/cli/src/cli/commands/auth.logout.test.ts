@@ -21,7 +21,7 @@ import { spawnStoppableHttpDaemon, withConfiguredDaemonTestHome, writeDaemonStat
 import { handleAuthCommand } from './auth';
 import { reserveEphemeralPort, waitForHttpReady } from '@/testkit/http/portUtils';
 
-describe('happier auth logout', () => {
+describe('piggercode auth logout', () => {
   it('keeps the home and credentials when logout-all cannot confirm daemon shutdown', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'auth-logout-incomplete-' }, async ({ homeDir }) => {
       const port = await reserveEphemeralPort();

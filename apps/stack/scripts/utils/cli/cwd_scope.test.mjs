@@ -43,7 +43,7 @@ test('inferComponentFromCwd resolves the stable monorepo checkout under <workspa
   assert.deepEqual(inferred, { component: 'happier-ui', repoDir: repoRoot });
 });
 
-test('inferComponentFromCwd resolves happier monorepo subpackages under <workspace>/main', async (t) => {
+test('inferComponentFromCwd resolves piggercode monorepo subpackages under <workspace>/main', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-cwd-scope-' });
   const rootDir = fixture.root;
   const repoRoot = await createMonorepoCheckout({ rootDir, checkoutPath: 'main' });
@@ -56,7 +56,7 @@ test('inferComponentFromCwd resolves happier monorepo subpackages under <workspa
   assert.deepEqual(inferred, { component: 'happier-cli', repoDir: repoRoot });
 });
 
-test('inferComponentFromCwd resolves happier monorepo worktree roots under <workspace>/pr', async (t) => {
+test('inferComponentFromCwd resolves piggercode monorepo worktree roots under <workspace>/pr', async (t) => {
   const fixture = await createTempFixture(t, { prefix: 'happier-stacks-cwd-scope-' });
   const rootDir = fixture.root;
   const repoRoot = await createMonorepoCheckout({ rootDir, checkoutPath: join('pr', '123-fix') });

@@ -93,7 +93,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
           id: 'machine-1',
           active: true,
           metadata: {
-            happyHomeDir: '/Users/test/.happier',
+            happyHomeDir: '/Users/test/.piggercode',
           },
         },
       },
@@ -136,7 +136,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
 
     expect(machineSpawnNewSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'machine-1',
-      directory: '/Users/test/.happier/voice-agent',
+      directory: '/Users/test/.piggercode/voice-agent',
       serverId: 'server-1',
     }));
   });
@@ -155,7 +155,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
 
     expect(machineSpawnNewSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'machine-1',
-      directory: '/Users/test/.happier/voice-agent',
+      directory: '/Users/test/.piggercode/voice-agent',
       serverId: 'server-1',
     }));
   });
@@ -166,7 +166,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
       id: 'stale-machine',
       active: false,
       metadata: {
-        happyHomeDir: '/Users/stale/.happier',
+        happyHomeDir: '/Users/stale/.piggercode',
       },
     };
 
@@ -176,7 +176,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
 
     expect(machineSpawnNewSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'machine-1',
-      directory: '/Users/test/.happier/voice-agent',
+      directory: '/Users/test/.piggercode/voice-agent',
       serverId: 'server-1',
     }));
   });
@@ -184,7 +184,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
   it('routes recent voice-home spawn targets through active machine replacements', async () => {
     state.settings.recentMachinePaths = [{
       machineId: 'machine-old',
-      path: '/Users/test/.happier/voice-agent',
+      path: '/Users/test/.piggercode/voice-agent',
     }];
     state.machines = {
       'machine-old': {
@@ -207,7 +207,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
 
     expect(machineSpawnNewSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'machine-new',
-      directory: '/Users/test/.happier/voice-agent',
+      directory: '/Users/test/.piggercode/voice-agent',
       serverId: 'server-1',
     }));
   });
@@ -217,7 +217,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
       id: 'machine-target',
       active: true,
       metadata: {
-        happyHomeDir: '/Users/target/.happier',
+        happyHomeDir: '/Users/target/.piggercode',
         host: 'target.local',
       },
     };
@@ -266,7 +266,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
 
     expect(machineSpawnNewSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'machine-target',
-      directory: '/Users/target/.happier/voice-agent',
+      directory: '/Users/target/.piggercode/voice-agent',
       serverId: 'server-1',
     }));
   });
@@ -291,7 +291,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
         ...state.sessions['ordinary-session'],
         metadata: {
           machineId: 'machine-1',
-          path: '/Users/test/.happier/voice-agent',
+          path: '/Users/test/.piggercode/voice-agent',
         },
       };
     });
@@ -312,7 +312,7 @@ describe('ensureVoiceConversationSessionForVoiceHome', () => {
       id: 'ordinary-session',
       active: true,
       updatedAt: 2,
-      metadata: { machineId: 'machine-1', path: '/Users/test/.happier/voice-agent' },
+      metadata: { machineId: 'machine-1', path: '/Users/test/.piggercode/voice-agent' },
     };
     machineSpawnNewSession.mockResolvedValue({
       type: 'success',
@@ -373,7 +373,7 @@ describe('ensureVoiceConversationSessionForSessionRoot', () => {
           id: 'machine-target',
           active: true,
           metadata: {
-            happyHomeDir: '/Users/target/.happier',
+            happyHomeDir: '/Users/target/.piggercode',
             host: 'target.local',
           },
         },

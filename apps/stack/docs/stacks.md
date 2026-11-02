@@ -12,7 +12,7 @@ A “stack” is just:
 Stacks are configured via a plain env file stored under:
 
 ```
-~/.happier/stacks/<name>/env
+~/.piggercode/stacks/<name>/env
 ```
 
 ## Create a stack
@@ -139,21 +139,21 @@ hstack stack wt exp1 -- use pr/my-ui-pr
 hstack stack wt exp1 -- use default
 ```
 
-This updates the stack env file (`~/.happier/stacks/<name>/env`), not repo `env.local` (legacy path still supported).
+This updates the stack env file (`~/.piggercode/stacks/<name>/env`), not repo `env.local` (legacy path still supported).
 
-## Run the Happier CLI against a specific stack (`stack happier`)
+## Run the Happier CLI against a specific stack (`stack piggercode`)
 
 If you want to run a `happier` CLI command against a specific stack (instead of whatever your current shell env points at), use:
 
 ```bash
-hstack stack happier exp1 -- status
-hstack stack happier exp1 -- daemon status
+hstack stack piggercode exp1 -- status
+hstack stack piggercode exp1 -- daemon status
 ```
 
 Stack shorthand also works:
 
 ```bash
-hstack exp1 happier status
+hstack exp1 piggercode status
 ```
 
 ## Stack wrappers you can use
@@ -166,7 +166,7 @@ These commands run with the stack env file applied:
 - `hstack stack doctor <name>`
 - `hstack stack mobile <name>`
 - `hstack stack eas <name> [subcommand...]`
-- `hstack stack happier <name> [-- ...]`
+- `hstack stack piggercode <name> [-- ...]`
 - `hstack stack srv <name> -- status|use ...`
 - `hstack stack wt <name> -- <wt args...>`
 - `hstack stack tailscale:status|enable|disable|url <name>`
@@ -193,8 +193,8 @@ hstack stack service exp1 logs
 Implementation notes:
 
 - Service name/label is stack-scoped:
-  - `main` → `com.happier.stack`
-  - `exp1` → `com.happier.stack.exp1`
+  - `main` → `com.piggercode.stack`
+  - `exp1` → `com.piggercode.stack.exp1`
 - macOS: implemented via **launchd LaunchAgents**
 - Linux: implemented via **systemd user services** (if available)
 - The service persists `PIGGERCODE_STACK_ENV_FILE`, so you can edit the stack env file without reinstalling.
@@ -231,11 +231,11 @@ You can also pass an absolute path.
 
 On startup, `hstack` loads env in this order:
 
-1. `~/.happier-stack/.env` (defaults)
-2. `~/.happier-stack/env.local` (optional global overrides; prefer stack env for persistent config)
+1. `~/.piggercode-stack/.env` (defaults)
+2. `~/.piggercode-stack/env.local` (optional global overrides; prefer stack env for persistent config)
 3. `PIGGERCODE_STACK_ENV_FILE` (stack env; highest precedence)
 
-`hstack stack ...` sets `PIGGERCODE_STACK_ENV_FILE=~/.happier/stacks/<name>/env` and clears any already-exported `PIGGERCODE_STACK_*` variables so the stack env stays authoritative.
+`hstack stack ...` sets `PIGGERCODE_STACK_ENV_FILE=~/.piggercode/stacks/<name>/env` and clears any already-exported `PIGGERCODE_STACK_*` variables so the stack env stays authoritative.
 
 For a full explanation of the different folders/paths (`home` vs `workspace` vs `runtime` vs stack storage) and the exact env precedence rules, see: `[docs/paths-and-env.md](docs/paths-and-env.md)`.
 
@@ -286,7 +286,7 @@ On a **fresh machine** (or any new stack), the daemon may need to authenticate b
 If the UI shows “no machine” (or the daemon shows `auth_required`), it usually means the stack-specific CLI home
 doesn’t have credentials yet:
 
-- `~/.happier/stacks/<stack>/cli/access.key`
+- `~/.piggercode/stacks/<stack>/cli/access.key`
 
 To check / authenticate a stack, run:
 
@@ -297,8 +297,8 @@ hstack stack auth <stack> login
 
 Notes:
 - You can run **multiple daemons for the same stack** on **different accounts** using `--identity=<name>`.
-  - `default` (no flag): `~/.happier/stacks/<stack>/cli/...`
-  - `--identity=account-b`: `~/.happier/stacks/<stack>/cli-identities/account-b/...`
+  - `default` (no flag): `~/.piggercode/stacks/<stack>/cli/...`
+  - `--identity=account-b`: `~/.piggercode/stacks/<stack>/cli-identities/account-b/...`
 - To authenticate an identity without auto-opening a browser, use `--no-open` (it prints the URL so you can open it
   in the browser profile/incognito window you want):
 
@@ -317,8 +317,8 @@ hstack stack daemon <stack> stop  --identity=account-a
 - For the **main** stack, use `<stack>=main` and the default `<port>=3005` (unless you changed it).
 - If you use Tailscale Serve, `PIGGERCODE_WEBAPP_URL` should be your HTTPS URL (what you get from `hstack tailscale url`).
 - Logs live under:
-  - default identity: `~/.happier/stacks/<stack>/cli/logs/`
-  - named identities: `~/.happier/stacks/<stack>/cli-identities/<identity>/logs/`
+  - default identity: `~/.piggercode/stacks/<stack>/cli/logs/`
+  - named identities: `~/.piggercode/stacks/<stack>/cli-identities/<identity>/logs/`
 
 ## JSON mode
 

@@ -6,7 +6,7 @@ describe('sessionControl contract exports', () => {
   it('reports token-only authentication separately from Session storage mode', () => {
     const status = {
       authenticated: true, encryption: { type: 'tokenOnly' }, machineRegistered: false,
-      host: 'dev', happyHomeDir: '/home/dev/.happier', daemonRunning: false,
+      host: 'dev', happyHomeDir: '/home/dev/.piggercode', daemonRunning: false,
     };
     expect(protocol.AuthStatusResultSchema.parse(status)).toEqual(status);
   });

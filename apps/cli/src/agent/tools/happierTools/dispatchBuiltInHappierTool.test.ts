@@ -13,7 +13,7 @@ function unsupported(): HappierBuiltInToolDispatchResult {
   return { ok: false, errorCode: 'unsupported', error: 'unsupported' };
 }
 
-describe('built-in Happier tools', () => {
+describe('built-in PiggerCode tools', () => {
   it('lists manual and action-backed tools from the shared catalog', () => {
     const names = listBuiltInHappierTools().map((tool) => tool.name);
 
@@ -115,7 +115,7 @@ describe('built-in Happier tools', () => {
     expect(result).toEqual({
       ok: false,
       errorCode: 'unknown_tool',
-      error: 'Unknown built-in Happier tool: change_title',
+      error: 'Unknown built-in PiggerCode tool: change_title',
     });
     expect(changeTitle).not.toHaveBeenCalled();
   });
@@ -419,7 +419,7 @@ describe('built-in Happier tools', () => {
     expect(result).toEqual({
       ok: false,
       errorCode: 'unknown_tool',
-      error: 'Unknown built-in Happier tool: review_start',
+      error: 'Unknown built-in PiggerCode tool: review_start',
     });
     expect(executeActionByToolName).not.toHaveBeenCalled();
   });

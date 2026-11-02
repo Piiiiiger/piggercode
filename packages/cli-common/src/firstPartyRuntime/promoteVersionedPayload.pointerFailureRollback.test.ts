@@ -47,7 +47,7 @@ async function withPlatform<T>(platform: NodeJS.Platform, run: () => Promise<T>)
 async function createPayload(rootDir: string, versionId: string, contents: string): Promise<string> {
     const payloadRoot = join(rootDir, `payload-${versionId}`);
     await mkdir(join(payloadRoot, 'package-dist'), { recursive: true });
-    await writeFile(join(payloadRoot, 'happier'), contents, 'utf8');
+    await writeFile(join(payloadRoot, 'piggercode'), contents, 'utf8');
     await writeFile(join(payloadRoot, 'package-dist', 'index.mjs'), `export default ${JSON.stringify(versionId)};\n`, 'utf8');
     return payloadRoot;
 }

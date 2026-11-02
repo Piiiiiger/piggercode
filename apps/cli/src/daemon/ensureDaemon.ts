@@ -110,7 +110,7 @@ export async function ensureDaemonRunningForSessionCommand(): Promise<void> {
   }
 
   if (!(await isDaemonRunningCurrentlyInstalledHappyVersion())) {
-    logger.debug('Starting Happier background service...');
+    logger.debug('Starting PiggerCode background service...');
     const daemonProcess = await spawnDetachedDaemonStartSync();
     daemonProcess.unref();
 

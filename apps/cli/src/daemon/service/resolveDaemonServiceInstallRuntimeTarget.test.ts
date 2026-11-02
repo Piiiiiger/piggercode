@@ -15,7 +15,7 @@ const tempDirs: string[] = [];
 async function createHappierHomeWithManagedShim(): Promise<Readonly<{ processEnv: NodeJS.ProcessEnv; shimPath: string }>> {
   const happierHomeDir = await mkdtemp(join(tmpdir(), 'happier-service-runtime-choice-'));
   tempDirs.push(happierHomeDir);
-  const shimPath = join(happierHomeDir, 'bin', process.platform === 'win32' ? 'happier.exe' : 'happier');
+  const shimPath = join(happierHomeDir, 'bin', process.platform === 'win32' ? 'piggercode.exe' : 'piggercode');
   await mkdir(join(happierHomeDir, 'bin'), { recursive: true });
   await writeFile(shimPath, '#!/bin/sh\n', 'utf8');
   return { processEnv: { PIGGERCODE_HOME_DIR: happierHomeDir }, shimPath };

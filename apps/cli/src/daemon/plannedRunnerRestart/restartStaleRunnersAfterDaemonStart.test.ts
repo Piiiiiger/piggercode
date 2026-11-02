@@ -22,7 +22,7 @@ function currentIdentity(version: string = CURRENT_VERSION): SessionRunnerEntryp
 }
 
 function runnerCommand(version: string): string {
-  return `node /Users/alice/.happier/cli-dev/versions/${version}/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon`;
+  return `node /Users/alice/.piggercode/cli-dev/versions/${version}/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon`;
 }
 
 function trackedSession(overrides: Partial<TrackedSession> = {}): TrackedSession {

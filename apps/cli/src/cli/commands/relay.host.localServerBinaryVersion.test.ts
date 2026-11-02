@@ -58,7 +58,7 @@ vi.mock('@piggercode/cli-common/relayHost', async (importOriginal) => {
     };
 });
 
-describe('happier relay host install local server-binary version tracking', () => {
+describe('piggercode relay host install local server-binary version tracking', () => {
     let home = '';
     let preparedPayloadRoot = '';
     let serverPayloadRoot = '';

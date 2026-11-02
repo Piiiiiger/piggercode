@@ -259,7 +259,7 @@ export async function ensureDaemonIntegrationCredentialsForActiveServer(): Promi
 export function spawnHappyLookingProcess(): { pid: number; kill: () => void } {
   const child = spawnTestProcess(
     process.execPath,
-    ['-e', '/* bin/happier.mjs --started-by daemon */ setInterval(() => {}, 1_000_000)'],
+    ['-e', '/* bin/piggercode.mjs --started-by daemon */ setInterval(() => {}, 1_000_000)'],
   );
   const pid = child.pid;
 

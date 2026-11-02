@@ -216,7 +216,7 @@ if (argv[0] === 'daemon' && argv[1] === 'service' && (argv[2] === 'install' || a
   process.exit(0);
 }
 
-process.stderr.write('Unexpected fake happier args: ' + command + '\\n');
+process.stderr.write('Unexpected fake piggercode args: ' + command + '\\n');
 process.exit(1);
 `);
   chmodSync(cliPath, 0o755);
@@ -947,7 +947,7 @@ posixDescribe('createHsetupSystemTaskRegistry cli.pathExposure kinds', () => {
     try {
       process.env.HOME = homeDir;
       process.env.SHELL = '/bin/zsh';
-      process.env.PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+      process.env.PIGGERCODE_HOME_DIR = join(homeDir, '.piggercode');
       process.env.PATH = '';
       delete process.env.PIGGERCODE_NO_PATH_UPDATE;
       const registry = createHsetupSystemTaskRegistry();
@@ -971,7 +971,7 @@ posixDescribe('createHsetupSystemTaskRegistry cli.pathExposure kinds', () => {
           existingCommand: null,
         },
       });
-      expect(readFileSync(zshrcPath, 'utf8')).toContain(`export PATH="${join(homeDir, '.happier', 'bin')}:$PATH"`);
+      expect(readFileSync(zshrcPath, 'utf8')).toContain(`export PATH="${join(homeDir, '.piggercode', 'bin')}:$PATH"`);
 
       const removed = await executeSystemTask({
         spec: { protocolVersion: 1, kind: 'cli.pathExposure.remove.v1', params },

@@ -57,7 +57,7 @@ export default function TerminalScreen() {
         if (typeof keyParam === 'string' && keyParam.trim()) return keyParam.trim();
         if (Array.isArray(keyParam) && keyParam[0]?.trim()) return keyParam[0].trim();
 
-        // Legacy deep-link format: happier://terminal?<publicKeyB64Url>
+        // Legacy deep-link format: piggercode://terminal?<publicKeyB64Url>
         const knownParams = new Set(['key', 'server', 'pairingSecret', 'createdAt', 'expiresAt']);
         const unknownKeys = Object.keys(searchParams).filter((k) => !knownParams.has(k));
         if (unknownKeys.length !== 1) return null;

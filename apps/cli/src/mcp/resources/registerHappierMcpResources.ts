@@ -1,7 +1,7 @@
 import type { ActionId } from '@piggercode/protocol';
 import { isActionSpecSurfacedOn, listActionSpecs, serializeActionSpec } from '@piggercode/protocol';
 
-export const PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI = 'happier://action-specs/catalog';
+export const PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI = 'piggercode://action-specs/catalog';
 
 type ResourceRegistrar = Readonly<{
   registerResource: (
@@ -36,8 +36,8 @@ export function registerHappierMcpResources(
     'happier_action_specs',
     PIGGERCODE_MCP_ACTION_SPECS_RESOURCE_URI,
     {
-      title: 'Happier Action Specs',
-      description: 'JSON catalog of enabled Happier action specs available through the Happier MCP surface.',
+      title: 'PiggerCode Action Specs',
+      description: 'JSON catalog of enabled PiggerCode action specs available through the PiggerCode MCP surface.',
       mimeType: 'application/json',
     },
     async () => ({

@@ -53,7 +53,7 @@ type TaskRuntime = {
  * unchanged against it; nothing is ever opened with it.
  */
 /** The command a simulated managed install would have produced; never spawned. */
-const SIMULATED_MANAGED_CLI_COMMAND = 'happier';
+const SIMULATED_MANAGED_CLI_COMMAND = 'piggercode';
 
 const SIMULATED_TERMINAL_PUBLIC_KEY_B64URL = 'BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc';
 
@@ -231,7 +231,7 @@ function buildDefaultScenario(spec: SystemTaskSpec, taskId: string): readonly De
                         relayChanged: true,
                         credentialsChanged: true,
                         serviceAction: 'install',
-                        pathExposure: { changed: true, shellReloadHint: 'Open a new terminal to use happier.', failure: null },
+                        pathExposure: { changed: true, shellReloadHint: 'Open a new terminal to use piggercode.', failure: null },
                     },
                 },
             },

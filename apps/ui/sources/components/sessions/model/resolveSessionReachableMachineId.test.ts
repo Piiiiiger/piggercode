@@ -25,7 +25,7 @@ function makeMachine(input: Readonly<{
                 host: input.host,
                 platform: 'darwin',
                 happyCliVersion: '0.0.0-test',
-                happyHomeDir: '/tmp/.happier',
+                happyHomeDir: '/tmp/.piggercode',
                 homeDir: '/tmp',
             }
             : null,

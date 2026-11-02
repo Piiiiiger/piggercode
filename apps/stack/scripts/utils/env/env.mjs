@@ -19,7 +19,7 @@ function resolveHomeDir() {
   if (fromEnv) {
     return expandHome(fromEnv, process.env);
   }
-  return join(homedir(), '.happier-stack');
+  return join(homedir(), '.piggercode-stack');
 }
 
 // If PIGGERCODE_STACK_HOME_DIR isn't set, try the canonical pointer file at <canonicalHomeDir>/.env first.
@@ -36,12 +36,12 @@ const __homeDir = resolveHomeDir();
 process.env.PIGGERCODE_STACK_HOME_DIR = process.env.PIGGERCODE_STACK_HOME_DIR ?? __homeDir;
 
 // Prefer canonical home config:
-//   ~/.happier-stack/.env
-//   ~/.happier-stack/env.local
+//   ~/.piggercode-stack/.env
+//   ~/.piggercode-stack/env.local
 //
 // Additionally: when running from a cloned repo, load <repo>/.env as a *fallback* even if home config exists.
 // This helps keep repo-local dev settings (e.g. custom Codex binaries) working without requiring users to
-// duplicate them into ~/.happier-stack/env.local.
+// duplicate them into ~/.piggercode-stack/env.local.
 const homeEnv = join(__homeDir, '.env');
 const homeLocal = join(__homeDir, 'env.local');
 // In sandbox mode, never load repo env.local (it can contain "real" machine paths/URLs).
@@ -72,7 +72,7 @@ if (hasHomeConfig) {
 }
 
 // If no explicit env file is set, and we're on the default "main" stack, prefer the stack-scoped env file
-// if it exists: ~/.happier/stacks/main/env
+// if it exists: ~/.piggercode/stacks/main/env
 (() => {
   if ((process.env.PIGGERCODE_STACK_DISABLE_STACK_ENV_AUTOLOAD ?? '').toString().trim() === '1') {
     return;

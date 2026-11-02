@@ -79,8 +79,8 @@ describe('self command helpers', () => {
   });
 
   it('detects npm install source from node_modules paths', () => {
-    expect(detectInstallSource('/usr/local/lib/node_modules/@piggercode/cli/bin/happier.mjs')).toBe('npm');
-    expect(detectInstallSource('/Users/me/.nvm/versions/node/v22/lib/node_modules/@piggercode/cli/bin/happier.mjs')).toBe('npm');
+    expect(detectInstallSource('/usr/local/lib/node_modules/@piggercode/cli/bin/piggercode.mjs')).toBe('npm');
+    expect(detectInstallSource('/Users/me/.nvm/versions/node/v22/lib/node_modules/@piggercode/cli/bin/piggercode.mjs')).toBe('npm');
   });
 
   it('detects binary install source from standalone executable paths', () => {

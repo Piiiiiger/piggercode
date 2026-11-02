@@ -49,13 +49,13 @@ function parseInstalledServicePath(platform: 'darwin' | 'linux' | 'win32', path:
   const fileName = platform === 'win32' ? win32Path.basename(path) : basename(path);
   const rawLegacyMatch =
     platform === 'linux'
-      ? /^happier-daemon\.service$/i.test(fileName)
+      ? /^piggercode-daemon\.service$/i.test(fileName)
       : platform === 'darwin'
-        ? /^com\.happier\.cli\.daemon\.plist$/i.test(fileName)
-        : /^happier-daemon\.ps1$/i.test(fileName);
+        ? /^com\.piggercode\.cli\.daemon\.plist$/i.test(fileName)
+        : /^piggercode-daemon\.ps1$/i.test(fileName);
   if (rawLegacyMatch) {
     const label = platform === 'win32'
-      ? `Happier\\${win32Path.basename(path, '.ps1')}`
+      ? `PiggerCode\\${win32Path.basename(path, '.ps1')}`
       : platform === 'darwin'
         ? basename(path, '.plist')
         : basename(path, '.service');
@@ -69,10 +69,10 @@ function parseInstalledServicePath(platform: 'darwin' | 'linux' | 'win32', path:
 
   const match =
     platform === 'linux'
-      ? /^happier-daemon(?:\.(preview|dev))?\.(.+)\.service$/i.exec(fileName)
+      ? /^piggercode-daemon(?:\.(preview|dev))?\.(.+)\.service$/i.exec(fileName)
       : platform === 'darwin'
-        ? /^com\.happier\.cli\.daemon(?:\.(preview|dev))?\.(.+)\.plist$/i.exec(fileName)
-        : /^happier-daemon(?:\.(preview|dev))?\.(.+)\.ps1$/i.exec(fileName);
+        ? /^com\.piggercode\.cli\.daemon(?:\.(preview|dev))?\.(.+)\.plist$/i.exec(fileName)
+        : /^piggercode-daemon(?:\.(preview|dev))?\.(.+)\.ps1$/i.exec(fileName);
   if (!match) {
     return null;
   }
@@ -88,7 +88,7 @@ function parseInstalledServicePath(platform: 'darwin' | 'linux' | 'win32', path:
       : 'stable';
   const targetMode: DaemonServiceTargetMode = serverId === 'default' ? 'default-following' : 'pinned';
   const label = platform === 'win32'
-    ? `Happier\\${win32Path.basename(path, '.ps1')}`
+    ? `PiggerCode\\${win32Path.basename(path, '.ps1')}`
     : platform === 'darwin'
       ? basename(path, '.plist')
       : basename(path, '.service');
@@ -260,9 +260,9 @@ function readWindowsScheduledTaskWrapperPath(taskName: string): string | null {
   try {
     if (!listWindowsScheduledTaskNames().some((name) => name.toLowerCase() === normalizedTaskName.toLowerCase())) return null;
   } catch (error) {
-    throw new Error(`Could not inspect Happier scheduled task ${normalizedTaskName}`, { cause: error });
+    throw new Error(`Could not inspect PiggerCode scheduled task ${normalizedTaskName}`, { cause: error });
   }
-  throw new Error(`Could not inspect Happier scheduled task ${normalizedTaskName}: ${String(fallback.stderr ?? result.stderr ?? '').trim() || 'its wrapper could not be read'}`, { cause: fallback.error ?? result.error });
+  throw new Error(`Could not inspect PiggerCode scheduled task ${normalizedTaskName}: ${String(fallback.stderr ?? result.stderr ?? '').trim() || 'its wrapper could not be read'}`, { cause: fallback.error ?? result.error });
 }
 
 function deriveWindowsServiceHomeDirFromWrapperPath(wrapperPath: string | null): string | null {
@@ -285,7 +285,7 @@ function listWindowsScheduledTaskNames(): readonly string[] {
     '-ExecutionPolicy',
     'Bypass',
     '-Command',
-    buildListWindowsScheduledTaskFolderPowerShellCommand({ taskFolder: '\\Happier\\' }),
+    buildListWindowsScheduledTaskFolderPowerShellCommand({ taskFolder: '\\PiggerCode\\' }),
   ], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -294,13 +294,13 @@ function listWindowsScheduledTaskNames(): readonly string[] {
   if (result.error) throw result.error;
   const taskPaths = result.status === 0 ? parseWindowsScheduledTaskFolderPowerShellJson(String(result.stdout ?? '')) : null;
   if (!taskPaths) {
-    throw new Error(`Could not enumerate Happier scheduled tasks: ${String(result.stderr ?? '').trim() || `powershell exited with status ${result.status}`}`);
+    throw new Error(`Could not enumerate PiggerCode scheduled tasks: ${String(result.stderr ?? '').trim() || `powershell exited with status ${result.status}`}`);
   }
 
   return taskPaths
     .map((taskName) => normalizeWindowsScheduledTaskName(taskName))
     .filter((taskName): taskName is string => Boolean(taskName))
-    .filter((taskName) => taskName.toLowerCase().startsWith('happier\\happier-daemon'));
+    .filter((taskName) => taskName.toLowerCase().startsWith('piggercode\\piggercode-daemon'));
 }
 
 function listWindowsScheduledTaskWrapperPaths(): readonly string[] {
@@ -309,7 +309,7 @@ function listWindowsScheduledTaskWrapperPaths(): readonly string[] {
       try {
         return readWindowsScheduledTaskWrapperPath(taskName);
       } catch (cause) {
-        throw new Error(`Could not inspect Happier scheduled task ${taskName}: ${cause instanceof Error ? cause.message : String(cause)}`, { cause });
+        throw new Error(`Could not inspect PiggerCode scheduled task ${taskName}: ${cause instanceof Error ? cause.message : String(cause)}`, { cause });
       }
     })
     .filter((wrapperPath): wrapperPath is string => Boolean(wrapperPath));

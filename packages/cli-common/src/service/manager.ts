@@ -107,9 +107,9 @@ function launchdPlistPathForLabel(params: Readonly<{ homeDir: string; label: str
 function windowsWrapperPathForLabel(params: Readonly<{ homeDir: string; label: string; mode: ServiceMode }>): string {
   const base = String(params.homeDir ?? '').trim() || 'C:\\Users\\Default';
   if (params.mode === 'system') {
-    return `C:\\ProgramData\\happier\\services\\${params.label}.ps1`;
+    return `C:\\ProgramData\\piggercode\\services\\${params.label}.ps1`;
   }
-  return `${base}\\.happier\\services\\${params.label}.ps1`;
+  return `${base}\\.piggercode\\services\\${params.label}.ps1`;
 }
 
 export function resolveServiceDefinitionPath(params: Readonly<{
@@ -170,8 +170,8 @@ export function buildServiceDefinition(params: Readonly<{ backend: ServiceBacken
       label: s.label,
       programArgs: s.programArgs,
       env: mergedEnv,
-      stdoutPath: s.stdoutPath || (mode === 'system' ? `/var/log/${s.label}.out.log` : join(String(params.homeDir ?? '').trim() || '', '.happier', 'logs', `${s.label}.out.log`)),
-      stderrPath: s.stderrPath || (mode === 'system' ? `/var/log/${s.label}.err.log` : join(String(params.homeDir ?? '').trim() || '', '.happier', 'logs', `${s.label}.err.log`)),
+      stdoutPath: s.stdoutPath || (mode === 'system' ? `/var/log/${s.label}.out.log` : join(String(params.homeDir ?? '').trim() || '', '.piggercode', 'logs', `${s.label}.out.log`)),
+      stderrPath: s.stderrPath || (mode === 'system' ? `/var/log/${s.label}.err.log` : join(String(params.homeDir ?? '').trim() || '', '.piggercode', 'logs', `${s.label}.err.log`)),
       workingDirectory: s.workingDirectory,
       keepAliveOnFailure: true,
     });
@@ -367,7 +367,7 @@ export function planServiceAction(params: Readonly<{
   }
 
   if (backend === 'schtasks-user' || backend === 'schtasks-system') {
-    const name = taskName || `Happier\\${label}`;
+    const name = taskName || `PiggerCode\\${label}`;
     if (action !== 'start' && !definitionPath) {
       throw new Error(`definitionPath is required for schtasks ${action}`);
     }
@@ -578,7 +578,7 @@ export function inspectServiceRegistration(params: Readonly<{
     cmd = 'launchctl';
     args = ['print', `${domain}/${label}`];
   } else {
-    const qualifiedTaskName = String(params.taskName ?? '').trim() || `Happier\\${label}`;
+    const qualifiedTaskName = String(params.taskName ?? '').trim() || `PiggerCode\\${label}`;
     const { taskName, taskPath } = splitQualifiedWindowsScheduledTaskName(qualifiedTaskName);
     cmd = 'powershell.exe';
     args = [...windowsPowerShellCommandArgs(buildReadWindowsScheduledTaskStatusPowerShellCommand({ taskName, taskPath }))];

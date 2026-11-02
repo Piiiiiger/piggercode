@@ -95,7 +95,7 @@ describe('terminal auth wait bound', () => {
       expect(elapsedMs).toBeLessThan(2_000);
       const logs = output.text().toLowerCase();
       expect(logs).not.toContain('\r');
-      expect(logs).toContain('happier auth login');
+      expect(logs).toContain('piggercode auth login');
       expect(logs).toContain('create a new sign-in request');
       expect(logs).not.toContain('approve it on your phone');
     } finally {
@@ -144,7 +144,7 @@ describe('terminal auth wait bound', () => {
   it('keeps waiting when no bound was asked for', async () => {
     // The default has to stay unbounded: someone watching a QR code on their
     // desk is not a hung process, and this is the same wait every existing
-    // `happier auth login` performs.
+    // `piggercode auth login` performs.
     const app = pendingRelay();
     await app.ready();
     const restoreAxios = installAxiosFastifyAdapter({ app, origin: process.env.PIGGERCODE_SERVER_URL ?? '' });

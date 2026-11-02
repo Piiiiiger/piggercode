@@ -57,7 +57,7 @@ async function setupStackWtListFixture({ importMetaUrl, t, tmpPrefix }) {
 
   const baseEnv = {
     ...process.env,
-    // Prevent loading the user's real ~/.happier-stack/.env via canonical discovery.
+    // Prevent loading the user's real ~/.piggercode-stack/.env via canonical discovery.
     PIGGERCODE_STACK_HOME_DIR: homeDir,
     PIGGERCODE_STACK_STORAGE_DIR: storageDir,
     PIGGERCODE_STACK_WORKSPACE_DIR: workspaceDir,

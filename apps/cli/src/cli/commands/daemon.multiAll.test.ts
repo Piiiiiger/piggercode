@@ -14,7 +14,7 @@ import {
 
 import { handleDaemonCliCommand } from './daemon';
 
-describe('happier daemon --all', () => {
+describe('piggercode daemon --all', () => {
   it('stops daemons for all saved servers and reclaims their exact departed publication', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
       throw new Error(`process.exit(${code ?? 0})`);

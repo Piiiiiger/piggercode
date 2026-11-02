@@ -14,7 +14,7 @@ vi.mock('@/agent/runtime/createHappierMcpBridge', () => ({
     mcpServers: {
       happier: {
         command: 'node',
-        args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'],
+        args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'],
       },
     },
   })),

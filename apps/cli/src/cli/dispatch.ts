@@ -47,7 +47,7 @@ export async function dispatchCli(params: Readonly<{
   const subcommand = args[0];
 
   // Codex should prefer local TUI when invoked directly in a real terminal.
-  // The daemon always forces `--started-by daemon`, so this only affects direct `happier codex` usage.
+  // The daemon always forces `--started-by daemon`, so this only affects direct `piggercode codex` usage.
   if (subcommand === 'codex') {
     const current = (process.env.PIGGERCODE_SESSION_AUTOSTART_DAEMON ?? '').toString().trim();
     const startedBy = readStartedByArg(args);

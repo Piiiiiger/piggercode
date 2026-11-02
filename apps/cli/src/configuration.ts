@@ -101,7 +101,7 @@ export function resolveCliHappyHomeDir(env: NodeJS.ProcessEnv): string {
   if (!override) {
     const sudoInvokerHomeDir = resolveSudoInvokerHomeDir(env)
     const baseHomeDir = sudoInvokerHomeDir ?? expandHomeDirPath('~', env)
-    return join(baseHomeDir, '.happier')
+    return join(baseHomeDir, '.piggercode')
   }
   const expandedOverride = expandHomeDirPath(override, env)
   if (process.platform !== 'win32' && isWindowsShapedAbsolutePath(expandedOverride)) {
@@ -519,7 +519,7 @@ class Configuration {
       min: 1, max: 100_000, default: 10_000,
     });
 
-    const defaultZipExcludedTopLevelDirs = '.git,.sl,node_modules,.happier';
+    const defaultZipExcludedTopLevelDirs = '.git,.sl,node_modules,.piggercode';
     const filesZipExcludedTopLevelDirsRaw = String(process.env.PIGGERCODE_FILES_ZIP_EXCLUDED_TOP_LEVEL_DIRS ?? '').trim();
     const zipExcludedTopLevelDirsCsv = filesZipExcludedTopLevelDirsRaw || defaultZipExcludedTopLevelDirs;
     const zipExcludedTopLevelDirs = zipExcludedTopLevelDirsCsv

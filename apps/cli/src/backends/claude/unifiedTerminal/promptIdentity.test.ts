@@ -15,7 +15,7 @@ const PASTE_OPEN = '<pasted_content id="9b65">';
 const PASTE_CLOSE = '</pasted_content id="9b65">';
 
 describe('normalizeClaudeUnifiedPromptIdentityText', () => {
-  it('reads a pasted prompt as the text Happier injected', () => {
+  it('reads a pasted prompt as the text PiggerCode injected', () => {
     const injected = 'first line\n\nsecond line\nthird line';
     const recordedByProvider = `\n\n${PASTE_OPEN}\n${injected}\n${PASTE_CLOSE}\n`;
 

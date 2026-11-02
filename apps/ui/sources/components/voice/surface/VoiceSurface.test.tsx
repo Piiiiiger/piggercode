@@ -507,7 +507,7 @@ describe('VoiceSurface', () => {
         updatedAt: 1,
         metadata: {
           systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
-          path: '/Users/leeroy/.happier/voice-agent',
+          path: '/Users/leeroy/.piggercode/voice-agent',
         },
       },
     ];
@@ -544,7 +544,7 @@ describe('VoiceSurface', () => {
         updatedAt: 1,
         metadata: {
           systemSessionV1: { v: 1, key: 'voice_conversation_retired', hidden: true },
-          path: '/Users/leeroy/.happier/voice-agent',
+          path: '/Users/leeroy/.piggercode/voice-agent',
         },
       },
     ];

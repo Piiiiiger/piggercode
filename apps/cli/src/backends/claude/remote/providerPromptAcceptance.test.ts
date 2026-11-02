@@ -6,7 +6,7 @@ import {
 } from './providerPromptAcceptance';
 
 describe('readClaudeRemoteProviderPromptAcceptance', () => {
-  it('preserves and dedupes Happier local ids by exact bytes', () => {
+  it('preserves and dedupes PiggerCode local ids by exact bytes', () => {
     expect(readClaudeRemoteProviderPromptAcceptance({
       message: 'hello',
       mode: {} as never,

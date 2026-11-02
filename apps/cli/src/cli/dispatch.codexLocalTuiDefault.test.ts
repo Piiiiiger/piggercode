@@ -31,7 +31,7 @@ describe('dispatchCli (codex local TUI default)', () => {
     (commandRegistry as any).codex = prevCodexHandler;
   });
 
-  it('does not force daemon autostart for `happier codex` in a TTY when unset', async () => {
+  it('does not force daemon autostart for `piggercode codex` in a TTY when unset', async () => {
     await dispatchCli({
       args: ['codex'],
       rawArgv: ['happier', 'codex'],

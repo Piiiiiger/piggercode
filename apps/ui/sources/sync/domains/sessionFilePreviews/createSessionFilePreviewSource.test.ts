@@ -123,7 +123,7 @@ describe('createSessionFilePreviewSource', () => {
 
         const result = await createSessionFilePreviewSource({
             sessionId: 'session-1',
-            filePath: '.happier/uploads/generated/message/image.png',
+            filePath: '.piggercode/uploads/generated/message/image.png',
             mimeType: 'image/png',
             maxBytes: 16,
             createDestination: () => ({ ok: true, destination: memory.destination }),
@@ -142,7 +142,7 @@ describe('createSessionFilePreviewSource', () => {
         expect(memory.chunks).toEqual([new Uint8Array([1, 2, 3])]);
         expect(downloadDaemonSessionFileToDestination).toHaveBeenCalledWith(expect.objectContaining({
             sessionId: 'session-1',
-            request: { path: '.happier/uploads/generated/message/image.png', asZip: false },
+            request: { path: '.piggercode/uploads/generated/message/image.png', asZip: false },
         }));
     });
 

@@ -2,7 +2,7 @@
  * Whether this computer's stored sign-in is usable against the relay it is
  * pointed at right now.
  *
- * `happier auth status` has always answered this question, but it answered it
+ * `piggercode auth status` has always answered this question, but it answered it
  * inline, so every other caller re-derived it — and re-derived it wrong, from
  * the presence of a credentials file. Two states are invisible to that test and
  * are exactly the states a guided setup exists to repair: credentials the relay

@@ -205,7 +205,7 @@ export function startOfflineReconnection<TSession>(
             // 401 = auth token invalid, user needs to re-authenticate
             if (isAuthenticationError(e)) {
                 logger.debug('[OfflineReconnection] Authentication error, stopping retries');
-                config.onNotify('❌ Authentication failed. Please re-authenticate with `happier auth`.');
+                config.onNotify('❌ Authentication failed. Please re-authenticate with `piggercode auth`.');
                 return; // Don't schedule retry - this is a permanent failure
             }
 
@@ -280,7 +280,7 @@ export const ERROR_DESCRIPTIONS: Record<string, string> = {
     EHOSTUNREACH: 'server host unreachable',
     ENETUNREACH: 'network unreachable',
     // HTTP errors
-    '401': 'authentication failed - run `happier auth`',
+    '401': 'authentication failed - run `piggercode auth`',
     '403': 'access forbidden',
     '404': 'endpoint not found, check server deployment',
     '500': 'server internal error',
@@ -348,7 +348,7 @@ class OfflineState {
                 return `${f.operation} failed: ${desc}${url}`;
             })
             .join('; ');
-        writeConsoleLogBestEffort(`⚠️  Happier server unreachable, offline mode with auto-reconnect enabled - error details: ${summary}`);
+        writeConsoleLogBestEffort(`⚠️  PiggerCode server unreachable, offline mode with auto-reconnect enabled - error details: ${summary}`);
 
         // Print detail lines if present - consistent 3-space indent with arrow
         const allDetails = [...this.failures.values()]

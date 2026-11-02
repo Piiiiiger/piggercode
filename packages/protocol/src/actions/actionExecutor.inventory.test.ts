@@ -487,7 +487,7 @@ describe('createActionExecutor (inventory/discovery)', () => {
       },
       windowsRemoteSessionLaunchMode: 'hidden',
       windowsRemoteSessionConsole: 'hidden',
-      windowsTerminalWindowName: 'Happier',
+      windowsTerminalWindowName: 'PiggerCode',
     });
 
     expect(res.ok).toBe(true);
@@ -508,7 +508,7 @@ describe('createActionExecutor (inventory/discovery)', () => {
       },
       windowsRemoteSessionLaunchMode: 'hidden',
       windowsRemoteSessionConsole: 'hidden',
-      windowsTerminalWindowName: 'Happier',
+      windowsTerminalWindowName: 'PiggerCode',
       surface: null,
     }));
   });

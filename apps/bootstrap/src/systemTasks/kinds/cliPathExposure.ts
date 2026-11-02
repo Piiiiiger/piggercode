@@ -17,9 +17,9 @@ function resolveManagedCliBinDir(processEnv: NodeJS.ProcessEnv): string {
 }
 
 /**
- * Settings repair action: "Add happier to PATH". The setup executor calls the same owner after
+ * Settings repair action: "Add piggercode to PATH". The setup executor calls the same owner after
  * readiness; this kind exists so the user can retry (or undo) it explicitly, and a failure here
- * is the user-facing result rather than a quiet one. `existingCommand` names another `happier`
+ * is the user-facing result rather than a quiet one. `existingCommand` names another `piggercode`
  * that already resolves on PATH and was deliberately left in front (nothing is added then).
  */
 export function createCliPathExposureEnsureHandler(overrides: Partial<CliPathExposureDeps> = {}) {

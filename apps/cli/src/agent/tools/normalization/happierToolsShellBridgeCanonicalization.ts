@@ -41,7 +41,7 @@ export function resolveCanonicalToolNameFromHappierToolsShellBridge(rawInput: un
     const command = extractHappierToolsShellBridgeCall(rawInput);
     if (!command) return null;
 
-    if (command.source === 'happier') {
+    if (command.source === 'piggercode') {
         if (command.tool.includes('/')) return null;
         if (isChangeTitleToolNameAlias(command.tool)) return 'change_title';
         return command.tool;

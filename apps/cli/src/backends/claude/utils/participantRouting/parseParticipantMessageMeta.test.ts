@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { parseParticipantMessageMeta } from './parseParticipantMessageMeta';
 
 describe('parseParticipantMessageMeta', () => {
-    it('parses agent team member recipient from happier meta envelope', () => {
+    it('parses agent team member recipient from piggercode meta envelope', () => {
         const parsed = parseParticipantMessageMeta({
             happier: {
                 kind: 'participant_message.v1',

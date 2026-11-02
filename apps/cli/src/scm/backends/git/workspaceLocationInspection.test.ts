@@ -21,7 +21,7 @@ async function runGit(cwd: string, args: readonly string[]): Promise<string> {
 
 async function configureGitRepo(cwd: string): Promise<void> {
     await runGit(cwd, ['config', 'user.email', 'test@example.com']);
-    await runGit(cwd, ['config', 'user.name', 'Happier Test']);
+    await runGit(cwd, ['config', 'user.name', 'PiggerCode Test']);
 }
 
 describe('inspectGitWorkspaceLocation', () => {

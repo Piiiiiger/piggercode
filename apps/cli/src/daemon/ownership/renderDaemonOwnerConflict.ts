@@ -47,14 +47,14 @@ export function renderDaemonOwnerConflict(params: Readonly<{
       lines: [
         ...details,
         owner.serviceManaged
-          ? 'Happier will continue without switching it.'
+          ? 'PiggerCode will continue without switching it.'
           : owner.serviceManaged === false
-            ? 'Happier will continue without starting another daemon.'
-            : 'Happier will continue without changing the current daemon.',
+            ? 'PiggerCode will continue without starting another daemon.'
+            : 'PiggerCode will continue without changing the current daemon.',
         owner.serviceManaged
-          ? 'Use `happier doctor repair` if you want automatic startup to switch to this installation.'
+          ? 'Use `piggercode doctor repair` if you want automatic startup to switch to this installation.'
           : owner.serviceManaged === false
-            ? 'Use `happier daemon restart` if you want to replace the current manual daemon.'
+            ? 'Use `piggercode daemon restart` if you want to replace the current manual daemon.'
             : 'Restart the current daemon before trying to switch which installation is running.',
       ],
     };
@@ -70,15 +70,15 @@ export function renderDaemonOwnerConflict(params: Readonly<{
       lines: [
         ...details,
         owner.serviceManaged
-          ? 'Use `happier doctor repair` if you want automatic startup to switch to this installation.'
+          ? 'Use `piggercode doctor repair` if you want automatic startup to switch to this installation.'
           : owner.serviceManaged === false
             ? [
-                'Stop the current manual daemon with `happier daemon stop` before starting another one.',
-                buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'start' }),
+                'Stop the current manual daemon with `piggercode daemon stop` before starting another one.',
+                buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'start' }),
               ].join(' ')
             : [
                 'Stop the current daemon before starting another one.',
-                `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'start' }).toLowerCase()}`,
+                `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'start' }).toLowerCase()}`,
               ].join(' '),
       ],
     };
@@ -94,15 +94,15 @@ export function renderDaemonOwnerConflict(params: Readonly<{
       lines: [
         ...details,
         owner.serviceManaged
-          ? 'Use `happier doctor repair` if you want automatic startup to switch to this installation.'
+          ? 'Use `piggercode doctor repair` if you want automatic startup to switch to this installation.'
           : owner.serviceManaged === false
             ? [
-                'Stop the current manual daemon with `happier daemon stop` before starting another one.',
-                buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'start-sync' }),
+                'Stop the current manual daemon with `piggercode daemon stop` before starting another one.',
+                buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'start-sync' }),
               ].join(' ')
             : [
                 'Stop the current daemon before starting another one.',
-                `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'start-sync' }).toLowerCase()}`,
+                `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'start-sync' }).toLowerCase()}`,
               ].join(' '),
       ],
     };
@@ -114,7 +114,7 @@ export function renderDaemonOwnerConflict(params: Readonly<{
         title: 'Another manually started daemon is already running for the selected relay.',
         lines: [
           ...details,
-          buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'restart' }),
+          buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'restart' }),
         ],
       };
     }
@@ -122,14 +122,14 @@ export function renderDaemonOwnerConflict(params: Readonly<{
     return {
       title: owner.serviceManaged === true
         ? 'The current daemon is managed by a background service.'
-        : 'Happier could not determine how the current daemon was started.',
+        : 'PiggerCode could not determine how the current daemon was started.',
       lines: [
         ...details,
         owner.serviceManaged === true
-          ? 'Use `happier doctor repair` instead of `happier daemon restart`.'
+          ? 'Use `piggercode doctor repair` instead of `piggercode daemon restart`.'
           : [
-              `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'happier daemon', action: 'restart' }).toLowerCase()}`,
-              'Use `happier service restart` only if you know the current daemon came from the background service.',
+              `If this is a legacy manual daemon start, ${buildDaemonTakeoverHint({ commandPath: 'piggercode daemon', action: 'restart' }).toLowerCase()}`,
+              'Use `piggercode service restart` only if you know the current daemon came from the background service.',
             ].join(' '),
       ],
     };
@@ -138,12 +138,12 @@ export function renderDaemonOwnerConflict(params: Readonly<{
   return {
     title: owner.serviceManaged === true
       ? 'The current daemon is managed by a background service.'
-      : 'Happier could not determine how the current daemon was started.',
+      : 'PiggerCode could not determine how the current daemon was started.',
     lines: [
       ...details,
       owner.serviceManaged === true
-        ? 'Use `happier service stop` instead of `happier daemon stop`.'
-        : 'Use `happier service stop` only if you know the current daemon came from the background service.',
+        ? 'Use `piggercode service stop` instead of `piggercode daemon stop`.'
+        : 'Use `piggercode service stop` only if you know the current daemon came from the background service.',
     ],
   };
 }

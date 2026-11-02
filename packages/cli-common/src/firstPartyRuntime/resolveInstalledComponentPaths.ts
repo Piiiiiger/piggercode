@@ -22,7 +22,7 @@ import { resolveJunctionFreeCurrentPath } from './resolveJunctionFreeCurrentPath
  *   the right paths to use for **fs probes** (existence, stat, read).
  *
  * Long-lived service definitions should normally invoke a managed shim (for
- * example `~/.happier/bin/hdev`) so they keep tracking upgrades. They should
+ * example `~/.piggercode/bin/hdev`) so they keep tracking upgrades. They should
  * not bake `resolved*` version paths unless the user explicitly requested a
  * fixed runtime path.
  *

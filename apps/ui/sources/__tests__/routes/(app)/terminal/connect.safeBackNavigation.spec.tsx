@@ -72,7 +72,7 @@ vi.mock('@/utils/path/terminalConnectUrl', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/utils/path/terminalConnectUrl')>();
     return {
         ...actual,
-        buildTerminalConnectDeepLink: () => 'happier://terminal?key=abc123',
+        buildTerminalConnectDeepLink: () => 'piggercode://terminal?key=abc123',
         parseTerminalConnectUrl: () => ({
             publicKeyB64Url: 'abc123',
             serverUrl: 'https://company.example.test',

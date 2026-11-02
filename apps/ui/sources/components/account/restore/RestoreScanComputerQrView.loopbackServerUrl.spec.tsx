@@ -64,7 +64,7 @@ vi.mock('@/sync/domains/server/activeServerSwitch', () => ({
 }));
 
 vi.mock('@/auth/pairing/pairingUrl', () => ({
-    buildPairingDeepLink: () => 'happier:///pair?v=1&pairId=p&secret=s&server=http%3A%2F%2Flocalhost%3A53288',
+    buildPairingDeepLink: () => 'piggercode:///pair?v=1&pairId=p&secret=s&server=http%3A%2F%2Flocalhost%3A53288',
     parsePairingDeepLink: () => ({ pairId: 'p', secret: 's', serverUrl: 'http://localhost:53288' }),
 }));
 
@@ -111,7 +111,7 @@ describe('RestoreScanComputerQrView (loopback serverUrl)', () => {
             expect(lastScannerProps?.onScan).toBeInstanceOf(Function);
 
             await act(async () => {
-                await lastScannerProps.onScan('happier:///pair?v=1&pairId=p&secret=s&server=http%3A%2F%2Flocalhost%3A53288');
+                await lastScannerProps.onScan('piggercode:///pair?v=1&pairId=p&secret=s&server=http%3A%2F%2Flocalhost%3A53288');
             });
 
             expect(upsertActivateAndSwitchServerSpy).not.toHaveBeenCalled();

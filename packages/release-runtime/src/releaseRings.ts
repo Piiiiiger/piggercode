@@ -22,7 +22,7 @@ export interface ReleaseRingCatalogEntry {
   embeddedPolicyEnv: 'production' | 'preview' | '';
   expoAppEnv: 'production' | 'preview' | 'development';
   expoUpdatesChannel: 'production' | 'preview' | 'dev' | 'internalpreview' | 'internaldev';
-  appScheme: 'happier' | 'happier-preview' | 'happier-dev' | 'happier-internalpreview' | 'happier-internaldev';
+  appScheme: 'piggercode' | 'piggercode-preview' | 'piggercode-dev' | 'piggercode-internalpreview' | 'piggercode-internaldev';
   supportsMobileStoreSubmit: boolean;
 }
 
@@ -37,7 +37,7 @@ const releaseRingCatalog = {
     embeddedPolicyEnv: 'production',
     expoAppEnv: 'production',
     expoUpdatesChannel: 'production',
-    appScheme: 'happier',
+    appScheme: 'piggercode',
     supportsMobileStoreSubmit: true,
   },
   preview: {
@@ -50,7 +50,7 @@ const releaseRingCatalog = {
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'preview',
-    appScheme: 'happier-preview',
+    appScheme: 'piggercode-preview',
     supportsMobileStoreSubmit: true,
   },
   publicdev: {
@@ -63,7 +63,7 @@ const releaseRingCatalog = {
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'dev',
-    appScheme: 'happier-dev',
+    appScheme: 'piggercode-dev',
     supportsMobileStoreSubmit: true,
   },
   internalpreview: {
@@ -76,7 +76,7 @@ const releaseRingCatalog = {
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'internalpreview',
-    appScheme: 'happier-internalpreview',
+    appScheme: 'piggercode-internalpreview',
     supportsMobileStoreSubmit: false,
   },
   internaldev: {
@@ -89,7 +89,7 @@ const releaseRingCatalog = {
     embeddedPolicyEnv: '',
     expoAppEnv: 'development',
     expoUpdatesChannel: 'internaldev',
-    appScheme: 'happier-internaldev',
+    appScheme: 'piggercode-internaldev',
     supportsMobileStoreSubmit: false,
   },
 } as const satisfies Record<ReleaseRingId, ReleaseRingCatalogEntry>;

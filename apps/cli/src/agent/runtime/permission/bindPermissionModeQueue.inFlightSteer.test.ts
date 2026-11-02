@@ -464,7 +464,7 @@ describe('registerPermissionModeMessageQueueBinding (in-flight steer)', () => {
         content: {
           text: [
             '<happier_execution_run_notification>',
-            'This is an automated background-run notification from Happier, not a user message.',
+            'This is an automated background-run notification from PiggerCode, not a user message.',
             'Run ID: run_1',
             'Status: succeeded',
             '',
@@ -495,7 +495,7 @@ describe('registerPermissionModeMessageQueueBinding (in-flight steer)', () => {
     expect(steerText).toHaveBeenCalledWith(
       [
         '<happier_execution_run_notification>',
-        'This is an automated background-run notification from Happier, not a user message.',
+        'This is an automated background-run notification from PiggerCode, not a user message.',
         'Run ID: run_1',
         'Status: succeeded',
         '',
@@ -1063,7 +1063,7 @@ describe('registerPermissionModeMessageQueueBinding (in-flight steer)', () => {
     );
   });
 
-  it('steers non-Happier slash prompts through the shared payload policy', async () => {
+  it('steers non-PiggerCode slash prompts through the shared payload policy', async () => {
     const { session, emitUserMessage } = createSessionHarness();
     const { queue, spyPush } = createQueue();
 

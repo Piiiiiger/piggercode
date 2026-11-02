@@ -30,9 +30,9 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
     const kind = createCliUpdateRemoteTaskKind({
       readFacts: () => facts(),
       publicReleaseRing: 'preview',
-      script: '/home/u/.happier/cli-preview/versions/0.2.13-preview.1/happier',
-      cwd: '/home/u/.happier/cli-preview/versions/0.2.13-preview.1',
-      logsDir: '/home/u/.happier/logs',
+      script: '/home/u/.piggercode/cli-preview/versions/0.2.13-preview.1/happier',
+      cwd: '/home/u/.piggercode/cli-preview/versions/0.2.13-preview.1',
+      logsDir: '/home/u/.piggercode/logs',
       spawnDetached: (spawnParams) => {
         spawns.push(spawnParams);
         const admission = new PassThrough();
@@ -46,12 +46,12 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
       started: true,
       currentVersion: '0.2.13-preview.1',
       channel: 'preview',
-      logPath: '/home/u/.happier/logs/cli-update-1700000000000.log',
+      logPath: '/home/u/.piggercode/logs/cli-update-1700000000000.log',
     });
     expect(spawns).toEqual([expect.objectContaining({
-      script: '/home/u/.happier/cli-preview/versions/0.2.13-preview.1/happier',
+      script: '/home/u/.piggercode/cli-preview/versions/0.2.13-preview.1/happier',
       args: ['self', 'update', '--preview'],
-      logPath: '/home/u/.happier/logs/cli-update-1700000000000.log',
+      logPath: '/home/u/.piggercode/logs/cli-update-1700000000000.log',
     })]);
   });
 
@@ -64,11 +64,11 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
       logsDir: '/x/logs',
       spawnDetached: () => {
         const admission = new PassThrough();
-        admission.end('{"admitted":false,"code":"cli_update_in_progress","message":"Another Happier process is installing or updating it."}\n');
+        admission.end('{"admitted":false,"code":"cli_update_in_progress","message":"Another PiggerCode process is installing or updating it."}\n');
         return { started: true, admission };
       },
     });
-    await expect(run(kind, {})).rejects.toMatchObject({ code: 'cli_update_in_progress', message: expect.stringContaining('Another Happier process') });
+    await expect(run(kind, {})).rejects.toMatchObject({ code: 'cli_update_in_progress', message: expect.stringContaining('Another PiggerCode process') });
   });
 
   it('fails by name, naming the log, when the updater exits before admission', async () => {
@@ -100,11 +100,11 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
     await expect(run(kind, {})).rejects.toMatchObject({ code: 'cli_update_start_failed' });
   });
 
-  it('refuses a CLI Happier does not manage, naming the command that updates it', async () => {
+  it('refuses a CLI PiggerCode does not manage, naming the command that updates it', async () => {
     const kind = createCliUpdateRemoteTaskKind({
       readFacts: () => facts({ installSource: 'npm', updateCommand: 'npm install -g @piggercode/cli@latest', canUpdateRemotely: false }),
       publicReleaseRing: 'preview',
-      script: '/usr/lib/node_modules/@piggercode/cli/bin/happier.mjs',
+      script: '/usr/lib/node_modules/@piggercode/cli/bin/piggercode.mjs',
       cwd: '/tmp',
       logsDir: '/tmp/logs',
       spawnDetached: () => { throw new Error('must not spawn'); },
@@ -118,9 +118,9 @@ describe('cli.update.v1 hosted by the daemon (remote CLI update)', () => {
     const kind = createCliUpdateRemoteTaskKind({
       readFacts: () => facts({ canUpdateRemotely: false }),
       publicReleaseRing: 'preview',
-      script: 'C:\\Users\\u\\.happier\\cli-preview\\versions\\0.2.13-preview.1\\happier.exe',
+      script: 'C:\\Users\\u\\.piggercode\\cli-preview\\versions\\0.2.13-preview.1\\piggercode.exe',
       cwd: 'C:\\Users\\u',
-      logsDir: 'C:\\Users\\u\\.happier\\logs',
+      logsDir: 'C:\\Users\\u\\.piggercode\\logs',
       spawnDetached: () => { throw new Error('must not spawn'); },
     });
     await expect(run(kind, {})).rejects.toMatchObject({ code: 'cli_remote_update_unsupported', message: expect.stringContaining('hprev self update') });

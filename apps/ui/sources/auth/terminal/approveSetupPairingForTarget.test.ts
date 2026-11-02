@@ -54,7 +54,7 @@ const SERVER_ID = 'custom-2';
 const ACCOUNT_ID = 'acct_app';
 const APP_TOKEN = `header.${Buffer.from(JSON.stringify({ sub: ACCOUNT_ID })).toString('base64')}.signature`;
 const TASK_ID = 'task_1';
-const CLI_COMMAND = '/home/dev/happier-stack/apps/cli/bin/happier.mjs';
+const CLI_COMMAND = '/home/dev/happier-stack/apps/cli/bin/piggercode.mjs';
 
 const terminalSecretKey = new Uint8Array(32).fill(4);
 const terminalPublicKey = tweetnacl.box.keyPair.fromSecretKey(terminalSecretKey).publicKey;

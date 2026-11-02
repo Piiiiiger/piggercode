@@ -51,7 +51,7 @@ export class TransferSessionStore {
 
   constructor(deps: TransferSessionStoreDeps) {
     this.ttlMs = Math.max(1000, Math.floor(deps.ttlMs));
-    this.tempRoot = join(tmpdir(), 'happier', 'file-transfers', randomUUID());
+    this.tempRoot = join(tmpdir(), 'piggercode', 'file-transfers', randomUUID());
   }
 
   private assertOpen(): void {

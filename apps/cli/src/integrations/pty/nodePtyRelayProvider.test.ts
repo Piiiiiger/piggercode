@@ -54,14 +54,14 @@ const passthroughCommandInvocation = (input: Readonly<{ command: string; args: r
 describe('buildNodePtyRelaySpawnCommand', () => {
   it('builds a managed Node relay invocation that forwards the child command after --', () => {
     const invocation = buildNodePtyRelaySpawnCommand({
-      nodeExecutable: 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      nodeExecutable: 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       file: 'C:\\managed\\node.exe',
       args: ['C:\\happier\\scripts\\terminal_launch_spec_runner.cjs', 'C:\\tmp\\launch.json'],
     });
 
     expect(invocation).toEqual({
-      command: 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      command: 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       args: [
         'C:\\happier\\scripts\\node_pty_relay.cjs',
         '--args-kind',
@@ -76,14 +76,14 @@ describe('buildNodePtyRelaySpawnCommand', () => {
 
   it('preserves string args as the relay child command-line kind', () => {
     const invocation = buildNodePtyRelaySpawnCommand({
-      nodeExecutable: 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      nodeExecutable: 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       file: 'cmd.exe',
       args: '/c echo ok',
     });
 
     expect(invocation).toEqual({
-      command: 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      command: 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       args: [
         'C:\\happier\\scripts\\node_pty_relay.cjs',
         '--args-kind',
@@ -102,7 +102,7 @@ describe('createNodePtyRelayProvider', () => {
     const spawnProcess = vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams);
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess,
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -121,7 +121,7 @@ describe('createNodePtyRelayProvider', () => {
     } satisfies PtySpawnParams);
 
     expect(spawnProcess).toHaveBeenCalledWith(
-      'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       [
         'C:\\happier\\scripts\\node_pty_relay.cjs',
         '--args-kind',
@@ -151,7 +151,7 @@ describe('createNodePtyRelayProvider', () => {
     const provider = createNodePtyRelayProvider({
       env: { PATH: 'C:\\Windows\\System32', SystemRoot: 'C:\\Windows' },
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess,
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -182,7 +182,7 @@ describe('createNodePtyRelayProvider', () => {
     const spawnProcess = vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams);
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess,
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -208,7 +208,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -233,7 +233,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -255,7 +255,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -274,7 +274,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -298,7 +298,7 @@ describe('createNodePtyRelayProvider', () => {
       const fakeChild = createFakeChildProcess();
       const provider = createNodePtyRelayProvider({
         platform: 'win32',
-        resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+        resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
         relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
         spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
         resolveCommandInvocation: passthroughCommandInvocation,
@@ -322,7 +322,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,
@@ -353,7 +353,7 @@ describe('createNodePtyRelayProvider', () => {
     const fakeChild = createFakeChildProcess();
     const provider = createNodePtyRelayProvider({
       platform: 'win32',
-      resolveNodeExecutable: () => 'C:\\Users\\test\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+      resolveNodeExecutable: () => 'C:\\Users\\test\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
       relayScriptPath: 'C:\\happier\\scripts\\node_pty_relay.cjs',
       spawnProcess: vi.fn(() => fakeChild as unknown as ChildProcessWithoutNullStreams),
       resolveCommandInvocation: passthroughCommandInvocation,

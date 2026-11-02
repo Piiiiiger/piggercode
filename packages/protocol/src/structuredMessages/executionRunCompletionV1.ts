@@ -15,7 +15,7 @@ function buildExecutionRunCompletionText(completion: ExecutionRunCompletionV1): 
   const summary = completion.summary?.trim();
   return [
     '<happier_execution_run_notification>',
-    'This is an automated background-run notification from Happier, not a user message.',
+    'This is an automated background-run notification from PiggerCode, not a user message.',
     `Run ID: ${completion.runId}`,
     `Status: ${completion.status}`,
     ...(summary ? ['', 'Final result:', summary] : []),

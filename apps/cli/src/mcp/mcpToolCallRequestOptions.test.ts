@@ -48,7 +48,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
-      toolName: 'mcp__happier__session_list',
+      toolName: 'mcp__piggercode__session_list',
       args: {},
     })).toBe(360_000);
   });
@@ -68,7 +68,7 @@ describe('resolveMcpToolCallRequestOptions', () => {
     reloadConfiguration();
 
     expect(resolveMcpToolCallRequestTimeoutMs({
-      toolName: 'mcp__happier__execution_run_wait',
+      toolName: 'mcp__piggercode__execution_run_wait',
       args: { runId: 'run_123', timeoutSeconds: 120 },
     })).toBe(165_000);
   });

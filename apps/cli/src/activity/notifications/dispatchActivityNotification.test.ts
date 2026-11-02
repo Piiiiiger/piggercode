@@ -441,7 +441,7 @@ describe('dispatchActivityNotificationAsync', () => {
         providerStatus: 400,
         providerErrorCode: [
           '{"error":"invalid_grant","access_token":"secret-access-token","refresh_token":"secret-refresh-token"}',
-          "Cannot find module '/Users/alice/.happier/node_modules/provider-sdk/index.js'",
+          "Cannot find module '/Users/alice/.piggercode/node_modules/provider-sdk/index.js'",
         ].join(' '),
       } satisfies ActivityNotificationEvent,
       nowMs: () => 1_000,
@@ -459,7 +459,7 @@ describe('dispatchActivityNotificationAsync', () => {
     expect(payloadText).not.toContain('secret-access-token');
     expect(payloadText).not.toContain('secret-refresh-token');
     expect(payloadText).not.toContain('provider-access-token');
-    expect(payloadText).not.toContain('/Users/alice/.happier/node_modules');
+    expect(payloadText).not.toContain('/Users/alice/.piggercode/node_modules');
     expect(payloadText).not.toContain('provider-sdk/index.js');
   });
 

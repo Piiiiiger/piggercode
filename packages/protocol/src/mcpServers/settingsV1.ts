@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const SERVER_NAME_REGEX = /^[a-z0-9_-]+$/;
-const RESERVED_SERVER_NAMES = new Set(['happier', '__proto__', 'prototype', 'constructor']);
+const RESERVED_SERVER_NAMES = new Set(['piggercode', 'happier', '__proto__', 'prototype', 'constructor']);
 
 const ENV_KEY_REGEX = /^[A-Z_][A-Z0-9_]*$/;
 const HEADER_KEY_REGEX = /^[A-Za-z0-9-]+$/;

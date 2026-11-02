@@ -31,7 +31,7 @@ describe('resolveClaudeConfigDirOverride', () => {
       `${homedir()}/.claude`,
     );
     expect(
-      resolveClaudeConfigDirOverride({ PIGGERCODE_CLAUDE_CONFIG_DIR: '  ~/.happier-claude  ' } satisfies NodeJS.ProcessEnv),
-    ).toBe(`${homedir()}/.happier-claude`);
+      resolveClaudeConfigDirOverride({ PIGGERCODE_CLAUDE_CONFIG_DIR: '  ~/.piggercode-claude  ' } satisfies NodeJS.ProcessEnv),
+    ).toBe(`${homedir()}/.piggercode-claude`);
   });
 });

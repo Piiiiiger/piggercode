@@ -65,7 +65,7 @@ export async function runStackHappierPassthroughCommand({ rootDir, stackName, pa
         cliIdentity: identity || (envForHappy.PIGGERCODE_STACK_CLI_IDENTITY ?? '').toString().trim() || 'default',
       });
 
-      const child = spawn(process.execPath, [join(rootDir, 'scripts', 'happier.mjs'), ...childArgs], {
+      const child = spawn(process.execPath, [join(rootDir, 'scripts', 'piggercode.mjs'), ...childArgs], {
         cwd: rootDir,
         env: envForHappy,
         stdio: 'inherit',

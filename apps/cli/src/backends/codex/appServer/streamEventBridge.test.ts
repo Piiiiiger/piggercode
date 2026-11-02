@@ -17,7 +17,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
             expect.objectContaining({ type: 'tool-result', output: expect.objectContaining({ stdout: '/project\n', exitCode: 0 }) }),
         ]);
     });
-    it('maps provider-native user messages while preserving Happier correlation', () => {
+    it('maps provider-native user messages while preserving PiggerCode correlation', () => {
         const bridge = createCodexAppServerStreamEventBridge();
 
         expect(
@@ -50,7 +50,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
                         id: 'happier_user_1',
                         type: 'userMessage',
                         clientId: 'happier-local-1',
-                        content: [{ type: 'text', text: 'hello from Happier' }],
+                        content: [{ type: 'text', text: 'hello from PiggerCode' }],
                     },
                 },
             }),
@@ -58,7 +58,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
             type: 'provider-user-text',
             itemId: 'happier_user_1',
             clientId: 'happier-local-1',
-            text: 'hello from Happier',
+            text: 'hello from PiggerCode',
         }]);
     });
 
@@ -574,7 +574,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
                     item: {
                         id: 'tool_title',
                         type: 'mcpToolCall',
-                        server: 'happier__happier',
+                        server: 'piggercode__piggercode',
                         tool: 'change_title',
                         arguments: { title: 'Normalized title' },
                     },
@@ -585,7 +585,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
                 type: 'tool-call',
                 toolKind: 'mcp',
                 callId: 'tool_title',
-                name: 'mcp__happier__change_title',
+                name: 'mcp__piggercode__change_title',
                 input: { title: 'Normalized title' },
             },
         ]);
@@ -646,7 +646,7 @@ describe('createCodexAppServerStreamEventBridge', () => {
                 type: 'tool-result',
                 toolKind: 'mcp',
                 callId: 'tool_title',
-                name: 'mcp__happier__change_title',
+                name: 'mcp__piggercode__change_title',
                 input: { title: 'Normalized title' },
                 output: { title: 'Normalized title' },
             },

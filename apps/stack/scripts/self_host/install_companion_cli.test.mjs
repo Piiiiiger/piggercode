@@ -38,7 +38,7 @@ function signMinisignMessage({ message, keyId, privateKey }) {
   const trustedSuffix = Buffer.from(trustedComment.slice('trusted comment: '.length), 'utf-8');
   const globalSignature = sign(null, Buffer.concat([signature, trustedSuffix]), privateKey);
   return [
-    'untrusted comment: signature from happier stack test',
+    'untrusted comment: signature from piggercode stack test',
     b64(sigLineBytes),
     trustedComment,
     b64(globalSignature),
@@ -70,8 +70,8 @@ test('installCompanionCliFromBundle promotes the publicdev CLI payload with shar
   const rootDir = join(staging, rootName);
   await mkdir(join(rootDir, 'package-dist'), { recursive: true });
   await writeFile(join(rootDir, 'package-dist', 'index.mjs'), 'console.log("ok");\n', 'utf-8');
-  const binaryPath = join(rootDir, 'happier');
-  await writeFile(binaryPath, '#!/bin/sh\necho happier\n', 'utf-8');
+  const binaryPath = join(rootDir, 'piggercode');
+  await writeFile(binaryPath, '#!/bin/sh\necho piggercode\n', 'utf-8');
   spawnSync('bash', ['-lc', `chmod +x "${binaryPath.replaceAll('"', '\\"')}"`], { stdio: 'ignore' });
 
   const archiveName = `${rootName}.tar.gz`;
@@ -113,7 +113,7 @@ test('installCompanionCliFromBundle promotes the publicdev CLI payload with shar
   const installedEntrypoint = await readFile(join(homeDir, 'cli-dev', 'current', 'package-dist', 'index.mjs'), 'utf-8');
   assert.match(installedEntrypoint, /console\.log\("ok"\)/);
   assert.equal(existsSync(join(homeDir, 'bin', 'hdev')), true);
-  const resolvedCurrentBinary = join(homeDir, 'cli-dev', 'current', 'happier');
+  const resolvedCurrentBinary = join(homeDir, 'cli-dev', 'current', 'piggercode');
   assert.equal(existsSync(resolvedCurrentBinary), true);
   assert.equal(existsSync(dirname(join(homeDir, 'cli-dev', 'versions', '1.2.3-dev.1'))), true);
 });

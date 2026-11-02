@@ -2986,7 +2986,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
                     const client = await ensureClient();
                     await client.request('thread/name/set', { threadId, name: completedTitleName });
                 } catch (error) {
-                    logger.debug('[codex-app-server] Failed to sync Happier title to Codex native thread name', {
+                    logger.debug('[codex-app-server] Failed to sync PiggerCode title to Codex native thread name', {
                         threadId,
                         error,
                     });
@@ -4847,7 +4847,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
         if (nativeReadyThreadId !== attachedThreadId) {
             const client = await ensureClient();
             const name = getSessionNotificationTitle(() => params.session.getMetadataSnapshot())
-                ?? `Happier session ${params.session.sessionId}`;
+                ?? `PiggerCode session ${params.session.sessionId}`;
             await client.request('thread/name/set', { threadId: attachedThreadId, name });
             // Codex paginated history is not resumable after thread/start alone.
             // A truthful name plus a full read persists the zero-turn rollout.

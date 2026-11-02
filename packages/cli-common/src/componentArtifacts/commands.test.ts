@@ -178,7 +178,7 @@ describe('compileBunBinary', () => {
         const tempRoot = mkdtempSync(join(tmpdir(), 'cli-common-bun-compile-'));
         try {
             const entrypoint = join(tempRoot, 'index.mjs');
-            const outfile = join(tempRoot, 'happier.exe');
+            const outfile = join(tempRoot, 'piggercode.exe');
             writeFileSync(entrypoint, 'console.log("ok");\n', 'utf8');
 
             const calls: Array<{ cmd: string; args: string[]; cwd?: string }> = [];

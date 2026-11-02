@@ -7,9 +7,9 @@ describe('planServiceAction (schtasks install)', () => {
     const plan = planServiceAction({
       backend: 'schtasks-user',
       action: 'install',
-      label: 'happier-daemon.default',
-      taskName: 'Happier\\happier-daemon.default',
-      definitionPath: 'C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+      label: 'piggercode-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
+      definitionPath: 'C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
       definitionContents: '$ErrorActionPreference = "Stop"',
       persistent: true,
     });
@@ -31,7 +31,7 @@ describe('planServiceAction (schtasks install)', () => {
     expect(registration).toContain('<LogonType>InteractiveToken</LogonType>');
     expect(registration).toContain('<RunLevel>LeastPrivilege</RunLevel>');
     expect(registration).toContain('<Command>powershell.exe</Command>');
-    expect(registration).toContain('-WindowStyle Hidden -File &quot;C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1&quot;');
+    expect(registration).toContain('-WindowStyle Hidden -File &quot;C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1&quot;');
     expect(registration).toContain('$xml.Task.Triggers.LogonTrigger.UserId = $userId');
     expect(registration).toContain('$xml.Task.Principals.Principal.UserId = $userId');
     expect(registration).toContain('$folder.RegisterTask($taskName, $xml.OuterXml, 6, $userId, $null, 3, $null)');
@@ -45,9 +45,9 @@ describe('planServiceAction (schtasks install)', () => {
     const plan = planServiceAction({
       backend: 'schtasks-user',
       action: 'install',
-      label: 'happier-daemon.default',
-      taskName: 'Happier\\happier-daemon.default',
-      definitionPath: 'C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+      label: 'piggercode-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
+      definitionPath: 'C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
       definitionContents: '$ErrorActionPreference = "Stop"',
       persistent: false,
     });
@@ -72,7 +72,7 @@ describe('planServiceAction (schtasks install)', () => {
   it('keeps elevated SYSTEM boot registration separate from current-user logon registration', () => {
     const plan = planServiceAction({
       backend: 'schtasks-system', action: 'install', label: 'relay',
-      definitionPath: 'C:\\ProgramData\\Happier\\relay.ps1', persistent: true,
+      definitionPath: 'C:\\ProgramData\\PiggerCode\\relay.ps1', persistent: true,
     });
     const create = plan.commands.find((command) => command.cmd === 'schtasks' && command.args.includes('/Create'));
     expect(create?.args).toEqual(expect.arrayContaining(['ONSTART', '/RU', 'SYSTEM', '/RL', 'HIGHEST']));

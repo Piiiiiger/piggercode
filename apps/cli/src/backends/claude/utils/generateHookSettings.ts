@@ -3,7 +3,7 @@
  *
  * Hooks are registered via `--plugin-dir <dir>` (an ephemeral session-only plugin
  * whose only payload is a `hooks/hooks.json`). Non-hook configuration (for now just
- * the `mcp__happier__change_title*` allow rules) still rides on `--settings <file>`.
+ * the `mcp__piggercode__change_title*` allow rules) still rides on `--settings <file>`.
  *
  * Why not put the hooks in the `--settings` overlay like we used to?
  *
@@ -329,8 +329,8 @@ export function generateHookSettingsFile(_port: number, _options: GenerateHookSe
     const settings: ClaudeSettingsOverlay = {
         permissions: {
             allow: [
-                'mcp__happier__change_title',
-                'mcp__happier__session_title_set',
+                'mcp__piggercode__change_title',
+                'mcp__piggercode__session_title_set',
             ],
         },
     };
@@ -369,9 +369,9 @@ export function generateHookPluginDir(port: number, options: GenerateHookSetting
     const manifest = {
         name: `happier-session-hooks-${pluginIdentity.id}`,
         version: '1.0.0',
-        description: 'Happier session-scoped Claude Code hooks.',
+        description: 'PiggerCode session-scoped Claude Code hooks.',
         author: {
-            name: 'Happier',
+            name: 'PiggerCode',
         },
     };
     writePrivateFileSync(join(manifestDir, 'plugin.json'), JSON.stringify(manifest, null, 2));

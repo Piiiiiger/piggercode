@@ -24,7 +24,7 @@ pnpm-lock.yaml
 # Local installation and data directories
 .happy/
 .happy-dev/
-.happier/
+.piggercode/
 
 **/*.log
 .release-notes-temp.md

@@ -332,7 +332,7 @@ describe("authRoutes (mTLS) (integration)", () => {
             PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
             PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_FINGERPRINT_HEADER: "x-happier-client-cert-sha256",
             PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
-            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
+            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "piggercode://",
         });
 
         const app = createTestApp();
@@ -341,7 +341,7 @@ describe("authRoutes (mTLS) (integration)", () => {
 
         const startRes = await app.inject({
             method: "GET",
-            url: "/v1/auth/mtls/start?returnTo=" + encodeURIComponent("happier://auth/return"),
+            url: "/v1/auth/mtls/start?returnTo=" + encodeURIComponent("piggercode://auth/return"),
         });
         expect(startRes.statusCode).toBe(302);
         const completeUrl = String(startRes.headers.location ?? "");
@@ -359,7 +359,7 @@ describe("authRoutes (mTLS) (integration)", () => {
         expect(completeRes.statusCode, completeRes.body).toBe(302);
         const returnUrl = String(completeRes.headers.location ?? "");
         const parsed = new URL(returnUrl);
-        expect(parsed.protocol).toBe("happier:");
+        expect(parsed.protocol).toBe("piggercode:");
         const code = parsed.searchParams.get("code");
         expect(typeof code).toBe("string");
         expect(code?.length ?? 0).toBeGreaterThan(10);
@@ -405,7 +405,7 @@ describe("authRoutes (mTLS) (integration)", () => {
             PIGGERCODE_FEATURE_AUTH_MTLS__ALLOWED_ISSUERS: "cn=example root ca",
             PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_EMAIL_HEADER: "x-happier-client-cert-email",
             PIGGERCODE_FEATURE_AUTH_MTLS__FORWARDED_ISSUER_HEADER: "x-happier-client-cert-issuer",
-            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "happier://",
+            PIGGERCODE_FEATURE_AUTH_MTLS__RETURN_TO_ALLOW_PREFIXES: "piggercode://",
         });
 
         const app = createTestApp();
@@ -414,7 +414,7 @@ describe("authRoutes (mTLS) (integration)", () => {
 
         const startRes = await app.inject({
             method: "GET",
-            url: "/v1/auth/mtls/start?returnTo=" + encodeURIComponent("happier://auth/return"),
+            url: "/v1/auth/mtls/start?returnTo=" + encodeURIComponent("piggercode://auth/return"),
         });
         expect(startRes.statusCode).toBe(302);
 

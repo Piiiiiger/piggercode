@@ -2348,7 +2348,7 @@
         }
       }
     ],
-    "claude/claude/tool-call/mcp__happier__change_title": [
+    "claude/claude/tool-call/mcp__piggercode__change_title": [
       {
         "v": 1,
         "ts": 1769340837185,
@@ -2360,7 +2360,7 @@
         "payload": {
           "type": "tool_use",
           "id": "toolu_018A2zV84G4UCz9z14p9JLk5",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "input": {
             "title": "Remote-control tool audit"
           }
@@ -2377,7 +2377,7 @@
         "payload": {
           "type": "tool_use",
           "id": "toolu_01UWcBGoL7YHQ92PS2fbcHt9",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "input": {
             "title": "New chat"
           }
@@ -2394,7 +2394,7 @@
         "payload": {
           "type": "tool_use",
           "id": "toolu_01TpGqMUME1g4qe8Y3hQdJoE",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "input": {
             "title": "Tool validation test"
           }
@@ -2800,7 +2800,7 @@
         }
       }
     ],
-    "claude/claude/tool-result/mcp__happier__change_title": [
+    "claude/claude/tool-result/mcp__piggercode__change_title": [
       {
         "v": 1,
         "ts": 1769362828073,
@@ -3297,7 +3297,7 @@
         }
       }
     ],
-    "codex/codex/tool-call-result/mcp__happier__change_title": [
+    "codex/codex/tool-call-result/mcp__piggercode__change_title": [
       {
         "v": 1,
         "ts": 1769337098488,
@@ -3657,7 +3657,7 @@
         }
       }
     ],
-    "codex/codex/tool-call/mcp__happier__change_title": [
+    "codex/codex/tool-call/mcp__piggercode__change_title": [
       {
         "v": 1,
         "ts": 1769337098392,
@@ -3668,7 +3668,7 @@
         "kind": "tool-call",
         "payload": {
           "type": "tool-call",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "callId": "call_HwpOs4HR4DpJDBTn6XAH0Ub8",
           "input": {
             "title": "Set Chat Session Title"
@@ -3686,7 +3686,7 @@
         "kind": "tool-call",
         "payload": {
           "type": "tool-call",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "callId": "call_rTS7vv0cfB6H6rLmR3BpD2W2",
           "input": {
             "title": "Happy tool UX smoke test"
@@ -3704,7 +3704,7 @@
         "kind": "tool-call",
         "payload": {
           "type": "tool-call",
-          "name": "mcp__happier__change_title",
+          "name": "mcp__piggercode__change_title",
           "callId": "call_TKUTbYenq03nnDUVJjrfTMk4",
           "input": {
             "title": "Happy tool UX smoke test (shell/file/patch/grep/glob/todos)"

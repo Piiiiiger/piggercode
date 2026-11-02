@@ -29,7 +29,7 @@ export async function runStackResumeCommand({ rootDir, stackName, passthrough, j
     stackName,
     fn: async ({ env }) => {
       const cliDir = getComponentDir(rootDir, 'happier-cli', env);
-      const happierBin = join(cliDir, 'bin', 'happier.mjs');
+      const happierBin = join(cliDir, 'bin', 'piggercode.mjs');
 
       let daemonHelpText = '';
       try {
@@ -53,7 +53,7 @@ export async function runStackResumeCommand({ rootDir, stackName, passthrough, j
       data: { ok: false, error: 'resume_not_supported', resumed: [] },
       text: [
         '[stack] resume_not_supported',
-        'Current happier-cli does not support `happier daemon resume`.',
+        'Current happier-cli does not support `piggercode daemon resume`.',
         'Use the app UI to resume inactive sessions, or update to a compatible CLI/hstack pair.',
       ].join('\n'),
     });

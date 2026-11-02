@@ -132,7 +132,7 @@ export function registerBulkTransferUploadRpcHandlers(
     }>;
   }>,
 ): void {
-  const tempUploadRoot = join(tmpdir(), 'happier', 'uploads', randomUUID());
+  const tempUploadRoot = join(tmpdir(), 'piggercode', 'uploads', randomUUID());
 
   registerUploadTransferLifecycleHandlers<BulkTransferUploadInitResponse, BulkTransferUploadFinalizeResponse>({
     rpcHandlerManager,

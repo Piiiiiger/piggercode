@@ -178,7 +178,7 @@ export async function installVersionedPayload(params: FirstPartyAcquisitionOptio
   releaseRing?: PublicReleaseRingId;
   processEnv?: NodeJS.ProcessEnv;
   /**
-   * The user explicitly chose this channel as the default `happier` command (the official
+   * The user explicitly chose this channel as the default `piggercode` command (the official
    * installer's `--channel`). Without it an install never takes the default away from another
    * channel that is already installed — see `resolveDefaultReleaseChannelAfterInstall`.
    */
@@ -232,7 +232,7 @@ type VersionedPayloadActivationParams = FirstPartyAcquisitionOptions & Readonly<
   releaseRing?: PublicReleaseRingId;
   processEnv?: NodeJS.ProcessEnv;
   /**
-   * The user explicitly chose this channel as the default `happier` command (the official
+   * The user explicitly chose this channel as the default `piggercode` command (the official
    * installer's `--channel`). Without it an install never takes the default away from another
    * channel that is already installed — see `resolveDefaultReleaseChannelAfterInstall`.
    */
@@ -328,9 +328,9 @@ export async function pruneInstalledVersionsAfterActivation(params: Readonly<{
 }
 
 /**
- * One default `happier` command per `~/.happier` (plan R10 D2). Installing a channel makes it the
+ * One default `piggercode` command per `~/.piggercode` (plan R10 D2). Installing a channel makes it the
  * default when the user chose it explicitly, when nothing else is installed, or when it already is
- * the default; otherwise the recorded default channel keeps the `happier` shim and the marker, so a
+ * the default; otherwise the recorded default channel keeps the `piggercode` shim and the marker, so a
  * desktop app, a self-update or any other acquisition of a second channel never changes which CLI
  * the user's terminal and the default-following background service run.
  */

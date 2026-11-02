@@ -105,13 +105,13 @@ function installedDefaultFollowingService(happierHomeDir: string): DaemonService
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/happier-daemon.default.service',
+        path: '/tmp/piggercode-daemon.default.service',
         happierHomeDir,
         platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
             ? process.platform
             : 'linux',
         releaseChannel: configuration.publicReleaseRing,
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
     };
 }
@@ -139,7 +139,7 @@ async function runInstall(extraArgs: readonly string[] = []): Promise<string[]> 
     return await runRelay(['host', 'install', ...extraArgs]);
 }
 
-describe('happier relay background service reconciliation', () => {
+describe('piggercode relay background service reconciliation', () => {
     let home = '';
     let preparedPayloadRoot = '';
     let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
@@ -174,17 +174,17 @@ describe('happier relay background service reconciliation', () => {
     });
 
     it('tells a non-interactive installer to restart the background service now following the new relay', { timeout: 120_000 }, async () => {
-        installedServices = [installedDefaultFollowingService(join(home, '.happier'))];
+        installedServices = [installedDefaultFollowingService(join(home, '.piggercode'))];
 
         const logs = await runInstall();
 
-        expect(logs.join('\n')).toContain('happier service restart');
+        expect(logs.join('\n')).toContain('piggercode service restart');
         expect(logs.join('\n')).toContain('http://127.0.0.1:3005');
     });
 
     it('hands authentication to the owner that restarts the background service after credentials are written', { timeout: 120_000 }, async () => {
         mockedInteractive = true;
-        installedServices = [installedDefaultFollowingService(join(home, '.happier'))];
+        installedServices = [installedDefaultFollowingService(join(home, '.piggercode'))];
         // No credentials exist yet, so the follow-up authenticates first and then restarts.
         promptAnswers = ['y', 'y'];
 
@@ -199,34 +199,34 @@ describe('happier relay background service reconciliation', () => {
 
         const logs = await runInstall();
 
-        expect(logs.join('\n')).not.toContain('happier service restart');
+        expect(logs.join('\n')).not.toContain('piggercode service restart');
         expect(spawnedCliActions).toEqual([]);
     });
 
     it('does not reconcile the background service when the active relay is preserved', { timeout: 120_000 }, async () => {
-        installedServices = [installedDefaultFollowingService(join(home, '.happier'))];
+        installedServices = [installedDefaultFollowingService(join(home, '.piggercode'))];
 
         const logs = await runInstall(['--preserve-active-server']);
 
-        expect(logs.join('\n')).not.toContain('happier service restart');
+        expect(logs.join('\n')).not.toContain('piggercode service restart');
         expect(spawnedCliActions).toEqual([]);
     });
 
     it('reconciles the background service when `relay use` switches the active relay', { timeout: 120_000 }, async () => {
-        installedServices = [installedDefaultFollowingService(join(home, '.happier'))];
+        installedServices = [installedDefaultFollowingService(join(home, '.piggercode'))];
 
         const logs = await runRelay(['use', 'https://switched.example.test']);
 
-        expect(logs.join('\n')).toContain('happier service restart');
+        expect(logs.join('\n')).toContain('piggercode service restart');
         expect(logs.join('\n')).toContain('https://switched.example.test');
     });
 
     it('leaves the background service alone when `relay add` only saves a profile', { timeout: 120_000 }, async () => {
-        installedServices = [installedDefaultFollowingService(join(home, '.happier'))];
+        installedServices = [installedDefaultFollowingService(join(home, '.piggercode'))];
 
         const logs = await runRelay(['add', 'https://saved-only.example.test']);
 
-        expect(logs.join('\n')).not.toContain('happier service restart');
+        expect(logs.join('\n')).not.toContain('piggercode service restart');
         expect(spawnedCliActions).toEqual([]);
     });
 });

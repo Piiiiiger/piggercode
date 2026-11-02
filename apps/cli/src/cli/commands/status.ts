@@ -3,11 +3,11 @@ import { handleServiceRepairCliCommand } from './serviceRepair/handleServiceRepa
 
 export async function handleStatusCliCommand(context: CommandContext): Promise<void> {
   if (context.args.includes('--yes')) {
-    throw new Error('happier status is read-only. Use `happier doctor repair --yes` to apply repairs.');
+    throw new Error('piggercode status is read-only. Use `piggercode doctor repair --yes` to apply repairs.');
   }
 
   await handleServiceRepairCliCommand({
     argv: ['repair', '--report-only', ...context.args.slice(1)],
-    commandPath: 'happier status',
+    commandPath: 'piggercode status',
   });
 }

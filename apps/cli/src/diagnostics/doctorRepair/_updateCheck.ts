@@ -1,6 +1,6 @@
 /**
  * Update-check primitives for the relay-server latest-version classifier (the CLI's own update
- * check is `happier self check`, read through `readCachedCliUpdateState`).
+ * check is `piggercode self check`, read through `readCachedCliUpdateState`).
  */
 
 /** Bound any in-flight promise on a best-effort timeout; null on miss/fail. */

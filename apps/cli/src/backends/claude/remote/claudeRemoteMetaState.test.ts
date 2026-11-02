@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { applyClaudeRemoteMetaState, DEFAULT_CLAUDE_REMOTE_META_STATE } from './claudeRemoteMetaState';
 
 describe('applyClaudeRemoteMetaState', () => {
-  it('accepts explicit Happier attribution and preserves it when old messages omit the field', () => {
+  it('accepts explicit PiggerCode attribution and preserves it when old messages omit the field', () => {
     const enabled = applyClaudeRemoteMetaState(DEFAULT_CLAUDE_REMOTE_META_STATE, { claudeCodeIncludeInNativeHistory: true });
     expect(enabled).toMatchObject({ claudeCodeIncludeInNativeHistory: true });
     expect(applyClaudeRemoteMetaState(enabled, {})).toMatchObject({ claudeCodeIncludeInNativeHistory: true });

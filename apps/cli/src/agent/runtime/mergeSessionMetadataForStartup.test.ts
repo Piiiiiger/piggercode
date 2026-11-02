@@ -81,14 +81,14 @@ describe('mergeSessionMetadataForStartup', () => {
                 path: '/workspace/source',
                 host: 'source-host',
                 homeDir: '/Users/source',
-                happyHomeDir: '/Users/source/.happier',
+                happyHomeDir: '/Users/source/.piggercode',
                 machineId: 'machine-source',
             } as any,
             next: {
                 path: '/workspace/target',
                 host: 'target-host',
                 homeDir: '/Users/target',
-                happyHomeDir: '/Users/target/.happier',
+                happyHomeDir: '/Users/target/.piggercode',
                 machineId: 'machine-target',
                 hostPid: 2,
             } as any,
@@ -100,7 +100,7 @@ describe('mergeSessionMetadataForStartup', () => {
         expect(merged.path).toBe('/workspace/target');
         expect(merged.host).toBe('target-host');
         expect(merged.homeDir).toBe('/Users/target');
-        expect(merged.happyHomeDir).toBe('/Users/target/.happier');
+        expect(merged.happyHomeDir).toBe('/Users/target/.piggercode');
         expect(merged.machineId).toBe('machine-target');
         expect(merged.hostPid).toBe(2);
     });

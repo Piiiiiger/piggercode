@@ -5,21 +5,21 @@ import { renderWindowsScheduledTaskWrapperPs1 } from './windows_schtasks_wrapper
 
 test('renderWindowsScheduledTaskWrapperPs1 emits a wrapper that sets env and runs program args', () => {
   const ps1 = renderWindowsScheduledTaskWrapperPs1({
-    workingDirectory: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host',
-    programArgs: ['C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server.exe'],
+    workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host',
+    programArgs: ['C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\bin\\\\happier-server.exe'],
     env: {
       PORT: '3005',
       PIGGERCODE_DB_PROVIDER: 'sqlite',
     },
-    stdoutPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.out.log',
-    stderrPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.err.log',
+    stdoutPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server.out.log',
+    stderrPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server.err.log',
   });
 
   assert.match(ps1, /Set-Location -LiteralPath/);
   assert.match(ps1, /\$env:PORT = "3005"/);
   assert.match(ps1, /\$env:PIGGERCODE_DB_PROVIDER = "sqlite"/);
-  assert.match(ps1, /& "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server\.exe"/);
-  assert.match(ps1, /1>> "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server\.out\.log"/);
-  assert.match(ps1, /2>> "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server\.err\.log"/);
+  assert.match(ps1, /& "C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\bin\\\\happier-server\.exe"/);
+  assert.match(ps1, /1>> "C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server\.out\.log"/);
+  assert.match(ps1, /2>> "C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server\.err\.log"/);
 });
 

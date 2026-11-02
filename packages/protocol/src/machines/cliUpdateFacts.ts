@@ -43,7 +43,7 @@ export type CliUpdateLastResult = z.infer<typeof CliUpdateLastResultSchema>;
 
 /**
  * Where the running CLI came from, which decides who updates it: `managed` is Happier's own
- * versioned install (updated by `cli.update.v1` / `happier self update`); `npm` and `brew` belong to
+ * versioned install (updated by `cli.update.v1` / `piggercode self update`); `npm` and `brew` belong to
  * that package manager (`updateCommand` names it); `other` is anything else (a repo checkout, a
  * copied binary) and has no update command.
  */

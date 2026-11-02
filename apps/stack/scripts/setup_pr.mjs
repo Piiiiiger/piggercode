@@ -233,7 +233,7 @@ async function main() {
         '',
         'example:',
         '  hstack tools setup-pr \\',
-        '    --repo=https://github.com/happier-dev/happier/pull/123 \\',
+        '    --repo=https://github.com/Piiiiiger/piggercode/pull/123 \\',
         '    --dev',
       ].join('\n'),
     });
@@ -386,7 +386,7 @@ async function main() {
   // 1) Ensure happy-stacks home is initialized (idempotent).
   // 2) Bootstrap component repos and deps (idempotent; clones only if missing).
   if (quietUi) {
-    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
+    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.piggercode-stack'), 'logs', 'setup-pr');
     const initLog = join(baseLogDir, `init.${Date.now()}.log`);
     const installLog = join(baseLogDir, `install.${Date.now()}.log`);
     try {
@@ -479,7 +479,7 @@ async function main() {
     stackArgs.push('--', ...forwardedEffective);
   }
   if (quietUi) {
-    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.happier-stack'), 'logs', 'setup-pr');
+    const baseLogDir = join(process.env.PIGGERCODE_STACK_HOME_DIR ?? join(homedir(), '.piggercode-stack'), 'logs', 'setup-pr');
     const stackLog = join(baseLogDir, `stack-pr.${Date.now()}.log`);
     await runCommandLogged({
       label: `start PR stack${isSandboxed() ? ' (sandbox)' : ''}`,

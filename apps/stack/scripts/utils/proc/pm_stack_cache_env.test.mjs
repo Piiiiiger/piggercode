@@ -686,8 +686,8 @@ test('ensureDepsInstalled derives stack cache roots from ~/ env file overrides a
   const { root, componentDir, binDir } = fixture;
   const outputPath = join(root, 'env.json');
   const homeDir = join(root, 'home');
-  const expectedCacheBase = join(homeDir, '.happier', 'stacks', 'dev', 'cache');
-  const expectedStackHome = join(homeDir, '.happier', 'stacks', 'dev', 'home');
+  const expectedCacheBase = join(homeDir, '.piggercode', 'stacks', 'dev', 'cache');
+  const expectedStackHome = join(homeDir, '.piggercode', 'stacks', 'dev', 'home');
   await writeYarnEnvDumpStub({ binDir, outputPath });
 
   applyEnvOverrides(t, {
@@ -695,7 +695,7 @@ test('ensureDepsInstalled derives stack cache roots from ~/ env file overrides a
     OUTPUT_PATH: outputPath,
     HOME: homeDir,
     USERPROFILE: homeDir,
-    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_ENV_FILE: '~/.piggercode/stacks/dev/env',
     XDG_CACHE_HOME: null,
     YARN_CACHE_FOLDER: null,
     npm_config_cache: null,

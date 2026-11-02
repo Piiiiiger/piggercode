@@ -209,7 +209,7 @@ describe('spawnDetachedDaemonStartSync', () => {
       return launcherChild as any;
     });
     resolveDaemonLaunchSpecMock.mockImplementationOnce(async () => ({
-      filePath: 'C:\\hq\\windetachedfix-001\\happier-v0.2.4-windows-x64\\happier.exe',
+      filePath: 'C:\\hq\\windetachedfix-001\\happier-v0.2.4-windows-x64\\piggercode.exe',
       args: ['daemon', 'start-sync'],
     }));
 

@@ -39,7 +39,7 @@ Start with evidence that can discriminate among likely failure layers:
 - process, port, filesystem, persistence, browser/network, or service state;
 - current or installed-version source, schemas, and tests when they establish reachability or interpret a logged event.
 
-Run `happier doctor --json` and `happier auth status --json` when daemon, server, authentication, lifecycle, process, or connectivity state is material. Do not make doctor a mandatory prelude to an unrelated UI-only or already-decided failure.
+Run `piggercode doctor --json` and `piggercode auth status --json` when daemon, server, authentication, lifecycle, process, or connectivity state is material. Do not make doctor a mandatory prelude to an unrelated UI-only or already-decided failure.
 
 Prefer `metadata.sessionLogPath` and `metadata.happyHomeDir` over guessed locations. Anchor searches on time, session/provider IDs, PID, host, and operation. Absence is evidence only about the named files, patterns, and time range searched.
 

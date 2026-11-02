@@ -8,7 +8,7 @@ describe('resolveTerminalConnectDeepLink', () => {
       resolveTerminalConnectDeepLink(
         'https://example.test/terminal/connect#key=test-key&server=http%3A%2F%2F127.0.0.1%3A4011',
       ),
-    ).toBe('happier://terminal?key=test-key&server=http%3A%2F%2F127.0.0.1%3A4011');
+    ).toBe('piggercode://terminal?key=test-key&server=http%3A%2F%2F127.0.0.1%3A4011');
   });
 
   it('returns an empty string for non-terminal-connect urls', () => {
@@ -21,6 +21,6 @@ describe('resolveTerminalConnectDeepLink', () => {
         'https://example.test/terminal/connect#key=test-key&server=http%3A%2F%2F127.0.0.1%3A4011',
         { serverUrl: 'http://10.0.2.2:4011' },
       ),
-    ).toBe('happier://terminal?key=test-key&server=http%3A%2F%2F10.0.2.2%3A4011');
+    ).toBe('piggercode://terminal?key=test-key&server=http%3A%2F%2F10.0.2.2%3A4011');
   });
 });

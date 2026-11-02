@@ -46,8 +46,8 @@ import type {
 import { cmd as presentationCmd } from '@piggercode/cli-common/output';
 import { BUILTIN_RELAY } from '@/server/builtinRelay';
 
-export const CLEAN_STATE_HEADER = '✓ Your Happier installation looks good.';
-export const MISMATCHED_STATE_HEADER = chalk.yellow.bold('Your Happier setup might need some attention:');
+export const CLEAN_STATE_HEADER = '✓ Your PiggerCode installation looks good.';
+export const MISMATCHED_STATE_HEADER = chalk.yellow.bold('Your PiggerCode setup might need some attention:');
 
 /**
  * Short, one-line headline per finding kind. Used in the summary block under
@@ -58,7 +58,7 @@ export function findingHeadline(finding: RepairFinding): string {
     case 'channel_switch_recommended':
       return `You\u2019re currently on ${finding.fromStack.releaseChannel}; you just installed the ${finding.toChannel} CLI`;
     case 'no_active_stack_yet':
-      return 'No active Happier stack yet — start one to begin using Happier';
+      return 'No active PiggerCode stack yet — start one to begin using PiggerCode';
     case 'no_servers_configured':
       return 'No server profiles are configured';
     case 'server_profile_missing':
@@ -72,11 +72,11 @@ export function findingHeadline(finding: RepairFinding): string {
     case 'dev_on_hosted_cloud_informational':
       return 'Dev CLI + hosted cloud — dev features may not be available';
     case 'multi_stack_detected_informational':
-      return 'Multiple Happier stacks running on this machine';
+      return 'Multiple PiggerCode stacks running on this machine';
     case 'cli_self_update_available':
       return 'A newer CLI is available for your release channel';
     case 'automatic_startup_foreign_home':
-      return 'A background service from another Happier installation was detected';
+      return 'A background service from another PiggerCode installation was detected';
     case 'automatic_startup_duplicate_default_following':
       return 'Multiple background services are configured to auto-start';
     case 'automatic_startup_duplicate_pinned_same_server':
@@ -291,11 +291,11 @@ export const UNHEALTHY_WORD = 'unhealthy';
 
 // ─────── End-of-run recaps ───────
 
-export function recapNothingToDo(invoker: string = 'happier'): string {
+export function recapNothingToDo(invoker: string = 'piggercode'): string {
   return `All done. \`${invoker} doctor repair\` is always safe to re-run.`;
 }
 
-export function recapAppliedSome(applied: number, total: number, invoker: string = 'happier'): string {
+export function recapAppliedSome(applied: number, total: number, invoker: string = 'piggercode'): string {
   return `Applied ${applied} of ${total} actions. Re-run \`${invoker} doctor repair\` to retry the rest.`;
 }
 
@@ -485,14 +485,14 @@ export function copyDuplicatePinnedSameServer(
 export function copyMissing(finding: AutomaticStartupMissing): FindingPromptCopy {
   return {
     body: [
-      'Without an auto-starting service, Happier won\'t come back on after a reboot.',
+      'Without an auto-starting service, PiggerCode won\'t come back on after a reboot.',
     ],
     question: `Enable an auto-starting background service for the ${finding.targetReleaseChannel} channel?`,
     default: finding.targetReleaseChannel === 'stable' ? 'yes' : 'no',
   };
 }
 
-export function copyForeignHome(finding: AutomaticStartupForeignHome, invoker: string = 'happier'): readonly string[] {
+export function copyForeignHome(finding: AutomaticStartupForeignHome, invoker: string = 'piggercode'): readonly string[] {
   // Informational only — no prompt. The bullet+title header is rendered
   // by the orchestrator via `formatFindingHeader()`; we just add the
   // per-entry path/home rows and the manual-cleanup guidance below it.
@@ -502,12 +502,12 @@ export function copyForeignHome(finding: AutomaticStartupForeignHome, invoker: s
   }
   if (finding.entries.length > 0) {
     for (const entry of finding.entries) {
-      const home = entry.happierHomeDir ?? '(unknown Happier home)';
-      lines.push(`• ${entry.path}   (Happier home: ${home})`);
+      const home = entry.happierHomeDir ?? '(unknown PiggerCode home)';
+      lines.push(`• ${entry.path}   (PiggerCode home: ${home})`);
     }
   }
   lines.push('');
-  lines.push('This belongs to a different Happier home — I can\'t touch it safely.');
+  lines.push('This belongs to a different PiggerCode home — I can\'t touch it safely.');
   lines.push(`Remove it from the owning installation, then re-run \`${invoker} doctor repair\`.`);
   return lines;
 }
@@ -806,7 +806,7 @@ export function copyChannelSwitchRecommended(finding: ChannelSwitchRecommended):
 
 // ─── Manual-guidance copy for findings that print instructions instead of prompting ───
 
-export function copyNoActiveStackYet(finding: NoActiveStackYet, invoker: string = 'happier'): readonly string[] {
+export function copyNoActiveStackYet(finding: NoActiveStackYet, invoker: string = 'piggercode'): readonly string[] {
   return [
     `You just installed the ${finding.releaseChannel} CLI but no daemon is running yet.`,
     '',
@@ -815,7 +815,7 @@ export function copyNoActiveStackYet(finding: NoActiveStackYet, invoker: string 
   ];
 }
 
-export function copyNoServersConfigured(invoker: string = 'happier'): readonly string[] {
+export function copyNoServersConfigured(invoker: string = 'piggercode'): readonly string[] {
   return [
     'You need at least one server profile to connect to.',
     '',
@@ -836,7 +836,7 @@ export function copyNoServersConfigured(invoker: string = 'happier'): readonly s
  * The recovery is "configure this server" — list the canonical entry points
  * so the user can pick the right one for their setup.
  */
-export function copyServerProfileMissing(_finding: ServerProfileMissing, invoker: string = 'happier'): readonly string[] {
+export function copyServerProfileMissing(_finding: ServerProfileMissing, invoker: string = 'piggercode'): readonly string[] {
   return [
     'Configure it before doctor repair can work for that server.',
     '',
@@ -847,28 +847,28 @@ export function copyServerProfileMissing(_finding: ServerProfileMissing, invoker
   ];
 }
 
-export function copyAuthMissingForProfile(finding: AuthMissingForProfile, invoker: string = 'happier'): readonly string[] {
+export function copyAuthMissingForProfile(finding: AuthMissingForProfile, invoker: string = 'piggercode'): readonly string[] {
   return [
     'Sign in with:',
     `  ${authSignInCommand(invoker, finding.serverId)}`,
   ];
 }
 
-export function copyAuthExpiredForActiveProfile(_finding: AuthExpiredForActiveProfile, invoker: string = 'happier'): readonly string[] {
+export function copyAuthExpiredForActiveProfile(_finding: AuthExpiredForActiveProfile, invoker: string = 'piggercode'): readonly string[] {
   return [
     'Sign in again with:',
     `  ${authSignInCommand(invoker)}`,
   ];
 }
 
-export function copyMachineNotRegisteredForProfile(_finding: MachineNotRegisteredForProfile, invoker: string = 'happier'): readonly string[] {
+export function copyMachineNotRegisteredForProfile(_finding: MachineNotRegisteredForProfile, invoker: string = 'piggercode'): readonly string[] {
   return [
     'Starting the daemon will register it:',
     `  ${invoker} daemon start`,
   ];
 }
 
-export function copyDevOnHostedCloudInformational(invoker: string = 'happier'): readonly string[] {
+export function copyDevOnHostedCloudInformational(invoker: string = 'piggercode'): readonly string[] {
   return [
     'Dev-channel features work best with a local dev relay; hosted cloud runs stable only.',
     '',
@@ -914,7 +914,7 @@ export function copyOrphanDaemonOnOtherChannel(finding: OrphanDaemonOnOtherChann
 
 export function copyLocalRelayOffChannelLeftovers(
   finding: LocalRelayOffChannelLeftovers,
-  invoker: string = 'happier',
+  invoker: string = 'piggercode',
 ): readonly string[] {
   // Compact informational. One line per leftover relay + one line for the
   // remove-command hint. All muted \u2014 these are FYI, not action items. The
@@ -933,7 +933,7 @@ export function copyLocalRelayOffChannelLeftovers(
 
 export function copyBackgroundServiceCrashLooping(
   finding: BackgroundServiceCrashLooping,
-  invoker: string = 'happier',
+  invoker: string = 'piggercode',
 ): FindingPromptCopy {
   const { runs, lastExitCode, lastErrorLine, suspectedCause, conflictingDaemon } = finding;
   const body: string[] = [

@@ -556,13 +556,13 @@ describe('CodexLikePermissionHandler', () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({ session: session as any, logPrefix: '[Test]' });
 
-    const result = await handler.handleToolCall('tool-1', 'mcp__happier__session_title_set', { title: 'Renamed' });
+    const result = await handler.handleToolCall('tool-1', 'mcp__piggercode__session_title_set', { title: 'Renamed' });
 
     expect(result.decision).toBe('approved');
     expect(session.agentState.requests['tool-1']).toBeUndefined();
     expect(session.agentState.completedRequests['tool-1']).toEqual(
       expect.objectContaining({
-        tool: 'mcp__happier__session_title_set',
+        tool: 'mcp__piggercode__session_title_set',
         status: 'approved',
         decision: 'approved',
       }),
@@ -575,23 +575,23 @@ describe('CodexLikePermissionHandler', () => {
 
     await expect(handler.handleToolCall(
       'observe-direct',
-      'mcp__happier__execution_run_wait',
+      'mcp__piggercode__execution_run_wait',
       { runId: 'run-1' },
     )).resolves.toEqual({ decision: 'approved' });
     await expect(handler.handleToolCall(
       'observe-dynamic',
-      'mcp__happier__action_execute',
+      'mcp__piggercode__action_execute',
       { actionId: 'execution.run.get', input: { runId: 'run-1' } },
     )).resolves.toEqual({ decision: 'approved' });
     await expect(handler.handleToolCall(
       'write-dynamic',
-      'mcp__happier__action_execute',
+      'mcp__piggercode__action_execute',
       { actionId: 'execution.run.start', input: {} },
     )).resolves.toEqual({ decision: 'approved' });
 
     const unknown = handler.handleToolCall(
       'unknown-dynamic',
-      'mcp__happier__action_execute',
+      'mcp__piggercode__action_execute',
       { actionId: 'not.a.known.action', input: {} },
     );
     expect(session.agentState.requests['unknown-dynamic']).toBeDefined();
@@ -616,7 +616,7 @@ describe('CodexLikePermissionHandler', () => {
     ).resolves.toEqual({ decision: 'denied' });
   });
 
-  it('auto-approves first-party Happier MCP tools when Happier action approval is required', async () => {
+  it('auto-approves first-party PiggerCode MCP tools when PiggerCode action approval is required', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({
       session: session as any,
@@ -634,7 +634,7 @@ describe('CodexLikePermissionHandler', () => {
       } as any),
     });
 
-    await expect(handler.handleToolCall('tool-happier-approval', 'mcp__happier__session_list', {})).resolves.toEqual({
+    await expect(handler.handleToolCall('tool-happier-approval', 'mcp__piggercode__session_list', {})).resolves.toEqual({
       decision: 'approved',
     });
     expect(session.agentState.requests['tool-happier-approval']).toBeUndefined();
@@ -665,20 +665,20 @@ describe('CodexLikePermissionHandler', () => {
       } as any),
     });
 
-    const result = await handler.handleToolCall('tool-1', 'mcp__happier__session_title_set', { title: 'Renamed' });
+    const result = await handler.handleToolCall('tool-1', 'mcp__piggercode__session_title_set', { title: 'Renamed' });
 
     expect(result.decision).toBe('denied');
     expect(session.agentState.requests['tool-1']).toBeUndefined();
     expect(session.agentState.completedRequests['tool-1']).toEqual(
       expect.objectContaining({
-        tool: 'mcp__happier__session_title_set',
+        tool: 'mcp__piggercode__session_title_set',
         status: 'denied',
         decision: 'denied',
       }),
     );
   });
 
-  it('denies Happier shell-bridge title calls when coding prompt title updates are disabled', async () => {
+  it('denies PiggerCode shell-bridge title calls when coding prompt title updates are disabled', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({
       session: session as any,
@@ -694,8 +694,8 @@ describe('CodexLikePermissionHandler', () => {
 
     const result = await handler.handleToolCall('tool-1', 'Bash', {
       command:
-        `happier tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
-        `--source happier --tool change_title --args-json '{"title":"Blocked"}' --json`,
+        `piggercode tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
+        `--source piggercode --tool change_title --args-json '{"title":"Blocked"}' --json`,
     });
 
     expect(result.decision).toBe('denied');
@@ -801,7 +801,7 @@ describe('CodexLikePermissionHandler', () => {
     }
   });
 
-  it('auto-approves a locally generated Happier tools shell-bridge command in default mode', async () => {
+  it('auto-approves a locally generated PiggerCode tools shell-bridge command in default mode', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({ session: session as any, logPrefix: '[Test]' });
     const { buildHappierToolsShellBridgeCommand } = await import(
@@ -816,7 +816,7 @@ describe('CodexLikePermissionHandler', () => {
         '--directory',
         '/tmp/workspace',
         '--source',
-        'happier',
+        'piggercode',
         '--tool',
         'change_title',
         '--args-json',
@@ -836,7 +836,7 @@ describe('CodexLikePermissionHandler', () => {
     );
   });
 
-  it('auto-approves a locally generated Happier tools shell-bridge command even in read-only mode', async () => {
+  it('auto-approves a locally generated PiggerCode tools shell-bridge command even in read-only mode', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({ session: session as any, logPrefix: '[Test]' });
     handler.setPermissionMode('read-only');
@@ -873,23 +873,23 @@ describe('CodexLikePermissionHandler', () => {
 
     await expect(
       handler.handleToolCall('tool-untrusted-launcher', 'bash', {
-        command: `node ./happier-helper.js tools call --source happier --tool save_memory --args-json '{}' --json`,
+        command: `node ./happier-helper.js tools call --source piggercode --tool save_memory --args-json '{}' --json`,
       }),
     ).resolves.toEqual({ decision: 'denied' });
     await expect(
       handler.handleToolCall('tool-compound', 'bash', {
-        command: `happier tools list --json; touch /tmp/happier-pwn`,
+        command: `piggercode tools list --json; touch /tmp/happier-pwn`,
       }),
     ).resolves.toEqual({ decision: 'denied' });
   });
 
-  it('prompts for Happier shell-bridge calls with non-vetted custom sources in default mode', async () => {
+  it('prompts for PiggerCode shell-bridge calls with non-vetted custom sources in default mode', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({ session: session as any, logPrefix: '[Test]' });
 
     const promise = handler.handleToolCall('tool-1', 'bash', {
       command:
-        `happier tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
+        `piggercode tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
         `--source qa_marker_stdio_20260306 --tool get_marker --args-json '{}' --json`,
     });
 
@@ -906,14 +906,14 @@ describe('CodexLikePermissionHandler', () => {
     await expect(promise).resolves.toEqual({ decision: 'approved' });
   });
 
-  it('prompts for non-vetted internal Happier shell-bridge tools in default mode', async () => {
+  it('prompts for non-vetted internal PiggerCode shell-bridge tools in default mode', async () => {
     const session = new FakeSession();
     const handler = new CodexLikePermissionHandler({ session: session as any, logPrefix: '[Test]' });
 
     const promise = handler.handleToolCall('tool-1', 'bash', {
       command:
-        `happier tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
-        `--source happier --tool action_execute --args-json '{"actionId":"dangerous.action"}' --json`,
+        `piggercode tools call --session-id cmmfivqgm002d8o1ug15b02o1 --directory /tmp/workspace ` +
+        `--source piggercode --tool action_execute --args-json '{"actionId":"dangerous.action"}' --json`,
     });
 
     expect(session.agentState.requests['tool-1']).toEqual(

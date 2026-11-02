@@ -10,7 +10,7 @@ describe('registerHappierMcpBridgeTools', () => {
     delete process.env.PIGGERCODE_ACTIONS_SETTINGS_V1;
   });
 
-  it('registers only the currently enabled Happier MCP tools and forwards calls', async () => {
+  it('registers only the currently enabled PiggerCode MCP tools and forwards calls', async () => {
     process.env.PIGGERCODE_ACTIONS_SETTINGS_V1 = JSON.stringify({
       v: 1,
       actions: {
@@ -37,7 +37,7 @@ describe('registerHappierMcpBridgeTools', () => {
     const names = calls.map((c) => c.name);
     expect(names).toEqual(listBuiltInHappierTools({ surface: 'session_agent' }).map((tool) => tool.name));
     expect(names).toContain('change_title');
-    expect(names).not.toContain('happier__change_title');
+    expect(names).not.toContain('piggercode__change_title');
     expect(names).not.toContain('happy__change_title');
     expect(names).not.toContain('review_start');
     expect(names).not.toContain('subagents_plan_start');

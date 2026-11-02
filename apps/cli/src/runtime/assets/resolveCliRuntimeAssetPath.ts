@@ -13,7 +13,7 @@ function isRuntimeExecutablePath(pathLike: string): boolean {
 
 function resolveCliInstallRootNameFromShim(executableBase: string): string | null {
   const normalizedBase = executableBase.toLowerCase().replace(/\.exe$/u, '');
-  if (normalizedBase === 'happier') return 'cli';
+  if (normalizedBase === 'piggercode') return 'cli';
   if (normalizedBase === 'hprev') return 'cli-preview';
   if (normalizedBase === 'hdev') return 'cli-dev';
   return null;

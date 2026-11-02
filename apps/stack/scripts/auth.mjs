@@ -1466,7 +1466,7 @@ async function cmdStatus({ json }) {
     auth,
     daemon,
     serverHealth: health,
-    cliBin: join(getComponentDir(rootDir, 'happier-cli'), 'bin', 'happier.mjs'),
+    cliBin: join(getComponentDir(rootDir, 'happier-cli'), 'bin', 'piggercode.mjs'),
   };
 
   if (json) {

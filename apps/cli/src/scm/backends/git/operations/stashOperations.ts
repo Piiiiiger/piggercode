@@ -31,7 +31,7 @@ function validateStashRef(stashRef: string): { ok: true; value: string } | { ok:
 }
 
 export const PIGGERCODE_MANAGED_STASH_MARKERS = {
-    branch: '!!Happier<',
+    branch: '!!PiggerCode<',
     transient: '!!HappierTransient<',
 } as const;
 
@@ -40,7 +40,7 @@ const NO_LOCAL_CHANGES_REGEX = /no local changes to save/i;
 const STASH_CONFLICT_REGEX = /conflict|needs merge|merge conflict/i;
 
 export function buildHappierBranchStashMarker(branchName: string): string {
-    return `!!Happier<${branchName}>`;
+    return `!!PiggerCode<${branchName}>`;
 }
 
 export function buildHappierTransientStashMarker(branchName: string): string {

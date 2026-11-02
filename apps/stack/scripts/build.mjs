@@ -28,7 +28,7 @@ async function prepareTauriSidecarForBuild({ env }) {
 /**
  * Build a lightweight static web UI bundle (no Expo dev server).
  *
- * Output directory default: ~/.happier/stacks/main/ui (legacy: ~/.happier/local/ui)
+ * Output directory default: ~/.piggercode/stacks/main/ui (legacy: ~/.piggercode/local/ui)
  * Server will serve it at / when PIGGERCODE_SERVER_UI_DIR is set.
  * (Legacy /ui paths are redirected to /.)
  */

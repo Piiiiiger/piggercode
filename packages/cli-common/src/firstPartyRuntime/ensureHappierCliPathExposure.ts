@@ -22,7 +22,7 @@ export interface HappierCliPathExposureResult {
   shellReloadHint: string | null;
   failure: string | null;
   /**
-   * Another `happier` resolves on PATH (or, after "Keep my own", the CLI this computer chose).
+   * Another `piggercode` resolves on PATH (or, after "Keep my own", the CLI this computer chose).
    * Without a recorded choice nothing was added: putting the managed CLI in front of it would
    * silently change which CLI the user's terminal runs. After "Let Happier manage it" the line is
    * written anyway and this names the old copy the user may remove (R12). `null` when nothing else
@@ -36,7 +36,7 @@ export interface HappierCliPathRemovalResult {
   failure: string | null;
 }
 
-export const PIGGERCODE_DESKTOP_PATH_MARKER_LINE = '# Added by Happier Desktop';
+export const PIGGERCODE_DESKTOP_PATH_MARKER_LINE = '# Added by PiggerCode Desktop';
 
 /** User-scoped environment variable holding the PATH entries Desktop added on Windows. */
 export const PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE = 'PIGGERCODE_DESKTOP_PATH_ENTRIES';
@@ -115,14 +115,14 @@ export async function ensureHappierCliPathExposure(params: Readonly<{
   const resolved = resolveHappierOnPath(params.processEnv);
   const existingCommand = resolved && !isManagedShim(resolved, params.binDir) ? resolved : null;
   if (resolved && !existingCommand) {
-    // Already the managed shim (for example the installer's `~/.local/bin/happier` link to it):
+    // Already the managed shim (for example the installer's `~/.local/bin/piggercode` link to it):
     // there is nothing to expose, and a second export line would only duplicate it.
     return { changed: false, shellReloadHint: null, failure: null, existingCommand: null };
   }
   if (existingCommand && choice?.mode !== 'managed') {
     return { changed: false, shellReloadHint: null, failure: null, existingCommand };
   }
-  // No other `happier`, or this computer chose "Let Happier manage it" (R12 amends INV5): the line
+  // No other `piggercode`, or this computer chose "Let Happier manage it" (R12 amends INV5): the line
   // is written even though another CLI resolves, so a new terminal runs the managed CLI first.
   const exposed = process.platform === 'win32'
     ? await ensureWindowsUserPathExposure({ ...params, putFirst: existingCommand !== null })
@@ -131,8 +131,8 @@ export async function ensureHappierCliPathExposure(params: Readonly<{
 }
 
 /**
- * A `happier` on PATH that is not this Happier home's managed shim — one the user installed
- * (npm, Homebrew, a manual copy) — or `null` when every `happier` found is the managed shim
+ * A `piggercode` on PATH that is not this Happier home's managed shim — one the user installed
+ * (npm, Homebrew, a manual copy) — or `null` when every `piggercode` found is the managed shim
  * (including the installer's `~/.local/bin` link to it). The same search path the PATH exposure
  * above uses, walked past the managed shim (R13 b): after "Let Happier manage it" the managed shim
  * answers first, and the old copy the person may still remove sits behind it. So "another CLI
@@ -146,7 +146,7 @@ export function resolveForeignHappierCli(params: Readonly<{
 }
 
 /**
- * The `happier` a new terminal runs first, as opposed to every other copy on the search path
+ * The `piggercode` a new terminal runs first, as opposed to every other copy on the search path
  * (`resolveForeignHappierCli`, which feeds Settings): the R12 question is about this one, because
  * only it is what the person's terminal actually runs (RV3-1). `managed` when it is this Happier
  * home's managed CLI; `desktopExposed` when it got there through what Desktop wrote and "Keep my
@@ -165,7 +165,7 @@ export function resolveTerminalHappierCli(params: Readonly<{
   const command = resolveHappierOnPath(params.processEnv);
   if (!command) return null;
   if (!isManagedShim(command, params.binDir)) return { command, managed: false, desktopExposed: false };
-  const shimPath = join(params.binDir, process.platform === 'win32' ? 'happier.exe' : 'happier');
+  const shimPath = join(params.binDir, process.platform === 'win32' ? 'piggercode.exe' : 'piggercode');
   const direct = process.platform === 'win32' ? sameWindowsPathEntry(command, shimPath) : command === shimPath;
   const recordedByDesktop = process.platform !== 'win32' || [
     ...splitWindowsPathEntries(readEnvCaseInsensitive(params.processEnv, PIGGERCODE_DESKTOP_WINDOWS_PATH_PROVENANCE_VARIABLE)),
@@ -181,29 +181,29 @@ function readEnvCaseInsensitive(env: NodeJS.ProcessEnv, name: string): string | 
 }
 
 function isManagedShim(candidate: string, binDir: string): boolean {
-  return isSameFile(candidate, join(binDir, process.platform === 'win32' ? 'happier.exe' : 'happier'));
+  return isSameFile(candidate, join(binDir, process.platform === 'win32' ? 'piggercode.exe' : 'piggercode'));
 }
 
 /**
- * The `happier` a new terminal would run, or `null` when none resolves.
+ * The `piggercode` a new terminal would run, or `null` when none resolves.
  *
  * On macOS an app opened from the Dock or Finder gets launchd's PATH (`/usr/bin:/bin:…`), which
- * leaves out Homebrew, the npm-global default and the per-user bins where a user's own `happier`
+ * leaves out Homebrew, the npm-global default and the per-user bins where a user's own `piggercode`
  * lives. The search there is the service PATH owner's (`buildServicePath`: this PATH, then the
  * per-user bins, then its fixed macOS list). A version manager's shim directory (nvm, fnm, volta)
  * is only on the login shell's PATH and is not detected (INV5). `accept` skips matches, so a caller
- * looking for a particular kind of `happier` gets the first one of that kind.
+ * looking for a particular kind of `piggercode` gets the first one of that kind.
  */
 function resolveHappierOnPath(
   processEnv: NodeJS.ProcessEnv,
   accept: (candidate: string) => boolean = () => true,
 ): string | null {
   if (process.platform === 'win32') {
-    return resolveWindowsCommandOnPath('happier', processEnv, accept);
+    return resolveWindowsCommandOnPath('piggercode', processEnv, accept);
   }
   for (const dir of resolveHappierCliSearchPath(processEnv).split(pathDelimiter)) {
     if (!dir.trim()) continue;
-    const candidate = join(dir, 'happier');
+    const candidate = join(dir, 'piggercode');
     try {
       accessSync(candidate, fsConstants.X_OK);
       if (statSync(candidate).isFile() && accept(candidate)) return candidate;
@@ -215,9 +215,9 @@ function resolveHappierOnPath(
 }
 
 /**
- * The PATH a new terminal's `happier` is looked up in, as above: the process PATH, extended on
+ * The PATH a new terminal's `piggercode` is looked up in, as above: the process PATH, extended on
  * macOS by the service PATH owner's list because a Dock-launched app gets launchd's PATH. A CLI
- * found here is also run with it (R12): an npm `happier` is `#!/usr/bin/env node`, and the `node`
+ * found here is also run with it (R12): an npm `piggercode` is `#!/usr/bin/env node`, and the `node`
  * beside it (Homebrew, `/usr/local/bin`) is only on that same list.
  */
 export function resolveHappierCliSearchPath(processEnv: NodeJS.ProcessEnv): string {
@@ -377,7 +377,7 @@ export function planWindowsUserPathExposure(params: Readonly<{
   moves: string | null;
   binDir: string;
   /**
-   * R12 "Let Happier manage it": the managed dir must come before any other `happier` (an npm
+   * R12 "Let Happier manage it": the managed dir must come before any other `piggercode` (an npm
    * global dir), so an entry already present further back is moved to the front — moved, never
    * duplicated, and its provenance unchanged. The move itself is recorded (R13 b), so "Keep my own"
    * can put the entry back where it was.
@@ -609,7 +609,7 @@ async function ensureWindowsUserPathExposure(params: Readonly<{
       provenance: planned.provenance,
       moves: planned.moves,
     });
-    return { changed: true, shellReloadHint: 'Open a new terminal to use happier.', failure: null, existingCommand: null };
+    return { changed: true, shellReloadHint: 'Open a new terminal to use piggercode.', failure: null, existingCommand: null };
   } catch (error) {
     return { changed: false, shellReloadHint: null, failure: `Could not update the user PATH: ${describeError(error)}`, existingCommand: null };
   }

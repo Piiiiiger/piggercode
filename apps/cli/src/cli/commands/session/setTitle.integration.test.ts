@@ -13,7 +13,7 @@ vi.mock('socket.io-client', () => ({
   io: mockIo,
 }));
 
-describe('happier session set-title (integration)', () => {
+describe('piggercode session set-title (integration)', () => {
   const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR', 'PIGGERCODE_ACTIONS_SETTINGS_V1'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;

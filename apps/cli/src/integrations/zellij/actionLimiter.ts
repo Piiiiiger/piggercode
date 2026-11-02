@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const LIMITER_DIRECTORY_NAME = '.happier-action-slots';
+const LIMITER_DIRECTORY_NAME = '.piggercode-action-slots';
 const OWNER_FILE_NAME = 'owner.json';
 const OWNERLESS_SLOT_STALE_MS = 30_000;
 const MIN_CONTENTION_BACKOFF_MS = 5;

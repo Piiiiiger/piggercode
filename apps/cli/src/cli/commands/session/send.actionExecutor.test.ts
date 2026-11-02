@@ -9,7 +9,7 @@ vi.mock('@/session/actions/createCliActionExecutorFromCredentials', () => ({
   createCliActionExecutorFromCredentials,
 }));
 
-describe('happier session send (action executor)', () => {
+describe('piggercode session send (action executor)', () => {
   it('treats --local-id after the option terminator as the literal message', async () => {
     const readCredentialsFn = vi.fn(async () => null);
     const { handleSessionCommand } = await import('./handleSessionCommand');

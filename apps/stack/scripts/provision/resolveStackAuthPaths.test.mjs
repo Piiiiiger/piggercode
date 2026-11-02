@@ -29,7 +29,7 @@ test('resolveQaStackName prefers explicit stack name', async () => {
 test('resolveQaStackName selects newest stack runtime matching server port', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-resolve-stack-auth-'));
   const homeDir = join(root, 'home');
-  const stacksRoot = join(homeDir, '.happier', 'stacks');
+  const stacksRoot = join(homeDir, '.piggercode', 'stacks');
 
   const stackOld = join(stacksRoot, 'stack-old');
   const stackNew = join(stacksRoot, 'stack-new');
@@ -57,7 +57,7 @@ test('resolveStackCliAccessKeyCandidates returns deterministic access.key candid
   const homeDir = join(root, 'home');
   const stackName = 'stack-test';
 
-  const cliRoot = join(homeDir, '.happier', 'stacks', stackName, 'cli');
+  const cliRoot = join(homeDir, '.piggercode', 'stacks', stackName, 'cli');
   await mkdir(join(cliRoot, 'servers', 'server_a'), { recursive: true });
   await mkdir(join(cliRoot, 'servers', 'server_b'), { recursive: true });
 

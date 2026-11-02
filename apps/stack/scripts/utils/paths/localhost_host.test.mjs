@@ -28,7 +28,7 @@ test('resolveLocalhostHost supports legacy prefix via PIGGERCODE_STACK_LOCALHOST
   assert.equal(resolveLocalhostHost({ stackMode: true, stackName: 'dev-auth', env }), 'happy-dev-auth.localhost');
 });
 
-test('resolveLocalhostHost falls back to happier prefix for invalid override values', () => {
+test('resolveLocalhostHost falls back to piggercode prefix for invalid override values', () => {
   const env = { PIGGERCODE_STACK_LOCALHOST_SUBDOMAIN_PREFIX: 'invalid-prefix' };
   assert.equal(resolveLocalhostHost({ stackMode: true, stackName: 'dev-auth', env }), 'happier-dev-auth.localhost');
 });

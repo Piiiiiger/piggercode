@@ -194,7 +194,7 @@ describe('ToolCallsGroupRow', () => {
         id: 'bash-1',
         name: 'Bash',
         state: 'completed',
-        input: { command: 'happier tools call' },
+        input: { command: 'piggercode tools call' },
         result: {
           content: [{
             type: 'text',

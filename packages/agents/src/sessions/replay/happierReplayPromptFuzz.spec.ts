@@ -174,7 +174,7 @@ describe('the range claim and the scaffold hold across a seeded transcript fuzz'
   };
 
   const renderInvocation = (cursorSeq: number | null): string =>
-    `happier tools call session.transcript.get --input '{"sessionId":"${OWN}","direction":"before","cursor":"${cursorSeq ?? ''}","limit":100}'`;
+    `piggercode tools call session.transcript.get --input '{"sessionId":"${OWN}","direction":"before","cursor":"${cursorSeq ?? ''}","limit":100}'`;
 
   const occurrencesOf = (text: string, needle: string): number => text.split(needle).length - 1;
 
@@ -386,7 +386,7 @@ describe('the range claim and the scaffold hold across a seeded transcript fuzz'
       const sourceAgentLabel = sameSession && random.chance(2) ? 'Claude Code CLI' : null;
       const strategy = (summaryText ? 'summary_plus_recent' : 'recent_messages') as
         'summary_plus_recent' | 'recent_messages';
-      const nativeTranscriptPath = random.chance(3) ? '/home/u/.happier/agent/x/abc.jsonl' : null;
+      const nativeTranscriptPath = random.chance(3) ? '/home/u/.piggercode/agent/x/abc.jsonl' : null;
 
       const common = {
         previousSessionId: OWN,

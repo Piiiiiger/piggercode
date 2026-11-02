@@ -57,7 +57,7 @@ const AMBIENT_RESULT = {
         daemonRunning: true,
         needsAuth: false,
         machineId: 'machine-1',
-        acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' },
+        acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' },
         server: {
             activeServerId: 'custom-2',
             serverUrl: 'https://relay.example.test',
@@ -75,7 +75,7 @@ const AMBIENT_RESULT = {
             validatedAccountId: 'acct_app',
         },
         service: { installed: true, running: true, targetMode: 'default-following' },
-        daemon: { running: true, startedWithCliVersion: '0.2.13', serviceManaged: true, serviceLabel: 'com.happier.cli.daemon.default' },
+        daemon: { running: true, startedWithCliVersion: '0.2.13', serviceManaged: true, serviceLabel: 'com.piggercode.cli.daemon.default' },
         runtimeConvergence: {
             controlReachable: true,
             serviceOwnsRunningDaemon: true,
@@ -298,7 +298,7 @@ describe('desktopSetupCoordinator', () => {
         expect(first).toMatchObject({
             status: 'resolved',
             facts: {
-                acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' },
+                acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' },
                 auth: { credentialState: 'valid', validatedAccountId: 'acct_app' },
                 runtimeConvergence: { controlReachable: true, machineIdMatches: true },
             },
@@ -961,7 +961,7 @@ describe('desktopSetupCoordinator', () => {
             server: { activeServerId: 'relay-b', serverUrl: RELAY_B, publicServerUrl: RELAY_B, localServerUrl: null, comparableKey: 'relay-b.example.test' },
             auth: { ...AMBIENT_RESULT.data.auth, machineId: 'machine-b' },
             service: { installed: true, running: true, targetMode: 'pinned' },
-            daemon: { ...AMBIENT_RESULT.data.daemon, serviceLabel: 'com.happier.cli.daemon.relay-b' },
+            daemon: { ...AMBIENT_RESULT.data.daemon, serviceLabel: 'com.piggercode.cli.daemon.relay-b' },
             managedBy: 'desktop',
         };
         /** Bootstrap's row for relay B: its own pinned service serves it (D11-2). */

@@ -59,13 +59,13 @@ function writeValidLinuxDaemonServiceDefinition(params: Readonly<{
   fs.writeFileSync(
     params.path,
     renderSystemdServiceUnit({
-      description: 'Happier Daemon',
-      execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+      description: 'PiggerCode Daemon',
+      execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
       env: {
         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: params.targetMode ?? 'pinned',
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: params.releaseChannel ?? 'stable',
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: params.happierHomeDir ?? '/Users/tester/.happier',
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: params.happierHomeDir ?? '/Users/tester/.piggercode',
       },
       wantedBy: 'default.target',
     }),
@@ -83,7 +83,7 @@ function writeValidWindowsDaemonServiceDefinition(params: Readonly<{
     params.path,
     renderWindowsScheduledTaskWrapperPs1({
       workingDirectory: params.workingDirectory,
-      programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+      programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
       env: {
         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: params.targetMode ?? 'pinned',
@@ -94,7 +94,7 @@ function writeValidWindowsDaemonServiceDefinition(params: Readonly<{
   );
 }
 
-describe('happier daemon service list', () => {
+describe('piggercode daemon service list', () => {
   beforeEach(async () => {
     osHomeOverrides.homeDir = null;
     osHomeOverrides.realHomeDir = null;
@@ -103,7 +103,7 @@ describe('happier daemon service list', () => {
     vi.mocked(childProcess.spawnSync).mockImplementation(((cmd: string, args?: readonly string[]) => ({
       pid: 0,
       output: [],
-      stdout: cmd === 'powershell.exe' && args?.some((arg) => arg.includes('.GetFolder("\\Happier")')) ? '[]' : Buffer.alloc(0),
+      stdout: cmd === 'powershell.exe' && args?.some((arg) => arg.includes('.GetFolder("\\PiggerCode")')) ? '[]' : Buffer.alloc(0),
       stderr: Buffer.alloc(0),
       status: 0,
       signal: null,
@@ -140,8 +140,8 @@ describe('happier daemon service list', () => {
         const unitDir = join(homeDir, '.config', 'systemd', 'user');
         fs.mkdirSync(unitDir, { recursive: true });
         writeValidLinuxDaemonServiceDefinition({
-          path: join(unitDir, 'happier-daemon.company.prod.service'),
-          happierHomeDir: join(homeDir, '.happier'),
+          path: join(unitDir, 'piggercode-daemon.company.prod.service'),
+          happierHomeDir: join(homeDir, '.piggercode'),
         });
 
         const output = captureStdoutJsonOutput<{
@@ -159,7 +159,7 @@ describe('happier daemon service list', () => {
             expect.objectContaining({
               serverId: 'company.prod',
               installed: true,
-              path: join(homeDir, '.config', 'systemd', 'user', 'happier-daemon.company.prod.service'),
+              path: join(homeDir, '.config', 'systemd', 'user', 'piggercode-daemon.company.prod.service'),
             }),
           ]));
         } finally {
@@ -183,8 +183,8 @@ describe('happier daemon service list', () => {
         process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
         const unitDir = join(homeDir, '.config', 'systemd', 'user');
         fs.mkdirSync(unitDir, { recursive: true });
-        writeValidLinuxDaemonServiceDefinition({ path: join(unitDir, 'happier-daemon.personal.service'), happierHomeDir: homeDir });
-        const desktopUnit = join(unitDir, 'happier-daemon.company.service');
+        writeValidLinuxDaemonServiceDefinition({ path: join(unitDir, 'piggercode-daemon.personal.service'), happierHomeDir: homeDir });
+        const desktopUnit = join(unitDir, 'piggercode-daemon.company.service');
         writeValidLinuxDaemonServiceDefinition({ path: desktopUnit, happierHomeDir: homeDir });
         fs.writeFileSync(
           desktopUnit,
@@ -228,10 +228,10 @@ describe('happier daemon service list', () => {
         const unitDir = join(homeDir, '.config', 'systemd', 'user');
         fs.mkdirSync(unitDir, { recursive: true });
         writeValidLinuxDaemonServiceDefinition({
-          path: join(unitDir, 'happier-daemon.default.service'),
+          path: join(unitDir, 'piggercode-daemon.default.service'),
           targetMode: 'default-following',
           releaseChannel: 'preview',
-          happierHomeDir: join(homeDir, '.happier'),
+          happierHomeDir: join(homeDir, '.piggercode'),
         });
 
         const output = captureStdoutJsonOutput<{
@@ -250,7 +250,7 @@ describe('happier daemon service list', () => {
               serviceType: 'daemon',
               ring: 'preview',
               targetMode: 'default-following',
-              label: 'happier-daemon.default',
+              label: 'piggercode-daemon.default',
             }),
           ]));
         } finally {
@@ -288,13 +288,13 @@ describe('happier daemon service list', () => {
         fs.writeFileSync(
           paths.unitPath,
           renderSystemdServiceUnit({
-            description: 'Happier Daemon',
-            execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            description: 'PiggerCode Daemon',
+            execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
-              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
             },
             wantedBy: 'default.target',
           }),
@@ -362,20 +362,20 @@ describe('happier daemon service list', () => {
         fs.writeFileSync(
           paths.unitPath,
           renderSystemdServiceUnit({
-            description: 'Happier Daemon',
-            execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            description: 'PiggerCode Daemon',
+            execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
-              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
             },
             wantedBy: 'default.target',
           }),
           'utf-8',
         );
 
-        const managedCliPath = join(homeDir, '.happier', 'cli', 'current', 'happier');
+        const managedCliPath = join(homeDir, '.piggercode', 'cli', 'current', 'piggercode');
         fs.mkdirSync(dirname(managedCliPath), { recursive: true });
         fs.writeFileSync(
           managedCliPath,
@@ -476,8 +476,8 @@ describe('happier daemon service list', () => {
         fs.writeFileSync(
           paths.unitPath,
           renderSystemdServiceUnit({
-            description: 'Happier Daemon',
-            execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            description: 'PiggerCode Daemon',
+            execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -566,14 +566,14 @@ describe('happier daemon service list', () => {
           paths.installedPath,
           buildLaunchdPlistXml({
             label: paths.label,
-            programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             },
-            stdoutPath: join(homeDir, '.happier', 'logs', 'daemon-service.out.log'),
-            stderrPath: join(homeDir, '.happier', 'logs', 'daemon-service.err.log'),
+            stdoutPath: join(homeDir, '.piggercode', 'logs', 'daemon-service.out.log'),
+            stderrPath: join(homeDir, '.piggercode', 'logs', 'daemon-service.err.log'),
             workingDirectory: homeDir,
           }),
           'utf-8',
@@ -657,14 +657,14 @@ describe('happier daemon service list', () => {
           paths.installedPath,
           buildLaunchdPlistXml({
             label: paths.label,
-            programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             },
-            stdoutPath: join(homeDir, '.happier', 'logs', 'daemon-service.out.log'),
-            stderrPath: join(homeDir, '.happier', 'logs', 'daemon-service.err.log'),
+            stdoutPath: join(homeDir, '.piggercode', 'logs', 'daemon-service.out.log'),
+            stderrPath: join(homeDir, '.piggercode', 'logs', 'daemon-service.err.log'),
             workingDirectory: homeDir,
           }),
           'utf-8',
@@ -746,7 +746,7 @@ describe('happier daemon service list', () => {
         fs.mkdirSync(dirname(paths.installedPath), { recursive: true });
         writeValidWindowsDaemonServiceDefinition({
           path: paths.installedPath,
-          workingDirectory: join(homeDir, '.happier'),
+          workingDirectory: join(homeDir, '.piggercode'),
           targetMode: 'default-following',
           releaseChannel: 'stable',
         });
@@ -755,7 +755,7 @@ describe('happier daemon service list', () => {
         const spawnSyncMock = vi.mocked(childProcess.spawnSync);
         spawnSyncMock.mockImplementation(((cmd: string, args?: readonly string[]) => {
           const argv = Array.isArray(args) ? args.map((a) => String(a ?? '')) : [];
-          if (cmd === 'powershell.exe' && argv.some((arg) => arg.includes('.GetFolder("\\Happier")'))) {
+          if (cmd === 'powershell.exe' && argv.some((arg) => arg.includes('.GetFolder("\\PiggerCode")'))) {
             return { pid: 0, output: [], stdout: '[]', stderr: '', status: 0, signal: null } satisfies SpawnSyncReturns<string>;
           }
           if (
@@ -844,15 +844,15 @@ describe('happier daemon service list', () => {
           const unitDir = join(homeDir, '.config', 'systemd', 'user');
           fs.mkdirSync(unitDir, { recursive: true });
           writeValidLinuxDaemonServiceDefinition({
-            path: join(unitDir, 'happier-daemon.company.prod.service'),
-            happierHomeDir: join(homeDir, '.happier'),
+            path: join(unitDir, 'piggercode-daemon.company.prod.service'),
+            happierHomeDir: join(homeDir, '.piggercode'),
           });
 
           await handleDaemonCliCommand({ args: ['daemon', 'service', 'list'], rawArgv: [], terminalRuntime: null });
 
           const out = output.text();
           expect(out).toContain('company.prod');
-          expect(out).toContain('happier-daemon.company.prod.service');
+          expect(out).toContain('piggercode-daemon.company.prod.service');
           expect(out.toLowerCase()).toContain('installed');
         },
       );
@@ -873,7 +873,7 @@ describe('happier daemon service list', () => {
       },
       async ({ homeDir }) => {
         process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
-        process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+        process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.piggercode');
         process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL = 'stable';
         await writeDaemonSettingsFixture(homeDir);
 
@@ -885,7 +885,7 @@ describe('happier daemon service list', () => {
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'pinned',
             PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'company',
             PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
             PIGGERCODE_DAEMON_SERVICE_SERVER_URL: 'https://company.example.test',
             PIGGERCODE_DAEMON_SERVICE_WEBAPP_URL: 'https://company.example.test',
           },
@@ -935,7 +935,7 @@ describe('happier daemon service list', () => {
               targetMode: 'pinned',
             }),
           ]));
-          expect(output.json().services?.[0]?.label).toContain('happier-daemon.company');
+          expect(output.json().services?.[0]?.label).toContain('piggercode-daemon.company');
         } finally {
           output.restore();
         }
@@ -972,7 +972,7 @@ describe('happier daemon service list', () => {
           process.env.USERPROFILE = scopedHome;
           await writeDaemonSettingsFixture(homeDir);
 
-          const unitPath = join(scopedHome, 'service-home', '.config', 'systemd', 'user', 'happier-daemon.company.service');
+          const unitPath = join(scopedHome, 'service-home', '.config', 'systemd', 'user', 'piggercode-daemon.company.service');
           fs.mkdirSync(dirname(unitPath), { recursive: true });
           writeValidLinuxDaemonServiceDefinition({
             path: unitPath,
@@ -1026,11 +1026,11 @@ describe('happier daemon service list', () => {
           osHomeOverrides.realHomeDir = mockedRealHomeDir;
           await writeDaemonSettingsFixture(homeDir);
 
-          const unitPath = join(mockedRealHomeDir, '.config', 'systemd', 'user', 'happier-daemon.company.service');
+          const unitPath = join(mockedRealHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.company.service');
           fs.mkdirSync(dirname(unitPath), { recursive: true });
           writeValidLinuxDaemonServiceDefinition({
             path: unitPath,
-            happierHomeDir: join(mockedRealHomeDir, '.happier'),
+            happierHomeDir: join(mockedRealHomeDir, '.piggercode'),
           });
 
           await handleDaemonCliCommand({ args: ['daemon', 'service', 'list', '--json'], rawArgv: [], terminalRuntime: null });

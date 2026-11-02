@@ -85,7 +85,7 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
                 startedWithCliVersion: '0.0.0-other',
                 startedWithPublicReleaseChannel: 'preview',
                 startupSource: 'background-service',
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             },
         };
         inspectDaemonMock.mockResolvedValue(conflictInspection);
@@ -209,13 +209,13 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
     it('fails closed when a background service is installed for the active relay', async () => {
         await withTempDir('happier-daemon-start-sync-installed-', async (homeDir) => {
             envScope.patch({
-                PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
@@ -254,12 +254,12 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
             writeFileSync(
                 paths.installedPath,
                 renderSystemdServiceUnit({
-                    description: 'Happier Daemon',
-                    execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                    description: 'PiggerCode Daemon',
+                    execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
                         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
-                        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                     },
                     wantedBy: 'default.target',
@@ -274,7 +274,7 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
                     targetMode: 'default-following',
                     path: paths.installedPath,
                     installed: true,
-                    name: 'Happier Daemon',
+                    name: 'PiggerCode Daemon',
                     platform: 'linux',
                     serverId: 'default',
                     mode: 'user',
@@ -296,7 +296,7 @@ describe('handleDaemonCliCommand: daemon start-sync', () => {
 
             expect(startDaemonMock).not.toHaveBeenCalled();
             expect(errorSpy.mock.calls.flat().join(' ')).toContain('background service');
-            expect(errorSpy.mock.calls.flat().join(' ')).toContain('happier service start');
+            expect(errorSpy.mock.calls.flat().join(' ')).toContain('piggercode service start');
             errorSpy.mockRestore();
         });
     });

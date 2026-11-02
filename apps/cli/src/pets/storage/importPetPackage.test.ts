@@ -37,7 +37,7 @@ async function writePetPackage(
   await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
     id: petId,
     displayName: petId,
-    description: 'Happier companion pet',
+    description: 'PiggerCode companion pet',
     spritesheetPath,
   }));
   await mkdir(dirname(join(packagePath, spritesheetPath)), { recursive: true });
@@ -431,7 +431,7 @@ describe('importPetPackage', () => {
             manifest: {
               id: 'blink',
               displayName: 'Blink',
-              description: 'Happier companion pet',
+              description: 'PiggerCode companion pet',
               spritesheetPath: 'spritesheet.png',
             },
             spritesheetAssetRef: {

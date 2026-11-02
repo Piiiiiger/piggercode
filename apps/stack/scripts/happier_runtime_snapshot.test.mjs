@@ -28,11 +28,11 @@ async function createSourceCliFixture(t, options = {}) {
   return { repoRoot };
 }
 
-test('hstack happier uses the active runtime snapshot when runtime mode is required', async (t) => {
+test('hstack piggercode uses the active runtime snapshot when runtime mode is required', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'main',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
   });
 
   const env = {
@@ -45,16 +45,16 @@ test('hstack happier uses the active runtime snapshot when runtime mode is requi
     PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /SNAPSHOT CLI HELP/);
 });
 
-test('hstack happier uses source CLI for an active source-backed stack even when stack env requires snapshots', async (t) => {
+test('hstack piggercode uses source CLI for an active source-backed stack even when stack env requires snapshots', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const runtimeFixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'source-dev',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
   });
   const sourceFixture = await createSourceCliFixture(t, {
     cliSource: 'process.stdout.write("SOURCE CLI HELP\\n");\n',
@@ -77,13 +77,13 @@ test('hstack happier uses source CLI for an active source-backed stack even when
     PIGGERCODE_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /SOURCE CLI HELP/);
   assert.doesNotMatch(res.stdout, /SNAPSHOT CLI HELP/);
 
   const explicitRuntimeRes = await runNode(
-    [join(rootDir, 'scripts', 'happier.mjs'), '--runtime', '--help'],
+    [join(rootDir, 'scripts', 'piggercode.mjs'), '--runtime', '--help'],
     { cwd: rootDir, env },
   );
   assert.equal(
@@ -94,11 +94,11 @@ test('hstack happier uses source CLI for an active source-backed stack even when
   assert.match(explicitRuntimeRes.stdout, /SNAPSHOT CLI HELP/);
 });
 
-test('hstack happier does not let stale source-backed runtime state weaken required snapshot mode', async (t) => {
+test('hstack piggercode does not let stale source-backed runtime state weaken required snapshot mode', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const runtimeFixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'stale-source-dev',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
   });
   const sourceFixture = await createSourceCliFixture(t, {
     cliSource: 'process.stdout.write("SOURCE CLI HELP\\n");\n',
@@ -121,17 +121,17 @@ test('hstack happier does not let stale source-backed runtime state weaken requi
     PIGGERCODE_HOME_DIR: join(runtimeFixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /SNAPSHOT CLI HELP/);
   assert.doesNotMatch(res.stdout, /SOURCE CLI HELP/);
 });
 
-test('hstack happier runs runtime snapshot JS entrypoints through node', async (t) => {
+test('hstack piggercode runs runtime snapshot JS entrypoints through node', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'main',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
     cliStdout: 'SNAPSHOT CLI JS HELP',
   });
 
@@ -145,16 +145,16 @@ test('hstack happier runs runtime snapshot JS entrypoints through node', async (
     PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--help'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /SNAPSHOT CLI JS HELP/);
 });
 
-test('hstack happier projects admitted runtime provenance to the nested runtime CLI', async (t) => {
+test('hstack piggercode projects admitted runtime provenance to the nested runtime CLI', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'main',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
     cliSource: [
       'process.stdout.write(JSON.stringify({',
       '  runtimeBacked: process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED ?? null,',
@@ -172,7 +172,7 @@ test('hstack happier projects admitted runtime provenance to the nested runtime 
     PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--version'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--version'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   const payload = JSON.parse(res.stdout.trim());
   assert.equal(payload.runtimeBacked, '1');
@@ -180,11 +180,11 @@ test('hstack happier projects admitted runtime provenance to the nested runtime 
   assert.match(payload.fingerprint, /^[a-f0-9]{16}$/);
 });
 
-test('hstack happier does not forward --runtime to the wrapped runtime CLI', async (t) => {
+test('hstack piggercode does not forward --runtime to the wrapped runtime CLI', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'main',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
     cliSource: 'process.stdout.write(JSON.stringify(process.argv.slice(2)) + "\\n");\n',
   });
 
@@ -197,16 +197,16 @@ test('hstack happier does not forward --runtime to the wrapped runtime CLI', asy
     PIGGERCODE_HOME_DIR: join(fixture.root, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--runtime', 'session', 'run', 'list'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--runtime', 'session', 'run', 'list'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.deepEqual(JSON.parse(res.stdout.trim()), ['session', 'run', 'list']);
 });
 
-test('hstack happier forwards snapshot-aware daemon service runtime paths to the wrapped CLI', async (t) => {
+test('hstack piggercode forwards snapshot-aware daemon service runtime paths to the wrapped CLI', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'main',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
     cliSource: [
       'process.stdout.write(JSON.stringify({',
       '  argv: process.argv.slice(2),',
@@ -232,7 +232,7 @@ test('hstack happier forwards snapshot-aware daemon service runtime paths to the
     PIGGERCODE_JS_RUNTIME_PATH: runtimeBinary,
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), 'service', 'install', '--dry-run', '--json'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), 'service', 'install', '--dry-run', '--json'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.deepEqual(JSON.parse(res.stdout.trim()), {
     argv: ['service', 'install', '--dry-run', '--json'],
@@ -242,7 +242,7 @@ test('hstack happier forwards snapshot-aware daemon service runtime paths to the
   });
 });
 
-test('hstack happier does not forward --source to the wrapped source CLI', async (t) => {
+test('hstack piggercode does not forward --source to the wrapped source CLI', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createSourceCliFixture(t);
 
@@ -253,12 +253,12 @@ test('hstack happier does not forward --source to the wrapped source CLI', async
     PIGGERCODE_HOME_DIR: join(fixture.repoRoot, '.happy-home'),
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--source', 'session', 'run', 'list'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--source', 'session', 'run', 'list'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `stderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.deepEqual(JSON.parse(res.stdout.trim()), ['session', 'run', 'list']);
 });
 
-test('hstack happier source mode clears stale inherited runtime provenance', async (t) => {
+test('hstack piggercode source mode clears stale inherited runtime provenance', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createSourceCliFixture(t, {
     cliSource: 'process.stdout.write(JSON.stringify({ runtimeBacked: process.env.PIGGERCODE_CLI_SUBPROCESS_RUNTIME_BACKED ?? null, fingerprint: process.env.PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT ?? null }) + "\\n");\n',
@@ -273,7 +273,7 @@ test('hstack happier source mode clears stale inherited runtime provenance', asy
     PIGGERCODE_CLI_SUBPROCESS_DAEMON_DIST_CLOSURE_FINGERPRINT: 'abcdef1234567890',
   };
 
-  const res = await runNode([join(rootDir, 'scripts', 'happier.mjs'), '--source', '--version'], { cwd: rootDir, env });
+  const res = await runNode([join(rootDir, 'scripts', 'piggercode.mjs'), '--source', '--version'], { cwd: rootDir, env });
   assert.equal(res.code, 0, res.stderr);
   assert.deepEqual(JSON.parse(res.stdout.trim()), { runtimeBacked: null, fingerprint: null });
 });

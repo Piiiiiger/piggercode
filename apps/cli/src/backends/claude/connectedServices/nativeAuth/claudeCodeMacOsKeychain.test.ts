@@ -189,7 +189,7 @@ describe('claudeCodeMacOsKeychain', () => {
     })).resolves.toBeUndefined();
   });
 
-  it('sweeps ALL Happier-managed derived services for the account (live or otherwise) and is idempotent', async () => {
+  it('sweeps ALL PiggerCode-managed derived services for the account (live or otherwise) and is idempotent', async () => {
     const consoleInfo = vi.spyOn(logger, 'info').mockImplementation(() => {});
     const fileDiagnostic = vi.spyOn(logger, 'debug').mockImplementation(() => {});
     // Under the file-only design Happier neither writes nor reads a derived (suffixed) keychain item,

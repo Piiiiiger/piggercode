@@ -320,7 +320,7 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
       startedWithPublicReleaseChannel: 'preview',
       runtimeId: 'runtime-heartbeat',
       startupSource: 'background-service',
-      serviceLabel: 'com.happier.cli.daemon.default',
+      serviceLabel: 'com.piggercode.cli.daemon.default',
       daemonLogPath: '/tmp/daemon.log',
       controlToken: 'token',
       lastHeartbeatAt: Date.now(),
@@ -342,7 +342,7 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
         startedWithPublicReleaseChannel: 'preview',
         runtimeId: 'runtime-heartbeat',
         startupSource: 'background-service',
-        serviceLabel: 'com.happier.cli.daemon.default',
+        serviceLabel: 'com.piggercode.cli.daemon.default',
         daemonLogPath: '/tmp/daemon.log',
         controlToken: 'token',
       },
@@ -357,7 +357,7 @@ describe('startDaemonHeartbeatLoop daemon self-restart', () => {
       startedWithPublicReleaseChannel: 'preview',
       runtimeId: 'runtime-heartbeat',
       startupSource: 'background-service',
-      serviceLabel: 'com.happier.cli.daemon.default',
+      serviceLabel: 'com.piggercode.cli.daemon.default',
     }));
   }, 15_000);
 

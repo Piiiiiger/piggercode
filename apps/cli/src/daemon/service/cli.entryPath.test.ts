@@ -26,14 +26,14 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
     withTempDirSync('happier-cli-daemon-service-entry-', (homeDir) => {
       envScope.patch({
         PIGGERCODE_HOME_DIR: homeDir,
-        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
       });
 
       const output = captureConsoleText();
       return import('./cli.js')
         .then(({ resolveDaemonServiceCliRuntimeFromEnv }) => {
           const runtime = resolveDaemonServiceCliRuntimeFromEnv();
-          expect(runtime.nodePath).toBe('/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime');
+          expect(runtime.nodePath).toBe('/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime');
           expect(runtime.entryPath).toContain('/apps/cli/package-dist/index.mjs');
         })
         .finally(() => {
@@ -54,8 +54,8 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
 
       const originalArgv = [...process.argv];
       process.argv = [
-        '/Users/test/.happier/tools/js-runtime/current/runtime/bin/node',
-        '/Users/test/.happier/cli-preview/versions/0.2.3/package-dist/index.mjs',
+        '/Users/test/.piggercode/tools/js-runtime/current/runtime/bin/node',
+        '/Users/test/.piggercode/cli-preview/versions/0.2.3/package-dist/index.mjs',
         'service',
         'install',
       ];
@@ -77,8 +77,8 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
     withTempDirSync('happier-cli-daemon-service-dev-ring-', (homeDir) => {
       envScope.patch({
         PIGGERCODE_HOME_DIR: homeDir,
-        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
-        PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '/Users/test/.happier/cli-dev/versions/0.2.3/package-dist/index.mjs',
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
+        PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '/Users/test/.piggercode/cli-dev/versions/0.2.3/package-dist/index.mjs',
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: '',
         PIGGERCODE_RELEASE_RING: '',
         PIGGERCODE_RELEASE_CHANNEL: '',
@@ -87,7 +87,7 @@ describe('resolveDaemonServiceCliRuntimeFromEnv entrypoint resolution', () => {
 
       const originalArgv = [...process.argv];
       process.argv = [
-        '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
         'service',
         'install',
       ];

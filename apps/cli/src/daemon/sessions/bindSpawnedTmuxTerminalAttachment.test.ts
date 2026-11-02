@@ -47,7 +47,7 @@ describe('bindSpawnedTmuxTerminalAttachment', () => {
       dir.removeCallback();
     }
   });
-  it('persists immutable shared-window ownership after the Happier session id is known', async () => {
+  it('persists immutable shared-window ownership after the PiggerCode session id is known', async () => {
     const dir = tmp.dirSync({ unsafeCleanup: true });
     try {
       await bindSpawnedTmuxTerminalAttachment({

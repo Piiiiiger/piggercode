@@ -26,7 +26,7 @@ function stackRootDirFromMeta(metaUrl) {
   return dirname(scriptsDir);
 }
 
-test('hstack happier --server-url clears stack-scoped PIGGERCODE_ACTIVE_SERVER_ID', async (t) => {
+test('hstack piggercode --server-url clears stack-scoped PIGGERCODE_ACTIVE_SERVER_ID', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-scope-' });
   const stackEnvPath = join(fixture.dir, 'stack.env');
@@ -43,7 +43,7 @@ test('hstack happier --server-url clears stack-scoped PIGGERCODE_ACTIVE_SERVER_I
     PIGGERCODE_ACTIVE_SERVER_ID: 'stack_main__id_default',
   };
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier', '--server-url=http://localhost:3014'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode', '--server-url=http://localhost:3014'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   const parsed = JSON.parse(res.stdout.trim());
   function deriveEnvServerId(url) {

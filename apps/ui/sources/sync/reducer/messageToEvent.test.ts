@@ -35,9 +35,9 @@ describe('parseMessageAsEvent', () => {
     it('does not convert change_title tool calls into generic transcript events', () => {
         const events = [
             parseMessageAsEvent(makeToolCallMessage('mcp__happy__change_title')),
-            parseMessageAsEvent(makeToolCallMessage('mcp__happier__change_title')),
+            parseMessageAsEvent(makeToolCallMessage('mcp__piggercode__change_title')),
             parseMessageAsEvent(makeToolCallMessage('happy__change_title')),
-            parseMessageAsEvent(makeToolCallMessage('happier__change_title')),
+            parseMessageAsEvent(makeToolCallMessage('piggercode__change_title')),
             parseMessageAsEvent(makeToolCallMessage('change_title')),
             parseMessageAsEvent(makeToolCallMessage('change-title')),
         ];
@@ -51,7 +51,7 @@ describe('parseMessageAsEvent', () => {
         expect(
             parseMessageAsEvent(
                 makeShellBridgeToolCallMessage(
-                    `happier tools call --source happier --tool change_title --args-json '{"title":"Bridge title"}' --json`,
+                    `piggercode tools call --source piggercode --tool change_title --args-json '{"title":"Bridge title"}' --json`,
                 ),
             ),
         ).toBeNull();

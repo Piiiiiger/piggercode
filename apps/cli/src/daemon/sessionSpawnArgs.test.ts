@@ -70,7 +70,7 @@ describe('buildHappySessionControlArgs', () => {
     })).toEqual(['--permission-mode', 'bypassPermissions', '--permission-mode-updated-at', '123']);
   });
 
-  it('keeps safe-yolo as the Happier intent for built-in Claude child sessions', () => {
+  it('keeps safe-yolo as the PiggerCode intent for built-in Claude child sessions', () => {
     expect(buildHappySessionControlArgs({
       backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
       permissionMode: 'safe-yolo',

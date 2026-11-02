@@ -586,7 +586,7 @@ describe('/session/[id]/info', () => {
         expect(screen.getTextContent()).toContain('name');
     });
 
-    it("does not point an outdated session CLI at upstream's `happier self update`", async () => {
+    it("does not point an outdated session CLI at upstream's `piggercode self update`", async () => {
         cliVersionState.supported = false;
         mockSession = {
             id: 'session-1234567890abcdef',
@@ -601,7 +601,7 @@ describe('/session/[id]/info', () => {
 
         expect(screen.getTextContent()).toContain('name');
         expect(screen.getTextContent()).not.toContain('sessionInfo.updateCliInstructions');
-        expect(screen.root.findAll((node) => node.props?.copy === 'happier self update').length).toBe(0);
+        expect(screen.root.findAll((node) => node.props?.copy === 'piggercode self update').length).toBe(0);
     });
 
     it('normalizes the route id before looking up the session', async () => {
@@ -1654,7 +1654,7 @@ describe('/session/[id]/info', () => {
             updatedAt: Date.now(),
             seq: 1,
             metadata: {
-                sessionLogPath: '/tmp/.happier/logs/session.log',
+                sessionLogPath: '/tmp/.piggercode/logs/session.log',
             },
         };
 
@@ -1688,7 +1688,7 @@ describe('/session/[id]/info', () => {
                 path: '/Users/lee/project',
                 claudeSessionId: 'claude-session-1',
                 claudeTranscriptPath: '/tmp/claude/session.jsonl',
-                sessionLogPath: '/tmp/.happier/logs/session.log',
+                sessionLogPath: '/tmp/.piggercode/logs/session.log',
             },
         };
 
@@ -1700,7 +1700,7 @@ describe('/session/[id]/info', () => {
         expect(itemByTitle('sessionInfo.happySessionId')?.props.onPress).toBeUndefined();
         expect(itemByTitle('sessionInfo.claudeCodeSessionId')?.props.copy).toBe('claude-session-1');
         expect(itemByTitle('sessionInfo.claudeCodeSessionId')?.props.onPress).toBeUndefined();
-        expect(itemByTitle('sessionLog.logPathCopyLabel')?.props.copy).toBe('/tmp/.happier/logs/session.log');
+        expect(itemByTitle('sessionLog.logPathCopyLabel')?.props.copy).toBe('/tmp/.piggercode/logs/session.log');
         expect(itemByTitle('sessionLog.logPathCopyLabel')?.props.onPress).toBeUndefined();
         expect(itemByTitle('sessionInfo.providerSessionLogs')?.props.copy).toBe('/tmp/claude/session.jsonl');
         expect(itemByTitle('sessionInfo.providerSessionLogs')?.props.onPress).toBeUndefined();
@@ -1729,7 +1729,7 @@ describe('/session/[id]/info', () => {
             metadata: {
                 flavor: 'codex',
                 codexSessionId: 'codex-session-1',
-                sessionLogPath: '/tmp/.happier/logs/session.log',
+                sessionLogPath: '/tmp/.piggercode/logs/session.log',
             },
         };
 
@@ -1741,7 +1741,7 @@ describe('/session/[id]/info', () => {
         expect(copyDebugItem?.props.copy).toBe([
             'Happier session ID: session-1',
             'agentInput.agent.codex session ID: codex-session-1',
-            'Happier logs: /tmp/.happier/logs/session.log',
+            'Happier logs: /tmp/.piggercode/logs/session.log',
         ].join('\n'));
     });
 

@@ -70,7 +70,7 @@ function assertPublicChannel(channel, source = '--channel') {
 export async function runRemoteDaemonSetupWithDeps(argvRaw, deps = {}) {
   const resolvedDeps = {
     runLocalMachineBootstrap: async ({ args }) => {
-      await run('happier', args, { env: process.env });
+      await run('piggercode', args, { env: process.env });
     },
     ...deps,
   };
@@ -227,7 +227,7 @@ async function runRemoteDaemonSetup(argvRaw) {
 export async function runRemoteServerSetupWithDeps(argvRaw, deps = {}) {
   const resolvedDeps = {
     runRelayHostInstall: async ({ args }) => {
-      await run('happier', args, { env: process.env });
+      await run('piggercode', args, { env: process.env });
     },
     ...deps,
   };

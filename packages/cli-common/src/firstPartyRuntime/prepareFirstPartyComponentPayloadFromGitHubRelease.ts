@@ -70,7 +70,7 @@ export type ResolvedFirstPartyComponentRelease = Readonly<{
 /**
  * Which release this machine would install for a component and ring (or an exact version), without
  * downloading it: the ring's rolling tag or `<prefix>-v<version>`, resolved to this OS/arch's asset
- * bundle. The one latest-version lookup for binary installs — `happier self check` and the
+ * bundle. The one latest-version lookup for binary installs — `piggercode self check` and the
  * acquisition below both use it, on every OS the release publishes.
  */
 export async function resolveFirstPartyComponentRelease(params: FirstPartyReleaseLookupParams): Promise<ResolvedFirstPartyComponentRelease> {
@@ -236,8 +236,8 @@ function resolveFirstPartyReleaseArtifactSource(params: Readonly<{
         ?? params.githubRepo
         ?? process.env.PIGGERCODE_FIRST_PARTY_RELEASE_REPO
         ?? process.env.PIGGERCODE_GITHUB_REPO
-        ?? 'happier-dev/happier',
-      'happier-dev/happier',
+        ?? 'Piiiiiger/piggercode',
+      'Piiiiiger/piggercode',
     ),
     // A local QA mirror must never receive credentials intended for GitHub.
     githubToken: apiBaseUrl ? '' : normalizeFirstPartyReleaseValue(

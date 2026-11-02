@@ -8,15 +8,15 @@ function createMetadata(overrides: Partial<Metadata> = {}): Metadata {
     path: '/workspace',
     host: 'machine',
     homeDir: '/home/tester',
-    happyHomeDir: '/home/tester/.happier',
-    happyLibDir: '/home/tester/.happier/lib',
-    happyToolsDir: '/home/tester/.happier/tools',
+    happyHomeDir: '/home/tester/.piggercode',
+    happyLibDir: '/home/tester/.piggercode/lib',
+    happyToolsDir: '/home/tester/.piggercode/tools',
     ...overrides,
   };
 }
 
 describe('applyProviderSessionInfoUpdate', () => {
-  it('uses a provider title only to initialize an untitled Happier session', () => {
+  it('uses a provider title only to initialize an untitled PiggerCode session', () => {
     const initialized = applyProviderSessionInfoUpdate({
       metadata: createMetadata(),
       provider: 'codex',
@@ -47,10 +47,10 @@ describe('applyProviderSessionInfoUpdate', () => {
     expect(updated.providerSessionInfoV1?.title).toBe('Later provider title');
   });
 
-  it('never overwrites an explicit durable Happier title', () => {
+  it('never overwrites an explicit durable PiggerCode title', () => {
     const updated = applyProviderSessionInfoUpdate({
       metadata: createMetadata({
-        summary: { text: 'Explicit Happier title', updatedAt: 50 },
+        summary: { text: 'Explicit PiggerCode title', updatedAt: 50 },
       }),
       provider: 'codex',
       sessionId: 'codex-session-1',
@@ -58,14 +58,14 @@ describe('applyProviderSessionInfoUpdate', () => {
       update: { title: 'Provider title' },
     });
 
-    expect(updated.summary).toEqual({ text: 'Explicit Happier title', updatedAt: 50 });
+    expect(updated.summary).toEqual({ text: 'Explicit PiggerCode title', updatedAt: 50 });
     expect(updated.providerSessionInfoV1?.title).toBe('Provider title');
   });
 
-  it('retains omitted fields and records explicit provider clears without clearing the Happier title', () => {
+  it('retains omitted fields and records explicit provider clears without clearing the PiggerCode title', () => {
     const current = applyProviderSessionInfoUpdate({
       metadata: createMetadata({
-        summary: { text: 'Explicit Happier title', updatedAt: 50 },
+        summary: { text: 'Explicit PiggerCode title', updatedAt: 50 },
       }),
       provider: 'codex',
       sessionId: 'codex-session-1',
@@ -80,7 +80,7 @@ describe('applyProviderSessionInfoUpdate', () => {
       update: { title: null },
     });
 
-    expect(cleared.summary).toEqual({ text: 'Explicit Happier title', updatedAt: 50 });
+    expect(cleared.summary).toEqual({ text: 'Explicit PiggerCode title', updatedAt: 50 });
     expect(cleared.providerSessionInfoV1).toMatchObject({
       observedAt: 200,
       title: null,

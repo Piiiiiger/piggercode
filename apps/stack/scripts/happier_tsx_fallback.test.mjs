@@ -30,7 +30,7 @@ function stackRootDirFromMeta(metaUrl) {
   return dirname(scriptsDir);
 }
 
-test('hstack happier falls back to tsx when CLI dist is missing', async (t) => {
+test('hstack piggercode falls back to tsx when CLI dist is missing', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-tsx-fallback-' });
 
@@ -43,13 +43,13 @@ test('hstack happier falls back to tsx when CLI dist is missing', async (t) => {
     PIGGERCODE_HOME_DIR: join(fixture.dir, '.happy-home'),
   };
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier', '--help'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode', '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /FAKE TS CLI HELP/, `expected tsx fallback help output\nstdout:\n${res.stdout}`);
   assert.doesNotMatch(res.stdout, /\[happier\] usage:/, `expected wrapper help to be suppressed\nstdout:\n${res.stdout}`);
 });
 
-test('hstack happier falls back to tsx when dist entrypoint exists but is incomplete', async (t) => {
+test('hstack piggercode falls back to tsx when dist entrypoint exists but is incomplete', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-tsx-incomplete-dist-' });
   await writeStubHappierCliFiles(fixture.rootDir, {
@@ -69,7 +69,7 @@ test('hstack happier falls back to tsx when dist entrypoint exists but is incomp
     PIGGERCODE_HOME_DIR: join(fixture.dir, '.happy-home'),
   };
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier', '--help'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode', '--help'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   assert.match(res.stdout, /FAKE TS CLI HELP/, `expected tsx fallback help output\nstdout:\n${res.stdout}`);
   assert.doesNotMatch(res.stdout, /Cannot find module/, `expected incomplete dist to recover via tsx fallback\nstderr:\n${res.stderr}`);

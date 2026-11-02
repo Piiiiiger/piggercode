@@ -115,7 +115,7 @@ describe('explainAttachIneligibility', () => {
       agentAttachStrategy: 'tmux',
     });
     expect(result.category).toBe('archived_or_inactive');
-    expect(result.nextStepHint).toMatch(/happier resume/i);
+    expect(result.nextStepHint).toMatch(/piggercode resume/i);
   });
 
   it('classifies metadata-unavailable sessions distinctly so we can suggest auth pair-remote', () => {

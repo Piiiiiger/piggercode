@@ -72,27 +72,27 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
     const handler = new ProviderEnforcedPermissionHandler(asApiSessionClient(session), { logPrefix: '[Test]' });
 
     await expect(handler.handleToolCall('safe-1', 'think', {})).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-2', 'mcp__happier__change_title', {})).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-3', 'happier_change_title', {})).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-4', 'mcp__happier__session_title_set', {})).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-5', 'happier_action_execute', { actionId: 'session.title.set' })).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-6', 'mcp__happier__execution_run_wait', { runId: 'run-1' })).resolves.toEqual({ decision: 'approved' });
-    await expect(handler.handleToolCall('safe-7', 'happier_action_execute', { actionId: 'execution.run.get', input: { runId: 'run-1' } })).resolves.toEqual({ decision: 'approved' });
-    const misleadingIdPending = handler.handleToolCall('mcp__happier__change_title-1', 'other', {});
-    expect(session.agentState.requests['mcp__happier__change_title-1']).toBeTruthy();
+    await expect(handler.handleToolCall('safe-2', 'mcp__piggercode__change_title', {})).resolves.toEqual({ decision: 'approved' });
+    await expect(handler.handleToolCall('safe-3', 'piggercode_change_title', {})).resolves.toEqual({ decision: 'approved' });
+    await expect(handler.handleToolCall('safe-4', 'mcp__piggercode__session_title_set', {})).resolves.toEqual({ decision: 'approved' });
+    await expect(handler.handleToolCall('safe-5', 'piggercode_action_execute', { actionId: 'session.title.set' })).resolves.toEqual({ decision: 'approved' });
+    await expect(handler.handleToolCall('safe-6', 'mcp__piggercode__execution_run_wait', { runId: 'run-1' })).resolves.toEqual({ decision: 'approved' });
+    await expect(handler.handleToolCall('safe-7', 'piggercode_action_execute', { actionId: 'execution.run.get', input: { runId: 'run-1' } })).resolves.toEqual({ decision: 'approved' });
+    const misleadingIdPending = handler.handleToolCall('mcp__piggercode__change_title-1', 'other', {});
+    expect(session.agentState.requests['mcp__piggercode__change_title-1']).toBeTruthy();
     await session.rpcHandlerManager.handlers.get('permission')?.({
-      id: 'mcp__happier__change_title-1',
+      id: 'mcp__piggercode__change_title-1',
       approved: false,
       decision: 'denied',
     });
     await expect(misleadingIdPending).resolves.toEqual({ decision: 'denied' });
 
-    await expect(handler.handleToolCall('execution-run-1', 'mcp__happier__execution_run_start', {
+    await expect(handler.handleToolCall('execution-run-1', 'mcp__piggercode__execution_run_start', {
       intent: 'delegate',
       backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
     })).resolves.toEqual({ decision: 'approved' });
 
-    const unknownActionPending = handler.handleToolCall('unknown-action-1', 'happier_action_execute', {
+    const unknownActionPending = handler.handleToolCall('unknown-action-1', 'piggercode_action_execute', {
       actionId: 'not.a.known.action',
     });
     expect(session.agentState.requests['unknown-action-1']).toBeTruthy();
@@ -157,16 +157,16 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
       } as any),
     });
 
-    await expect(handler.handleToolCall('title-1', 'mcp__happier__change_title', { title: 'Renamed' })).resolves.toEqual({
+    await expect(handler.handleToolCall('title-1', 'mcp__piggercode__change_title', { title: 'Renamed' })).resolves.toEqual({
       decision: 'denied',
     });
-    await expect(handler.handleToolCall('title-2', 'happier_action_execute', { actionId: 'session.title.set' })).resolves.toEqual({
+    await expect(handler.handleToolCall('title-2', 'piggercode_action_execute', { actionId: 'session.title.set' })).resolves.toEqual({
       decision: 'denied',
     });
     expect(session.agentState.requests['title-1']).toBeFalsy();
     expect(session.agentState.requests['title-2']).toBeFalsy();
     expect(session.agentState.completedRequests['title-1']).toMatchObject({
-      tool: 'mcp__happier__change_title',
+      tool: 'mcp__piggercode__change_title',
       status: 'denied',
       decision: 'denied',
     });
@@ -186,7 +186,7 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
       } as any),
     });
 
-    await expect(handler.handleToolCall('title-compat-1', 'mcp__happier__change_title', { title: 'Renamed' })).resolves.toEqual({
+    await expect(handler.handleToolCall('title-compat-1', 'mcp__piggercode__change_title', { title: 'Renamed' })).resolves.toEqual({
       decision: 'denied',
     });
   });
@@ -218,7 +218,7 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
     // The deny layer must evaluate the same merged decision as the prompt and the
     // tools bridge: the profile override disables title updates even though the
     // global account default is ongoing.
-    await expect(handler.handleToolCall('title-1', 'mcp__happier__change_title', { title: 'Renamed' })).resolves.toEqual({
+    await expect(handler.handleToolCall('title-1', 'mcp__piggercode__change_title', { title: 'Renamed' })).resolves.toEqual({
       decision: 'denied',
     });
   });
@@ -230,10 +230,10 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
     expect(handler.getImmediateDecision('fs-read-1', 'readTextFile', {})).toEqual({ decision: 'approved' });
     expect(handler.getImmediateDecision('fs-write-1', 'writeTextFile', {})).toEqual({ decision: 'approved' });
     expect(handler.getImmediateDecision('spec-search-1', 'action_spec_search', {})).toEqual({ decision: 'approved' });
-    expect(handler.getImmediateDecision('spec-search-2', 'mcp__happier__action_spec_search', {})).toEqual({ decision: 'approved' });
-    expect(handler.getImmediateDecision('spec-search-3', 'happier_action_spec_search', {})).toEqual({ decision: 'approved' });
-    expect(handler.getImmediateDecision('execution-run-1', 'mcp__happier__execution_run_start', {})).toEqual({ decision: 'approved' });
-    expect(handler.getImmediateDecision('execution-run-2', 'mcp__happier__subagents_delegate_start', {})).toEqual({ decision: 'approved' });
+    expect(handler.getImmediateDecision('spec-search-2', 'mcp__piggercode__action_spec_search', {})).toEqual({ decision: 'approved' });
+    expect(handler.getImmediateDecision('spec-search-3', 'piggercode_action_spec_search', {})).toEqual({ decision: 'approved' });
+    expect(handler.getImmediateDecision('execution-run-1', 'mcp__piggercode__execution_run_start', {})).toEqual({ decision: 'approved' });
+    expect(handler.getImmediateDecision('execution-run-2', 'mcp__piggercode__subagents_delegate_start', {})).toEqual({ decision: 'approved' });
     expect(handler.getImmediateDecision('perm-1', 'bash', { command: 'pwd' })).toBeNull();
   });
 
@@ -254,7 +254,7 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
       } as any),
     });
 
-    await expect(handler.handleToolCall('happier-session-list-1', 'mcp__happier__session_list', {})).resolves.toEqual({
+    await expect(handler.handleToolCall('happier-session-list-1', 'mcp__piggercode__session_list', {})).resolves.toEqual({
       decision: 'approved',
     });
     expect(session.agentState.requests['happier-session-list-1']).toBeFalsy();
@@ -286,11 +286,11 @@ describe('ProviderEnforcedPermissionHandler always-auto-approve matching', () =>
       } as any),
     });
 
-    expect(handler.getImmediateDecision('action-execute-1', 'happier_action_execute', {
+    expect(handler.getImmediateDecision('action-execute-1', 'piggercode_action_execute', {
       actionId: 'session.list',
     })).toEqual({ decision: 'approved' });
 
-    await expect(handler.handleToolCall('action-execute-1', 'happier_action_execute', {
+    await expect(handler.handleToolCall('action-execute-1', 'piggercode_action_execute', {
       actionId: 'session.list',
     })).resolves.toEqual({ decision: 'approved' });
     expect(session.agentState.requests['action-execute-1']).toBeFalsy();

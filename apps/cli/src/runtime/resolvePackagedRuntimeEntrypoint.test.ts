@@ -19,20 +19,20 @@ const {
 } = vi.hoisted(() => ({
   readDefaultManagedReleaseChannelSyncMock: vi.fn<() => PublicReleaseRingId>(() => 'publicdev'),
   resolveInstalledFirstPartyComponentPathsMock: vi.fn<ResolveInstalledFirstPartyComponentPathsMock>(() => ({
-    installRoot: '/Users/test/.happier/cli-dev',
-    currentPath: '/Users/test/.happier/cli-dev/current',
-    previousPath: '/Users/test/.happier/cli-dev/previous',
-    versionsDir: '/Users/test/.happier/cli-dev/versions',
-    binaryPath: '/Users/test/.happier/cli-dev/current/happier',
-    nodeEntrypointPath: '/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
-    shimPaths: ['/Users/test/.happier/bin/hdev'],
+    installRoot: '/Users/test/.piggercode/cli-dev',
+    currentPath: '/Users/test/.piggercode/cli-dev/current',
+    previousPath: '/Users/test/.piggercode/cli-dev/previous',
+    versionsDir: '/Users/test/.piggercode/cli-dev/versions',
+    binaryPath: '/Users/test/.piggercode/cli-dev/current/happier',
+    nodeEntrypointPath: '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
+    shimPaths: ['/Users/test/.piggercode/bin/hdev'],
     // No version marker is present in the mock environment — the resolver
     // falls back to the junction path, so the `resolved*` paths shadow the
     // non-resolved ones. (See `resolveJunctionFreeCurrentPath` for the
     // platform-specific reason these fields exist.)
-    resolvedCurrentPath: '/Users/test/.happier/cli-dev/current',
-    resolvedBinaryPath: '/Users/test/.happier/cli-dev/current/happier',
-    resolvedNodeEntrypointPath: '/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
+    resolvedCurrentPath: '/Users/test/.piggercode/cli-dev/current',
+    resolvedBinaryPath: '/Users/test/.piggercode/cli-dev/current/happier',
+    resolvedNodeEntrypointPath: '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
   })),
 }));
 
@@ -67,16 +67,16 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         readDefaultManagedReleaseChannelSyncMock.mockReturnValue('publicdev');
         resolveInstalledFirstPartyComponentPathsMock.mockReset();
         resolveInstalledFirstPartyComponentPathsMock.mockReturnValue({
-            installRoot: '/Users/test/.happier/cli-dev',
-            currentPath: '/Users/test/.happier/cli-dev/current',
-            previousPath: '/Users/test/.happier/cli-dev/previous',
-            versionsDir: '/Users/test/.happier/cli-dev/versions',
-            binaryPath: '/Users/test/.happier/cli-dev/current/happier',
-            nodeEntrypointPath: '/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
-            shimPaths: ['/Users/test/.happier/bin/hdev'],
-            resolvedCurrentPath: '/Users/test/.happier/cli-dev/current',
-            resolvedBinaryPath: '/Users/test/.happier/cli-dev/current/happier',
-            resolvedNodeEntrypointPath: '/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
+            installRoot: '/Users/test/.piggercode/cli-dev',
+            currentPath: '/Users/test/.piggercode/cli-dev/current',
+            previousPath: '/Users/test/.piggercode/cli-dev/previous',
+            versionsDir: '/Users/test/.piggercode/cli-dev/versions',
+            binaryPath: '/Users/test/.piggercode/cli-dev/current/happier',
+            nodeEntrypointPath: '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
+            shimPaths: ['/Users/test/.piggercode/bin/hdev'],
+            resolvedCurrentPath: '/Users/test/.piggercode/cli-dev/current',
+            resolvedBinaryPath: '/Users/test/.piggercode/cli-dev/current/happier',
+            resolvedNodeEntrypointPath: '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
         });
         Object.defineProperty(process, 'execPath', {
             value: originalExecPath,
@@ -148,8 +148,8 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
             const path = String(pathLike);
             return (
                 path === '/repo/apps/cli/.runner-snapshots/5fa3abbb60ff1860/backends/codex/happyMcpStdioBridge.mjs'
-                || path === '/Users/test/.happier/cli-dev/current/package-dist/index.mjs'
-                || path === '/Users/test/.happier/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs'
+                || path === '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs'
+                || path === '/Users/test/.piggercode/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs'
             );
         });
 
@@ -212,37 +212,37 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         resolveInstalledFirstPartyComponentPathsMock.mockImplementation((params) => {
             if (params.channel === 'stable') {
                 return {
-                    installRoot: '/Users/test/.happier/cli',
-                    currentPath: '/Users/test/.happier/cli/current',
-                    previousPath: '/Users/test/.happier/cli/previous',
-                    versionsDir: '/Users/test/.happier/cli/versions',
-                    binaryPath: '/Users/test/.happier/cli/current/happier',
-                    nodeEntrypointPath: '/Users/test/.happier/cli/current/package-dist/index.mjs',
-                    shimPaths: ['/Users/test/.happier/bin/happier'],
-                    resolvedCurrentPath: '/Users/test/.happier/cli/versions/0.2.6',
-                    resolvedBinaryPath: '/Users/test/.happier/cli/versions/0.2.6/happier',
-                    resolvedNodeEntrypointPath: '/Users/test/.happier/cli/versions/0.2.6/package-dist/index.mjs',
+                    installRoot: '/Users/test/.piggercode/cli',
+                    currentPath: '/Users/test/.piggercode/cli/current',
+                    previousPath: '/Users/test/.piggercode/cli/previous',
+                    versionsDir: '/Users/test/.piggercode/cli/versions',
+                    binaryPath: '/Users/test/.piggercode/cli/current/piggercode',
+                    nodeEntrypointPath: '/Users/test/.piggercode/cli/current/package-dist/index.mjs',
+                    shimPaths: ['/Users/test/.piggercode/bin/piggercode'],
+                    resolvedCurrentPath: '/Users/test/.piggercode/cli/versions/0.2.6',
+                    resolvedBinaryPath: '/Users/test/.piggercode/cli/versions/0.2.6/piggercode',
+                    resolvedNodeEntrypointPath: '/Users/test/.piggercode/cli/versions/0.2.6/package-dist/index.mjs',
                 };
             }
             return {
-                installRoot: '/Users/test/.happier/cli-preview',
-                currentPath: '/Users/test/.happier/cli-preview/current',
-                previousPath: '/Users/test/.happier/cli-preview/previous',
-                versionsDir: '/Users/test/.happier/cli-preview/versions',
-                binaryPath: '/Users/test/.happier/cli-preview/current/happier',
-                nodeEntrypointPath: '/Users/test/.happier/cli-preview/current/package-dist/index.mjs',
-                shimPaths: ['/Users/test/.happier/bin/hprev'],
-                resolvedCurrentPath: '/Users/test/.happier/cli-preview/versions/0.2.6-preview.9',
-                resolvedBinaryPath: '/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/happier',
-                resolvedNodeEntrypointPath: '/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs',
+                installRoot: '/Users/test/.piggercode/cli-preview',
+                currentPath: '/Users/test/.piggercode/cli-preview/current',
+                previousPath: '/Users/test/.piggercode/cli-preview/previous',
+                versionsDir: '/Users/test/.piggercode/cli-preview/versions',
+                binaryPath: '/Users/test/.piggercode/cli-preview/current/happier',
+                nodeEntrypointPath: '/Users/test/.piggercode/cli-preview/current/package-dist/index.mjs',
+                shimPaths: ['/Users/test/.piggercode/bin/hprev'],
+                resolvedCurrentPath: '/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9',
+                resolvedBinaryPath: '/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/happier',
+                resolvedNodeEntrypointPath: '/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs',
             };
         });
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
             return (
                 path === '/runtime/current/cli/package-dist/backends/codex/happyMcpStdioBridge.mjs'
-                || path === '/Users/test/.happier/cli/versions/0.2.6/package-dist/index.mjs'
-                || path === '/Users/test/.happier/cli/versions/0.2.6/package-dist/backends/codex/happyMcpStdioBridge.mjs'
+                || path === '/Users/test/.piggercode/cli/versions/0.2.6/package-dist/index.mjs'
+                || path === '/Users/test/.piggercode/cli/versions/0.2.6/package-dist/backends/codex/happyMcpStdioBridge.mjs'
             );
         });
 
@@ -260,78 +260,78 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
             return (
-                path === '/Users/test/.happier/cli-dev/current/package-dist/index.mjs'
-                || path === '/Users/test/.happier/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs'
+                path === '/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs'
+                || path === '/Users/test/.piggercode/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs'
                 || path === '/repo/package-dist/backends/codex/happyMcpStdioBridge.mjs'
             );
         });
 
         expect(resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs')).toBe(
-            '/Users/test/.happier/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
+            '/Users/test/.piggercode/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
         );
     });
 
     it('prefers the installed cli payload root when launched from the stable bin shim path', () => {
         Object.defineProperty(process, 'execPath', {
-            value: '/Users/test/.happier/bin/happier.exe',
+            value: '/Users/test/.piggercode/bin/piggercode.exe',
             configurable: true,
         });
-        process.argv = ['/Users/test/.happier/bin/happier.exe'];
+        process.argv = ['/Users/test/.piggercode/bin/piggercode.exe'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
-            return path === '/Users/test/.happier/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
+            return path === '/Users/test/.piggercode/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
         });
 
         expect(resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs')).toBe(
-            '/Users/test/.happier/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
+            '/Users/test/.piggercode/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
         );
     });
 
     it('prefers the installed preview cli payload root when launched from the hprev shim path', () => {
         Object.defineProperty(process, 'execPath', {
-            value: '/Users/test/.happier/bin/hprev',
+            value: '/Users/test/.piggercode/bin/hprev',
             configurable: true,
         });
-        process.argv = ['/Users/test/.happier/bin/hprev'];
+        process.argv = ['/Users/test/.piggercode/bin/hprev'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
-            return path === '/Users/test/.happier/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
+            return path === '/Users/test/.piggercode/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
         });
 
         expect(resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs')).toBe(
-            '/Users/test/.happier/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
+            '/Users/test/.piggercode/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
         );
     });
 
     it('accepts legacy preview shim names when resolving managed runtime roots', () => {
         Object.defineProperty(process, 'execPath', {
-            value: '/Users/test/.happier/bin/happier-preview.exe',
+            value: '/Users/test/.piggercode/bin/happier-preview.exe',
             configurable: true,
         });
-        process.argv = ['/Users/test/.happier/bin/happier-preview.exe'];
+        process.argv = ['/Users/test/.piggercode/bin/happier-preview.exe'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
-            return path === '/Users/test/.happier/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
+            return path === '/Users/test/.piggercode/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
         });
 
         expect(resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs')).toBe(
-            '/Users/test/.happier/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
+            '/Users/test/.piggercode/cli-preview/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
         );
     });
 
     it('prefers the installed publicdev cli payload root when launched from the hdev shim path', () => {
         Object.defineProperty(process, 'execPath', {
-            value: '/Users/test/.happier/bin/hdev.exe',
+            value: '/Users/test/.piggercode/bin/hdev.exe',
             configurable: true,
         });
-        process.argv = ['/Users/test/.happier/bin/hdev.exe'];
+        process.argv = ['/Users/test/.piggercode/bin/hdev.exe'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike);
-            return path === '/Users/test/.happier/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
+            return path === '/Users/test/.piggercode/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
         });
 
         expect(resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs')).toBe(
-            '/Users/test/.happier/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
+            '/Users/test/.piggercode/cli-dev/current/package-dist/backends/codex/happyMcpStdioBridge.mjs',
         );
     });
 
@@ -340,64 +340,64 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         resolveInstalledFirstPartyComponentPathsMock.mockImplementation((params) => {
             if (params.channel === 'publicdev') {
                 return {
-                    installRoot: 'C:/Users/test/.happier/cli-dev',
-                    currentPath: 'C:/Users/test/.happier/cli-dev/current',
-                    previousPath: 'C:/Users/test/.happier/cli-dev/previous',
-                    versionsDir: 'C:/Users/test/.happier/cli-dev/versions',
-                    binaryPath: 'C:/Users/test/.happier/cli-dev/current/happier.exe',
-                    nodeEntrypointPath: 'C:/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
-                    shimPaths: ['C:/Users/test/.happier/bin/hdev.exe'],
-                    resolvedCurrentPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1',
-                    resolvedBinaryPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1/happier.exe',
-                    resolvedNodeEntrypointPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1/package-dist/index.mjs',
+                    installRoot: 'C:/Users/test/.piggercode/cli-dev',
+                    currentPath: 'C:/Users/test/.piggercode/cli-dev/current',
+                    previousPath: 'C:/Users/test/.piggercode/cli-dev/previous',
+                    versionsDir: 'C:/Users/test/.piggercode/cli-dev/versions',
+                    binaryPath: 'C:/Users/test/.piggercode/cli-dev/current/happier.exe',
+                    nodeEntrypointPath: 'C:/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
+                    shimPaths: ['C:/Users/test/.piggercode/bin/hdev.exe'],
+                    resolvedCurrentPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1',
+                    resolvedBinaryPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1/happier.exe',
+                    resolvedNodeEntrypointPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1/package-dist/index.mjs',
                 };
             }
             return {
-                installRoot: 'C:/Users/test/.happier/cli',
-                currentPath: 'C:/Users/test/.happier/cli/current',
-                previousPath: 'C:/Users/test/.happier/cli/previous',
-                versionsDir: 'C:/Users/test/.happier/cli/versions',
-                binaryPath: 'C:/Users/test/.happier/cli/current/happier.exe',
-                nodeEntrypointPath: 'C:/Users/test/.happier/cli/current/package-dist/index.mjs',
-                shimPaths: ['C:/Users/test/.happier/bin/happier.exe'],
-                resolvedCurrentPath: 'C:/Users/test/.happier/cli/versions/0.2.1',
-                resolvedBinaryPath: 'C:/Users/test/.happier/cli/versions/0.2.1/happier.exe',
-                resolvedNodeEntrypointPath: 'C:/Users/test/.happier/cli/versions/0.2.1/package-dist/index.mjs',
+                installRoot: 'C:/Users/test/.piggercode/cli',
+                currentPath: 'C:/Users/test/.piggercode/cli/current',
+                previousPath: 'C:/Users/test/.piggercode/cli/previous',
+                versionsDir: 'C:/Users/test/.piggercode/cli/versions',
+                binaryPath: 'C:/Users/test/.piggercode/cli/current/happier.exe',
+                nodeEntrypointPath: 'C:/Users/test/.piggercode/cli/current/package-dist/index.mjs',
+                shimPaths: ['C:/Users/test/.piggercode/bin/happier.exe'],
+                resolvedCurrentPath: 'C:/Users/test/.piggercode/cli/versions/0.2.1',
+                resolvedBinaryPath: 'C:/Users/test/.piggercode/cli/versions/0.2.1/happier.exe',
+                resolvedNodeEntrypointPath: 'C:/Users/test/.piggercode/cli/versions/0.2.1/package-dist/index.mjs',
             };
         });
         Object.defineProperty(process, 'execPath', {
-            value: 'C:\\Users\\test\\.happier\\bin\\hdev.exe',
+            value: 'C:\\Users\\test\\.piggercode\\bin\\hdev.exe',
             configurable: true,
         });
-        process.argv = ['C:\\Users\\test\\.happier\\bin\\hdev.exe'];
+        process.argv = ['C:\\Users\\test\\.piggercode\\bin\\hdev.exe'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike).replaceAll('\\', '/');
-            return path === 'C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1/package-dist/backends/codex/happyMcpStdioBridge.mjs'
-                || path === 'C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1/package-dist/index.mjs';
+            return path === 'C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1/package-dist/backends/codex/happyMcpStdioBridge.mjs'
+                || path === 'C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1/package-dist/index.mjs';
         });
 
         expect(
             resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs').replaceAll('\\', '/'),
-        ).toBe('C:/Users/test/.happier/cli-dev/versions/0.2.5-dev.102.1/package-dist/backends/codex/happyMcpStdioBridge.mjs');
+        ).toBe('C:/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.102.1/package-dist/backends/codex/happyMcpStdioBridge.mjs');
     });
 
     it('handles Windows-style stable shim and package-dist paths', () => {
         Object.defineProperty(process, 'execPath', {
-            value: 'C:\\Users\\test\\.happier\\bin\\happier.exe',
+            value: 'C:\\Users\\test\\.piggercode\\bin\\piggercode.exe',
             configurable: true,
         });
         process.argv = [
-            'C:\\Users\\test\\.happier\\bin\\happier.exe',
-            'C:\\Users\\test\\.happier\\cli\\current\\package-dist\\index.mjs',
+            'C:\\Users\\test\\.piggercode\\bin\\piggercode.exe',
+            'C:\\Users\\test\\.piggercode\\cli\\current\\package-dist\\index.mjs',
         ];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike).replaceAll('\\', '/');
-            return path === 'C:/Users/test/.happier/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
+            return path === 'C:/Users/test/.piggercode/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs';
         });
 
         expect(
             resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs').replaceAll('\\', '/'),
-        ).toBe('C:/Users/test/.happier/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs');
+        ).toBe('C:/Users/test/.piggercode/cli/current/package-dist/backends/codex/happyMcpStdioBridge.mjs');
     });
 
     it('ignores embedded bun bundle paths and falls back to the real argv binary path', async () => {
@@ -430,43 +430,43 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         resolveInstalledFirstPartyComponentPathsMock.mockImplementation((params) => {
             if (params.channel === 'stable') {
                 return {
-                    installRoot: 'C:/Users/test/.happier/cli',
-                    currentPath: 'C:/Users/test/.happier/cli/current',
-                    previousPath: 'C:/Users/test/.happier/cli/previous',
-                    versionsDir: 'C:/Users/test/.happier/cli/versions',
-                    binaryPath: 'C:/Users/test/.happier/cli/current/happier.exe',
-                    nodeEntrypointPath: 'C:/Users/test/.happier/cli/current/package-dist/index.mjs',
-                    shimPaths: ['C:/Users/test/.happier/bin/happier.exe'],
-                    resolvedCurrentPath: 'C:/Users/test/.happier/cli/versions/0.2.6',
-                    resolvedBinaryPath: 'C:/Users/test/.happier/cli/versions/0.2.6/happier.exe',
-                    resolvedNodeEntrypointPath: 'C:/Users/test/.happier/cli/versions/0.2.6/package-dist/index.mjs',
+                    installRoot: 'C:/Users/test/.piggercode/cli',
+                    currentPath: 'C:/Users/test/.piggercode/cli/current',
+                    previousPath: 'C:/Users/test/.piggercode/cli/previous',
+                    versionsDir: 'C:/Users/test/.piggercode/cli/versions',
+                    binaryPath: 'C:/Users/test/.piggercode/cli/current/happier.exe',
+                    nodeEntrypointPath: 'C:/Users/test/.piggercode/cli/current/package-dist/index.mjs',
+                    shimPaths: ['C:/Users/test/.piggercode/bin/happier.exe'],
+                    resolvedCurrentPath: 'C:/Users/test/.piggercode/cli/versions/0.2.6',
+                    resolvedBinaryPath: 'C:/Users/test/.piggercode/cli/versions/0.2.6/happier.exe',
+                    resolvedNodeEntrypointPath: 'C:/Users/test/.piggercode/cli/versions/0.2.6/package-dist/index.mjs',
                 };
             }
             if (params.channel === 'preview') {
                 return {
-                    installRoot: 'C:/Users/test/.happier/cli-preview',
-                    currentPath: 'C:/Users/test/.happier/cli-preview/current',
-                    previousPath: 'C:/Users/test/.happier/cli-preview/previous',
-                    versionsDir: 'C:/Users/test/.happier/cli-preview/versions',
-                    binaryPath: 'C:/Users/test/.happier/cli-preview/current/happier.exe',
-                    nodeEntrypointPath: 'C:/Users/test/.happier/cli-preview/current/package-dist/index.mjs',
-                    shimPaths: ['C:/Users/test/.happier/bin/hprev.exe'],
-                    resolvedCurrentPath: 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9',
-                    resolvedBinaryPath: 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/happier.exe',
-                    resolvedNodeEntrypointPath: 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs',
+                    installRoot: 'C:/Users/test/.piggercode/cli-preview',
+                    currentPath: 'C:/Users/test/.piggercode/cli-preview/current',
+                    previousPath: 'C:/Users/test/.piggercode/cli-preview/previous',
+                    versionsDir: 'C:/Users/test/.piggercode/cli-preview/versions',
+                    binaryPath: 'C:/Users/test/.piggercode/cli-preview/current/happier.exe',
+                    nodeEntrypointPath: 'C:/Users/test/.piggercode/cli-preview/current/package-dist/index.mjs',
+                    shimPaths: ['C:/Users/test/.piggercode/bin/hprev.exe'],
+                    resolvedCurrentPath: 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9',
+                    resolvedBinaryPath: 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/happier.exe',
+                    resolvedNodeEntrypointPath: 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs',
                 };
             }
             return {
-                installRoot: 'C:/Users/test/.happier/cli-dev',
-                currentPath: 'C:/Users/test/.happier/cli-dev/current',
-                previousPath: 'C:/Users/test/.happier/cli-dev/previous',
-                versionsDir: 'C:/Users/test/.happier/cli-dev/versions',
-                binaryPath: 'C:/Users/test/.happier/cli-dev/current/happier.exe',
-                nodeEntrypointPath: 'C:/Users/test/.happier/cli-dev/current/package-dist/index.mjs',
-                shimPaths: ['C:/Users/test/.happier/bin/hdev.exe'],
-                resolvedCurrentPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.6-dev.1',
-                resolvedBinaryPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.6-dev.1/happier.exe',
-                resolvedNodeEntrypointPath: 'C:/Users/test/.happier/cli-dev/versions/0.2.6-dev.1/package-dist/index.mjs',
+                installRoot: 'C:/Users/test/.piggercode/cli-dev',
+                currentPath: 'C:/Users/test/.piggercode/cli-dev/current',
+                previousPath: 'C:/Users/test/.piggercode/cli-dev/previous',
+                versionsDir: 'C:/Users/test/.piggercode/cli-dev/versions',
+                binaryPath: 'C:/Users/test/.piggercode/cli-dev/current/happier.exe',
+                nodeEntrypointPath: 'C:/Users/test/.piggercode/cli-dev/current/package-dist/index.mjs',
+                shimPaths: ['C:/Users/test/.piggercode/bin/hdev.exe'],
+                resolvedCurrentPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.6-dev.1',
+                resolvedBinaryPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.6-dev.1/happier.exe',
+                resolvedNodeEntrypointPath: 'C:/Users/test/.piggercode/cli-dev/versions/0.2.6-dev.1/package-dist/index.mjs',
             };
         });
         Object.defineProperty(process, 'execPath', {
@@ -476,12 +476,12 @@ describe('resolvePackagedRuntimeEntrypoint', () => {
         process.argv = ['bun', 'B:/~BUN/root/happier.exe', 'daemon', 'start'];
         vi.mocked(existsSync).mockImplementation((pathLike) => {
             const path = String(pathLike).replaceAll('\\', '/');
-            return path === 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/backends/codex/happyMcpStdioBridge.mjs'
-                || path === 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs';
+            return path === 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/backends/codex/happyMcpStdioBridge.mjs'
+                || path === 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs';
         });
 
         expect(
             resolvePackagedRuntimeEntrypoint('backends/codex/happyMcpStdioBridge.mjs').replaceAll('\\', '/'),
-        ).toBe('C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/backends/codex/happyMcpStdioBridge.mjs');
+        ).toBe('C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/backends/codex/happyMcpStdioBridge.mjs');
     });
 });

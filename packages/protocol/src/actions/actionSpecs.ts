@@ -1081,7 +1081,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'action.spec.search',
     title: 'Search action specs',
-    description: 'Search available Happier action specs by name, description, bindings, and field hints.',
+    description: 'Search available PiggerCode action specs by name, description, bindings, and field hints.',
     safety: 'safe',
     approval: APPROVAL_RESULT_REQUIRED,
     placements: ['voice_panel'],
@@ -1112,7 +1112,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'action.spec.get',
     title: 'Get action spec',
-    description: 'Get one Happier action spec with input hints and examples.',
+    description: 'Get one PiggerCode action spec with input hints and examples.',
     safety: 'safe',
     approval: APPROVAL_RESULT_REQUIRED,
     placements: ['voice_panel'],
@@ -1133,7 +1133,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
     inputHints: {
       title: 'Get action spec',
       fields: [
-        { path: 'id', title: 'Action id', description: 'The exact Happier action id.', widget: 'text', required: true },
+        { path: 'id', title: 'Action id', description: 'The exact PiggerCode action id.', widget: 'text', required: true },
       ],
     },
     inputSchema: ActionSpecGetInputSchema,
@@ -1269,7 +1269,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
     bindings: { voiceClientToolName: 'startPlan', mcpToolName: 'subagents_plan_start' },
     inputHints: {
       title: 'Start a planning run',
-      description: 'Start Happier-managed planning runs using explicit agent provider/backend targets.',
+      description: 'Start PiggerCode-managed planning runs using explicit agent provider/backend targets.',
       fields: [
         {
           path: 'backendTargetKeys',
@@ -1340,7 +1340,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
     bindings: { voiceClientToolName: 'startDelegate', mcpToolName: 'subagents_delegate_start' },
     inputHints: {
       title: 'Start a delegation run',
-      description: 'Start Happier-managed delegation runs using explicit agent provider/backend targets.',
+      description: 'Start PiggerCode-managed delegation runs using explicit agent provider/backend targets.',
       fields: [
         {
           path: 'backendTargetKeys',
@@ -1697,7 +1697,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'execution.run.wait',
     title: 'Wait for execution run',
-    description: 'Wait until an execution run reaches a terminal status. Pass timeoutSeconds to bound the wait; omit it for no Happier-side deadline.',
+    description: 'Wait until an execution run reaches a terminal status. Pass timeoutSeconds to bound the wait; omit it for no PiggerCode-side deadline.',
     safety: 'safe',
     approval: APPROVAL_RESULT_REQUIRED,
     placements: [],
@@ -3586,7 +3586,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'prompt_doc.update',
     title: 'Update prompt document',
-    description: 'Update a prompt document stored in the Happier prompt library.',
+    description: 'Update a prompt document stored in the PiggerCode prompt library.',
     safety: 'danger',
     approval: APPROVAL_RESULT_NONE,
     placements: [],
@@ -3614,7 +3614,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'prompt_bundle.update',
     title: 'Update prompt bundle',
-    description: 'Update a skill bundle stored in the Happier prompt library.',
+    description: 'Update a skill bundle stored in the PiggerCode prompt library.',
     safety: 'danger',
     approval: APPROVAL_RESULT_NONE,
     placements: [],
@@ -3642,7 +3642,7 @@ export const ACTION_SPECS: readonly ActionSpec[] = Object.freeze([
   {
     id: 'prompt_asset.export',
     title: 'Export prompt asset',
-    description: 'Export a prompt doc or skill bundle from the Happier library to a provider-native asset.',
+    description: 'Export a prompt doc or skill bundle from the PiggerCode library to a provider-native asset.',
     safety: 'danger',
     approval: APPROVAL_RESULT_NONE,
     placements: [],

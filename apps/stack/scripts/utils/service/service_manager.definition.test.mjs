@@ -10,17 +10,17 @@ test('buildServiceDefinition renders a systemd user unit definition', () => {
     spec: {
       label: 'dev.happier.selfhost',
       description: 'Happier Self-Host',
-      programArgs: ['/home/me/.happier/self-host/bin/happier-server'],
-      workingDirectory: '/home/me/.happier/self-host',
+      programArgs: ['/home/me/.piggercode/self-host/bin/happier-server'],
+      workingDirectory: '/home/me/.piggercode/self-host',
       env: { PORT: '3005' },
-      stdoutPath: '/home/me/.happier/self-host/logs/server.out.log',
-      stderrPath: '/home/me/.happier/self-host/logs/server.err.log',
+      stdoutPath: '/home/me/.piggercode/self-host/logs/server.out.log',
+      stderrPath: '/home/me/.piggercode/self-host/logs/server.err.log',
     },
   });
 
   assert.equal(def.kind, 'systemd-service');
   assert.equal(def.path, '/home/me/.config/systemd/user/dev.happier.selfhost.service');
-  assert.match(def.contents, /ExecStart=\/home\/me\/\.happier\/self-host\/bin\/happier-server/);
+  assert.match(def.contents, /ExecStart=\/home\/me\/\.piggercode\/self-host\/bin\/happier-server/);
 });
 
 test('buildServiceDefinition renders a launchd user plist definition', () => {
@@ -30,11 +30,11 @@ test('buildServiceDefinition renders a launchd user plist definition', () => {
     spec: {
       label: 'dev.happier.selfhost',
       description: 'Happier Self-Host',
-      programArgs: ['/Users/me/.happier/self-host/bin/happier-server'],
-      workingDirectory: '/Users/me/.happier/self-host',
+      programArgs: ['/Users/me/.piggercode/self-host/bin/happier-server'],
+      workingDirectory: '/Users/me/.piggercode/self-host',
       env: { PORT: '3005' },
-      stdoutPath: '/Users/me/.happier/self-host/logs/server.out.log',
-      stderrPath: '/Users/me/.happier/self-host/logs/server.err.log',
+      stdoutPath: '/Users/me/.piggercode/self-host/logs/server.out.log',
+      stderrPath: '/Users/me/.piggercode/self-host/logs/server.err.log',
     },
   });
 
@@ -51,11 +51,11 @@ test('buildServiceDefinition renders a windows scheduled-task wrapper', () => {
     spec: {
       label: 'dev.happier.selfhost',
       description: 'Happier Self-Host',
-      programArgs: ['C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server.exe'],
-      workingDirectory: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host',
+      programArgs: ['C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\bin\\\\happier-server.exe'],
+      workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host',
       env: { PORT: '3005' },
-      stdoutPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.out.log',
-      stderrPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\server.err.log',
+      stdoutPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server.out.log',
+      stderrPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\server.err.log',
     },
   });
 

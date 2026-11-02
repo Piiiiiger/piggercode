@@ -683,7 +683,7 @@ describe('runCodex CodexACP resume behavior', () => {
     expect(ensureRuntimeInstallablesForLaunchSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('exposes the current Codex permission mode to the Happier MCP bridge', async () => {
+  it('exposes the current Codex permission mode to the PiggerCode MCP bridge', async () => {
     let bridgeSession: any = null;
     resolveRunnerMcpServersSpy.mockImplementationOnce(async (params: any) => {
       bridgeSession = params.session;
@@ -1051,7 +1051,7 @@ describe('runCodex CodexACP resume behavior', () => {
     expect(outcome).toMatchObject({ ok: false });
   });
 
-  it('wires Happier MCP servers into the future app-server runtime', async () => {
+  it('wires PiggerCode MCP servers into the future app-server runtime', async () => {
     const experiments = await import('@/backends/codex/experiments');
     (experiments.isExperimentalCodexAcpEnabled as unknown as ReturnType<typeof vi.fn>).mockReturnValue(true);
     process.env.PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS = '90000';
@@ -1059,7 +1059,7 @@ describe('runCodex CodexACP resume behavior', () => {
     resolveRunnerMcpServersSpy.mockImplementationOnce(async () => ({
       happierMcpServer: { url: 'http://127.0.0.1:0', stop: vi.fn() },
       mcpServers: {
-        happier: {
+        piggercode: {
           command: '/tmp/happier-mcp-bridge',
           args: ['--url', 'http://127.0.0.1:0'],
         },
@@ -1089,10 +1089,10 @@ describe('runCodex CodexACP resume behavior', () => {
       configOverrides: expect.arrayContaining([
         'mcp_optional_startup_grace_ms=90000',
         'shell_environment_policy.set.PIGGERCODE_SESSION_ID="sess_1"',
-        'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
-        'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
-        'mcp_servers.happier.enabled=true',
-        'mcp_servers.happier.startup_timeout_sec=90',
+        'mcp_servers.piggercode.command="/tmp/happier-mcp-bridge"',
+        'mcp_servers.piggercode.args=["--url","http://127.0.0.1:0"]',
+        'mcp_servers.piggercode.enabled=true',
+        'mcp_servers.piggercode.startup_timeout_sec=90',
       ]),
     }));
     const runtimeArgs = createCodexAppServerRuntimeSpy.mock.calls[0]?.[0] as {
@@ -1109,10 +1109,10 @@ describe('runCodex CodexACP resume behavior', () => {
     expect(runtimeArgs?.configOverrides).toEqual(expect.arrayContaining([
       'mcp_optional_startup_grace_ms=90000',
       'shell_environment_policy.set.PIGGERCODE_SESSION_ID="sess_1"',
-      'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
-      'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
-      'mcp_servers.happier.enabled=true',
-      'mcp_servers.happier.startup_timeout_sec=90',
+      'mcp_servers.piggercode.command="/tmp/happier-mcp-bridge"',
+      'mcp_servers.piggercode.args=["--url","http://127.0.0.1:0"]',
+      'mcp_servers.piggercode.enabled=true',
+      'mcp_servers.piggercode.startup_timeout_sec=90',
     ]));
     const createdRuntime = createCodexAppServerRuntimeSpy.mock.results[0]?.value as any;
     const startOrLoad = createdRuntime?.startOrLoad as ReturnType<typeof vi.fn> | undefined;
@@ -1211,7 +1211,7 @@ describe('runCodex CodexACP resume behavior', () => {
 
     expect(outcome).toBeInstanceOf(Error);
     expect((outcome as Error).message).toMatch(/another Codex process.*already writing/i);
-    expect((outcome as Error).message).toMatch(/start a new session in Happier.*happier attach/i);
+    expect((outcome as Error).message).toMatch(/start a new session in PiggerCode.*piggercode attach/i);
     expect((outcome as Error).message).not.toMatch(/ensure Codex app-server can run/i);
     expect(lastSessionClient?.sendSessionEvent).toHaveBeenCalledWith(expect.objectContaining({
       type: 'message',
@@ -1381,7 +1381,7 @@ describe('runCodex CodexACP resume behavior', () => {
     }));
   });
 
-  it('reuses the existing Codex daemon transport without creating or publishing a Happier-owned server', async () => {
+  it('reuses the existing Codex daemon transport without creating or publishing a PiggerCode-owned server', async () => {
     process.env.PIGGERCODE_CODEX_APP_SERVER_TRANSPORT = 'daemonProxy';
     process.env.PIGGERCODE_RUNNER_TERMINATION_TIMEOUT_MS = '250';
     resolveCodexSharedControlSupportSpy.mockResolvedValueOnce({ ok: true as const });

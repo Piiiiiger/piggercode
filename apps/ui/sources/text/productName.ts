@@ -2,7 +2,7 @@ import { readAppBrandConfig } from '@/sync/runtime/appBrand';
 
 /** The app name the translations are written with. */
 const UPSTREAM_PRODUCT_NAME = 'Happier';
-/** The command the translations tell people to type. */
+/** The upstream command, still named in text from older CLIs and daemons; it is shown as this build's command. */
 const UPSTREAM_CLI_COMMAND_NAME = 'happier';
 
 // "Happier Coder" is the app's long name, and "Happier Desktop" is this app's desktop build. Happier's own

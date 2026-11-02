@@ -15,7 +15,7 @@ describe('replaceRuntimePayloadTree', () => {
 
         await mkdir(join(sourcePath, 'package-dist'), { recursive: true });
         await mkdir(join(sourcePath, 'node_modules', 'example', 'node_modules', '.bin'), { recursive: true });
-        await writeFile(join(sourcePath, 'happier.exe'), 'runtime-binary', 'utf8');
+        await writeFile(join(sourcePath, 'piggercode.exe'), 'runtime-binary', 'utf8');
         await writeFile(join(sourcePath, 'package-dist', 'index.mjs'), 'export default "ok";\n', 'utf8');
         await writeFile(join(sourcePath, '._happier.exe'), 'appledouble', 'utf8');
         await writeFile(join(sourcePath, 'node_modules', 'example', 'node_modules', '.bin', 'yaml'), 'shim', 'utf8');
@@ -26,7 +26,7 @@ describe('replaceRuntimePayloadTree', () => {
                 destinationPath,
             });
 
-            expect(await readFile(join(destinationPath, 'happier.exe'), 'utf8')).toBe('runtime-binary');
+            expect(await readFile(join(destinationPath, 'piggercode.exe'), 'utf8')).toBe('runtime-binary');
             expect(await readFile(join(destinationPath, 'package-dist', 'index.mjs'), 'utf8')).toContain('ok');
             expect(existsSync(join(destinationPath, '._happier.exe'))).toBe(false);
             expect(existsSync(join(destinationPath, 'node_modules', 'example', 'node_modules', '.bin', 'yaml'))).toBe(false);

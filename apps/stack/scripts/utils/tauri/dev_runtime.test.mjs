@@ -70,11 +70,11 @@ test('buildStackTauriDevConfig applies explicit stack overrides after merging co
     devUrl: 'http://localhost:18081',
     env: {
       PIGGERCODE_STACK_TAURI_PRODUCT_NAME: 'Happier (stack exp1)',
-      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'com.happier.stack.exp1',
+      PIGGERCODE_STACK_TAURI_IDENTIFIER: 'com.piggercode.stack.exp1',
     },
   });
 
   assert.equal(config.productName, 'Happier (stack exp1)');
-  assert.equal(config.identifier, 'com.happier.stack.exp1');
+  assert.equal(config.identifier, 'com.piggercode.stack.exp1');
   assert.equal(config.app.windows[0]?.title, 'Happier (stack exp1)');
 });

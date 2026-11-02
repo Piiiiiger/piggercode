@@ -134,7 +134,7 @@ describe.sequential('doAuth (non-interactive)', () => {
       // The wait resolves as a step instead of trailing off.
       expect(out).toMatch(/^- \[✓\] Approved$/mu);
       expect(out).toContain('webapp.example.test/terminal/connect#key=');
-      expect(out).toContain('happier://terminal?');
+      expect(out).toContain('piggercode://terminal?');
       expect(displayQRCodeMock).toHaveBeenCalledTimes(1);
     } finally {
       output.restore();
@@ -416,7 +416,7 @@ describe.sequential('doAuth (non-interactive)', () => {
       expect(displayQRCodeMock).toHaveBeenCalledTimes(1);
       const out = output.logs.join('\n');
       expect(out).toContain('Connect this computer');
-      expect(out).toContain('happier://terminal?');
+      expect(out).toContain('piggercode://terminal?');
       expect(out).not.toContain('webapp.example.test/terminal/connect#key=');
     } finally {
       output.restore();
@@ -454,7 +454,7 @@ describe.sequential('doAuth (non-interactive)', () => {
       expect(out).toContain('normal on a headless or remote computer');
       expect(out).toContain('Copy this link into any browser');
       expect(out).toContain('webapp.example.test/terminal/connect#key=');
-      expect(out).not.toContain('happier://terminal?');
+      expect(out).not.toContain('piggercode://terminal?');
       expect(out.match(/Authentication successful/gu) ?? []).toHaveLength(0);
     } finally {
       output.restore();

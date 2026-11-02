@@ -23,7 +23,7 @@ function machine(id: string, metadata: Partial<NonNullable<Machine['metadata']>>
             host: id,
             platform: 'darwin',
             happyCliVersion: '0.2.12',
-            happyHomeDir: '/h/.happier',
+            happyHomeDir: '/h/.piggercode',
             homeDir: '/h',
             ...metadata,
         },
@@ -40,7 +40,7 @@ describe('buildMachineUpdateGroups (what the always-mounted pill counts)', () =>
                 latestVersion: '0.2.13',
                 channel: 'stable',
                 installSource: 'managed',
-                updateCommand: 'happier self update',
+                updateCommand: 'piggercode self update',
                 canUpdateRemotely: true,
                 lastUpdate: null,
             },
@@ -60,7 +60,7 @@ describe('buildMachineUpdateGroups (what the always-mounted pill counts)', () =>
         const studio = machine('studio', {
             cliUpdate: {
                 currentVersion: '0.2.12', latestVersion: '0.2.13', channel: 'stable', installSource: 'managed',
-                updateCommand: 'happier self update', canUpdateRemotely: true, lastUpdate: null,
+                updateCommand: 'piggercode self update', canUpdateRemotely: true, lastUpdate: null,
             },
         });
         const snapshot: MachineCapabilitiesSnapshot = {

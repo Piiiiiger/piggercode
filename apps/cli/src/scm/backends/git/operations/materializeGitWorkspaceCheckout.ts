@@ -98,7 +98,7 @@ async function materializeGitWorktreeIntoExistingDirectory(input: Readonly<{
     branchName: string;
     baseRef: string | null;
 }>): Promise<string> {
-    const temporaryTargetPath = `${input.targetPath}.happier-materialize-tmp`;
+    const temporaryTargetPath = `${input.targetPath}.piggercode-materialize-tmp`;
     await rm(temporaryTargetPath, { recursive: true, force: true });
 
     await runGitWorktreeAdd({

@@ -166,7 +166,7 @@ describe('useConnectAccount (scanner lifecycle)', () => {
     vi.doMock('expo-constants', () => ({
       default: {
         expoConfig: {
-          scheme: 'happier-dev',
+          scheme: 'piggercode-dev',
         },
       },
     }));
@@ -185,7 +185,7 @@ describe('useConnectAccount (scanner lifecycle)', () => {
 
     let ok = false;
     await act(async () => {
-      ok = await hookApi!.processAuthUrl('happier-dev:///account?abc123');
+      ok = await hookApi!.processAuthUrl('piggercode-dev:///account?abc123');
     });
     expect(ok).toBe(true);
     expect(modalAlertSpy).not.toHaveBeenCalledWith('common.error', 'modals.invalidAuthUrl', expect.anything());

@@ -1,7 +1,7 @@
 /**
  * Minimal persistence functions for Happier CLI
  * 
- * Handles settings and private key storage in ~/.happier/ or local .happier/
+ * Handles settings and private key storage in ~/.piggercode/ or local .piggercode/
  */
 
 import { FileHandle } from 'node:fs/promises'
@@ -432,7 +432,7 @@ export async function readSettings(): Promise<Settings> {
     if (schemaVersion > SUPPORTED_SCHEMA_VERSION) {
       logger.warn(
         `Settings file uses schema v${schemaVersion}, newer than the supported v${SUPPORTED_SCHEMA_VERSION}. ` +
-        'Update Happier CLI for full functionality.'
+        'Update PiggerCode CLI for full functionality.'
       );
     }
 
@@ -1241,7 +1241,7 @@ export async function acquireDaemonLock(
 
             const processExists = isPidAliveBySignal(pid);
             if (processExists) {
-              // PID reuse safety: only treat the lock as valid if the PID looks like a happier daemon.
+              // PID reuse safety: only treat the lock as valid if the PID looks like a piggercode daemon.
               // Otherwise a recycled PID can wedge daemon startup forever.
               const ownerProcess = await classifyDaemonLifecycleProcessByPid(pid)
                 .catch(() => ({ kind: 'unknown' as const }));

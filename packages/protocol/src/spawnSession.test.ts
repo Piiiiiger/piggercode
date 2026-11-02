@@ -191,7 +191,7 @@ describe('spawn-session error detail contract (D2 structured continuity)', () =>
       vendorResumeId: 'rollout-123',
       cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
       reason: 'native_session_file_missing',
-      targetMaterializedRoot: '/Users/leeroy/.happier/materialized/codex',
+      targetMaterializedRoot: '/Users/leeroy/.piggercode/materialized/codex',
       candidatePersistedSessionFile: '/Users/leeroy/.codex/sessions/rollout-123.jsonl',
       uxDiagnostic: {
         code: 'provider_session_state_unavailable_for_resume',
@@ -203,7 +203,7 @@ describe('spawn-session error detail contract (D2 structured continuity)', () =>
         diagnostics: {
           reason: 'native_session_file_missing',
           cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
-          targetMaterializedRoot: '/Users/leeroy/.happier/materialized/codex',
+          targetMaterializedRoot: '/Users/leeroy/.piggercode/materialized/codex',
           candidatePersistedSessionFile: '/Users/leeroy/.codex/sessions/rollout-123.jsonl',
           requestedStateMode: 'shared',
           effectiveStateMode: 'shared',

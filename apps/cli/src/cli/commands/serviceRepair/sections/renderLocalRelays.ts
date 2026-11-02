@@ -65,7 +65,7 @@ function cardFor(entry: LocalRelayEntry, findings: readonly RepairFinding[], inv
 export function renderLocalRelays(
   entries: readonly LocalRelayEntry[],
   findings: readonly RepairFinding[],
-  invoker: string = 'happier',
+  invoker: string = 'piggercode',
 ): string[] {
   if (entries.length === 0) return [];
   const lines: string[] = [sectionHeader(SECTION_LOCAL_RELAYS)];

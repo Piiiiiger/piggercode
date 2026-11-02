@@ -4225,9 +4225,9 @@ function createLoopbackMachineTransferChannels() {
     }
   });
 
-  it('normalizes prepare-target targetPath onto the local machine home when the request carries an absolute /.happier/ path from another machine', async () => {
+  it('normalizes prepare-target targetPath onto the local machine home when the request carries an absolute /.piggercode/ path from another machine', async () => {
     const localHomeDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-local-home-'));
-    const activeServerDir = join(localHomeDir, '.happier', 'wsrepl-qa', 'servers', 'stack_wsrepl__id_default');
+    const activeServerDir = join(localHomeDir, '.piggercode', 'wsrepl-qa', 'servers', 'stack_wsrepl__id_default');
     const sourcePath = '/Users/tester/projects/demo';
     const registered = new Map<string, (params: unknown) => Promise<any>>();
     const createState = vi.fn(async () => ({
@@ -4358,7 +4358,7 @@ function createLoopbackMachineTransferChannels() {
         workspaceTransfer,
       });
 
-      const requestedTargetPath = '/Users/other-user/.happier/wsrepl-qa-fixtures/large-repo';
+      const requestedTargetPath = '/Users/other-user/.piggercode/wsrepl-qa-fixtures/large-repo';
       let prepared = await prepare!({
         handoffId: started.handoffId,
         sourceMachineId: 'machine_source',
@@ -4377,7 +4377,7 @@ function createLoopbackMachineTransferChannels() {
         });
       }
 
-      const expectedTargetPath = join(localHomeDir, '.happier', 'wsrepl-qa-fixtures', 'large-repo');
+      const expectedTargetPath = join(localHomeDir, '.piggercode', 'wsrepl-qa-fixtures', 'large-repo');
       expect(prepareTargetWorkspace).toHaveBeenCalledWith(expect.objectContaining({
         targetPath: expectedTargetPath,
       }));
@@ -4798,7 +4798,7 @@ function createLoopbackMachineTransferChannels() {
 
   it('rejects workspace transfer from an unsafe source path before exporting bundles when session metadata is missing homeDir', async () => {
     const localHomeDir = await mkdtemp(join(os.tmpdir(), 'happier-session-handoff-home-missing-metadata-'));
-    const activeServerDir = join(localHomeDir, '.happier', 'wsrepl-qa', 'servers', 'stack_wsrepl__id_default');
+    const activeServerDir = join(localHomeDir, '.piggercode', 'wsrepl-qa', 'servers', 'stack_wsrepl__id_default');
     const registered = new Map<string, (params: unknown) => Promise<any>>();
     const exportSessionBundle = vi.fn<ExportSessionBundle>(async () => ({
       providerBundle: {

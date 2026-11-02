@@ -54,7 +54,7 @@ export function renderDaemonServiceLifecycleOwnershipConflict(params: Readonly<{
       ? 'enable automatic startup'
       : `${params.action} the background service`;
     return {
-      title: 'Happier could not determine how the current daemon was started.',
+      title: 'PiggerCode could not determine how the current daemon was started.',
       lines: [
         ...buildOwnerDetails(owner),
         `Stop the current daemon before trying to ${actionDescription}.`,
@@ -70,7 +70,7 @@ export function renderDaemonServiceLifecycleOwnershipConflict(params: Readonly<{
       title: 'A manually started daemon is currently running for the selected relay.',
       lines: [
         ...buildOwnerDetails(owner),
-        `Use \`happier daemon stop\` before trying to ${actionDescription}.`,
+        `Use \`piggercode daemon stop\` before trying to ${actionDescription}.`,
       ],
     };
   }
@@ -82,7 +82,7 @@ export function renderDaemonServiceLifecycleOwnershipConflict(params: Readonly<{
     title: 'Another background service is currently running for the selected relay.',
     lines: [
       ...buildOwnerDetails(owner),
-      `Use \`happier service stop\` or \`happier doctor repair\` before trying to ${actionDescription}.`,
+      `Use \`piggercode service stop\` or \`piggercode doctor repair\` before trying to ${actionDescription}.`,
     ],
   };
 }
@@ -106,7 +106,7 @@ export function renderDaemonServiceStopOwnershipNote(params: Readonly<{
       lines: [
         ...buildOwnerDetails(owner),
         'A different background service is currently running for the selected relay.',
-        'Use `happier service stop` from the currently owning installation, or run `happier service status` to inspect the active owner.',
+        'Use `piggercode service stop` from the currently owning installation, or run `piggercode service status` to inspect the active owner.',
       ],
     };
   }
@@ -117,7 +117,7 @@ export function renderDaemonServiceStopOwnershipNote(params: Readonly<{
       lines: [
         ...buildOwnerDetails(owner),
         'A manually started daemon is currently running for the selected relay.',
-        'Use `happier daemon stop` if you also want to stop the current daemon.',
+        'Use `piggercode daemon stop` if you also want to stop the current daemon.',
       ],
     };
   }
@@ -126,7 +126,7 @@ export function renderDaemonServiceStopOwnershipNote(params: Readonly<{
     title: 'Stopping this background service will not stop the current daemon.',
     lines: [
       ...buildOwnerDetails(owner),
-      'Happier could not determine how the current daemon was started.',
+      'PiggerCode could not determine how the current daemon was started.',
       'Stop the current daemon separately if you also need to switch which installation is running.',
     ],
   };
@@ -150,7 +150,7 @@ export function renderDaemonServiceRepairOwnershipNote(params: Readonly<{
       lines: [
         ...buildOwnerDetails(owner),
         'A manually started daemon is currently running on this computer.',
-        'Use `happier daemon stop` or `happier daemon restart` if you also need to switch the running daemon to this installation.',
+        'Use `piggercode daemon stop` or `piggercode daemon restart` if you also need to switch the running daemon to this installation.',
       ],
     };
   }
@@ -159,7 +159,7 @@ export function renderDaemonServiceRepairOwnershipNote(params: Readonly<{
     title: 'Repairing automatic startup will not stop what is currently running.',
     lines: [
       ...buildOwnerDetails(owner),
-      'Happier could not determine how the running daemon was started.',
+      'PiggerCode could not determine how the running daemon was started.',
       'Stop the running daemon separately if you also need to switch this installation immediately.',
     ],
   };

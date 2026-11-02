@@ -271,7 +271,7 @@ describe('mobileMaestroRunner', () => {
 
   it('redacts terminal connect deep links from logged Maestro command arguments', async () => {
     const { redactSensitiveMaestroCommandArgsForLog } = await import('./mobileMaestroRunner');
-    const terminalConnectDeepLink = 'happier://terminal?key=terminal-secret&server=http%3A%2F%2F10.0.2.2%3A43210';
+    const terminalConnectDeepLink = 'piggercode://terminal?key=terminal-secret&server=http%3A%2F%2F10.0.2.2%3A43210';
 
     const loggedArgs = redactSensitiveMaestroCommandArgsForLog(
       [
@@ -897,7 +897,7 @@ describe('mobileMaestroRunner', () => {
       const flowsArgIndex = params.args.findIndex((arg) => arg === 'test') + 1;
       events.push(`maestro:${params.args[flowsArgIndex] ?? 'unknown'}`);
       expect(params.env.PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK).toBe(
-        'happier://terminal?key=test-key&server=http%3A%2F%2F10.0.2.2%3A43210',
+        'piggercode://terminal?key=test-key&server=http%3A%2F%2F10.0.2.2%3A43210',
       );
       expect(
         params.args.filter((arg) => arg.startsWith('PIGGERCODE_E2E_TERMINAL_CONNECT_DEEP_LINK=')),
@@ -1131,7 +1131,7 @@ describe('mobileMaestroRunner', () => {
       expect(joined).toContain('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081');
       expect(joined).toContain('PIGGERCODE_E2E_MOBILE_APP_SCHEME=happier-internaldev');
       expect(joined).toContain(
-        `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${`happier-internaldev://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
+        `PIGGERCODE_E2E_DEV_CLIENT_LAUNCH_URL=${`piggercode-internaldev://expo-development-client/?url=${encodeURIComponent('http://127.0.0.1:8081')}&disableOnboarding=1`}`,
       );
       expect(joined).not.toContain('PIGGERCODE_E2E_DEV_CLIENT_NATIVE_CRYPTO_WORKER_LAUNCH_URL');
       expect(joined).not.toContain('PIGGERCODE_E2E_DEV_CLIENT_METRO_URL=http://127.0.0.1:8081/');

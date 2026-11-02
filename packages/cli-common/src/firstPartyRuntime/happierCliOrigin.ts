@@ -2,7 +2,7 @@ import { readFileSync, realpathSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 
 /**
- * Where a `happier` this app did not install came from, with the exact command that removes it
+ * Where a `piggercode` this app did not install came from, with the exact command that removes it
  * and the one that updates it (plan R12). The app shows these commands and never runs them: the
  * CLI belongs to the package manager that installed it.
  *

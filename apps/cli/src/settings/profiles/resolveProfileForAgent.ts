@@ -17,7 +17,7 @@ export function resolveProfileForAgent(params: Readonly<{
         `Ambiguous profile name "${params.query}". Matches: ${formatCandidatesList(resolved.candidates)}. Use --profile <id>.`,
       );
     }
-    throw new Error(`Unknown profile "${params.query}". Run "happier profiles list" to see available profiles.`);
+    throw new Error(`Unknown profile "${params.query}". Run "piggercode profiles list" to see available profiles.`);
   }
 
   const profile = resolved.profile;
@@ -29,7 +29,7 @@ export function resolveProfileForAgent(params: Readonly<{
   const supportedList = supportedAgentIds.length > 0 ? supportedAgentIds.join(', ') : '(none)';
   const firstSuggestion = supportedAgentIds.length > 0 ? supportedAgentIds[0] : null;
   const hint = firstSuggestion
-    ? ` Try: happier ${firstSuggestion} --profile ${profile.id}`
+    ? ` Try: piggercode ${firstSuggestion} --profile ${profile.id}`
     : '';
 
   throw new Error(`Profile "${profile.name}" (${profile.id}) is not compatible with ${params.agentId}. Supported agents: ${supportedList}.${hint}`);

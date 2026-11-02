@@ -64,7 +64,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         ? process.platform
         : 'linux';
     process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
-    process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+    process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.piggercode');
     process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE = 'default-following';
     reloadConfiguration();
 
@@ -79,7 +79,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
                 label: paths.label,
                 programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
                 env: {
-                    PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                    PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                     PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
                     PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                     PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -97,10 +97,10 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         writeFileSync(
             paths.installedPath,
             renderSystemdServiceUnit({
-                description: 'Happier Daemon',
+                description: 'PiggerCode Daemon',
                 execStart: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
                 env: {
-                    PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                    PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                     PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
                     PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                     PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -117,7 +117,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         renderWindowsScheduledTaskWrapperPs1({
             programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
             env: {
-                PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
                 PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                 PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -142,7 +142,7 @@ function setTtyMode(stdinIsTTY: boolean, stdoutIsTTY: boolean): () => void {
     };
 }
 
-describe('happier server background service follow-up', () => {
+describe('piggercode server background service follow-up', () => {
     beforeEach(() => {
         axiosGetMock.mockResolvedValue({
             status: 200,
@@ -199,13 +199,13 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
-                    happierHomeDir: join(home, '.happier'),
+                    path: '/tmp/piggercode-daemon.default.service',
+                    happierHomeDir: join(home, '.piggercode'),
                     platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
                         ? process.platform
                         : 'darwin',
                     releaseChannel: alternateReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
             ]);
@@ -285,13 +285,13 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
-                    happierHomeDir: join(home, '.happier'),
+                    path: '/tmp/piggercode-daemon.default.service',
+                    happierHomeDir: join(home, '.piggercode'),
                     platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
                         ? process.platform
                         : 'darwin',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
             ]);
@@ -308,7 +308,7 @@ describe('happier server background service follow-up', () => {
             await handleServerCommand(['use', serverB.id]);
 
             expect(promptQuestions).toEqual([
-                'Authenticate Happier against https://b.example.test now? [Y/n]: ',
+                'Authenticate PiggerCode against https://b.example.test now? [Y/n]: ',
             ]);
             expect(spawnHappyCLIMock).toHaveBeenNthCalledWith(1, ['auth', 'login'], expect.objectContaining({
                 stdio: 'inherit',
@@ -363,12 +363,12 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
+                    path: '/tmp/piggercode-daemon.default.service',
                     platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
                         ? process.platform
                         : 'darwin',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
             ]);
@@ -379,7 +379,7 @@ describe('happier server background service follow-up', () => {
             expect(spawnHappyCLIMock).not.toHaveBeenCalled();
             expect(axiosGetMock).not.toHaveBeenCalled();
             const out = output.logs.join('\n');
-            expect(out).toContain('happier service restart');
+            expect(out).toContain('piggercode service restart');
             expect(out).toContain('https://b.example.test');
         } finally {
             output.restore();
@@ -407,11 +407,11 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Default background service',
                 installed: true,
-                path: '/tmp/happier-daemon.default.service',
-                happierHomeDir: join(home, '.happier'),
+                path: '/tmp/piggercode-daemon.default.service',
+                happierHomeDir: join(home, '.piggercode'),
                 platform: platform(),
                 releaseChannel: currentReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             },
             {
@@ -420,11 +420,11 @@ describe('happier server background service follow-up', () => {
                 name: 'B',
                 relayUrl: 'https://b.example.test',
                 installed: true,
-                path: `/tmp/happier-daemon.${serverBId}.service`,
-                happierHomeDir: join(home, '.happier'),
+                path: `/tmp/piggercode-daemon.${serverBId}.service`,
+                happierHomeDir: join(home, '.piggercode'),
                 platform: platform(),
                 releaseChannel: currentReleaseChannel(),
-                label: `happier-daemon.${serverBId}`,
+                label: `piggercode-daemon.${serverBId}`,
                 targetMode: 'pinned',
             },
         ];
@@ -459,9 +459,9 @@ describe('happier server background service follow-up', () => {
                     expect(promptQuestions).toEqual([]);
                     expect(spawnHappyCLIMock).not.toHaveBeenCalled();
                     const out = output.logs.join('\n');
-                    expect(out).toContain(`happier-daemon.${serverBId}`);
+                    expect(out).toContain(`piggercode-daemon.${serverBId}`);
                     expect(out).toContain('https://b.example.test');
-                    expect(out).not.toContain('happier service restart');
+                    expect(out).not.toContain('piggercode service restart');
                 });
             } finally {
                 output.restore();
@@ -481,8 +481,8 @@ describe('happier server background service follow-up', () => {
                     expect(output.json().data?.backgroundService).toEqual({
                         defaultFollowingService: 'idle-selected-relay-has-own-service',
                         selectedRelayServices: [{
-                            label: `happier-daemon.${serverBId}`,
-                            path: `/tmp/happier-daemon.${serverBId}.service`,
+                            label: `piggercode-daemon.${serverBId}`,
+                            path: `/tmp/piggercode-daemon.${serverBId}.service`,
                             managedBy: null,
                         }],
                     });
@@ -546,12 +546,12 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
+                    path: '/tmp/piggercode-daemon.default.service',
                     platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
                         ? process.platform
                         : 'darwin',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
             ]);
@@ -563,9 +563,9 @@ describe('happier server background service follow-up', () => {
             expect(spawnHappyCLIMock).not.toHaveBeenCalled();
             expect(axiosGetMock).toHaveBeenCalledTimes(1);
             const out = output.logs.join('\n');
-            expect(out).toContain('Authenticate Happier against https://b.example.test and then restart the background service so it follows that server:');
-            expect(out).toContain('happier auth login');
-            expect(out).toContain('happier service restart');
+            expect(out).toContain('Authenticate PiggerCode against https://b.example.test and then restart the background service so it follows that server:');
+            expect(out).toContain('piggercode auth login');
+            expect(out).toContain('piggercode service restart');
         } finally {
             output.restore();
             restoreTty();
@@ -620,20 +620,20 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
+                    path: '/tmp/piggercode-daemon.default.service',
                     platform: 'linux',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
                 {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/etc/systemd/system/happier-daemon.default.service',
+                    path: '/etc/systemd/system/piggercode-daemon.default.service',
                     platform: 'linux',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default.system',
+                    label: 'piggercode-daemon.default.system',
                     targetMode: 'default-following',
                 },
             ]);
@@ -644,7 +644,7 @@ describe('happier server background service follow-up', () => {
 
             expect(spawnHappyCLIMock).not.toHaveBeenCalled();
             expect(output.logs.join('\n')).toContain('Multiple default-following background services are installed');
-            expect(output.logs.join('\n')).toContain('sudo happier doctor repair --yes');
+            expect(output.logs.join('\n')).toContain('sudo piggercode doctor repair --yes');
         } finally {
             output.restore();
             if (previousHome === undefined) delete process.env.PIGGERCODE_HOME_DIR;
@@ -673,11 +673,11 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Default background service',
                 installed: true,
-                path: '/tmp/happier-daemon.default.service',
+                path: '/tmp/piggercode-daemon.default.service',
                 platform: 'linux',
                 mode: 'system',
                 releaseChannel: currentReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             }],
         });
@@ -686,14 +686,14 @@ describe('happier server background service follow-up', () => {
             serverId: 'default',
             name: 'Default background service',
             installed: true,
-            path: '/tmp/happier-daemon.default.service',
+            path: '/tmp/piggercode-daemon.default.service',
             platform: 'linux',
             mode: 'system',
             releaseChannel: currentReleaseChannel(),
-            label: 'happier-daemon.default',
+            label: 'piggercode-daemon.default',
             targetMode: 'default-following',
         }])).toEqual(['system']);
-        expect(output.join('\n')).toContain('happier service restart --mode system');
+        expect(output.join('\n')).toContain('piggercode service restart --mode system');
     });
 
     it('requires repair guidance when duplicate default-following services share the same mode', async () => {
@@ -717,22 +717,22 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+                    path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
                     platform: 'linux',
                     mode: 'user',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 },
                 {
                     serverId: 'default',
                     name: 'Duplicate default background service',
                     installed: true,
-                    path: '/home/tester/.config/systemd/user/happier-daemon.default-copy.service',
+                    path: '/home/tester/.config/systemd/user/piggercode-daemon.default-copy.service',
                     platform: 'linux',
                     mode: 'user',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default-copy',
+                    label: 'piggercode-daemon.default-copy',
                     targetMode: 'default-following',
                 },
             ],
@@ -740,10 +740,10 @@ describe('happier server background service follow-up', () => {
 
         expect(runCliAction).not.toHaveBeenCalled();
         expect(output.join('\n')).toContain('Multiple default-following background services are installed');
-        expect(output.join('\n')).toContain('happier doctor repair --yes');
+        expect(output.join('\n')).toContain('piggercode doctor repair --yes');
     });
 
-    it('requires repair guidance when a default-following service is missing Happier home metadata', async () => {
+    it('requires repair guidance when a default-following service is missing PiggerCode home metadata', async () => {
         const { runDefaultFollowingBackgroundServiceServerChangeFollowUp } =
             await import('./backgroundServiceFollowUp');
         const output: string[] = [];
@@ -760,18 +760,18 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Legacy stable default background service (missing home)',
                 installed: true,
-                path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+                path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
                 platform: 'linux',
                 mode: 'user',
                 releaseChannel: alternateReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             }],
         });
 
         expect(runCliAction).not.toHaveBeenCalled();
-        expect(output.join('\n')).toContain('missing Happier home metadata');
-        expect(output.join('\n')).toContain('happier doctor repair --yes');
+        expect(output.join('\n')).toContain('missing PiggerCode home metadata');
+        expect(output.join('\n')).toContain('piggercode doctor repair --yes');
     });
 
     it('does not tell the user to authenticate again when restart fails after auth login already succeeded', async () => {
@@ -795,18 +795,18 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Default background service',
                 installed: true,
-                path: '/tmp/happier-daemon.default.service',
+                path: '/tmp/piggercode-daemon.default.service',
                 platform: 'linux',
                 mode: 'user',
                 releaseChannel: currentReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             }],
         });
 
         expect(runCliAction).toHaveBeenCalledTimes(1);
         expect(runCliAction).toHaveBeenCalledWith(['auth', 'login']);
-        expect(output.join('\n')).not.toContain('happier auth login');
+        expect(output.join('\n')).not.toContain('piggercode auth login');
     });
 
     it('restarts every valid default-following service after guided authentication without another prompt', async () => {
@@ -819,11 +819,11 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Default background service',
                 installed: true,
-                path: '/tmp/happier-daemon.default.service',
+                path: '/tmp/piggercode-daemon.default.service',
                 platform: 'linux',
                 mode: 'system',
                 releaseChannel: currentReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             }],
             runCliAction,
@@ -856,18 +856,18 @@ describe('happier server background service follow-up', () => {
                 serverId: 'default',
                 name: 'Default background service',
                 installed: true,
-                path: '/tmp/happier-daemon.default.service',
+                path: '/tmp/piggercode-daemon.default.service',
                 platform: 'linux',
                 mode: 'user',
                 releaseChannel: currentReleaseChannel(),
-                label: 'happier-daemon.default',
+                label: 'piggercode-daemon.default',
                 targetMode: 'default-following',
             }],
         });
 
         expect(runCliAction).toHaveBeenCalledTimes(1);
         expect(runCliAction).toHaveBeenCalledWith(['service', 'restart']);
-        expect(output.join('\n')).not.toContain('happier auth login');
+        expect(output.join('\n')).not.toContain('piggercode auth login');
     });
 
     it('probes credentials against the follow-up targetServerUrl (not the current configuration)', async () => {
@@ -905,11 +905,11 @@ describe('happier server background service follow-up', () => {
                     serverId: 'default',
                     name: 'Default background service',
                     installed: true,
-                    path: '/tmp/happier-daemon.default.service',
+                    path: '/tmp/piggercode-daemon.default.service',
                     platform: 'linux',
                     mode: 'user',
                     releaseChannel: currentReleaseChannel(),
-                    label: 'happier-daemon.default',
+                    label: 'piggercode-daemon.default',
                     targetMode: 'default-following',
                 }],
             });

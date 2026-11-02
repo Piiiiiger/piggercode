@@ -38,7 +38,7 @@ describe('startHappySessionInWindowsTerminal', () => {
       filePath: 'C:\\node\\node.exe',
       args: ['--version'],
       windowId: 'happy-session-1',
-      title: 'Happier Session happy-session-1',
+      title: 'PiggerCode Session happy-session-1',
     });
 
     child.stdout.emit('data', Buffer.from('12345\r\n'));
@@ -59,7 +59,7 @@ describe('startHappySessionInWindowsTerminal', () => {
       filePath: 'C:\\node\\node.exe',
       args: ['--version'],
       windowId: 'happy-session-1',
-      title: 'Happier Session happy-session-1',
+      title: 'PiggerCode Session happy-session-1',
     });
 
     expect(vi.mocked(spawn).mock.calls[0]?.[2]?.env).not.toHaveProperty(

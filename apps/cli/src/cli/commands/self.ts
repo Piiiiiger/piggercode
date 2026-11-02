@@ -47,13 +47,13 @@ type SelfChannel = PublicReleaseRingId;
 
 function usage(): string {
   return [
-    `${chalk.bold('happier self')} - Self update + update checks`,
+    `${chalk.bold('piggercode self')} - Self update + update checks`,
     '',
     `${chalk.bold('Usage:')}`,
-    `  happier self check [--preview|--dev|--channel=<preview|dev>] [--quiet]`,
-    `  happier self update [--preview|--dev|--channel=<preview|dev>] [--to <versionOrTag>]`,
-    `  happier self migrate [--yes] [--json]`,
-    `  happier self-update [--check] [--preview|--dev|--channel=<preview|dev>] [--to <versionOrTag>]`,
+    `  piggercode self check [--preview|--dev|--channel=<preview|dev>] [--quiet]`,
+    `  piggercode self update [--preview|--dev|--channel=<preview|dev>] [--to <versionOrTag>]`,
+    `  piggercode self migrate [--yes] [--json]`,
+    `  piggercode self-update [--check] [--preview|--dev|--channel=<preview|dev>] [--to <versionOrTag>]`,
     '',
     `${chalk.bold('Channels:')}`,
     `  stable  → npm dist-tag ${cmd('latest')}`,
@@ -63,7 +63,7 @@ function usage(): string {
     `${chalk.bold('Environment:')}`,
     `  PIGGERCODE_CLI_UPDATE_CHECK=0                 Disable update notice + background check`,
     `  PIGGERCODE_CLI_UPDATE_PACKAGE_NAME=@scope/pkg Override the npm package name checked/installed`,
-    `  PIGGERCODE_GITHUB_REPO=happier-dev/happier    Override GitHub repo for binary updates`,
+    `  PIGGERCODE_GITHUB_REPO=Piiiiiger/piggercode   Override GitHub repo for binary updates`,
     `  PIGGERCODE_GITHUB_TOKEN=...                   GitHub token for release API (optional)`,
     '',
   ].join('\n');
@@ -152,7 +152,7 @@ export function detectInstallSource(path: string): 'npm' | 'binary' {
 
 function resolveBinaryUpdateRepo(env: NodeJS.ProcessEnv): string {
   const raw = String(env.PIGGERCODE_GITHUB_REPO ?? '').trim();
-  return raw || 'happier-dev/happier';
+  return raw || 'Piiiiiger/piggercode';
 }
 
 function resolveBinaryUpdateToken(env: NodeJS.ProcessEnv): string {
@@ -279,7 +279,7 @@ async function cmdUpdate(argv: string[], rawArgv: readonly string[] = process.ar
     const upgrade = npmUpgradeCommand({ packageName: pkgName, channel, to: toArg });
     console.log(chalk.yellow('Detected npm-based install; in-place runtime update is disabled.'));
     console.log(chalk.gray('Run instead:'), cmd(upgrade));
-    reportUpdaterAdmission({ admitted: false, code: 'cli_not_managed', message: `This Happier CLI was installed with npm. Update it with: ${upgrade}` });
+    reportUpdaterAdmission({ admitted: false, code: 'cli_not_managed', message: `This PiggerCode CLI was installed with npm. Update it with: ${upgrade}` });
     return;
   }
   const origin = resolveRunningCliPackageManagerOrigin({
@@ -290,7 +290,7 @@ async function cmdUpdate(argv: string[], rawArgv: readonly string[] = process.ar
   if (origin?.kind === 'brew') {
     console.log(chalk.yellow('Detected a Homebrew install; Homebrew updates it.'));
     console.log(chalk.gray('Run instead:'), cmd(origin.updateCommand));
-    reportUpdaterAdmission({ admitted: false, code: 'cli_not_managed', message: `This Happier CLI was installed with Homebrew. Update it with: ${origin.updateCommand}` });
+    reportUpdaterAdmission({ admitted: false, code: 'cli_not_managed', message: `This PiggerCode CLI was installed with Homebrew. Update it with: ${origin.updateCommand}` });
     return;
   }
 
@@ -461,7 +461,7 @@ async function cmdInternalInstallPayload(argv: string[], rawArgv: readonly strin
     processEnv: process.env,
     versionId,
     // The official installers run this for the channel the user asked them to install, and that
-    // choice is what makes a channel the default `happier` command (install.sh / install.ps1).
+    // choice is what makes a channel the default `piggercode` command (install.sh / install.ps1).
     selectAsDefaultReleaseChannel: true,
   });
 
@@ -482,7 +482,7 @@ async function cmdInternalInstallPayload(argv: string[], rawArgv: readonly strin
         toVersion: promotion.currentVersionId,
         hadLegacyCurrentInstallWithoutVersionMarkers: promotion.hadLegacyCurrentInstallWithoutVersionMarkers,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
         // Install-payload promotion is spawned by installer scripts with no
         // controlling TTY — migration must run headlessly here.
         forceNonInteractive: true,

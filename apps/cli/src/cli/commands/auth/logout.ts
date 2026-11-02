@@ -28,9 +28,9 @@ export async function handleAuthLogout(args: string[]): Promise<void> {
   }
 
   console.log(warn(logoutAll
-    ? 'This signs you out of Happier on all relays and removes local data'
-    : `This signs you out of Happier for relay ${targetServerId}`));
-  console.log(chalk.gray('  You will need to sign in again to use Happier.'));
+    ? 'This signs you out of PiggerCode on all relays and removes local data'
+    : `This signs you out of PiggerCode for relay ${targetServerId}`));
+  console.log(chalk.gray('  You will need to sign in again to use PiggerCode.'));
 
   const confirmed = await promptConfirmYesNo(
     logoutAll ? 'Sign out everywhere and delete local data?' : 'Sign out?',
@@ -63,7 +63,7 @@ export async function handleAuthLogout(args: string[]): Promise<void> {
       }
 
       console.log(ok('Signed out'));
-      console.log(chalk.gray(`  Run ${cmd('happier auth login')} to sign in again.`));
+      console.log(chalk.gray(`  Run ${cmd('piggercode auth login')} to sign in again.`));
     } catch (error) {
       throw new Error(`Failed to logout: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

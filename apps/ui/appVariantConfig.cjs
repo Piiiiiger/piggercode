@@ -6,7 +6,7 @@ const releaseRings = require(path.resolve(__dirname, '..', '..', 'packages', 're
 
 // The identity this fork's app shows: the name in titles, menus and copy, the command people type, the
 // version in Settings, the coding agents it offers and its source repository (Settings > About).
-// Native bundle ids, URL schemes and update channels keep upstream's values.
+// Native bundle ids and update channels keep upstream's values.
 const APP_BRAND = Object.freeze({
     productName: 'PiggerCode',
     cliCommandName: 'piggercode',

@@ -28,7 +28,7 @@ describe('desktop deep-link delivery', () => {
     });
 
     it('delivers a cold-launch legacy terminal link through the existing web pairing route', async () => {
-        native.invoke.mockResolvedValue(['happier://terminal?abcDEF_123-zzz']);
+        native.invoke.mockResolvedValue(['piggercode://terminal?abcDEF_123-zzz']);
         const navigate = vi.fn();
         const dispose = installDesktopDeepLinks(navigate);
         await flush();
@@ -41,8 +41,8 @@ describe('desktop deep-link delivery', () => {
         const navigate = vi.fn();
         const dispose = installDesktopDeepLinks(navigate);
         await flush();
-        native.receive?.(['happier-preview://terminal?key=abc&server=https%3A%2F%2Frelay.example&pairingSecret=secret&createdAt=1000&expiresAt=61000']);
-        native.receive?.(['happier-dev://terminal?key=next']);
+        native.receive?.(['piggercode-preview://terminal?key=abc&server=https%3A%2F%2Frelay.example&pairingSecret=secret&createdAt=1000&expiresAt=61000']);
+        native.receive?.(['piggercode-dev://terminal?key=next']);
         expect(navigate.mock.calls.map(([href]) => href)).toEqual([
             '/terminal/connect#key=abc&server=https%3A%2F%2Frelay.example&pairingSecret=secret&createdAt=1000&expiresAt=61000',
             '/terminal/connect#key=next',
@@ -52,8 +52,8 @@ describe('desktop deep-link delivery', () => {
 
     it('does not replay a stale initial snapshot after a live event during startup', async () => {
         native.invoke.mockImplementation(async () => {
-            native.receive?.(['happier://terminal?key=new']);
-            return ['happier://terminal?key=old'];
+            native.receive?.(['piggercode://terminal?key=new']);
+            return ['piggercode://terminal?key=old'];
         });
         const navigate = vi.fn();
         const dispose = installDesktopDeepLinks(navigate);
@@ -66,7 +66,7 @@ describe('desktop deep-link delivery', () => {
         const navigate = vi.fn();
         const dispose = installDesktopDeepLinks(navigate);
         await flush();
-        native.receive?.(['https://untrusted.example/terminal/connect#key=abc', 'javascript:alert(1)', 'happier:///account?abc+123/=']);
+        native.receive?.(['https://untrusted.example/terminal/connect#key=abc', 'javascript:alert(1)', 'piggercode:///account?abc+123/=']);
         expect(navigate.mock.calls.map(([href]) => href)).toEqual(['/account?accountConnectKey=abc%2B123%2F%3D']);
         dispose();
     });
@@ -75,7 +75,7 @@ describe('desktop deep-link delivery', () => {
         const navigate = vi.fn();
         const dispose = installDesktopDeepLinks(navigate);
         await flush();
-        native.receive?.(['happier://session/abc?serverId=relay', 'happier:///session/next?serverId=relay']);
+        native.receive?.(['piggercode://session/abc?serverId=relay', 'piggercode:///session/next?serverId=relay']);
         expect(navigate.mock.calls.map(([href]) => href)).toEqual([
             '/session/abc?serverId=relay', '/session/next?serverId=relay',
         ]);
@@ -93,7 +93,7 @@ describe('desktop deep-link delivery', () => {
         dispose();
         resolveListen(native.stop);
         await flush();
-        native.receive?.(['happier://terminal?key=abc']);
+        native.receive?.(['piggercode://terminal?key=abc']);
         expect(navigate).not.toHaveBeenCalled();
         expect(native.stop).toHaveBeenCalled();
     });

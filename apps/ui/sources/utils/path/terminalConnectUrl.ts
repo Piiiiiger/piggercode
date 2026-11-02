@@ -135,8 +135,8 @@ export function parseTerminalConnectUrl(url: string): ParsedTerminalConnectUrl |
     const tail = parsed.search.replace(/^\?/, '');
     if (!tail) return null;
 
-    // Legacy format: happier://terminal?<publicKeyB64Url>
-    // Canonical format: happier://terminal?key=<publicKeyB64Url>&server=<encodedServerUrl>
+    // Legacy format: piggercode://terminal?<publicKeyB64Url>
+    // Canonical format: piggercode://terminal?key=<publicKeyB64Url>&server=<encodedServerUrl>
     const looksLikeQuery = tail.includes('=') || tail.includes('&');
     if (!looksLikeQuery) {
         return { publicKeyB64Url: tail, serverUrl: null };

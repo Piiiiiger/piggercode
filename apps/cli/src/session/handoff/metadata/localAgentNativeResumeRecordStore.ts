@@ -17,7 +17,7 @@ import {
  *
  * The domain string, the separators, the digest, the directory layout and the
  * stored key set are BYTE-COMPATIBLE with the successor tree's store on
- * purpose: one machine's `~/.happier` is shared across a CLI upgrade in either
+ * purpose: one machine's `~/.piggercode` is shared across a CLI upgrade in either
  * direction, so a record written by one tree must read in the other rather than
  * silently degrading every returning Agent to a fresh target.
  */

@@ -219,7 +219,7 @@ export async function runBugReportCommand(
     promptInputFn: deps.promptInput,
   });
   const summaryWithSessionId = parsed.sessionId
-    ? `${summary}\n\nHappier session id: ${parsed.sessionId}`
+    ? `${summary}\n\nPiggerCode session id: ${parsed.sessionId}`
     : summary;
   const summaryWithReporter = appendBugReportReporterToSummary(summaryWithSessionId, parsed.githubUsername);
   const currentBehavior = parsed.currentBehavior.trim() || undefined;

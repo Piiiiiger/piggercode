@@ -6,7 +6,7 @@ import {
 } from './permissionProfile';
 
 describe('permissionProfile', () => {
-    it('maps Happier read-only mode to the Codex built-in read-only permission profile', () => {
+    it('maps PiggerCode read-only mode to the Codex built-in read-only permission profile', () => {
         expect(buildCodexAppServerPermissionsParams({ permissionMode: 'read-only' })).toEqual({
             permissions: { type: 'profile', id: ':read-only' },
         });

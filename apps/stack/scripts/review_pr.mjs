@@ -153,7 +153,7 @@ function resolveWorkspaceCacheConfig(argv) {
     }
     const baseHome = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
       ? process.env.PIGGERCODE_STACK_HOME_DIR.trim()
-      : join(homedir(), '.happier-stack');
+      : join(homedir(), '.piggercode-stack');
     const nextDefault = resolve(join(baseHome, 'cache', 'sandbox', 'workspace'));
     const legacyDefault = resolve(join(baseHome, 'cache', 'review-pr', 'workspace'));
     // Backwards-compat: if an existing cache already lives at the legacy path, keep using it
@@ -166,7 +166,7 @@ function resolveWorkspaceCacheConfig(argv) {
 
   const baseHome = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
     ? process.env.PIGGERCODE_STACK_HOME_DIR.trim()
-    : join(homedir(), '.happier-stack');
+    : join(homedir(), '.piggercode-stack');
   const suggestedDir = resolve(join(baseHome, 'cache', 'sandbox', 'workspace'));
   const legacyDir = resolve(join(baseHome, 'cache', 'review-pr', 'workspace'));
   const legacy = !explicitDirRaw && resolve(workspaceDir) === legacyDir;
@@ -379,7 +379,7 @@ async function main() {
       : newStackName;
  
   // Safety marker to ensure we only delete what we created.
-  const markerPath = join(sandboxDir, '.happier-stack-sandbox-marker');
+  const markerPath = join(sandboxDir, '.piggercode-stack-sandbox-marker');
   // Always ensure the marker exists for safety; write meta only for new sandboxes.
   try {
     if (!existsSync(markerPath)) {

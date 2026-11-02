@@ -16,7 +16,7 @@ export function sanitizeUrlScheme(s) {
   // iOS URL schemes must start with a letter and may contain letters/digits/+.-.
   const raw = (s ?? '').toString().trim().toLowerCase();
   const cleaned = raw.replace(/[^a-z0-9+.-]+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
-  if (!cleaned) return 'happier-dev';
+  if (!cleaned) return 'piggercode-dev';
   return /^[a-z]/.test(cleaned) ? cleaned : `h${cleaned}`;
 }
 
@@ -39,7 +39,7 @@ const DEV_CLIENT_IDENTITIES = Object.freeze({
     iosAppName: 'Happier (internal dev)',
     iosBundleId: 'dev.happier.app.dev.internal.devclient',
     androidPackage: 'dev.happier.app.internaldev.devclient',
-    scheme: 'happier-internaldev',
+    scheme: 'piggercode-internaldev',
     easBuildProfile: 'internaldev-dev-client',
   }),
   publicdev: Object.freeze({
@@ -48,7 +48,7 @@ const DEV_CLIENT_IDENTITIES = Object.freeze({
     iosAppName: 'Happier (dev)',
     iosBundleId: 'dev.happier.app.publicdev.devclient',
     androidPackage: 'dev.happier.app.publicdev.devclient',
-    scheme: 'happier-dev',
+    scheme: 'piggercode-dev',
     easBuildProfile: 'publicdev-dev-client',
   }),
 });

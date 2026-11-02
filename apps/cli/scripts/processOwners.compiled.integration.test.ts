@@ -28,7 +28,7 @@ it('loads both process owners from a detached compiled executable without runtim
       'process.exit(0);',
     ].join('\n'));
 
-    const executableName = process.platform === 'win32' ? 'happier.exe' : 'happier';
+    const executableName = process.platform === 'win32' ? 'piggercode.exe' : 'piggercode';
     const builtExecutable = join(buildDir, executableName);
     await execFileAsync('bun', [
       'build', '--compile', '--no-cache',

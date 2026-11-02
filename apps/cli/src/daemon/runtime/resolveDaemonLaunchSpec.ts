@@ -97,7 +97,7 @@ function resolveBundledCurrentProcessLaunchSpec(
     return null;
   }
   if (process.platform === 'win32') {
-    // Bun virtual bundle paths like `B:/~BUN/root/happier.exe` are process-local and can fail
+    // Bun virtual bundle paths like `B:/~BUN/root/piggercode.exe` are process-local and can fail
     // when reused from detached children. On Windows, prefer resolving a packaged entrypoint
     // under a stable JS runtime in the fallback path below.
     return null;
@@ -161,7 +161,7 @@ function resolveWindowsSiblingPackagedBinary(packagedEntrypoint: string): string
   if (!runtimeRoot) {
     return null;
   }
-  const siblingBinaryForwardSlashes = `${runtimeRoot}/happier.exe`;
+  const siblingBinaryForwardSlashes = `${runtimeRoot}/piggercode.exe`;
   const siblingBinaryNativeSeparators = normalizedEntrypoint.includes('\\')
     ? siblingBinaryForwardSlashes.replaceAll('/', '\\')
     : siblingBinaryForwardSlashes;

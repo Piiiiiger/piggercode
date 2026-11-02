@@ -18,7 +18,7 @@ const AUTH_OPTIONS: ReadonlyArray<Readonly<{
     {
         method: 'mobile',
         label: 'Mobile app (recommended)',
-        description: 'Scan a QR code with Happier on your phone.',
+        description: 'Scan a QR code with PiggerCode on your phone.',
     },
     {
         method: 'web',

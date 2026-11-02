@@ -257,9 +257,9 @@ describe('sanitizeCodexAppServerRpcLogValue', () => {
                 nested: {
                     path: '/Users/leeroy/.codex/skills/private/SKILL.md',
                     paths: ['/Users/leeroy/.codex/skills/private/SKILL.md'],
-                    savedPath: '/Users/leeroy/.happier/generated/image.png',
-                    saved_path: '/Users/leeroy/.happier/generated/image-2.png',
-                    localPath: '/Users/leeroy/.happier/uploads/local.png',
+                    savedPath: '/Users/leeroy/.piggercode/generated/image.png',
+                    saved_path: '/Users/leeroy/.piggercode/generated/image-2.png',
+                    localPath: '/Users/leeroy/.piggercode/uploads/local.png',
                     location: '/Users/leeroy/.codex/plugins/private',
                 },
                 visible: 'kept',

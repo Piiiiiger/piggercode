@@ -14,9 +14,9 @@ import { resolveDetectedMcpPreviewEntries } from './resolveDetectedMcpPreviewEnt
 
 function createBuiltInMcpPreviewEntry(): BuiltInMcpPreviewEntryV1 {
   return {
-    key: 'built-in:happier',
-    name: 'happier',
-    title: 'Happier',
+    key: 'built-in:piggercode',
+    name: 'piggercode',
+    title: 'PiggerCode',
     transport: 'stdio',
     authMode: 'none',
     selected: true,

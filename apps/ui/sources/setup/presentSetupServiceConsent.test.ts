@@ -28,7 +28,7 @@ describe('presentSetupServiceConsent', () => {
             message: 'A pinned service already exists.',
             competingServices: ['pinned'],
             servicesToRemove: ['legacy'],
-            takeover: 'Taking over happier-daemon.',
+            takeover: 'Taking over piggercode-daemon.',
         });
 
         expect(answer).toBe(false);

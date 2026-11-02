@@ -53,15 +53,15 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-handoff-source-transfer-'));
     const sourceRootPath = await mkdtemp(join(tmpdir(), 'happier-handoff-source-root-'));
     try {
-      await mkdir(join(sourceRootPath, '.happier', 'uploads', 'generated', 'message-1'), { recursive: true });
-      await mkdir(join(sourceRootPath, '.happier', 'uploads', 'generated', 'message-2'), { recursive: true });
-      await writeFile(join(sourceRootPath, '.gitignore'), '.happier/uploads/**\n');
+      await mkdir(join(sourceRootPath, '.piggercode', 'uploads', 'generated', 'message-1'), { recursive: true });
+      await mkdir(join(sourceRootPath, '.piggercode', 'uploads', 'generated', 'message-2'), { recursive: true });
+      await writeFile(join(sourceRootPath, '.gitignore'), '.piggercode/uploads/**\n');
       await writeFile(join(sourceRootPath, 'README.md'), 'hello\n');
-      await writeFile(join(sourceRootPath, '.happier', 'uploads', 'generated', 'message-1', 'image[1].png'), 'referenced\n');
-      await writeFile(join(sourceRootPath, '.happier', 'uploads', 'generated', 'message-2', 'unrelated.png'), 'unrelated\n');
+      await writeFile(join(sourceRootPath, '.piggercode', 'uploads', 'generated', 'message-1', 'image[1].png'), 'referenced\n');
+      await writeFile(join(sourceRootPath, '.piggercode', 'uploads', 'generated', 'message-2', 'unrelated.png'), 'unrelated\n');
       await runGit(sourceRootPath, ['init']);
       await runGit(sourceRootPath, ['config', 'user.email', 'test@example.com']);
-      await runGit(sourceRootPath, ['config', 'user.name', 'Happier Test']);
+      await runGit(sourceRootPath, ['config', 'user.name', 'PiggerCode Test']);
       await runGit(sourceRootPath, ['add', 'README.md', '.gitignore']);
       await runGit(sourceRootPath, ['commit', '-m', 'initial']);
 
@@ -90,7 +90,7 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
                       role: 'output',
                       category: 'generated',
                       mediaKind: 'image',
-                      path: '.happier/uploads/generated/message-1/image[1].png',
+                      path: '.piggercode/uploads/generated/message-1/image[1].png',
                     },
                   ],
                 },
@@ -102,8 +102,8 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
 
       const manifestPaths = result.workspaceReplicationMetadata?.manifest.entries.map((entry) => entry.relativePath) ?? [];
 
-      expect(manifestPaths).toContain('.happier/uploads/generated/message-1/image[1].png');
-      expect(manifestPaths).not.toContain('.happier/uploads/generated/message-2/unrelated.png');
+      expect(manifestPaths).toContain('.piggercode/uploads/generated/message-1/image[1].png');
+      expect(manifestPaths).not.toContain('.piggercode/uploads/generated/message-2/unrelated.png');
     } finally {
       await rm(activeServerDir, { recursive: true, force: true }).catch(() => undefined);
       await rm(sourceRootPath, { recursive: true, force: true }).catch(() => undefined);
@@ -114,15 +114,15 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-handoff-source-transfer-'));
     const sourceRootPath = await mkdtemp(join(tmpdir(), 'happier-handoff-source-root-'));
     try {
-      await mkdir(join(sourceRootPath, '.happier', 'uploads', 'artifacts', 'message-1'), { recursive: true });
-      await mkdir(join(sourceRootPath, '.happier', 'uploads', 'artifacts', 'message-2'), { recursive: true });
-      await writeFile(join(sourceRootPath, '.gitignore'), '.happier/uploads/**\n');
+      await mkdir(join(sourceRootPath, '.piggercode', 'uploads', 'artifacts', 'message-1'), { recursive: true });
+      await mkdir(join(sourceRootPath, '.piggercode', 'uploads', 'artifacts', 'message-2'), { recursive: true });
+      await writeFile(join(sourceRootPath, '.gitignore'), '.piggercode/uploads/**\n');
       await writeFile(join(sourceRootPath, 'README.md'), 'hello\n');
-      await writeFile(join(sourceRootPath, '.happier', 'uploads', 'artifacts', 'message-1', 'plot?.png'), 'referenced\n');
-      await writeFile(join(sourceRootPath, '.happier', 'uploads', 'artifacts', 'message-2', 'unrelated.png'), 'unrelated\n');
+      await writeFile(join(sourceRootPath, '.piggercode', 'uploads', 'artifacts', 'message-1', 'plot?.png'), 'referenced\n');
+      await writeFile(join(sourceRootPath, '.piggercode', 'uploads', 'artifacts', 'message-2', 'unrelated.png'), 'unrelated\n');
       await runGit(sourceRootPath, ['init']);
       await runGit(sourceRootPath, ['config', 'user.email', 'test@example.com']);
-      await runGit(sourceRootPath, ['config', 'user.name', 'Happier Test']);
+      await runGit(sourceRootPath, ['config', 'user.name', 'PiggerCode Test']);
       await runGit(sourceRootPath, ['add', 'README.md', '.gitignore']);
       await runGit(sourceRootPath, ['commit', '-m', 'initial']);
 
@@ -136,7 +136,7 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
                   role: 'output',
                   category: 'tool-artifact',
                   mediaKind: 'image',
-                  path: '.happier/uploads/artifacts/message-1/plot?.png',
+                  path: '.piggercode/uploads/artifacts/message-1/plot?.png',
                 },
               ],
             },
@@ -165,8 +165,8 @@ describe('prepareSessionHandoffSourceWorkspaceTransfer (handoffMetadataV2)', () 
 
       const manifestPaths = result.workspaceReplicationMetadata?.manifest.entries.map((entry) => entry.relativePath) ?? [];
 
-      expect(manifestPaths).toContain('.happier/uploads/artifacts/message-1/plot?.png');
-      expect(manifestPaths).not.toContain('.happier/uploads/artifacts/message-2/unrelated.png');
+      expect(manifestPaths).toContain('.piggercode/uploads/artifacts/message-1/plot?.png');
+      expect(manifestPaths).not.toContain('.piggercode/uploads/artifacts/message-2/unrelated.png');
     } finally {
       await rm(activeServerDir, { recursive: true, force: true }).catch(() => undefined);
       await rm(sourceRootPath, { recursive: true, force: true }).catch(() => undefined);

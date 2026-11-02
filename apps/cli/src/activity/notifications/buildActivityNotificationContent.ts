@@ -70,18 +70,18 @@ function sanitizeNotificationAction(
 
 function buildSwitchReasonSentence(reason: string, serviceDisplayName: string): string {
   if (reason === 'soft_threshold') {
-    return `Happier switched ${serviceDisplayName} accounts preventively because the previous account was near the configured soft limit.`;
+    return `PiggerCode switched ${serviceDisplayName} accounts preventively because the previous account was near the configured soft limit.`;
   }
   if (reason === 'usage_limit' || reason === 'rate_limit') {
-    return `The provider reported a usage or quota issue, so Happier switched ${serviceDisplayName} accounts.`;
+    return `The provider reported a usage or quota issue, so PiggerCode switched ${serviceDisplayName} accounts.`;
   }
   if (reason === 'auth_invalid' || reason === 'auth_expired' || reason === 'refresh_failure' || reason === 'refresh_failed') {
-    return `The ${serviceDisplayName} credential stopped working, so Happier switched accounts.`;
+    return `The ${serviceDisplayName} credential stopped working, so PiggerCode switched accounts.`;
   }
   if (reason === 'manual') {
     return `The session ${serviceDisplayName} account changed.`;
   }
-  return `Happier switched ${serviceDisplayName} accounts.`;
+  return `PiggerCode switched ${serviceDisplayName} accounts.`;
 }
 
 function formatUsageSide(label: string, usage: Readonly<{ label: string | null; remainingPercent: number }>): string {
@@ -173,7 +173,7 @@ export function buildActivityNotificationContent(
     const action = sanitizeNotificationAction(event.action);
     return {
       title: automaticReset ? `${serviceDisplayName} reset credit used` : event.sessionTitle ?? (event.topic === 'connected_service_quota_recovered' ? `${serviceDisplayName} quota recovered` : `${serviceDisplayName} quota blocked`),
-      body: automaticReset ? `Happier automatically used a reset credit for ${resetAccount} in pool ${resetPool}.` : event.topic === 'connected_service_quota_recovered'
+      body: automaticReset ? `PiggerCode automatically used a reset credit for ${resetAccount} in pool ${resetPool}.` : event.topic === 'connected_service_quota_recovered'
         ? `Quota is available again for ${serviceDisplayName}.`
         : `Waiting for quota availability for ${serviceDisplayName}.`,
       data: {
@@ -203,8 +203,8 @@ export function buildActivityNotificationContent(
     const safeReason = providerErrorCode.display ?? reason.display;
     const reasonClause = safeReason ? ` Provider code: ${safeReason}.` : '';
     const body = event.status === 'reconnect_required'
-      ? `${serviceDisplayName} account ${profileLabel} needs to be reconnected before Happier can use it again.${reasonClause}`
-      : `${serviceDisplayName} account ${profileLabel} could not be refreshed. Happier will retry automatically.${reasonClause}`;
+      ? `${serviceDisplayName} account ${profileLabel} needs to be reconnected before PiggerCode can use it again.${reasonClause}`
+      : `${serviceDisplayName} account ${profileLabel} could not be refreshed. PiggerCode will retry automatically.${reasonClause}`;
     const action = sanitizeNotificationAction(event.action);
     return {
       title: event.sessionTitle ?? (event.status === 'reconnect_required' ? `${serviceDisplayName} account needs reconnect` : `${serviceDisplayName} account refresh failed`),

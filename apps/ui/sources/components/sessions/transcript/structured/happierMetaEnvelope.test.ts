@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { parseHappierMetaEnvelope } from './happierMetaEnvelope';
 
 describe('parseHappierMetaEnvelope', () => {
-    it('returns null when meta does not contain a happier envelope', () => {
+    it('returns null when meta does not contain a piggercode envelope', () => {
         expect(parseHappierMetaEnvelope(undefined)).toBeNull();
         expect(parseHappierMetaEnvelope({})).toBeNull();
         expect(parseHappierMetaEnvelope({ happier: null })).toBeNull();

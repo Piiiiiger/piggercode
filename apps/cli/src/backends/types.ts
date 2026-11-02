@@ -296,7 +296,7 @@ export type AgentCatalogEntry = Readonly<{
 	  /**
 	   * Optional cloud connect target for this agent.
 	   *
-	   * When present, `happier connect <agent>` will be available.
+	   * When present, `piggercode connect <agent>` will be available.
 	   */
 	  getCloudConnectTarget?: () => Promise<CloudConnectTarget>;
   /**

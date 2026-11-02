@@ -1,5 +1,5 @@
 /**
- * `happier setup` — the guided first run.
+ * `piggercode setup` — the guided first run.
  *
  * Fresh interactive installs hand off here after the binary is ready. This asks
  * the one question the client cannot answer for itself: where the relay lives.
@@ -68,7 +68,7 @@ import {
  * What setup hands its children when nobody is watching.
  *
  * `isInteractiveTerminal()` answers from the controlling terminal, and a script
- * that runs `happier setup --yes` from a shell still has one — so a child left
+ * that runs `piggercode setup --yes` from a shell still has one — so a child left
  * to decide for itself will happily prompt for a relay profile name nobody is
  * going to type. `PIGGERCODE_NONINTERACTIVE=1` is the signal the installers
  * already use to mean exactly this, and the CLI's one reader of it is
@@ -76,10 +76,10 @@ import {
  */
 const UNATTENDED_CHILD_ENV: NodeJS.ProcessEnv = { PIGGERCODE_NONINTERACTIVE: '1' };
 
-const HELP = `happier setup — connect this computer to your Happier account
+const HELP = `piggercode setup — connect this computer to your PiggerCode account
 
 Usage:
-  happier setup [options]
+  piggercode setup [options]
 
 Options:
   --cloud                 Use the built-in relay (${BUILTIN_RELAY.name}) without being asked
@@ -143,7 +143,7 @@ async function printRelayReachabilityNextSteps(reachability: SetupRelayReachabil
         console.log(gray('  nothing behind them. Start it and re-run the install to publish this relay:'));
         console.log('');
         console.log(`    ${cmd('tailscale up')}`);
-        console.log(`    ${cmd('happier relay host install')}`);
+        console.log(`    ${cmd('piggercode relay host install')}`);
         console.log('');
         return;
     }
@@ -151,13 +151,13 @@ async function printRelayReachabilityNextSteps(reachability: SetupRelayReachabil
         console.log(gray('  Tailscale is running, but the relay was not published on it. Re-run the'));
         console.log(gray('  canonical install command to retry or review the Tailscale result:'));
         console.log('');
-        console.log(`    ${cmd('happier relay host install')}`);
+        console.log(`    ${cmd('piggercode relay host install')}`);
         console.log('');
         return;
     }
-    console.log(gray('  If you already have an HTTPS address for it, point Happier at that:'));
+    console.log(gray('  If you already have an HTTPS address for it, point PiggerCode at that:'));
     console.log('');
-    console.log(`    ${cmd('happier server add --server-url https://relay.example.com --use')}`);
+    console.log(`    ${cmd('piggercode server add --server-url https://relay.example.com --use')}`);
     console.log('');
 }
 
@@ -194,7 +194,7 @@ async function offerTailscaleSetup(): Promise<void> {
     console.log(gray('and select the address through the same checked path setup uses:'));
     console.log('');
     console.log(`    ${cmd('tailscale up')}`);
-    console.log(`    ${cmd('happier relay host install')}`);
+    console.log(`    ${cmd('piggercode relay host install')}`);
     console.log('');
 }
 
@@ -245,7 +245,7 @@ async function askWhereTheRelayLives(): Promise<SetupRelaySelection> {
             BUILTIN_RELAY.configured
                 ? { id: 'cloud', key: 'c', label: `${BUILTIN_RELAY.name} (recommended)`, description: BUILTIN_RELAY.serverUrl, isDefault: true }
                 : { id: 'cloud', key: 'c', label: BUILTIN_RELAY.name, description: 'Not set on this machine (PIGGERCODE_BUILTIN_RELAY_URL)' },
-            { id: 'existing', key: 'r', label: 'Existing server', description: 'Address from the Happier app or your administrator', isDefault: !BUILTIN_RELAY.configured },
+            { id: 'existing', key: 'r', label: 'Existing server', description: 'Address from the PiggerCode app or your administrator', isDefault: !BUILTIN_RELAY.configured },
             { id: 'thisComputer', key: 't', label: 'Host on this computer', description: 'Installs an additional server; needs a reachable network route' },
         ],
     });
@@ -272,8 +272,8 @@ async function askWhereTheRelayLives(): Promise<SetupRelaySelection> {
     if (choice === 'cloud') return { kind: 'cloud' };
     if (choice === 'thisComputer') return { kind: 'thisComputer' };
 
-    const url = (await promptInput('Server address from the Happier app or your administrator: ')).trim();
-    if (!url) throw new Error('A server address is required to continue. Re-run `happier setup` when you have it.');
+    const url = (await promptInput('Server address from the PiggerCode app or your administrator: ')).trim();
+    if (!url) throw new Error('A server address is required to continue. Re-run `piggercode setup` when you have it.');
     return { kind: 'existing', url };
 }
 
@@ -294,7 +294,7 @@ async function offerCodingAgentSetup(installedAgentIds: readonly string[]): Prom
                     id: agentId,
                     label: `${runtimeSpec.title} (${agentId})`,
                     description: runtimeSpec.managedInstall
-                        ? 'Happier-managed install'
+                        ? 'PiggerCode-managed install'
                         : runtimeSpec.manualInstallKind === 'vendor_recipe'
                             ? 'Runs the agent vendor installer'
                             : 'Uses the catalog install command',
@@ -328,7 +328,7 @@ async function offerCodingAgentSetup(installedAgentIds: readonly string[]): Prom
         if (!resolved) {
             allOk = false;
             console.error(warn(`${spec.title} is installed, but it is not resolvable yet`));
-            console.error(gray(`  Open a new shell or run ${cmd('happier status')}, then retry.`));
+            console.error(gray(`  Open a new shell or run ${cmd('piggercode status')}, then retry.`));
         }
     }
     return allOk;
@@ -339,7 +339,7 @@ function printSetupAgentReadiness(installedAgentIds: readonly AgentId[]): void {
         console.log('');
         console.log(warn('This computer is connected, but you still need a coding agent before starting a session.'));
         console.log(gray('  Install one in the app: Settings → Agents → CLI & Authentication.'));
-        console.log(gray(`  Or run ${cmd('happier setup')} again from this terminal.`));
+        console.log(gray(`  Or run ${cmd('piggercode setup')} again from this terminal.`));
         return;
     }
     const cliSubcommand = AGENTS_CORE[installedAgentIds[0]!].cliSubcommand;
@@ -349,7 +349,7 @@ function printSetupAgentReadiness(installedAgentIds: readonly AgentId[]): void {
     console.log(sectionTitle('Start your first session'));
     console.log(definitionList([
         { label: 'App', value: 'New session → this computer → choose a project' },
-        { label: 'CLI', value: cmd(`happier ${cliSubcommand}`) },
+        { label: 'CLI', value: cmd(`piggercode ${cliSubcommand}`) },
     ], { indent: '  ' }));
     console.log(gray('Agent installation and sign-in are separate. Manage both in the app:'));
     console.log(gray('  Settings → Agents → CLI & Authentication'));
@@ -398,16 +398,16 @@ async function runStep(step: SetupStep, unattended: boolean): Promise<boolean> {
         case 'warnNoAgent':
             console.log('');
             console.log(warn('No coding agent found on this computer.'));
-            console.log(gray(`  Happier drives your coding agent; it does not ship one. Install at least one, then run ${cmd('happier')} again:`));
+            console.log(gray(`  PiggerCode drives your coding agent; it does not ship one. Install at least one, then run ${cmd('piggercode')} again:`));
             console.log('');
             console.log(definitionList(listInstallableAgentIds().slice(0, 3).map((agentId) => ({
                 label: getProviderCliRuntimeSpec(agentId).title,
-                value: cmd(`happier install provider ${agentId}`),
+                value: cmd(`piggercode install provider ${agentId}`),
             })), { indent: '  ' }));
             console.log('');
             console.log(definitionList([
                 { label: 'App', value: 'Settings → Agents → CLI & Authentication' },
-                { label: 'CLI', value: cmd('happier install provider --help') },
+                { label: 'CLI', value: cmd('piggercode install provider --help') },
             ], { indent: '  ' }));
             return true;
         default:
@@ -426,7 +426,7 @@ export async function handleSetupCliCommand(context: CommandContext): Promise<vo
     if (parsed.kind === 'invalid') {
         // Silently ignoring an unknown or contradictory flag is how a misspelled
         // `--this-computer` became a Cloud account nobody asked for.
-        console.error(errorFrame(parsed.message, [`Run ${cmd('happier setup --help')} to see the options.`]));
+        console.error(errorFrame(parsed.message, [`Run ${cmd('piggercode setup --help')} to see the options.`]));
         process.exitCode = 1;
         return;
     }
@@ -498,7 +498,7 @@ export async function handleSetupCliCommand(context: CommandContext): Promise<vo
         if (!ok) {
             console.log('');
             console.log(warn('Setup stopped. Nothing was lost.'));
-            console.log(gray(`  Run ${cmd('happier setup')} again to pick up where you left off, or ${cmd('happier status')} to see what is configured.`));
+            console.log(gray(`  Run ${cmd('piggercode setup')} again to pick up where you left off, or ${cmd('piggercode status')} to see what is configured.`));
             // Exit non-zero so the installer reports setup as incomplete rather
             // than printing "you're ready". Installing the binary still
             // succeeded; finishing the guided setup did not.

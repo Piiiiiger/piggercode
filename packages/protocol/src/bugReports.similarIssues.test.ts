@@ -52,7 +52,7 @@ describe('searchBugReportSimilarIssues', () => {
               owner: 'happier-dev',
               repo: 'happier',
               number: 42,
-              url: 'https://github.com/happier-dev/happier/issues/42',
+              url: 'https://github.com/Piiiiiger/piggercode/issues/42',
               title: 'Daemon hangs after resume',
               state: 'open',
               updatedAt: '2026-02-12T00:00:00.000Z',

@@ -37,10 +37,10 @@ describe('dispatchCli root help', () => {
 
     expect(defaultHandlerSpy).not.toHaveBeenCalled();
     // The brand banner, like every other titled page.
-    expect(output.lines.join('\n').replace(/\u001b\[[0-9;]*m/gu, '')).toMatch(/^Happier\nRun, watch and steer your coding agents from any device\.$/mu);
-    expect(output.lines).toContainEqual(expect.stringContaining('happier codex'));
-    expect(output.lines).toContainEqual(expect.stringContaining('happier session'));
-    expect(output.lines).toContainEqual(expect.stringContaining('happier resume [<session-id-or-prefix>]'));
+    expect(output.lines.join('\n').replace(/\u001b\[[0-9;]*m/gu, '')).toMatch(/^PiggerCode\nRun, watch and steer your coding agents from any device\.$/mu);
+    expect(output.lines).toContainEqual(expect.stringContaining('piggercode codex'));
+    expect(output.lines).toContainEqual(expect.stringContaining('piggercode session'));
+    expect(output.lines).toContainEqual(expect.stringContaining('piggercode resume [<session-id-or-prefix>]'));
     expect(output.lines.join('\n')).not.toMatch(/^\s*happier sessions(?:\s|$)/m);
     expect(output.lines).not.toContainEqual(expect.stringContaining('Claude Code Options'));
   });

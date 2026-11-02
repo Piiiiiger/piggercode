@@ -28,19 +28,19 @@ describe('adoptSessionMediaSourceFile', () => {
 
     await adoptSessionMediaSourceFile({
       sourcePath: '/provider/generated.png',
-      destinationPath: '/workspace/.happier/uploads/generated/image.png',
+      destinationPath: '/workspace/.piggercode/uploads/generated/image.png',
     });
 
     expect(copyFileMock).toHaveBeenNthCalledWith(
       1,
       '/provider/generated.png',
-      '/workspace/.happier/uploads/generated/image.png',
+      '/workspace/.piggercode/uploads/generated/image.png',
       constants.COPYFILE_FICLONE,
     );
     expect(copyFileMock).toHaveBeenNthCalledWith(
       2,
       '/provider/generated.png',
-      '/workspace/.happier/uploads/generated/image.png',
+      '/workspace/.piggercode/uploads/generated/image.png',
     );
     expect(linkMock).not.toHaveBeenCalled();
   });

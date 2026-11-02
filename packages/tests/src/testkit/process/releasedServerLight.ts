@@ -44,7 +44,7 @@ function resolveReleasedServerV021ArtifactTarget(
 }
 
 const RELEASED_SERVER_V0_2_1_RELEASE_BASE_URL =
-  'https://github.com/happier-dev/happier/releases/download/server-preview';
+  'https://github.com/Piiiiiger/piggercode/releases/download/server-preview';
 
 export type ReleasedServerV021ArtifactPrerequisite =
   | Readonly<{

@@ -11,7 +11,7 @@ const media = (id: string): SessionMediaItemV1 => ({
     mediaKind: 'image',
     mimeType: 'image/png',
     name: `${id}.png`,
-    path: `.happier/uploads/generated/${id}.png`,
+    path: `.piggercode/uploads/generated/${id}.png`,
     sizeBytes: 1,
     origin: { source: 'provider-generated' },
 });

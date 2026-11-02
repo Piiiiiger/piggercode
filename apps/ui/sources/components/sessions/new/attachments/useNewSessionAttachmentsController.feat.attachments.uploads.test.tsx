@@ -75,7 +75,7 @@ vi.mock('@/components/sessions/reviews/comments/useWorkspaceReviewCommentDraftHa
 vi.mock('@/components/sessions/attachments/useAttachmentsUploadConfig', () => ({
     useAttachmentsUploadConfig: () => ({
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
         maxFileBytes: 25 * 1024 * 1024,
@@ -267,7 +267,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
         uploadAttachmentDraftsToSessionSpy.mockResolvedValue({
             uploaded: [{
                 name: 'note.txt',
-                path: '.happier/uploads/note.txt',
+                path: '.piggercode/uploads/note.txt',
                 mimeType: 'text/plain',
                 sizeBytes: 12,
                 sha256: 'sha-note',
@@ -474,7 +474,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
             messageLocalId: 'm1',
             uploaded: [{
                 name: 'note.txt',
-                path: '.happier/uploads/note.txt',
+                path: '.piggercode/uploads/note.txt',
                 mimeType: 'text/plain',
                 sizeBytes: 12,
                 sha256: 'sha-note',
@@ -544,7 +544,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
                     payload: {
                         attachments: [{
                             name: 'note.txt',
-                            path: '.happier/uploads/note.txt',
+                            path: '.piggercode/uploads/note.txt',
                             mimeType: 'text/plain',
                             sizeBytes: 12,
                             sha256: 'sha-note',
@@ -659,7 +659,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
             messageLocalId: params.messageLocalId ?? 'missing-message-local-id',
             uploaded: [{
                 name: 'note.txt',
-                path: '.happier/uploads/note.txt',
+                path: '.piggercode/uploads/note.txt',
                 mimeType: 'text/plain',
                 sizeBytes: 12,
                 sha256: 'sha-note',
@@ -743,7 +743,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
             if (firstDraft && !firstDraft.uploadedPath) {
                 params.applyDraftPatch(firstDraft.id, {
                     status: 'uploaded',
-                    uploadedPath: '.happier/uploads/note.txt',
+                    uploadedPath: '.piggercode/uploads/note.txt',
                     uploadedSizeBytes: 12,
                     uploadedMimeType: 'text/plain',
                     sha256: 'sha-note',
@@ -753,7 +753,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
                 messageLocalId: params.messageLocalId ?? 'missing-message-local-id',
                 uploaded: [{
                     name: 'note.txt',
-                    path: '.happier/uploads/note.txt',
+                    path: '.piggercode/uploads/note.txt',
                     mimeType: 'text/plain',
                     sizeBytes: 12,
                     sha256: 'sha-note',
@@ -824,7 +824,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
         const secondDrafts = uploadAttachmentDraftsToSessionSpy.mock.calls[1]?.[0]?.drafts;
         expect(secondDrafts).toEqual([
             expect.objectContaining({
-                uploadedPath: '.happier/uploads/note.txt',
+                uploadedPath: '.piggercode/uploads/note.txt',
                 uploadedSizeBytes: 12,
                 uploadedMimeType: 'text/plain',
                 sha256: 'sha-note',
@@ -1066,7 +1066,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
             messageLocalId: 'm1',
             uploaded: [{
                 name: 'note.txt',
-                path: '.happier/uploads/note.txt',
+                path: '.piggercode/uploads/note.txt',
                 mimeType: 'text/plain',
                 sizeBytes: 12,
                 sha256: 'sha-note',
@@ -1183,7 +1183,7 @@ describe('useNewSessionAttachmentsController (attachments.uploads)', () => {
                     payload: {
                         attachments: [{
                             name: 'note.txt',
-                            path: '.happier/uploads/note.txt',
+                            path: '.piggercode/uploads/note.txt',
                             mimeType: 'text/plain',
                             sizeBytes: 12,
                             sha256: 'sha-note',

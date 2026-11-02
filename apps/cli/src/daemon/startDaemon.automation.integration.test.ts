@@ -382,7 +382,7 @@ vi.mock('@/ui/logger', () => ({
     info: vi.fn(),
     infoFile: vi.fn(),
     warn: vi.fn(),
-    logFilePath: '/tmp/happier-daemon.log',
+    logFilePath: '/tmp/piggercode-daemon.log',
   },
 }));
 

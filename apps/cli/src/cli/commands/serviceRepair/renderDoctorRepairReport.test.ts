@@ -17,10 +17,10 @@ const cli: CurrentCliInfo = {
   releaseChannel: 'dev',
   ringId: 'publicdev',
   version: '0.12.3',
-  binaryPath: '/home/me/.happier/cli-dev/current/bin/happier',
+  binaryPath: '/home/me/.piggercode/cli-dev/current/bin/happier',
   shim: 'hdev',
   invoker: 'hdev',
-  pathWinnerShim: 'happier',
+  pathWinnerShim: 'piggercode',
   pathWinnerResolvesToThisBinary: true,
 };
 
@@ -36,7 +36,7 @@ const entry: AutomaticStartupEntry = {
   configuredCliVersion: '0.12.3',
   runningCliVersion: '0.12.3',
   path: '/home/me/Library/LaunchAgents/com.happier.default.plist',
-  happierHomeDir: '/home/me/.happier',
+  happierHomeDir: '/home/me/.piggercode',
   isForeignHome: false,
   installedDefinitionMatchesExpected: true,
   isLegacyChannelScoped: false,
@@ -59,7 +59,7 @@ function makeReport(overrides: Partial<DoctorRepairReport> = {}): DoctorRepairRe
 describe('renderDoctorRepairReport — clean state', () => {
   it('renders the 3-line "looks good" block when no findings', () => {
     const out = renderDoctorRepairReport(makeReport()).join('\n');
-    expect(out).toContain('Your Happier installation looks good');
+    expect(out).toContain('Your PiggerCode installation looks good');
     expect(out).toContain('Current CLI');
     expect(out).toContain('Background services');
     expect(out).toContain('matches this CLI');
@@ -83,7 +83,7 @@ describe('renderDoctorRepairReport — clean state', () => {
       healthy: true,
       relayUrl: 'http://localhost:41872',
       port: 41872,
-      installRoot: '/home/me/.happier/relay-host-dev',
+      installRoot: '/home/me/.piggercode/relay-host-dev',
     };
     const out = renderDoctorRepairReport(makeReport({ localRelays: [relay] })).join('\n');
     expect(out).toContain('Local relay');
@@ -175,7 +175,7 @@ describe('renderDoctorRepairReport — mismatched state', () => {
       healthy: true,
       relayUrl: 'http://localhost:41870',
       port: 41870,
-      installRoot: '/home/me/.happier/relay-host-stable',
+      installRoot: '/home/me/.piggercode/relay-host-stable',
     };
     const finding: RepairFinding = {
       kind: 'local_relay_lane_missing',
@@ -286,7 +286,7 @@ describe('renderDoctorRepairReport — authentication evidence', () => {
   it('offers an executable sign-in command when no profiles are configured', () => {
     const out = renderAuthentication([], false, 'hdev').join('\n');
 
-    // `happier auth` alone only prints help; the remedy must be the parsed
+    // `piggercode auth` alone only prints help; the remedy must be the parsed
     // `auth login` form so the printed command actually runs.
     expect(out).toContain('hdev auth login');
     expect(out).not.toMatch(/^\s*hdev auth\s*$/m);

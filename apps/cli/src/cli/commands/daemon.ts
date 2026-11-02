@@ -77,43 +77,43 @@ function shouldPrintDaemonHelp(args: readonly string[]): boolean {
 
 function printDaemonHelp(): void {
   console.log(`
-	${chalk.bold('happier daemon')} - Manage the local daemon
+	${chalk.bold('piggercode daemon')} - Manage the local daemon
 
 ${chalk.bold('Usage:')}
-  happier daemon start [--takeover]  Start the daemon (detached)
-  happier daemon restart [--takeover]  Restart the daemon (stop -> start)
-  happier daemon restart --restart-session-runners  Restart the daemon, preserve sessions, then restart tracked session runners on the current CLI
-  happier daemon restart-session-runners [--session-id <id>] [--dry-run] [--force-current-cli]  Restart eligible tracked session runners on the current CLI
-  happier daemon restart-session-runners --on-update on|off  Automatically restart idle stale session runners whenever the daemon starts on a newer CLI
-  happier daemon stop               Stop a manual daemon (sessions stay alive; use happier service stop for installed background services)
-  happier daemon stop --kill-sessions  Stop a manual daemon and its tracked sessions
-  happier daemon stop --all         Stop daemons for all configured relays
-  happier daemon restart [--takeover]  Restart the daemon
-  happier daemon restart --kill-sessions  Restart the daemon and its tracked sessions
-  happier daemon start-sync [--takeover]  Start the daemon synchronously
-  happier daemon status             Show daemon status
-  happier daemon status --all       Show daemon status for all configured relays
-  happier daemon list               List active sessions
-  happier daemon install            Enable automatic startup (legacy alias)
-  happier daemon uninstall          Disable automatic startup (legacy alias)
-	  happier service                   Manage automatic startup
-	  happier service list              List installed background services
-	  happier doctor repair             Preview or apply recommended automatic startup repair actions
-	  happier service repair            Legacy alias for doctor repair
-	  happier daemon service list       Legacy alias for service list
-	  happier daemon service repair     Legacy alias for service repair
+  piggercode daemon start [--takeover]  Start the daemon (detached)
+  piggercode daemon restart [--takeover]  Restart the daemon (stop -> start)
+  piggercode daemon restart --restart-session-runners  Restart the daemon, preserve sessions, then restart tracked session runners on the current CLI
+  piggercode daemon restart-session-runners [--session-id <id>] [--dry-run] [--force-current-cli]  Restart eligible tracked session runners on the current CLI
+  piggercode daemon restart-session-runners --on-update on|off  Automatically restart idle stale session runners whenever the daemon starts on a newer CLI
+  piggercode daemon stop               Stop a manual daemon (sessions stay alive; use piggercode service stop for installed background services)
+  piggercode daemon stop --kill-sessions  Stop a manual daemon and its tracked sessions
+  piggercode daemon stop --all         Stop daemons for all configured relays
+  piggercode daemon restart [--takeover]  Restart the daemon
+  piggercode daemon restart --kill-sessions  Restart the daemon and its tracked sessions
+  piggercode daemon start-sync [--takeover]  Start the daemon synchronously
+  piggercode daemon status             Show daemon status
+  piggercode daemon status --all       Show daemon status for all configured relays
+  piggercode daemon list               List active sessions
+  piggercode daemon install            Enable automatic startup (legacy alias)
+  piggercode daemon uninstall          Disable automatic startup (legacy alias)
+	  piggercode service                   Manage automatic startup
+	  piggercode service list              List installed background services
+	  piggercode doctor repair             Preview or apply recommended automatic startup repair actions
+	  piggercode service repair            Legacy alias for doctor repair
+	  piggercode daemon service list       Legacy alias for service list
+	  piggercode daemon service repair     Legacy alias for service repair
 
   Prefix with --server/--server-url to target a specific relay profile for this invocation.
-  Example: happier --server company service install
+  Example: piggercode --server company service install
 
-  For installed background services, use happier service start|stop|restart.
+  For installed background services, use piggercode service start|stop|restart.
 
-  If you want to kill all happier related processes run
-  ${cmd('happier doctor clean')}
+  If you want to kill all piggercode related processes run
+  ${cmd('piggercode doctor clean')}
 
-${chalk.bold('Note:')} The daemon is the local Happier process on this computer. Automatic startup is provided by installed background services (\`happier service\`).
+${chalk.bold('Note:')} The daemon is the local PiggerCode process on this computer. Automatic startup is provided by installed background services (\`piggercode service\`).
 
-${chalk.bold('To clean up runaway processes:')} Use ${cmd('happier doctor clean')}
+${chalk.bold('To clean up runaway processes:')} Use ${cmd('piggercode doctor clean')}
 `);
 }
 
@@ -235,7 +235,7 @@ export async function handleDaemonCliCommand(context: CommandContext): Promise<v
     if (args[2] === 'repair') {
       await handleServiceRepairCliCommand({
         argv: args.slice(2),
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       });
       return;
     }
@@ -253,7 +253,7 @@ export async function handleDaemonCliCommand(context: CommandContext): Promise<v
 
     if (sessions.length === 0) {
       console.log(
-        'This daemon has no tracked active sessions. Use `happier session list --active` to list active sessions on the relay.',
+        'This daemon has no tracked active sessions. Use `piggercode session list --active` to list active sessions on the relay.',
       );
     } else {
       console.log('Active sessions:');
@@ -603,7 +603,7 @@ export async function handleDaemonCliCommand(context: CommandContext): Promise<v
     const restartSessionRunners = args.includes('--restart-session-runners');
     const stopSessions = args.includes('--kill-sessions');
     if (restartSessionRunners && stopSessions) {
-      const message = '`happier daemon restart --restart-session-runners` cannot be combined with `--kill-sessions`.';
+      const message = '`piggercode daemon restart --restart-session-runners` cannot be combined with `--kill-sessions`.';
       if (jsonRequested) {
         await printDaemonJson({
           ok: false,
@@ -616,7 +616,7 @@ export async function handleDaemonCliCommand(context: CommandContext): Promise<v
       process.exit(1);
     }
     if (args.includes('--all')) {
-      const message = '`happier daemon restart --all` is not supported yet.';
+      const message = '`piggercode daemon restart --all` is not supported yet.';
       if (jsonRequested) {
         await printDaemonJson({
           ok: false,

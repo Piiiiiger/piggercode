@@ -1267,8 +1267,8 @@ describe('VoiceAgentSessionController (streaming)', () => {
         },
       },
       machines: {
-        machine_stale: { id: 'machine_stale', active: false, metadata: { host: 'stale', happyHomeDir: '/Users/leeroy/.happier/stale' } },
-        machine_active: { id: 'machine_active', active: true, metadata: { host: 'active', happyHomeDir: '/Users/leeroy/.happier/active' } },
+        machine_stale: { id: 'machine_stale', active: false, metadata: { host: 'stale', happyHomeDir: '/Users/leeroy/.piggercode/stale' } },
+        machine_active: { id: 'machine_active', active: true, metadata: { host: 'active', happyHomeDir: '/Users/leeroy/.piggercode/active' } },
       },
       sessions: {
         sys_voice: {
@@ -1278,7 +1278,7 @@ describe('VoiceAgentSessionController (streaming)', () => {
           metadata: {
             flavor: 'claude',
             machineId: 'machine_active',
-            path: '/Users/leeroy/.happier/active/voice-agent',
+            path: '/Users/leeroy/.piggercode/active/voice-agent',
             systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
           },
         },

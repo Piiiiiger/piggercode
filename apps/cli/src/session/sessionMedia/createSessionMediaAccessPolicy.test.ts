@@ -36,7 +36,7 @@ describe('createSessionMediaAccessPolicy', () => {
       CODEX_HOME: '~/custom-codex-home',
     } satisfies NodeJS.ProcessEnv;
     const connectedCodexHome = join(
-      '/Users/tester/.happier/servers/cloud',
+      '/Users/tester/.piggercode/servers/cloud',
       'daemon',
       'connected-services',
       'homes',

@@ -35,7 +35,7 @@ function createMachine(id: string): Machine {
             host: `${id}.local`,
             platform: 'darwin',
             happyCliVersion: '0.0.0-test',
-            happyHomeDir: '/tmp/.happier',
+            happyHomeDir: '/tmp/.piggercode',
             homeDir: '/Users/test',
         },
         metadataVersion: 1,

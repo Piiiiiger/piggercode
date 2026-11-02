@@ -163,8 +163,8 @@ fi
 if [[ "$SHOULD_INSTALL" == "1" ]]; then
     if [[ "$WRAPPER" == "1" ]]; then
         # Generate a wrapper plugin that pins env vars and executes the real plugin source.
-        HOME_DIR_VAL="${PIGGERCODE_STACK_HOME_DIR:-$HOME/.happier-stack}"
-        CANONICAL_DIR_VAL="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
+        HOME_DIR_VAL="${PIGGERCODE_STACK_HOME_DIR:-$HOME/.piggercode-stack}"
+        CANONICAL_DIR_VAL="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.piggercode-stack}"
         SANDBOX_DIR_VAL="${PIGGERCODE_STACK_SANDBOX_DIR:-}"
         WORKSPACE_DIR_VAL="${PIGGERCODE_STACK_WORKSPACE_DIR:-}"
         RUNTIME_DIR_VAL="${PIGGERCODE_STACK_RUNTIME_DIR:-}"

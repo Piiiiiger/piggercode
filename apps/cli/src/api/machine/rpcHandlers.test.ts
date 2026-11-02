@@ -1660,7 +1660,7 @@ describe('registerMachineRpcHandlers', () => {
     }
   });
 
-  it('continues a session by spawning a new one and storing a Happier replay seed in child metadata', async () => {
+  it('continues a session by spawning a new one and storing a PiggerCode replay seed in child metadata', async () => {
     const registered = new Map<string, (params: any) => Promise<any>>();
     const rpcHandlerManager = {
       registerHandler: (method: string, handler: (params: any) => Promise<any>) => {

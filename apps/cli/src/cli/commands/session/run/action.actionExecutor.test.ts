@@ -15,7 +15,7 @@ vi.mock('@/cli/output/jsonEnvelope', () => ({
   writeJsonStdout: vi.fn(async () => {}),
 }));
 
-describe('happier session run action (action executor)', () => {
+describe('piggercode session run action (action executor)', () => {
   it('routes through ActionExecutor with the expected action id and args', async () => {
     execute.mockResolvedValueOnce({
       ok: true,

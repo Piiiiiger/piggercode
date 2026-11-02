@@ -22,7 +22,7 @@ const SECTION_HEADER = 'Authentication';
 export function renderAuthentication(
   profiles: readonly AuthProfileSnapshot[],
   hasAny: boolean,
-  invoker: string = 'happier',
+  invoker: string = 'piggercode',
 ): string[] {
   if (!hasAny) {
     return [

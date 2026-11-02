@@ -103,7 +103,7 @@ const mcpServersUxTranslationExtension = {
   mcpServersDeliveryNativeTitle: 'ネイティブ MCP',
   mcpServersDeliveryNativeSubtitle: 'このバックエンドは Happier のツールをネイティブ MCP サーバーとして受け取ります。',
   mcpServersDeliveryShellBridgeTitle: 'Happier シェルブリッジ',
-  mcpServersDeliveryShellBridgeSubtitle: 'このバックエンドは `happier tools` ブリッジ経由で Happier のツールを呼び出します。',
+  mcpServersDeliveryShellBridgeSubtitle: 'このバックエンドは `piggercode tools` ブリッジ経由で Happier のツールを呼び出します。',
   mcpServersDeliveryUnsupportedTitle: '非対応',
   mcpServersDeliveryUnsupportedSubtitle: 'このバックエンドは現在 Happier のツールを受け取りません。',
 } as const;
@@ -210,7 +210,7 @@ const settingsAppearanceTranslationExtension = {
     previewSubtitle: 'A local sandbox preview of surfaces, text, controls, state, and syntax colors.',
     previewButton: 'Primary action',
     previewStatus: 'Ready',
-    previewCode: 'const theme = "happier";',
+    previewCode: 'const theme = "piggercode";',
     colorInputPlaceholder: '#RRGGBB, rgba(...), transparent',
     tokenSubtitle: 'Public color token override',
     recentColors: 'Recent colors',
@@ -1668,8 +1668,8 @@ export const ja: TranslationStructure = {
     generateNewQrCode: "新しいQRコードを生成",
     pairingQrExpired: "このQRコードは期限切れです。新しいコードを生成してください。",
     openMachine: "マシンを開く",
-    terminalUrlPlaceholder: "happier://terminal?...",
-    accountUrlPlaceholder: "happier:///account?...",
+    terminalUrlPlaceholder: "piggercode://terminal?...",
+    accountUrlPlaceholder: "piggercode:///account?...",
     restoreQrInstructions:
       "すでにサインインしている端末で、設定 → アカウント に移動してこのQRコードをスキャンしてください。",
     externalAuthVerifiedTitle: ({ provider }: { provider: string }) =>
@@ -1699,7 +1699,7 @@ export const ja: TranslationStructure = {
       runCommandInTerminal: "ターミナルで次のコマンドを実行してください:",
       runCommandInTerminalWithCommand: ({ command }: { command: string }) =>
         `ターミナルで次のコマンドを実行してください:\n\n${command}`,
-      command: ({ name }: { name: string }) => `happier connect ${name}`,
+      command: ({ name }: { name: string }) => `piggercode connect ${name}`,
     },
   },
 
@@ -2498,7 +2498,7 @@ localTailscale: {
       copyReportSubtitle: "サポート向けの安全なJSONレポートをコピー",
     },
     pasteDoctorJson: {
-      footer: "ヒント: PCで `happier doctor --json` を実行して貼り付けてください。",
+      footer: "ヒント: PCで `piggercode doctor --json` を実行して貼り付けてください。",
       placeholder: '{ "capturedAt": "...", ... }',
       parse: "貼り付けたJSONを検証",
       ok: "貼り付けた doctor JSON は有効に見えます。",
@@ -3416,7 +3416,7 @@ localTailscale: {
           "ワークスペース相対のディレクトリを入力してください（絶対パス不可、.. 不可）。",
         invalidDirectoryTitle: "無効なディレクトリ",
         invalidDirectoryMessage:
-          "`.happier/uploads` のような相対パスを使用してください。",
+          "`.piggercode/uploads` のような相対パスを使用してください。",
       },
     },
     sourceControlIgnore: {
@@ -6651,7 +6651,7 @@ localTailscale: {
         unpinSession: "ピン留め解除",
         pinLimitExceeded: ({ count }: { count: number }) => `${count.toLocaleString()} 件までセッションをピン留めできます。別のセッションのピン留めを解除して、もう一度お試しください。`,
     copyResumeCommand: "再開コマンドをコピー",
-    resumeCommand: ({ sessionId }: { sessionId: string }) => `happier resume ${sessionId}`,
+    resumeCommand: ({ sessionId }: { sessionId: string }) => `piggercode resume ${sessionId}`,
     viewMachine: "マシンを表示",
     viewMachineSubtitle: "マシンの詳細とセッションを表示",
     killSessionSubtitle: "セッションを即座に終了",
@@ -6726,7 +6726,7 @@ localTailscale: {
       runIt: "実行する",
       scanQrCode: "QRコードをスキャン",
       openCamera: "カメラを開く",
-      runCommand: "$ happier",
+      runCommand: "$ piggercode",
     },
     emptyMessages: {
       noMessagesYet: "まだメッセージはありません",
@@ -8257,7 +8257,7 @@ settingsSession: {
         title: 'Windows',
         defaultModeTitle: 'Windows リモートセッションの既定モード',
         windowNameTitle: 'Windows Terminal のウィンドウ名',
-        windowNamePlaceholder: 'happier',
+        windowNamePlaceholder: 'piggercode',
         windowNameHint: 'Windows Terminal で開くセッションはこの名前付きウィンドウを使い、新しいセッションをタブとして表示できます。',
     },
     advanced: {
@@ -10479,7 +10479,7 @@ settingsSession: {
     launchNewSessionInDirectory: "ディレクトリで新しいセッションを起動",
     offlineUnableToSpawn: "マシンがオフラインのためランチャーは無効です",
     offlineHelp:
-      "• コンピューターがオンラインであることを確認してください\n• `happier daemon status`を実行して診断してください\n• 最新のCLIバージョンを使用していますか？`happier self update`を実行してください",
+      "• コンピューターがオンラインであることを確認してください\n• `piggercode daemon status`を実行して診断してください\n• 最新のCLIバージョンを使用していますか？`piggercode self update`を実行してください",
     customPathPlaceholder: "カスタムパスを入力",
     tools: {
       title: "ツール",
@@ -10543,13 +10543,13 @@ settingsSession: {
     cliPath: {
       title: "ターミナル",
       footer: "Happier Desktop は自身が作成した PATH エントリのみを追加・削除します。シェルインストーラーが書き込んだエントリには触れません。",
-      addTitle: "happier を PATH に追加",
-      addSubtitle: "新しいターミナルで happier コマンドを使えるようにします。",
-      removeTitle: "happier を PATH から削除",
+      addTitle: "piggercode を PATH に追加",
+      addSubtitle: "新しいターミナルで piggercode コマンドを使えるようにします。",
+      removeTitle: "piggercode を PATH から削除",
       removeSubtitle: "Happier Desktop が追加した PATH エントリのみを削除します。",
       added: "追加しました。happier を使うには新しいターミナルを開いてください。",
-      alreadyPresent: "happier はすでに PATH に含まれています。",
-      existingCommand: ({ path }: { path: string }) => `別の happier（${path}）がすでにターミナルで使われているため、何も追加しませんでした。`,
+      alreadyPresent: "piggercode はすでに PATH に含まれています。",
+      existingCommand: ({ path }: { path: string }) => `別の piggercode（${path}）がすでにターミナルで使われているため、何も追加しませんでした。`,
       removed: "Happier Desktop が追加した PATH エントリを削除しました。",
       nothingToRemove: "Happier Desktop は PATH エントリを追加していません。",
     },

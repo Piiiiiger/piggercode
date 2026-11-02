@@ -40,7 +40,7 @@ vi.mock('@/ui/doctorSnapshot', () => ({
 
 import { handleDoctorCliCommand } from './doctor';
 
-describe('happier doctor --json', () => {
+describe('piggercode doctor --json', () => {
   it('prints a single redacted JSON snapshot and does not run the human doctor output', async () => {
     const output = captureConsoleJsonOutput<{ server?: { serverUrl?: string }; accountId?: string }>();
 

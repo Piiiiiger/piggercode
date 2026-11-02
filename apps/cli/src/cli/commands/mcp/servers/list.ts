@@ -35,7 +35,7 @@ export async function cmdMcpServersList(
       await printJsonEnvelope({ ok: false, kind: 'mcp_servers_list', error: { code: 'not_authenticated' } }, { exitCode: 1 });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exitCode = 1;
     return;
   }

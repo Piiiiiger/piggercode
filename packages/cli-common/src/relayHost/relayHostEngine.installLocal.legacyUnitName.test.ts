@@ -55,7 +55,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const installRoot = join(homeDir, '.happier', 'self-host-preview');
+      const installRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
       await mkdir(unitDir, { recursive: true });
       await writeFile(
@@ -70,7 +70,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
         localInstallPolicy: {
           runServiceCommands: false,
           skipHealthCheck: true,
@@ -120,7 +120,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const installRoot = join(homeDir, '.happier', 'self-host-preview');
+      const installRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
       await mkdir(unitDir, { recursive: true });
       await writeFile(
@@ -167,7 +167,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
         localInstallPolicy: {
           runServiceCommands: false,
           skipHealthCheck: true,
@@ -234,7 +234,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const installRoot = join(homeDir, '.happier', 'self-host-preview');
+      const installRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const launchAgentsDir = join(homeDir, 'Library', 'LaunchAgents');
       await mkdir(launchAgentsDir, { recursive: true });
       await writeFile(
@@ -258,7 +258,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'darwin', arch: 'arm64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
         localInstallPolicy: {
           runServiceCommands: false,
           skipHealthCheck: true,
@@ -340,9 +340,9 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const previewInstallRoot = `${homeDir}\\.happier\\self-host-preview`;
-      const legacyWrapperPath = `${homeDir}\\.happier\\services\\happier-server.ps1`;
-      await mkdir(join(homeDir, '.happier', 'services'), { recursive: true });
+      const previewInstallRoot = `${homeDir}\\.piggercode\\self-host-preview`;
+      const legacyWrapperPath = `${homeDir}\\.piggercode\\services\\happier-server.ps1`;
+      await mkdir(join(homeDir, '.piggercode', 'services'), { recursive: true });
       await writeFile(
         legacyWrapperPath,
         `$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "${previewInstallRoot}"\n`,
@@ -355,7 +355,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
         localInstallPolicy: {
           runServiceCommands: false,
           skipHealthCheck: true,
@@ -373,7 +373,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
       });
 
       await expect(access(legacyWrapperPath)).rejects.toBeDefined();
-      await expect(access(`${homeDir}\\.happier\\services\\happier-server-preview.ps1`)).resolves.toBeUndefined();
+      await expect(access(`${homeDir}\\.piggercode\\services\\happier-server-preview.ps1`)).resolves.toBeUndefined();
     } finally {
       Object.defineProperty(process, 'platform', { value: originalPlatform });
       vi.resetModules();
@@ -424,8 +424,8 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const legacyInstallRoot = join(homeDir, '.happier', 'l1');
-      const previewInstallRoot = join(homeDir, '.happier', 'self-host-preview');
+      const legacyInstallRoot = join(homeDir, '.piggercode', 'l1');
+      const previewInstallRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
       await mkdir(legacyInstallRoot, { recursive: true });
       await mkdir(join(legacyInstallRoot, 'data'), { recursive: true });
@@ -440,7 +440,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         join(unitDir, 'happier-server.service'),
         [
           '[Unit]',
-          'Description=Happier Relay Runtime',
+          'Description=PiggerCode Relay Runtime',
           '[Service]',
           `WorkingDirectory=${legacyInstallRoot}`,
           'Environment=PORT=3005',
@@ -460,7 +460,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       await expect(engine.installOrUpdate({
@@ -530,8 +530,8 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const customInstallRoot = join(homeDir, '.happier', 'l1');
-      const previewInstallRoot = join(homeDir, '.happier', 'self-host-preview');
+      const customInstallRoot = join(homeDir, '.piggercode', 'l1');
+      const previewInstallRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
       await mkdir(customInstallRoot, { recursive: true });
       await mkdir(join(customInstallRoot, 'data'), { recursive: true });
@@ -546,7 +546,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         join(unitDir, 'happier-server-preview.service'),
         [
           '[Unit]',
-          'Description=Happier Relay Runtime (happier-server-preview)',
+          'Description=PiggerCode Relay Runtime (happier-server-preview)',
           '[Service]',
           `WorkingDirectory=${customInstallRoot}`,
           'Environment=PORT=3005',
@@ -567,7 +567,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       await expect(engine.installOrUpdate({
@@ -637,8 +637,8 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         };
       });
 
-      const legacyInstallRoot = join(homeDir, '.happier', 'l1', 'self-host');
-      const previewInstallRoot = join(homeDir, '.happier', 'self-host-preview');
+      const legacyInstallRoot = join(homeDir, '.piggercode', 'l1', 'self-host');
+      const previewInstallRoot = join(homeDir, '.piggercode', 'self-host-preview');
       const unitDir = join(homeDir, '.config', 'systemd', 'user');
       await mkdir(join(legacyInstallRoot, 'data'), { recursive: true });
       await mkdir(join(previewInstallRoot, 'data'), { recursive: true });
@@ -656,7 +656,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         join(unitDir, 'happier-server.service'),
         [
           '[Unit]',
-          'Description=Happier Relay Runtime',
+          'Description=PiggerCode Relay Runtime',
           '[Service]',
           `WorkingDirectory=${legacyInstallRoot}`,
           'Environment=PORT=3005',
@@ -670,7 +670,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         join(unitDir, 'happier-server-preview.service'),
         [
           '[Unit]',
-          'Description=Happier Relay Runtime (happier-server-preview)',
+          'Description=PiggerCode Relay Runtime (happier-server-preview)',
           '[Service]',
           `WorkingDirectory=${previewInstallRoot}`,
           'Environment=PORT=3005',
@@ -690,7 +690,7 @@ describe('RelayHostEngine (installOrUpdate local legacy unit name)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       await expect(engine.installOrUpdate({

@@ -50,12 +50,12 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
     expect(resolveJavaScriptRuntimeCommand({
       isBunRuntime: true,
       processEnv: env,
-      currentExecPath: '/Applications/Happier.app/Contents/MacOS/happier',
+      currentExecPath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
     })).toBeNull();
 
         expect(isProviderCliPathRunnable(cliPath, env, {
             isBunRuntime: true,
-            currentExecPath: '/Applications/Happier.app/Contents/MacOS/happier',
+            currentExecPath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
         })).toBe(false);
     });
 
@@ -131,7 +131,7 @@ describe('managedJavaScriptRuntime binary-safe selection', () => {
         })).toBeNull();
     });
 
-    it('does not treat an installed happier binary as the node runtime when no node runtime is available', () => {
+    it('does not treat an installed piggercode binary as the node runtime when no node runtime is available', () => {
         const root = join(tmpdir(), `happier-cli-common-binary-runtime-${Date.now()}-${Math.random().toString(36).slice(2)}`);
         const cliDir = join(root, 'runtime', 'cli');
         mkdirSync(cliDir, { recursive: true });

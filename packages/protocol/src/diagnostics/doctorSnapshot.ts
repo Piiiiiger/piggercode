@@ -117,7 +117,7 @@ export const DoctorSnapshotDaemonStatusSchema = z.object({
   }),
   runtimeConvergence: DoctorSnapshotDaemonRuntimeConvergenceSchema.optional(),
   /**
-   * The answering CLI's own update state from its cached daily check (`happier self check`),
+   * The answering CLI's own update state from its cached daily check (`piggercode self check`),
    * filtered to its release channel. Never a network read; `null` when no check has cached a
    * result yet, absent from older CLIs. The K5 facts (`CliUpdateFactsSchema`: channel, install
    * source, update command, remote-update support, last outcome) extend it and are absent from

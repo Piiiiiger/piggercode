@@ -65,14 +65,14 @@ describe('resolveCliRuntimeAssetPath', () => {
     if (originalExecPathDescriptor) {
       Object.defineProperty(process, 'execPath', {
         ...originalExecPathDescriptor,
-        value: '/Users/test/.happier/bin/happier',
+        value: '/Users/test/.piggercode/bin/piggercode',
       });
     }
 
     const { resolveCliRuntimeAssetPath } = await import('./resolveCliRuntimeAssetPath');
 
     expect(resolveCliRuntimeAssetPath('scripts', 'claude_local_launcher.cjs')).toBe(
-      '/Users/test/.happier/cli/current/scripts/claude_local_launcher.cjs',
+      '/Users/test/.piggercode/cli/current/scripts/claude_local_launcher.cjs',
     );
   });
 
@@ -84,14 +84,14 @@ describe('resolveCliRuntimeAssetPath', () => {
     if (originalExecPathDescriptor) {
       Object.defineProperty(process, 'execPath', {
         ...originalExecPathDescriptor,
-        value: '/Users/test/.happier/bin/hprev',
+        value: '/Users/test/.piggercode/bin/hprev',
       });
     }
 
     const { resolveCliRuntimeAssetPath } = await import('./resolveCliRuntimeAssetPath');
 
     expect(resolveCliRuntimeAssetPath('tools', 'unpacked', 'zellij')).toBe(
-      '/Users/test/.happier/cli-preview/current/tools/unpacked/zellij',
+      '/Users/test/.piggercode/cli-preview/current/tools/unpacked/zellij',
     );
   });
 });

@@ -83,7 +83,7 @@ function isCliEntrypointPath(pathLike: string): boolean {
 
 function isCliBinaryPath(pathLike: string): boolean {
   const base = normalizePathLike(pathLike).split('/').at(-1)?.toLowerCase() ?? '';
-  return base === 'happier' || base === 'happier.exe';
+  return base === 'piggercode' || base === 'piggercode.exe';
 }
 
 function resolveVersion(pathLike: string): string | null {

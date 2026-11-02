@@ -19,11 +19,11 @@ describe('permissionToolIdentifier', () => {
       extractShellCommand({
         toolCall: {
           kind: 'execute',
-          title: "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Done\"}' --json",
+          title: "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Done\"}' --json",
         },
       }),
     ).toBe(
-      "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Done\"}' --json",
+      "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Done\"}' --json",
     );
   });
 

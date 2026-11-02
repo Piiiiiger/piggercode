@@ -98,7 +98,7 @@ requested.
 
 ```mermaid
 flowchart TD
-    Start([happier ...]) --> Parse[Parse subcommand]
+    Start([piggercode ...]) --> Parse[Parse subcommand]
 
     Parse --> Doctor{doctor?}
     Parse --> Auth{auth?}
@@ -163,7 +163,7 @@ server addresses remain HTTP(S)-only. Router-provided fragments are resolved aga
 terminal route even when browser history still shows the previous page. Existing confirmation,
 sign-in recovery, and URL clearing apply. This adds no automatic pairing approval. Channel-specific schemes allow installed channels
 to coexist; the CLI's default
-`happier://` link targets stable. Registration and cold/running/tray-only launches require live
+`piggercode://` link targets stable. Registration and cold/running/tray-only launches require live
 OS validation; macOS registration must be checked in the installed application bundle.
 
 It drives the same CLI subcommands the human flow uses, through the bundled `hsetup` sidecar
@@ -174,11 +174,11 @@ is bundled inside the desktop app, not a separately released component.
 sequenceDiagram
     participant App as Desktop app
     participant Hsetup as hsetup (bundled)
-    participant CLI as happier CLI
+    participant CLI as piggercode CLI
     participant Relay
 
     App->>Hsetup: setup.thisComputer.v1 { relay, ring, account }
-    Hsetup->>CLI: acquire/install managed CLI, happier --version
+    Hsetup->>CLI: acquire/install managed CLI, piggercode --version
     Hsetup->>CLI: daemon service install --dry-run --json
     Hsetup-->>App: prompt setup.serviceConsent (only if the CLI reports a conflict)
     App-->>Hsetup: respond { approved }
@@ -248,7 +248,7 @@ run. Detail discovery remains lazy, and no batch resumes across app restarts.
 Approving a pairing hands the requesting CLI the account content key, so the app decides **how** to
 approve from install ownership. `apps/bootstrap/src/systemTasks/localFirstPartyCommand.ts` reports
 provenance `managed` when this machine's managed install layout claims the binary: the
-`current.version` marker that `installVersionedPayload` writes under `~/.happier`, plus the payload
+`current.version` marker that `installVersionedPayload` writes under `~/.piggercode`, plus the payload
 it names under `versions/<versionId>`. Everything else is `override` — an explicit env override
 (`PIGGERCODE_BOOTSTRAP_CLI_PATH`, `PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH`), a repo-local checkout, or a binary
 that merely exists at `<installRoot>/current` with no install behind it.
@@ -295,7 +295,7 @@ and an override CLI fails immediately. The prepared target must satisfy the floo
 
 A Happier home has one default `happier` command and one default-following background service, and
 both belong to the **default release channel** (`default-cli-release-channel.json`; the service runs
-that channel's `~/.happier/bin/happier` shim). Two rules keep a second channel from fighting it:
+that channel's `~/.piggercode/bin/happier` shim). Two rules keep a second channel from fighting it:
 
 - **Installing another channel never takes the default.** `installVersionedPayload` keeps the
   recorded default channel (marker and `happier` shim) whenever that channel's managed CLI is
@@ -315,14 +315,14 @@ that channel's `~/.happier/bin/happier` shim). Two rules keep a second channel f
 
 `daemon.service.status.v1` reports the answering CLI's update state as `cli.update`
 (`{ currentVersion, latestVersion, updateAvailable, managed }` plus the K5 facts below, from
-`happier daemon status --json` → `cliUpdate` — never a network read on that path; a stale cache is
+`piggercode daemon status --json` → `cliUpdate` — never a network read on that path; a stale cache is
 refreshed by the existing detached `self check`). A `start` issued while the service's own daemon
 still runs another CLI version is promoted to `restart` on every platform (`systemctl start` on an
 active unit is a no-op).
 
 ### One daemon per relay on one machine
 
-A Happier home can run one daemon per relay profile at the same time (`happier daemon status --all`
+A Happier home can run one daemon per relay profile at the same time (`piggercode daemon status --all`
 lists them), so this computer can serve sessions from several relays at once. A daemon's lifecycle
 scope is its lifecycle directory — `servers/<PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID or active server id>/`,
 holding its `daemon.state.json` and `daemon.state.json.lock` — and only that scope is its to manage:
@@ -343,7 +343,7 @@ holding its `daemon.state.json` and `daemon.state.json.lock` — and only that s
   the single default-following service (an explicit `--server` only scopes that invocation); a relay
   gets its own service with `--server <id> … --instance <id>`, or through desktop setup's `pinned`
   placement (`PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=pinned`). For a terminal install, use
-  `happier --server <profile-id> service install --instance <service-id> --autostart on-demand --json`.
+  `piggercode --server <profile-id> service install --instance <service-id> --autostart on-demand --json`.
   `--server` is a root prefix flag and selects the relay; `--instance` names the service and does
   not select a profile. The service id may differ from the profile id. Address later service
   status/start/stop/restart commands with the same prefix and instance. If the caller inherits a
@@ -409,7 +409,7 @@ through the default file logger, and requires its existing distinct running iden
 ### One CLI update transaction (plan R13 f)
 
 `runManagedCliUpdate` (`packages/cli-common/src/firstPartyRuntime/runManagedCliUpdate.ts`) is the
-only way a managed first-party CLI is updated in place. `happier self update`, the desktop's
+only way a managed first-party CLI is updated in place. `piggercode self update`, the desktop's
 bootstrap `cli.update.v1` and the daemon-hosted remote `cli.update.v1` all run it, always from the
 version being replaced. Current development source also uses it for desktop setup's replacement
 of an installed managed CLI below the setup floor; the bootstrap adapter rejects a below-floor
@@ -481,7 +481,7 @@ directory in-process; bootstrap reads `daemon status --json` through `createSele
 (inherited relay selectors cleared) plus each pinned service's status from `daemon service list
 --json`.
 
-**Windows.** The two local paths differ. `happier self update` stops the payload's processes before
+**Windows.** The two local paths differ. `piggercode self update` stops the payload's processes before
 activation (`quiesceInstalledCliWindowsPayloadOwners`: `service stop`, `daemon stop --all
 --kill-sessions`, `taskkill /T` — **running sessions are ended**, on every relay), as the installer
 does; each service daemon observed before that stop is restarted afterwards (above), a manual
@@ -598,13 +598,13 @@ service convergence. The result reports `machineId: null` and `serviceAction: no
 no readiness proof. `cliOnly` requires `reconsiderCli: true`. Managed acquisition and any required
 below-floor upgrade retain their existing owners and update/restart contract.
 
-`auth status` and the daemon status block of `happier daemon status` name the relay by host and the
+`auth status` and the daemon status block of `piggercode daemon status` name the relay by host and the
 signed-in account by its readable label (profile username, else display name) and a short id, and
 their JSON carries `accountLabel`/`relayHost` (`auth status`) and `auth.accountLabel` (`daemon
 status`), so a person can compare this computer's identity with the app's.
 
 Readiness is never claimed from the executor's success. It is re-read afterwards from
-`happier daemon status --json`, whose `runtimeConvergence` block describes the *running* daemon —
+`piggercode daemon status --json`, whose `runtimeConvergence` block describes the *running* daemon —
 authenticated control reachable, the installed service owning that process, machine id and CLI
 version matching. Host-visible PID equality is never required, so a daemon in a container whose
 PID is hidden still reports ready when its authenticated control answers.
@@ -677,8 +677,8 @@ that extend the existing `daemon.service.*` family (`apps/bootstrap/src/systemTa
 
 | Kind | CLI command | Proof |
 | --- | --- | --- |
-| `daemon.service.autostart.set.v1` | `happier daemon service install --autostart=<at-login\|on-demand> --json` | Re-reads `service.autostart`; a CLI that cannot report it fails as `daemon_service_autostart_unsupported`. |
-| `daemon.service.stop.v1` | `happier daemon service stop --json` | Re-reads status; a still-running daemon fails as `daemon_service_still_running`. |
+| `daemon.service.autostart.set.v1` | `piggercode daemon service install --autostart=<at-login\|on-demand> --json` | Re-reads `service.autostart`; a CLI that cannot report it fails as `daemon_service_autostart_unsupported`. |
+| `daemon.service.stop.v1` | `piggercode daemon service stop --json` | Re-reads status; a still-running daemon fails as `daemon_service_still_running`. |
 | `daemon.service.start.v1` / `daemon.service.stop.v1` with `relayUrl` | the same command, scoped to the one service serving that relay | The tray's per-relay rows (R16 c): only that service is touched; a pinned service the user set up fails as `service_user_owned`, a relay nothing here serves as `daemon_service_not_found`. |
 
 Neither kind restates a platform rule — the CLI owns every one of them (INV9) — and neither trusts
@@ -798,7 +798,7 @@ running)* / *Quit Happier and stop background services*); unknown, it is the pla
 The gestures marked **No** terminate the process without an `ExitRequested`, so the background service
 is left exactly where it was — the same safe direction as a crash, and the reason the handoff never
 stops the service on a path it cannot confirm. An `on-demand` service left running that way is stopped
-by the next in-app quit, `happier daemon service stop`, or the settings control.
+by the next in-app quit, `piggercode daemon service stop`, or the settings control.
 
 ### What may repoint this computer's daemon
 
@@ -842,7 +842,7 @@ whose `targetMode` is UNKNOWN, is asked about — and the device-local "always m
 default-following service" preference cannot reach past either, nor past any account move.
 
 **One daemon per relay ("Connect to {relay} too").** A computer may serve several relays, one
-background service per relay (`happier daemon service list --json` / `daemon status --all`).
+background service per relay (`piggercode daemon service list --json` / `daemon status --all`).
 
 - **Inspection.** The ambient `daemon.service.status.v1` read reports, beside the default-following
   service's facts, `pinnedServices: { complete, coexistence, services[], unreadable[] }`: each pinned service of
@@ -990,7 +990,7 @@ runs beside it and never holds accounts, other machines, sessions or settings be
 
 ```mermaid
 graph LR
-    subgraph "~/.happier"
+    subgraph "~/.piggercode"
         direction TB
         settings["settings.json<br/><i>profile, onboarding</i>"]
         access["access.key<br/><i>encryption keys</i>"]
@@ -1011,7 +1011,7 @@ graph LR
     E1 -.-> settings & access & daemon & logs
 ```
 
-Local state lives under `~/.happier` (or `PIGGERCODE_HOME_DIR`):
+Local state lives under `~/.piggercode` (or `PIGGERCODE_HOME_DIR`):
 - `settings.json`: onboarding and profile settings (validated/migrated).
 - `access.key`: local key material for encryption/auth.
 - `daemon.state.json`: daemon PID + control port + version.
@@ -1254,7 +1254,7 @@ control is unavailable.
 Standalone attachment asks the running session to prepare through the encrypted
 session RPC; failed preparation does not launch the native terminal, and ACP
 runtimes do not register native-attachment preparation. The runner alone publishes
-managed `localControl` attachment and detach custody: an independent `happier attach`
+managed `localControl` attachment and detach custody: an independent `piggercode attach`
 client neither claims `canDetach` nor clears a runner-owned terminal when it exits.
 Shared native clients and Happier remain simultaneously writable; this projection is
 not an inventory of every external native client.
@@ -1299,7 +1299,7 @@ launch, styled screen capture, input, process inspection, and terminal attachmen
 Runtime detection requires a stable Herdr release at or after `0.9.2`, and attach
 and startup also verify the running server's version before using it.
 In the development source, standalone Claude unified uses the default Herdr server,
-matching `happier herdr`; recovery of a retained attachment keeps its recorded server namespace. Daemon
+matching `piggercode herdr`; recovery of a retained attachment keeps its recorded server namespace. Daemon
 requests retain their explicitly selected namespace. Generated agent names label
 the panes rather than creating separate Herdr servers.
 Claude unified reuses the existing composer parser and prompt-submission verifier;

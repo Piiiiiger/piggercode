@@ -6,7 +6,12 @@ describe('tools/v2 aliases', () => {
 
   it('treats session_title_set MCP aliases as change_title aliases', () => {
     expect(isChangeTitleToolNameAlias('session_title_set')).toBe(true);
-    expect(isChangeTitleToolNameAlias('mcp__happier__session_title_set')).toBe(true);
+    expect(isChangeTitleToolNameAlias('mcp__piggercode__session_title_set')).toBe(true);
+  });
+
+  it('keeps recognizing title changes recorded under the upstream server name', () => {
+    expect(isChangeTitleToolNameAlias('mcp__happier__change_title')).toBe(true);
+    expect(isChangeTitleToolNameAlias('happier__session_title_set')).toBe(true);
   });
 
   it('treats provider display names for title changes as change_title-like names', () => {

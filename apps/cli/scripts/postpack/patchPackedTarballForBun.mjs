@@ -67,9 +67,9 @@ function stripInternalWorkspaceDeps(pkgJson) {
 }
 
 const CLI_PUBLISHED_BIN_CONTRACT = Object.freeze({
-  happier: './bin/happier.mjs',
-  'happier-dev': './bin/happier-dev.mjs',
-  'happier-mcp': './bin/happier-mcp.mjs',
+  happier: './bin/piggercode.mjs',
+  'happier-dev': './bin/piggercode-dev.mjs',
+  'piggercode-mcp': './bin/piggercode-mcp.mjs',
 });
 
 function restoreCliPublishedBinContract(pkgJson) {

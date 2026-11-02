@@ -41,26 +41,26 @@ describe('resolveHappyHomeDirFromEnvironment', () => {
   it('preserves Windows-shaped absolute overrides on Windows', () => {
     withPlatform('win32', () => {
       expect(resolveHappyHomeDirFromEnvironment({
-        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode-custom',
         USERPROFILE: 'C:\\Users\\tester',
-      })).toBe('C:\\Users\\tester\\.happier-custom');
+      })).toBe('C:\\Users\\tester\\.piggercode-custom');
     });
   });
 
   it('rejects Windows-shaped absolute overrides on non-Windows hosts', () => {
     withPlatform('darwin', () => {
       expect(() => resolveHappyHomeDirFromEnvironment({
-        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode-custom',
         HOME: '/Users/tester',
       })).toThrow(/windows/i);
     });
   });
 
-  it('defaults to $HOME/.happier when HOME is present', () => {
-    expect(resolveHappyHomeDirFromEnvironment({ HOME: '/tmp/home' })).toBe('/tmp/home/.happier');
+  it('defaults to $HOME/.piggercode when HOME is present', () => {
+    expect(resolveHappyHomeDirFromEnvironment({ HOME: '/tmp/home' })).toBe('/tmp/home/.piggercode');
   });
 
   it('falls back to os.homedir() when HOME and USERPROFILE are missing', () => {
-    expect(resolveHappyHomeDirFromEnvironment({})).toBe(join(homedir(), '.happier'));
+    expect(resolveHappyHomeDirFromEnvironment({})).toBe(join(homedir(), '.piggercode'));
   });
 });

@@ -21,7 +21,7 @@ type WorkspaceFileDownloadSourceResult =
     | Readonly<{ success: false; error: string }>;
 
 function createTempDownloadZipPath(): string {
-    return join(tmpdir(), 'happier', 'file-zips', `${randomUUID()}.zip`);
+    return join(tmpdir(), 'piggercode', 'file-zips', `${randomUUID()}.zip`);
 }
 
 export async function resolveWorkspaceFileDownloadSource(input: Readonly<{

@@ -22,7 +22,7 @@ describe('service uninstall semantics', () => {
       action: 'uninstall',
       label: 'dev.happier.stack.exp',
       definitionPath,
-      taskName: 'Happier\\dev.happier.stack.exp',
+      taskName: 'PiggerCode\\dev.happier.stack.exp',
       uid: 501,
     });
 
@@ -43,8 +43,8 @@ describe('service uninstall semantics', () => {
       backend: 'schtasks-user',
       action: 'uninstall',
       label: 'dev.happier.stack.exp',
-      definitionPath: 'C:\\Users\\test\\.happier\\services\\dev.happier.stack.exp.ps1',
-      taskName: 'Happier\\dev.happier.stack.exp',
+      definitionPath: 'C:\\Users\\test\\.piggercode\\services\\dev.happier.stack.exp.ps1',
+      taskName: 'PiggerCode\\dev.happier.stack.exp',
     });
 
     expect(plan.commands).toHaveLength(2);
@@ -67,13 +67,13 @@ describe('service uninstall semantics', () => {
   it.each([
     ['systemctl', ['--user', 'disable', '--now', 'x.service'], 'Failed to connect to bus: Permission denied'],
     ['launchctl', ['bootout', 'gui/501', '/tmp/x.plist'], 'Boot-out failed: 1: Operation not permitted'],
-    ['schtasks', ['/Delete', '/F', '/TN', 'Happier\\x'], 'ERROR: Access is denied.'],
+    ['schtasks', ['/Delete', '/F', '/TN', 'PiggerCode\\x'], 'ERROR: Access is denied.'],
   ])('rejects real %s teardown failures', (cmd, args, stderr) => {
     expect(isBenignServiceAbsenceFailure({ cmd, args, stderr, stdout: '', status: 1 })).toBe(false);
   });
 
   it.each([
-    ['schtasks', ['/Delete', '/F', '/TN', 'Happier\\x'], 'ERROR: The task is not currently running.'],
+    ['schtasks', ['/Delete', '/F', '/TN', 'PiggerCode\\x'], 'ERROR: The task is not currently running.'],
   ])('does not mistake ambiguous %s output for successful target teardown', (cmd, args, stderr) => {
     expect(isBenignServiceAbsenceFailure({ cmd, args, stderr, stdout: '', status: 1 })).toBe(false);
   });
@@ -145,6 +145,6 @@ describe('resolveServiceDefinitionPath', () => {
     expect(resolveServiceDefinitionPath({ platform: 'linux', mode: 'system', homeDir: '/home/alice', label: 'dev.happier.stack.exp' }))
       .toBe('/etc/systemd/system/dev.happier.stack.exp.service');
     expect(resolveServiceDefinitionPath({ platform: 'win32', mode: 'user', homeDir: 'C:\\Users\\alice', label: 'dev.happier.stack.exp' }))
-      .toBe('C:\\Users\\alice\\.happier\\services\\dev.happier.stack.exp.ps1');
+      .toBe('C:\\Users\\alice\\.piggercode\\services\\dev.happier.stack.exp.ps1');
   });
 });

@@ -68,7 +68,7 @@ function daemonOn(serverUrl: string, targetMode: 'default-following' | 'pinned',
         daemonRunning: true,
         needsAuth: false,
         machineId: `machine-${targetMode}`,
-        acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' },
+        acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' },
         server: { activeServerId: targetMode, serverUrl, publicServerUrl: serverUrl, localServerUrl: null, comparableKey: serverUrl },
         auth: {
             authenticated: true,

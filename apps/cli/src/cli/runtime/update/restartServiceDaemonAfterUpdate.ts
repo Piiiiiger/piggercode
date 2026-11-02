@@ -122,7 +122,7 @@ async function observeServiceBeforeUpdate(
 }
 
 /**
- * Which service daemons `happier self update` restarts, observed BEFORE the update: the
+ * Which service daemons `piggercode self update` restarts, observed BEFORE the update: the
  * default-following service and every pinned service of this Happier home and ring whose own
  * service runs its daemon — through the one rule the desktop's `cli.update.v1` also uses
  * (`planServiceDaemonsRestartAfterCliUpdate`). On Windows the update stops every daemon of the

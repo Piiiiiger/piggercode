@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { EnhancedMode } from '../loop';
 import { createPermissionHandlerSessionStub } from './permissionHandler.testkit';
 
-describe('Claude PermissionHandler - Happier MCP session-control tools', () => {
+describe('Claude PermissionHandler - PiggerCode MCP session-control tools', () => {
   it('auto-allows title changes in default mode without creating a permission request', async () => {
     const { session, client } = createPermissionHandlerSessionStub('change-title-default-auto-approve');
     const { PermissionHandler } = await import('./permissionHandler');
@@ -32,7 +32,7 @@ describe('Claude PermissionHandler - Happier MCP session-control tools', () => {
     const signal = new AbortController();
 
     const result = await handler.handleToolCall(
-      'mcp__happier__execution_run_start',
+      'mcp__piggercode__execution_run_start',
       {
         intent: 'delegate',
         backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
@@ -57,7 +57,7 @@ describe('Claude PermissionHandler - Happier MCP session-control tools', () => {
     const signal = new AbortController();
 
     const pending = handler.handleToolCall(
-      'mcp__happier__action_execute',
+      'mcp__piggercode__action_execute',
       { actionId: 'not.a.known.action', input: {} },
       { permissionMode: 'default' },
       { signal: signal.signal, toolUseId: 'toolu_unknown_action_1' },
@@ -68,7 +68,7 @@ describe('Claude PermissionHandler - Happier MCP session-control tools', () => {
     await expect(pending).resolves.toMatchObject({ behavior: 'deny' });
   });
 
-  it('auto-allows first-party Happier MCP tools when Happier action approval is the gate', async () => {
+  it('auto-allows first-party PiggerCode MCP tools when PiggerCode action approval is the gate', async () => {
     const { session, client } = createPermissionHandlerSessionStub('happier-approval-gate-auto-allow');
     (session as any).accountSettings = {
       actionsSettingsV1: {
@@ -86,7 +86,7 @@ describe('Claude PermissionHandler - Happier MCP session-control tools', () => {
 
     const signal = new AbortController();
     await expect(handler.handleToolCall(
-      'mcp__happier__session_list',
+      'mcp__piggercode__session_list',
       {},
       { permissionMode: 'default' },
       { signal: signal.signal, toolUseId: 'toolu_happier_session_list_1' },

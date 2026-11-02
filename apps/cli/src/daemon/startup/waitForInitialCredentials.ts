@@ -28,7 +28,7 @@ export async function waitForInitialCredentials<TDaemonLockHandle>(opts: {
 
   if (!opts.waitForAuthEnabled) {
     opts.logger.debug('[AUTH] No credentials found');
-    opts.logger.debug('[DAEMON RUN] Non-interactive mode: refusing to start auth UI. Run: happier auth login');
+    opts.logger.debug('[DAEMON RUN] Non-interactive mode: refusing to start auth UI. Run: piggercode auth login');
     return { action: 'exit', exitCode: 1, daemonLockHandle: opts.daemonLockHandle };
   }
 

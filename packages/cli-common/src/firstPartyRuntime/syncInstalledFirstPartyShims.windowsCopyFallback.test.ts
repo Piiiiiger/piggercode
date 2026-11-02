@@ -58,7 +58,7 @@ async function createStagedPayload(rootDir: string, versionId: string, contents:
     const stagedPayloadPath = join(rootDir, `stage-${versionId}`);
     await mkdir(stagedPayloadPath, { recursive: true });
     await mkdir(join(stagedPayloadPath, 'package-dist'), { recursive: true });
-    await writeFile(join(stagedPayloadPath, 'happier.exe'), contents, 'utf8');
+    await writeFile(join(stagedPayloadPath, 'piggercode.exe'), contents, 'utf8');
     await writeFile(join(stagedPayloadPath, 'package-dist', 'index.mjs'), `export default ${JSON.stringify(versionId)};\n`, 'utf8');
     return stagedPayloadPath;
 }
@@ -88,7 +88,7 @@ describe('syncInstalledFirstPartyShims Windows copy fallback', () => {
                     stagedPayloadPath: await createStagedPayload(homeDir, '1.0.0-preview.1', 'preview-binary'),
                 });
 
-                const happierShimPath = join(homeDir, 'bin', 'happier.exe');
+                const happierShimPath = join(homeDir, 'bin', 'piggercode.exe');
                 const hprevShimPath = join(homeDir, 'bin', 'hprev.exe');
                 linkFailureTargets.add(happierShimPath);
                 linkFailureTargets.add(hprevShimPath);

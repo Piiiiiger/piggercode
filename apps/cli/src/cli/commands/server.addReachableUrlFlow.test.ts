@@ -39,7 +39,7 @@ vi.mock('@/features/serverFeaturesClient', () => ({
 
 import { handleServerCommand } from './server';
 
-describe('happier server add reachable URL flow', () => {
+describe('piggercode server add reachable URL flow', () => {
   afterEach(() => {
     promptAnswers = [];
     promptQuestions = [];

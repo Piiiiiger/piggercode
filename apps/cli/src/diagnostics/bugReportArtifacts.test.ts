@@ -47,10 +47,10 @@ const {
       startedAt: 1,
       startedWithCliVersion: '1.0.0',
       hasControlToken: true,
-      daemonLogPath: '/Users/alice/.happier/logs/daemon.log',
+      daemonLogPath: '/Users/alice/.piggercode/logs/daemon.log',
     },
     daemonLogs: [
-      { file: 'daemon.log', path: '/Users/alice/.happier/logs/daemon.log', modifiedAt: '2026-02-11T00:00:00.000Z' },
+      { file: 'daemon.log', path: '/Users/alice/.piggercode/logs/daemon.log', modifiedAt: '2026-02-11T00:00:00.000Z' },
     ],
     runtime: {
       cwd: '/Users/alice/private/project',
@@ -207,7 +207,7 @@ describe('collectBugReportDiagnosticsArtifacts', () => {
         startedAt: 1,
         startedWithCliVersion: '1.0.0',
         hasControlToken: true,
-        daemonLogPath: 'C:\\Users\\alice\\.happier\\logs\\daemon.log',
+        daemonLogPath: 'C:\\Users\\alice\\.piggercode\\logs\\daemon.log',
       },
       daemonLogs: [],
       runtime: {

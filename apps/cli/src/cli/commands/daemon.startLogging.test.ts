@@ -99,7 +99,7 @@ vi.mock('@/ui/logger', () => ({
   getLatestDaemonLog: () => getLatestDaemonLogMock(),
 }));
 
-describe('happier daemon start output', () => {
+describe('piggercode daemon start output', () => {
   beforeEach(() => {
     checkIfDaemonRunningMock.mockReset();
     checkIfDaemonRunningMock.mockResolvedValue(true);
@@ -275,7 +275,7 @@ describe('happier daemon start output', () => {
   it('prints the daemon log path when startup does not succeed', async () => {
     vi.useRealTimers();
     checkIfDaemonRunningMock.mockResolvedValue(false);
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
@@ -285,7 +285,7 @@ describe('happier daemon start output', () => {
       const stdout = await runDaemonStartAndCapture(1);
 
       expect(stdout).toContain('Failed to start daemon');
-      expect(stdout).toContain('/tmp/happier-daemon.log');
+      expect(stdout).toContain('/tmp/piggercode-daemon.log');
     } finally {
       envScope.restore();
     }
@@ -305,7 +305,7 @@ describe('happier daemon start output', () => {
         startedWithPublicReleaseChannel: 'preview',
       },
     });
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
@@ -316,7 +316,7 @@ describe('happier daemon start output', () => {
 
       expect(stdout).toContain('Daemon is still starting in the background');
       expect(stdout).toContain('Relay URL:');
-      expect(stdout).toContain('/tmp/happier-daemon.log');
+      expect(stdout).toContain('/tmp/piggercode-daemon.log');
     } finally {
       envScope.restore();
     }
@@ -330,7 +330,7 @@ describe('happier daemon start output', () => {
       pid: process.pid,
       unref: () => {},
     });
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope(['PIGGERCODE_DAEMON_START_WAIT_TIMEOUT_MS']);
     try {
@@ -340,7 +340,7 @@ describe('happier daemon start output', () => {
       const stdout = await runDaemonStartAndCapture(0);
 
       expect(stdout).toContain('Daemon is still starting in the background');
-      expect(stdout).toContain('/tmp/happier-daemon.log');
+      expect(stdout).toContain('/tmp/piggercode-daemon.log');
     } finally {
       envScope.restore();
     }
@@ -360,7 +360,7 @@ describe('happier daemon start output', () => {
         startedWithPublicReleaseChannel: 'preview',
       },
     });
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope([
       'PIGGERCODE_HOME_DIR',
@@ -404,7 +404,7 @@ describe('happier daemon start output', () => {
           status: 'starting',
           relay: 'http://localhost:4321',
           relayId: 'env_test',
-          latestDaemonLogPath: '/tmp/happier-daemon.log',
+          latestDaemonLogPath: '/tmp/piggercode-daemon.log',
         }));
       } finally {
         exitSpy.mockRestore();
@@ -419,7 +419,7 @@ describe('happier daemon start output', () => {
   it('prints structured JSON for daemon restart --json when restart fails', async () => {
     vi.useRealTimers();
     restartDaemonAndWaitMock.mockResolvedValue(false);
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope([
       'PIGGERCODE_SERVER_URL',
@@ -460,7 +460,7 @@ describe('happier daemon start output', () => {
           message: 'Failed to restart daemon',
           relay: 'http://localhost:4321',
           relayId: 'env_test',
-          latestDaemonLogPath: '/tmp/happier-daemon.log',
+          latestDaemonLogPath: '/tmp/piggercode-daemon.log',
         });
       } finally {
         exitSpy.mockRestore();
@@ -477,7 +477,7 @@ describe('happier daemon start output', () => {
       ok: true,
       status: 'starting',
     });
-    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/happier-daemon.log' });
+    getLatestDaemonLogMock.mockResolvedValue({ path: '/tmp/piggercode-daemon.log' });
 
     const envScope = createEnvKeyScope([
       'PIGGERCODE_SERVER_URL',
@@ -516,7 +516,7 @@ describe('happier daemon start output', () => {
           status: 'starting',
           relay: 'http://localhost:4321',
           relayId: 'env_test',
-          latestDaemonLogPath: '/tmp/happier-daemon.log',
+          latestDaemonLogPath: '/tmp/piggercode-daemon.log',
         });
       } finally {
         exitSpy.mockRestore();

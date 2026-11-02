@@ -49,7 +49,7 @@ describe('service manager availability before mutation', () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-remove-pin-', env: { PATH: '' } }, async ({ homeDir }) => {
       writeFileSync(join(homeDir, 'powershell.exe'), 'fixture');
       process.env.PATH = homeDir;
-      const installedPath = join(homeDir, 'happier-daemon.cloud.ps1');
+      const installedPath = join(homeDir, 'piggercode-daemon.cloud.ps1');
       writeFileSync(installedPath, 'existing wrapper');
       const realSpawn = (await vi.importActual<typeof import('node:child_process')>('node:child_process')).spawnSync;
       const spawn = vi.spyOn(childProcess, 'spawnSync').mockImplementation((...args) => {
@@ -60,11 +60,11 @@ describe('service manager availability before mutation', () => {
         await expect(applyBackgroundServiceRepairPlan({
           currentReleaseChannel: 'stable', existingServices: [], manualWarnings: [],
           actions: [{ kind: 'remove-service', service: {
-            label: 'happier-daemon.cloud', installedPath, mode: 'user', releaseChannel: 'stable',
+            label: 'piggercode-daemon.cloud', installedPath, mode: 'user', releaseChannel: 'stable',
             targetMode: 'pinned', instanceId: 'cloud',
           } }],
         }, { platform: 'win32', systemUser: '', uid: null, userHomeDir: homeDir, happierHomeDir: homeDir }))
-          .resolves.toEqual({ executedActions: ['remove:happier-daemon.cloud'] });
+          .resolves.toEqual({ executedActions: ['remove:piggercode-daemon.cloud'] });
         expect(existsSync(installedPath)).toBe(false);
       } finally {
         spawn.mockRestore();
@@ -110,7 +110,7 @@ describe('service manager availability before mutation', () => {
       const state = {
         pid: daemon.pid, httpPort: port, controlToken: 'test-token',
         startedWithCliVersion: '0.0.0-test', startedWithPublicReleaseChannel: 'stable',
-        startupSource: 'background-service', serviceLabel: 'happier-daemon.default',
+        startupSource: 'background-service', serviceLabel: 'piggercode-daemon.default',
       } as const;
       await writeDaemonStateFixture(homeDir, configuration.activeServerId, state);
       const exit = vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('test-process-exit'); });
@@ -196,13 +196,13 @@ describe('service manager availability before mutation', () => {
 
   it('does not remove a preexisting definition before doctor repair discovers a missing manager', async () => {
     await withConfiguredDaemonTestHome({ prefix: 'service-manager-repair-', env: { PATH: '' } }, async ({ homeDir }) => {
-      const installedPath = join(homeDir, 'happier-daemon.default.service');
+      const installedPath = join(homeDir, 'piggercode-daemon.default.service');
       const definition = 'existing user definition';
       writeFileSync(installedPath, definition, 'utf8');
       await expect(applyBackgroundServiceRepairPlan({
         currentReleaseChannel: 'stable', existingServices: [], manualWarnings: [],
         actions: [{ kind: 'remove-service', service: {
-          label: 'happier-daemon.default', installedPath, mode: 'user', releaseChannel: 'stable',
+          label: 'piggercode-daemon.default', installedPath, mode: 'user', releaseChannel: 'stable',
           targetMode: 'default-following', instanceId: 'default',
         } }],
       }, { platform: 'linux', systemUser: '', uid: 123, userHomeDir: homeDir, happierHomeDir: homeDir }))

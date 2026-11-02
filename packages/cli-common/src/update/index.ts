@@ -370,7 +370,7 @@ export function formatUpdateNotice(params: Readonly<{
 
 /**
  * The one owner of "is a newer Happier CLI available on this ring?" as cached on disk (plan R13
- * S-1). `happier self check` is the only writer (`recordCliUpdateCheck`); the terminal notice, the
+ * S-1). `piggercode self check` is the only writer (`recordCliUpdateCheck`); the terminal notice, the
  * daemon status, doctor repair and the per-machine update facts all read through
  * `readCachedCliUpdateState`. The file is per ring under `<home>/cache/`.
  */
@@ -435,7 +435,7 @@ export function readCachedCliUpdateState(params: Readonly<{
   };
 }
 
-/** Record one update check (`happier self check`, the only writer), keeping the notice time. */
+/** Record one update check (`piggercode self check`, the only writer), keeping the notice time. */
 export function recordCliUpdateCheck(params: Readonly<{
   homeDir: string;
   publicReleaseRing: PublicReleaseRingId;

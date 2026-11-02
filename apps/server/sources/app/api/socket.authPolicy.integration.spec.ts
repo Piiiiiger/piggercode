@@ -406,7 +406,7 @@ describe("startSocket (auth policy enforcement)", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
 
@@ -450,7 +450,7 @@ describe("startSocket (auth policy enforcement)", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
     }, 30_000);
@@ -499,7 +499,7 @@ describe("startSocket (auth policy enforcement)", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
 
@@ -544,7 +544,7 @@ describe("startSocket (auth policy enforcement)", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
         expect(ownerConnectedState).toBe(true);

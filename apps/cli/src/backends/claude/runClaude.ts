@@ -269,7 +269,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     const sessionTag = randomUUID();
 
     // Log environment info at startup
-    logger.debugLargeJson('[START] Happier process started', getEnvironmentInfo());
+    logger.debugLargeJson('[START] PiggerCode process started', getEnvironmentInfo());
     logger.debug(`[START] Options: startedBy=${options.startedBy}, startingMode=${options.startingMode}`);
 
     const daemonStartedInOwnedHerdrTerminal = options.startedBy === 'daemon'
@@ -336,7 +336,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         credentials,
         machineMetadata: initialMachineMetadata,
         missingMachineIdMessage:
-            '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/happier-dev/happier/issues',
+            '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/Piiiiiger/piggercode/issues',
         // Daemon-spawned sessions must skip registration; terminal sessions should also skip
         // when a daemon is already alive to avoid duplicate /v1/machines contention.
         skipMachineRegistration: options.startedBy === 'daemon',
@@ -807,7 +807,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     logger.debug(`[START] Hook server started on port ${hookServer.port}`);
 
     // Generate hook artifacts for Claude:
-    //  - settings file carries non-hook config (permissions.allow for mcp__happier__change_title*)
+    //  - settings file carries non-hook config (permissions.allow for mcp__piggercode__change_title*)
     //  - plugin dir carries SessionStart + PermissionRequest hooks via --plugin-dir
     // Split because Claude Code's --settings is non-composable for hooks (first --settings wins
     // when multiple wrappers inject their own), whereas --plugin-dir is additive.
@@ -1717,7 +1717,7 @@ async function runClaudeLocalFastStart(credentials: Credentials, options: StartO
                     credentials,
                     machineMetadata: initialMachineMetadata,
                     missingMachineIdMessage:
-                        '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/happier-dev/happier/issues',
+                        '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/Piiiiiger/piggercode/issues',
                     skipMachineRegistration: startedBy === 'daemon',
                 });
                 stopSpan();

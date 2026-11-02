@@ -236,7 +236,7 @@ describe('readSessionAttachFromEnv', () => {
 
   test('expands ~/ attach file paths against HOME', async () => {
     const homeDir = await createTempDir('happy-attach-home-');
-    const happierHomeDir = join(homeDir, '.happier');
+    const happierHomeDir = join(homeDir, '.piggercode');
     const previousHome = process.env.HOME;
     const previousUserProfile = process.env.USERPROFILE;
     try {
@@ -256,7 +256,7 @@ describe('readSessionAttachFromEnv', () => {
       const filePath = join(attachDir, 'attach.json');
 
       await writeFile(filePath, JSON.stringify({ v: 2, encryptionMode: 'plain' }), { mode: 0o600 });
-      process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.happier/tmp/session-attach/attach.json';
+      process.env.PIGGERCODE_SESSION_ATTACH_FILE = '~/.piggercode/tmp/session-attach/attach.json';
 
       const res = await readSessionAttachFromEnv();
       expect(res).toEqual({ encryptionMode: 'plain' });

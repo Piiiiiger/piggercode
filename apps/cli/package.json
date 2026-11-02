@@ -5,9 +5,9 @@
   "author": "Leeroy Brun <leeroy.brun@gmail.com>",
   "license": "MIT",
   "type": "module",
-  "homepage": "https://github.com/happier-dev/happier",
-  "bugs": "https://github.com/happier-dev/happier/issues",
-  "repository": "happier-dev/happier",
+  "homepage": "https://github.com/Piiiiiger/piggercode",
+  "bugs": "https://github.com/Piiiiiger/piggercode/issues",
+  "repository": "Piiiiiger/piggercode",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
@@ -64,9 +64,9 @@
     }
   },
   "bin": {
-    "happier": "./bin/happier.mjs",
-    "happier-dev": "./bin/happier-dev.mjs",
-    "happier-mcp": "./bin/happier-mcp.mjs"
+    "piggercode": "./bin/piggercode.mjs",
+    "piggercode-dev": "./bin/piggercode-dev.mjs",
+    "piggercode-mcp": "./bin/piggercode-mcp.mjs"
   },
   "files": [
     "dist",
@@ -101,7 +101,7 @@
     "test:import-cycles": "node scripts/importCycleGuard.mjs",
     "test:integration": "node scripts/runVitestShards.mjs --config vitest.integration.config.ts",
     "test:slow": "vitest run --config vitest.slow.config.ts",
-    "start": "$npm_execpath run build && node ./bin/happier.mjs",
+    "start": "$npm_execpath run build && node ./bin/piggercode.mjs",
     "dev": "node scripts/buildSharedDeps.mjs --source-dev && tsx src/index.ts",
     "dev:local-server": "$npm_execpath run build && tsx --env-file .env.dev-local-server src/index.ts",
     "dev:integration-test-env": "$npm_execpath run build && tsx --env-file .env.integration-test src/index.ts",

@@ -14,7 +14,7 @@ type BackgroundServiceFollowUpMode = 'user' | 'system';
 type ServerChangeCredentialState = 'authenticated' | 'authentication-required' | 'unknown';
 
 /**
- * Child relay-selection commands set this only while `happier setup` owns the
+ * Child relay-selection commands set this only while `piggercode setup` owns the
  * larger relay → auth → service sequence. The follow-up decision still has one
  * owner here; the child merely defers it until authentication has completed.
  */
@@ -82,8 +82,8 @@ function resolveRestartArgs(mode: BackgroundServiceFollowUpMode): string[] {
 
 function renderRestartCommand(mode: BackgroundServiceFollowUpMode): string {
     return mode === 'system'
-        ? '  happier service restart --mode system'
-        : '  happier service restart';
+        ? '  piggercode service restart --mode system'
+        : '  piggercode service restart';
 }
 
 function hasDuplicateDefaultFollowingModes(
@@ -104,15 +104,15 @@ function renderRepairGuidance(params: Readonly<{ modes?: readonly BackgroundServ
     const requiresSudo = params.modes?.includes('system') ?? false;
     return [
         'Multiple default-following background services are installed. Repair automatic startup before restarting a background service for this change:',
-        requiresSudo ? '  sudo happier doctor repair --yes' : '  happier doctor repair --yes',
+        requiresSudo ? '  sudo piggercode doctor repair --yes' : '  piggercode doctor repair --yes',
     ];
 }
 
 function renderMissingHomeRepairGuidance(params: Readonly<{ modes?: readonly BackgroundServiceFollowUpMode[] }>): readonly string[] {
     const requiresSudo = params.modes?.includes('system') ?? false;
     return [
-        'Detected default-following background services with missing Happier home metadata. Automatic restart guidance will not replace or remove them; remove the legacy service(s) from the owning installation first:',
-        requiresSudo ? '  sudo happier doctor repair --yes' : '  happier doctor repair --yes',
+        'Detected default-following background services with missing PiggerCode home metadata. Automatic restart guidance will not replace or remove them; remove the legacy service(s) from the owning installation first:',
+        requiresSudo ? '  sudo piggercode doctor repair --yes' : '  piggercode doctor repair --yes',
     ];
 }
 
@@ -191,7 +191,7 @@ export async function promptToAuthenticateForServerChange(params: Readonly<{
     }
 
     const answer = String(
-        await params.promptInput(`Authenticate Happier against ${params.targetServerUrl} now? [Y/n]: `),
+        await params.promptInput(`Authenticate PiggerCode against ${params.targetServerUrl} now? [Y/n]: `),
     ).trim().toLowerCase();
     const shouldAuthenticate = answer === '' || answer === 'y' || answer === 'yes';
     if (!shouldAuthenticate) {
@@ -225,8 +225,8 @@ function renderManualServerChangeFollowUp(params: Readonly<{
     }
 
     return [
-        `Authenticate Happier against ${params.targetServerUrl} and then restart the background service so it follows that server:`,
-        '  happier auth login',
+        `Authenticate PiggerCode against ${params.targetServerUrl} and then restart the background service so it follows that server:`,
+        '  piggercode auth login',
         ...resolveRestartModes(params.modes).map(renderRestartCommand),
     ];
 }
@@ -330,7 +330,7 @@ export async function runDefaultFollowingBackgroundServiceServerChangeFollowUp(p
         }
 
         if (authOutcome === 'authenticated') {
-            // `happier auth login` owns restarting default-following services
+            // `piggercode auth login` owns restarting default-following services
             // after it writes the new credentials. Restarting again here would
             // duplicate that work and can prompt twice in one command.
             return;

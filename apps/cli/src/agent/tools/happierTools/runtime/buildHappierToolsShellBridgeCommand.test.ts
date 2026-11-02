@@ -34,7 +34,7 @@ describe('buildHappierToolsShellBridgeCommand', () => {
     const command = buildHappierToolsShellBridgeCommand([
       'call',
       '--source',
-      'happier',
+      'piggercode',
       '--tool',
       'save_memory',
       '--args-json',
@@ -44,18 +44,18 @@ describe('buildHappierToolsShellBridgeCommand', () => {
 
     expect(parseTrustedHappierToolsShellBridgeCommand(command)).toMatchObject({
       kind: 'call',
-      source: 'happier',
+      source: 'piggercode',
       tool: 'save_memory',
       args: { memory: 'remember this' },
     });
     expect(
       parseTrustedHappierToolsShellBridgeCommand(
-        `happier tools call --source happier --tool save_memory --args-json '{"memory":"remember this"}' --json`,
+        `piggercode tools call --source piggercode --tool save_memory --args-json '{"memory":"remember this"}' --json`,
       ),
     ).toBeNull();
     expect(
       parseTrustedHappierToolsShellBridgeCommand(
-        `node ./happier-helper.js tools call --source happier --tool save_memory --args-json '{"memory":"remember this"}' --json`,
+        `node ./happier-helper.js tools call --source piggercode --tool save_memory --args-json '{"memory":"remember this"}' --json`,
       ),
     ).toBeNull();
     expect(parseTrustedHappierToolsShellBridgeCommand(`${command} && touch /tmp/happier-pwn`)).toBeNull();
@@ -84,7 +84,7 @@ describe('buildHappierToolsShellBridgeCommand', () => {
     ).toBeNull();
   });
 
-  it('does not inline Happier runtime context by default', async () => {
+  it('does not inline PiggerCode runtime context by default', async () => {
     const happierHome = createTempDirSync('happier-tools-shell-bridge-home-');
     tempDirs.add(happierHome);
     envScope.patch({
@@ -103,7 +103,7 @@ describe('buildHappierToolsShellBridgeCommand', () => {
     const command = buildHappierToolsShellBridgeCommand([
       'call',
       '--source',
-      'happier',
+      'piggercode',
       '--tool',
       'change_title',
       '--args-json',
@@ -121,7 +121,7 @@ describe('buildHappierToolsShellBridgeCommand', () => {
     expect(command).not.toContain('PIGGERCODE_ACCESS_TOKEN');
   });
 
-  it('inlines only Happier home when explicitly configured for home context', async () => {
+  it('inlines only PiggerCode home when explicitly configured for home context', async () => {
     const happierHome = createTempDirSync('happier-tools-shell-bridge-home-');
     tempDirs.add(happierHome);
     envScope.patch({
@@ -150,7 +150,7 @@ describe('buildHappierToolsShellBridgeCommand', () => {
     expect(command).not.toContain('PIGGERCODE_ACCESS_TOKEN');
   });
 
-  it('inlines full Happier runtime context when explicitly configured for full context', async () => {
+  it('inlines full PiggerCode runtime context when explicitly configured for full context', async () => {
     const happierHome = createTempDirSync('happier-tools-shell-bridge-home-');
     tempDirs.add(happierHome);
     envScope.patch({

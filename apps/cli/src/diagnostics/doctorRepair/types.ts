@@ -3,7 +3,7 @@ import type { PublicReleaseRingId, PublicReleaseRingLabel } from '@piggercode/re
 import type { DaemonServiceMode, DaemonServiceTargetMode } from '@/daemon/service/plan';
 
 /**
- * The canonical analysis output for `happier doctor repair`.
+ * The canonical analysis output for `piggercode doctor repair`.
  *
  * It aggregates a read of the four user-facing surfaces plus a first-class list
  * of findings that the guided flow renders/prompts about.
@@ -53,21 +53,21 @@ export type CurrentCliInfo = Readonly<{
   version: string;
   binaryPath: string | null;
   /**
-   * Channel-derived shim name (`happier` for stable, `hprev` for preview,
+   * Channel-derived shim name (`piggercode` for stable, `hprev` for preview,
    * `hdev` for dev). Used for rendering the CLI inventory summary.
    */
-  shim: 'happier' | 'hprev' | 'hdev' | null;
+  shim: 'piggercode' | 'hprev' | 'hdev' | null;
   /**
    * The actual invocation name observed from `process.argv` / env. May
    * differ from `shim` when the user runs the dev binary directly (e.g.
-   * `node apps/cli/bin/happier.mjs`) or via a custom alias. Used in repair
+   * `node apps/cli/bin/piggercode.mjs`) or via a custom alias. Used in repair
    * copy so command suggestions match the binary the user actually ran —
    * if they invoked via `hdev`, suggestions should say `hdev daemon start`,
-   * not the hardcoded `happier`. Falls back to `shim ?? 'happier'` when
+   * not the hardcoded `piggercode`. Falls back to `shim ?? 'piggercode'` when
    * the invoker can't be resolved.
    */
   invoker: string;
-  pathWinnerShim: 'happier' | 'hprev' | 'hdev' | null;
+  pathWinnerShim: 'piggercode' | 'hprev' | 'hdev' | null;
   pathWinnerResolvesToThisBinary: boolean | null;
 }>;
 
@@ -414,7 +414,7 @@ export type MachineNotRegisteredForProfile = RepairFindingBase & Readonly<{
  *
  * The most common trigger is `auth pair-remote` running its post-pair check
  * before the remote machine has caught up, OR a user typing
- * `happier doctor repair --server some-id` for an id they haven't configured
+ * `piggercode doctor repair --server some-id` for an id they haven't configured
  * yet. The action is "configure this server" — possible routes are
  * `${invoker} server add <url>`, `${invoker} relay use --local`, or
  * `${invoker} auth pair-remote ...` depending on the user's setup.

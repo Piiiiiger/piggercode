@@ -1,5 +1,5 @@
 /**
- * Centralized log-retention policy for ~/.happier/logs.
+ * Centralized log-retention policy for ~/.piggercode/logs.
  *
  * One log file is created per process boot, so retention is count-based:
  * - daemon logs (`*-daemon.log`) keep the newest {@link DEFAULT_DAEMON_LOG_KEEP_COUNT}

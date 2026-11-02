@@ -59,13 +59,13 @@ export type SetupCapableLocalHappierCli = ResolvedLocalFirstPartyCommand & Reado
 /**
  * The channel whose CLI drives this computer for an app of `appRing`.
  *
- * One default-following background service exists per `~/.happier`, and it runs the default
+ * One default-following background service exists per `~/.piggercode`, and it runs the default
  * channel's CLI (`resolveDaemonServiceInstallRuntimeTarget`). An app of another channel adopts it
  * (plan R10 D2): while the default channel's managed CLI is installed, every command the app runs —
  * status, relay, pairing, service install/start — goes through that CLI, so ownership and version
  * checks compare the running daemon with the CLI its service actually runs and the app never
  * installs a competing service or a second CLI. The same holds when this computer's CLI is (or
- * was) one the user installed — any recorded R12 answer (R13 b): a `happier` follows the default
+ * was) one the user installed — any recorded R12 answer (R13 b): a `piggercode` follows the default
  * channel (its command name is the default channel's, `resolveManagedCliReleaseChannelSync`), so the
  * service it runs is the default channel's, and "Let Happier manage it" replaces it with that
  * channel's managed CLI — the pure runtime switch the answer consents to — instead of making the
@@ -221,8 +221,8 @@ function readServiceManagerFailure(value: unknown) {
 
 /**
  * The environment every Happier CLI command runs with: the caller's, with PATH set to the one a
- * `happier` is looked up in (`resolveHappierCliSearchPath`). On macOS a Dock-launched app has
- * launchd's PATH, so a CLI found through the wider macOS list — an npm `happier` whose
+ * `piggercode` is looked up in (`resolveHappierCliSearchPath`). On macOS a Dock-launched app has
+ * launchd's PATH, so a CLI found through the wider macOS list — an npm `piggercode` whose
  * `#!/usr/bin/env node` needs Homebrew's `node` — would otherwise fail to start (R12).
  */
 function resolveLocalHappierCliEnv(processEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
@@ -365,7 +365,7 @@ export async function ensureSetupCapableLocalHappierCli(
   return cli;
 }
 
-/** A `happier` this app did not install, named with the commands that remove or update it (R12). */
+/** A `piggercode` this app did not install, named with the commands that remove or update it (R12). */
 export type LocalOtherHappierCli = Readonly<{
   command: string;
   origin: SetupCliChoicePromptPayload['origin'];
@@ -376,8 +376,8 @@ export type LocalOtherHappierCli = Readonly<{
 /**
  * R12 — this computer's CLI choice as the app shows it: `mode` is the recorded answer (`null`:
  * nobody was asked), and `otherCli` the CLI that is not the managed one — the kept CLI after "Keep
- * my own", otherwise a `happier` still on the search path (the old copy after "Let Happier manage
- * it"). A kept CLI that disappeared stays the answer (R13 b); a `happier` installed since elsewhere
+ * my own", otherwise a `piggercode` still on the search path (the old copy after "Let Happier manage
+ * it"). A kept CLI that disappeared stays the answer (R13 b); a `piggercode` installed since elsewhere
  * is then the one there is to choose, and with none the kept path is still named. No process is
  * spawned.
  */
@@ -413,11 +413,11 @@ export type LocalHappierCliChoiceInspection = Readonly<{
  * R12 — whether setup must ask "Let Happier manage it / Keep my own" before it writes anything,
  * and about which CLI. Read-only: it runs only that CLI's `--version`.
  *
- * Asked when the `happier` a new terminal runs first is one this app did not install and nobody
+ * Asked when the `piggercode` a new terminal runs first is one this app did not install and nobody
  * answered yet (RV3-1: a copy further down, behind the managed CLI, is Settings' to name, not a
  * question — the terminal already runs the managed CLI), when the kept
  * CLI is below the setup floor (keeping it cannot finish setup), and when the kept CLI disappeared
- * (R13 b) — about a `happier` installed since elsewhere, or else about the missing one by its path,
+ * (R13 b) — about a `piggercode` installed since elsewhere, or else about the missing one by its path,
  * so nothing is acquired in its place unasked. `reconsider` is Settings' change action, which asks
  * again about whichever CLI there is to choose. A developer override (`PIGGERCODE_BOOTSTRAP_CLI_PATH`)
  * is never asked about, and a computer with no other CLI keeps the managed default with no question.
@@ -473,7 +473,7 @@ function ownCliCannotServeSetupError(command: string, version: string | null): s
 }
 
 /**
- * R12 — the ambient read failed on the CLI the one-CLI question is about: a `happier` nobody has
+ * R12 — the ambient read failed on the CLI the one-CLI question is about: a `piggercode` nobody has
  * answered for yet, or the one the person kept. Retrying the read cannot change that, so the
  * failure is named `cli_choice_required` and the app's entry policy routes it into setup, whose
  * first step asks the question (a kept CLI that cannot report its version counts as below the
@@ -508,7 +508,7 @@ export function describeUnservedCliChoiceFailure(
 
 /**
  * Update the desktop-managed CLI in place (plan R17/K2) through the one CLI update transaction
- * (`runManagedCliUpdate`, plan R13 f) — the same one `happier self update` runs: one verified
+ * (`runManagedCliUpdate`, plan R13 f) — the same one `piggercode self update` runs: one verified
  * download of one target version, a smoke of the staged binary, activation under the install lock
  * without pruning, the service restart `planRestart` returns (when this computer's service daemon
  * runs), then commit — or a full restore and a restart of the previous version. A CLI this app did

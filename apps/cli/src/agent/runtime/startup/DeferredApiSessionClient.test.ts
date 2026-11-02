@@ -13,9 +13,9 @@ function createMetadataStub(overrides?: Partial<Metadata>): Metadata {
     path: '/tmp',
     host: 'host',
     homeDir: '/home',
-    happyHomeDir: '/home/.happier',
-    happyLibDir: '/home/.happier/lib',
-    happyToolsDir: '/home/.happier/tools',
+    happyHomeDir: '/home/.piggercode',
+    happyLibDir: '/home/.piggercode/lib',
+    happyToolsDir: '/home/.piggercode/tools',
     ...overrides,
   };
 }

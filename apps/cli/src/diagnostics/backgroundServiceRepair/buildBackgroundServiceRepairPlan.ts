@@ -65,18 +65,18 @@ function isCanonicalDefaultFollowingService(service: DaemonServiceListEntry): bo
 
   const label = String(service.label ?? '').trim().toLowerCase();
   if (
-    label === 'happier-daemon.default'
-    || label === 'com.happier.cli.daemon.default'
-    || label === 'happier\\happier-daemon.default'
+    label === 'piggercode-daemon.default'
+    || label === 'com.piggercode.cli.daemon.default'
+    || label === 'piggercode\\piggercode-daemon.default'
   ) {
     return true;
   }
 
   const filename = resolveServiceFilename(service.path).toLowerCase();
-  return filename === 'happier-daemon.default.service'
-    || filename === 'com.happier.cli.daemon.default.plist'
-    || filename === 'com.happier.cli.daemon.default'
-    || filename === 'happier-daemon.default.ps1';
+  return filename === 'piggercode-daemon.default.service'
+    || filename === 'com.piggercode.cli.daemon.default.plist'
+    || filename === 'com.piggercode.cli.daemon.default'
+    || filename === 'piggercode-daemon.default.ps1';
 }
 
 function isLegacyChannelScopedDefaultService(service: DaemonServiceListEntry): boolean {
@@ -165,7 +165,7 @@ export function buildBackgroundServiceRepairPlan(params: Readonly<{
       existingServices: [...params.services],
       actions: [],
       manualWarnings: [
-        `Detected default-following background services with missing Happier home metadata (${described || 'unknown path'}). Automatic repair will not replace or remove them; remove the legacy service(s) from the owning installation first.`,
+        `Detected default-following background services with missing PiggerCode home metadata (${described || 'unknown path'}). Automatic repair will not replace or remove them; remove the legacy service(s) from the owning installation first.`,
       ],
     };
   }
@@ -184,7 +184,7 @@ export function buildBackgroundServiceRepairPlan(params: Readonly<{
       existingServices: [...params.services],
       actions: [],
       manualWarnings: [
-        `Detected default-following background services from another Happier home (${foreignHomeDefaultServices.map((service) => String(service.happierHomeDir ?? '').trim()).filter(Boolean).join(', ')}). Automatic repair will not replace or remove them; clean up the other installation first.`,
+        `Detected default-following background services from another PiggerCode home (${foreignHomeDefaultServices.map((service) => String(service.happierHomeDir ?? '').trim()).filter(Boolean).join(', ')}). Automatic repair will not replace or remove them; clean up the other installation first.`,
       ],
     };
   }
@@ -206,7 +206,7 @@ export function buildBackgroundServiceRepairPlan(params: Readonly<{
       existingServices: [...params.services],
       actions: [],
       manualWarnings: [
-        `Detected pinned background services for the current server from another Happier home (${foreignHomePinnedCurrentServerServices.map((service) => String(service.happierHomeDir ?? '').trim()).filter(Boolean).join(', ')}). Automatic repair will not replace or remove them; clean up the other installation first.`,
+        `Detected pinned background services for the current server from another PiggerCode home (${foreignHomePinnedCurrentServerServices.map((service) => String(service.happierHomeDir ?? '').trim()).filter(Boolean).join(', ')}). Automatic repair will not replace or remove them; clean up the other installation first.`,
       ],
     };
   }

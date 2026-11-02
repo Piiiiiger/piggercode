@@ -6,8 +6,8 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { captureConsoleJsonOutput, captureConsoleText, captureStdout, captureStdoutJsonOutput } from '@/testkit/logger/captureOutput';
 import { handleDaemonCliCommand } from './daemon';
 
-describe('happier daemon service', () => {
-  it('documents that installed background services should be controlled with happier service', async () => {
+describe('piggercode daemon service', () => {
+  it('documents that installed background services should be controlled with piggercode service', async () => {
     const output = captureConsoleText();
     try {
       await handleDaemonCliCommand({
@@ -16,9 +16,9 @@ describe('happier daemon service', () => {
         terminalRuntime: null,
       });
 
-      expect(output.text()).toContain('happier daemon stop               Stop a manual daemon');
-      expect(output.text()).toContain('use happier service stop for installed background services');
-      expect(output.text()).toContain('For installed background services, use happier service start|stop|restart');
+      expect(output.text()).toContain('piggercode daemon stop               Stop a manual daemon');
+      expect(output.text()).toContain('use piggercode service stop for installed background services');
+      expect(output.text()).toContain('For installed background services, use piggercode service start|stop|restart');
     } finally {
       output.restore();
     }
@@ -33,10 +33,10 @@ describe('happier daemon service', () => {
         terminalRuntime: null,
       });
 
-      expect(stdout.text()).toContain('happier service');
+      expect(stdout.text()).toContain('piggercode service');
       expect(stdout.text()).toContain('Usage:');
-      expect(stdout.text()).toContain('happier service status [--json]');
-      expect(stdout.text()).toContain('happier service list [--json]');
+      expect(stdout.text()).toContain('piggercode service status [--json]');
+      expect(stdout.text()).toContain('piggercode service list [--json]');
     } finally {
       stdout.restore();
     }
@@ -54,7 +54,7 @@ describe('happier daemon service', () => {
       envScope.patch({
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.piggercode'),
         PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
       });
 
@@ -68,7 +68,7 @@ describe('happier daemon service', () => {
 
         const parsed = output.json();
         expect(parsed.ok).toBe(true);
-        expect(parsed.paths?.unitPath).toBe(join(tmp, '.config', 'systemd', 'user', 'happier-daemon.default.service'));
+        expect(parsed.paths?.unitPath).toBe(join(tmp, '.config', 'systemd', 'user', 'piggercode-daemon.default.service'));
       } finally {
         output.restore();
         envScope.restore();
@@ -88,10 +88,10 @@ describe('happier daemon service', () => {
       envScope.patch({
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.piggercode'),
       });
 
-      const unitPath = join(tmp, '.config', 'systemd', 'user', 'happier-daemon.default.service');
+      const unitPath = join(tmp, '.config', 'systemd', 'user', 'piggercode-daemon.default.service');
 
       const output = captureStdoutJsonOutput<{
         ok: boolean;
@@ -131,7 +131,7 @@ describe('happier daemon service', () => {
       envScope.patch({
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.piggercode'),
         PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
       });
 

@@ -47,11 +47,11 @@ describe('classifyHappyProcess', () => {
     expect(res!.type).toBe('dev-daemon-spawned');
   });
 
-  it('should detect a packaged Windows daemon-spawned session process when ps-list reports happier.exe', () => {
+  it('should detect a packaged Windows daemon-spawned session process when ps-list reports piggercode.exe', () => {
     const res = classifyHappyProcess({
       pid: 123,
-      name: 'happier.exe',
-      cmd: 'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+      name: 'piggercode.exe',
+      cmd: 'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
     });
     expect(res).not.toBeNull();
     expect(res!.type).toBe('daemon-spawned-session');

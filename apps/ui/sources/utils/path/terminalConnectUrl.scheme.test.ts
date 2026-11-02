@@ -6,7 +6,7 @@ describe('terminalConnectUrl scheme override', () => {
         vi.doMock('expo-constants', () => ({
             default: {
                 expoConfig: {
-                    scheme: 'happier-dev',
+                    scheme: 'piggercode-dev',
                 },
             },
         }));
@@ -18,16 +18,16 @@ describe('terminalConnectUrl scheme override', () => {
                 publicKeyB64Url: 'abcDEF_123-zzz',
                 serverUrl: null,
             }),
-        ).toBe('happier-dev://terminal?abcDEF_123-zzz');
+        ).toBe('piggercode-dev://terminal?abcDEF_123-zzz');
 
         expect(
-            parseTerminalConnectUrl('happier-dev://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test'),
+            parseTerminalConnectUrl('piggercode-dev://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test'),
         ).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
             serverUrl: 'https://stack.example.test',
         });
 
-        expect(parseTerminalConnectUrl('happier://terminal?abcDEF_123-zzz')).toEqual({
+        expect(parseTerminalConnectUrl('piggercode://terminal?abcDEF_123-zzz')).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
             serverUrl: null,
         });
@@ -37,7 +37,7 @@ describe('terminalConnectUrl scheme override', () => {
             serverUrl: null,
         });
 
-        expect(parseTerminalConnectUrl('happier-internaldev://terminal?abcDEF_123-zzz')).toEqual({
+        expect(parseTerminalConnectUrl('piggercode-internaldev://terminal?abcDEF_123-zzz')).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
             serverUrl: null,
         });

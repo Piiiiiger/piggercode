@@ -30,7 +30,7 @@ function initBareRemote(prefix: string): string {
 describe('git RPC handlers (remote management)', () => {
     it('adds a remote using a local path and reports it in status snapshots', async () => {
         const workspace = initWorkspace();
-        const remote = initBareRemote('happier git remote add ');
+        const remote = initBareRemote('piggercode git remote add ');
 
         const { call } = createTestRpcManager({ workingDirectory: workspace });
         const add = await call<any, { cwd?: string; name: string; fetchUrl: string }>(SCM_REMOTE_ADD, {

@@ -32,7 +32,7 @@ test('repo root package.json exposes repo-local hstack scripts', async () => {
   assert.equal(scripts.auth, 'node ./apps/stack/scripts/repo_local.mjs auth');
   assert.equal(scripts.daemon, 'node ./apps/stack/scripts/repo_local.mjs daemon');
   assert.equal(scripts.eas, 'node ./apps/stack/scripts/repo_local.mjs eas');
-  assert.equal(scripts.happier, 'node ./apps/stack/scripts/repo_local.mjs happier');
+  assert.equal(scripts.piggercode, 'node ./apps/stack/scripts/repo_local.mjs piggercode');
   assert.equal(scripts.menubar, 'node ./apps/stack/scripts/repo_local.mjs menubar');
   assert.equal(scripts.mobile, 'node ./apps/stack/scripts/repo_local.mjs mobile');
   assert.equal(scripts['mobile-dev-client'], 'node ./apps/stack/scripts/repo_local.mjs mobile-dev-client');

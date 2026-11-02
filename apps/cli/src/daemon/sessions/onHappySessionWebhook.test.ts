@@ -304,7 +304,7 @@ describe('createOnHappySessionWebhook', () => {
     expect(acknowledged).toBe(true);
   });
 
-  it('preserves an established Happier session id when a later webhook reports another identity', async () => {
+  it('preserves an established PiggerCode session id when a later webhook reports another identity', async () => {
     const tracked: TrackedSession = {
       pid: 790,
       startedBy: 'daemon',
@@ -394,7 +394,7 @@ describe('createOnHappySessionWebhook', () => {
           host: 'windows_terminal',
           pid: firstWindowsTerminalPid,
           windowId: 'happier-qa-claude-unified',
-          title: 'Happier claude spawn-a',
+          title: 'PiggerCode claude spawn-a',
         },
       },
     };
@@ -408,7 +408,7 @@ describe('createOnHappySessionWebhook', () => {
           host: 'windows_terminal',
           pid: secondWindowsTerminalPid,
           windowId: 'happier-qa-claude-unified',
-          title: 'Happier claude spawn-b',
+          title: 'PiggerCode claude spawn-b',
         },
       },
     };
@@ -437,7 +437,7 @@ describe('createOnHappySessionWebhook', () => {
         windows: {
           host: 'windows_terminal',
           windowId: 'happier-qa-claude-unified',
-          title: 'Happier claude spawn-b',
+          title: 'PiggerCode claude spawn-b',
         },
       },
     });

@@ -30,7 +30,7 @@ export type UpdateRunObservation = Readonly<{
 }>;
 
 /** The command that updates a Happier CLI whose daemon predates K5 facts (0.2 `self update` is POSIX-only). */
-const LEGACY_CLI_UPDATE_COMMAND = 'happier self update';
+const LEGACY_CLI_UPDATE_COMMAND = 'piggercode self update';
 
 function baseItem(params: Readonly<{
     machineId: string;

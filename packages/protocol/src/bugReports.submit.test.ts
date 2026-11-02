@@ -145,7 +145,7 @@ describe('submitBugReportToService', () => {
           json: {
             reportId: 'report-1',
             issueNumber: 1,
-            issueUrl: 'https://github.com/happier-dev/happier/issues/1',
+            issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/1',
           },
         });
       }
@@ -202,7 +202,7 @@ describe('submitBugReportToService', () => {
           json: {
             reportId: 'report-1',
             issueNumber: 1,
-            issueUrl: 'https://github.com/happier-dev/happier/issues/1',
+            issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/1',
           },
         });
       }
@@ -540,7 +540,7 @@ describe('submitBugReportToService', () => {
           json: {
             reportId: 'report-1',
             issueNumber: 1,
-            issueUrl: 'https://github.com/happier-dev/happier/issues/1',
+            issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/1',
           },
         });
       }
@@ -635,7 +635,7 @@ describe('submitBugReportToService', () => {
           json: {
             reportId: 'report-1',
             issueNumber: 99,
-            issueUrl: 'https://github.com/happier-dev/happier/issues/99',
+            issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/99',
           },
         });
       }
@@ -682,7 +682,7 @@ describe('submitBugReportToService', () => {
           json: {
             reportId: 'report-1',
             issueNumber: 1,
-            issueUrl: 'https://github.com/happier-dev/happier/issues/1',
+            issueUrl: 'https://github.com/Piiiiiger/piggercode/issues/1',
           },
         });
       }

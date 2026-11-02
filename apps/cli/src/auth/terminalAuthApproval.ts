@@ -59,7 +59,7 @@ export async function approveTerminalAuthRequest(params: Readonly<{ publicKey: s
   const recipientPk = decodePublicKey(params.publicKey);
   const creds = await readCredentials();
   if (!creds) {
-    throw new Error('Not authenticated. Run `happier auth login` first.');
+    throw new Error('Not authenticated. Run `piggercode auth login` first.');
   }
   const mode = await getAccountEncryptionMode({ token: creds.token });
   if (mode === 'unknown') throw new AccountKeyProvisioningUnavailableError();

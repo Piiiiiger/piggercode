@@ -125,7 +125,7 @@ describe('unpack-tools script', () => {
     await writeFile(join(unpacked, 'difftastic-LICENSE'), 'difft license');
     await writeFile(join(unpacked, 'ripgrep-LICENSE'), 'rg license');
     await writeFile(join(unpacked, 'zellij-LICENSE'), 'zellij license');
-    await writeFile(join(unpacked, '.happier-tools-manifest.json'), `${JSON.stringify({
+    await writeFile(join(unpacked, '.piggercode-tools-manifest.json'), `${JSON.stringify({
       platformDir: 'x64-win32',
       tools: {
         difftastic: {
@@ -186,7 +186,7 @@ describe('unpack-tools script', () => {
     await expect(readFile(join(root, 'unpacked', 'rg.exe'), 'utf8')).resolves.toBe('rg');
     await expect(stat(join(root, 'unpacked', 'zellij.exe'))).rejects.toMatchObject({ code: 'ENOENT' });
     await expect(stat(join(root, 'unpacked', 'zellij-LICENSE'))).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(readFile(join(root, 'unpacked', '.happier-tools-manifest.json'), 'utf8')).resolves.not.toContain('"zellij"');
+    await expect(readFile(join(root, 'unpacked', '.piggercode-tools-manifest.json'), 'utf8')).resolves.not.toContain('"zellij"');
   });
 
   it('fails closed on checksum mismatch', async () => {

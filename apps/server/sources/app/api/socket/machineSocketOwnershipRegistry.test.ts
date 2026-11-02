@@ -182,7 +182,7 @@ describe("createMachineSocketOwnershipRegistry", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
 
@@ -209,7 +209,7 @@ describe("createMachineSocketOwnershipRegistry", () => {
                 publicReleaseChannel: "stable",
                 startupSource: "background-service",
                 serviceManaged: true,
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
                 socketId: "socket-stable",
             }),
         });
@@ -515,7 +515,7 @@ describe("createMachineSocketOwnershipRegistry", () => {
                 cliVersion: "0.2.0",
                 publicReleaseChannel: "stable",
                 startupSource: "manual",
-                serviceLabel: "com.happier.cli.daemon.default",
+                serviceLabel: "com.piggercode.cli.daemon.default",
             },
         });
 
@@ -531,7 +531,7 @@ describe("createMachineSocketOwnershipRegistry", () => {
                 publicReleaseChannel: "dev",
                 startupSource: "manual",
                 serviceManaged: false,
-                serviceLabel: "com.happier.cli.daemon.dev",
+                serviceLabel: "com.piggercode.cli.daemon.dev",
                 takeoverRequested: true,
             },
         });
@@ -560,7 +560,7 @@ describe("createMachineSocketOwnershipRegistry", () => {
                 publicReleaseChannel: "dev",
                 startupSource: "manual",
                 serviceManaged: false,
-                serviceLabel: "com.happier.cli.daemon.dev",
+                serviceLabel: "com.piggercode.cli.daemon.dev",
                 socketId: "socket-dev",
             }),
         });

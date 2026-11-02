@@ -36,6 +36,6 @@ describe('styles palette', () => {
     expect(glyph.action()).toBe(warn());
     expect(glyph.success()).toBe(ok());
     expect(glyph.info()).toBe(info());
-    expect(code('happier doctor repair')).toBe(cmd('happier doctor repair'));
+    expect(code('piggercode doctor repair')).toBe(cmd('piggercode doctor repair'));
   });
 });

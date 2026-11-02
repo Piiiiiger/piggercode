@@ -7,7 +7,7 @@ const baseInstallParams = {
   mode: 'user',
   channel: 'stable',
   userHomeDir: '/home/alice',
-  happierHomeDir: '/home/alice/.happier',
+  happierHomeDir: '/home/alice/.piggercode',
   serverUrl: 'https://api.example.test',
   webappUrl: 'https://app.example.test',
   publicServerUrl: 'https://api.example.test',
@@ -35,7 +35,7 @@ describe('daemon service plan active server identity', () => {
     const plan = planDaemonServiceInstall(params);
     const file = plan.files[0];
 
-    expect(file?.path).toContain('happier-daemon.service-instance.service');
+    expect(file?.path).toContain('piggercode-daemon.service-instance.service');
     expect(file?.content).toContain('PIGGERCODE_ACTIVE_SERVER_ID=company-profile');
     expect(file?.content).not.toContain('PIGGERCODE_ACTIVE_SERVER_ID=service-instance');
   });
@@ -48,6 +48,6 @@ describe('daemon service plan active server identity', () => {
     });
 
     expect(plan.files[0]?.content).not.toContain('PIGGERCODE_ACTIVE_SERVER_ID=');
-    expect(plan.files[0]?.path).toContain('happier-daemon.default.service');
+    expect(plan.files[0]?.path).toContain('piggercode-daemon.default.service');
   });
 });

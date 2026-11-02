@@ -171,7 +171,7 @@ test('CLI reload descriptors share the scoped runtime inventory and exclude gene
   await mkdir(join(cliDir, 'dist'), { recursive: true });
   await mkdir(join(root, 'node_modules'), { recursive: true });
   await writeFile(join(cliDir, 'dist', 'index.mjs'), 'export const generated = true;\n', 'utf-8');
-  await writeFile(join(root, 'node_modules', '.happier-stack-dependencies-ready'), '{}\n', 'utf-8');
+  await writeFile(join(root, 'node_modules', '.piggercode-stack-dependencies-ready'), '{}\n', 'utf-8');
   await writeFile(join(root, 'apps', 'ui', 'src', 'unrelated.ts'), 'export {};\n', 'utf-8');
   const after = descriptors.map((descriptor) => descriptor.readSignature());
   assert.deepEqual(after, before, 'build outputs, dependency markers, and unrelated UI must not self-trigger CLI reload');
@@ -190,7 +190,7 @@ test('startDevDaemon forwards stack context to daemon startup', async () => {
   await startDevDaemon(
     {
       startDaemon: true,
-      cliBin: '/tmp/happy-cli/bin/happier.mjs',
+      cliBin: '/tmp/happy-cli/bin/piggercode.mjs',
       cliHomeDir: '/tmp/happy-cli-home',
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -221,7 +221,7 @@ test('startDevDaemon defers a failed last-green launch to the watch reload coord
   const result = await startDevDaemon(
     {
       startDaemon: true,
-      cliBin: '/tmp/happy-cli/bin/happier.mjs',
+      cliBin: '/tmp/happy-cli/bin/piggercode.mjs',
       cliHomeDir: '/tmp/happy-cli-home',
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -255,7 +255,7 @@ test('startDevDaemon preserves a failed non-watch launch as a startup error', as
     () => startDevDaemon(
       {
         startDaemon: true,
-        cliBin: '/tmp/happy-cli/bin/happier.mjs',
+        cliBin: '/tmp/happy-cli/bin/piggercode.mjs',
         cliHomeDir: '/tmp/happy-cli-home',
         internalServerUrl: 'http://127.0.0.1:3009',
         publicServerUrl: 'http://localhost:3009',
@@ -279,7 +279,7 @@ test('startDevDaemon keeps an interactive TUI server running when initial daemon
   const result = await startDevDaemon(
     {
       startDaemon: true,
-      cliBin: '/tmp/happy-cli/bin/happier.mjs',
+      cliBin: '/tmp/happy-cli/bin/piggercode.mjs',
       cliHomeDir: '/tmp/happy-cli-home',
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -317,7 +317,7 @@ test('reload executor rejects bare dist entrypoint without build manifest', asyn
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: `${cliDir}/bin/happier.mjs`,
+      cliBin: `${cliDir}/bin/piggercode.mjs`,
       cliHomeDir: '/tmp/happy-cli-home',
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -351,7 +351,7 @@ test('reload executor restarts from an already-current dist and preserves the st
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -406,7 +406,7 @@ test('reload executor coalesces consecutive current and superseded generations a
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -471,7 +471,7 @@ test('reload executor retries lock contention and activates the concurrently pub
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -530,7 +530,7 @@ test('reload executor cold-starts an absent daemon from a runnable superseded pu
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -580,7 +580,7 @@ test('reload executor activates a successful superseded publication over a healt
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -643,7 +643,7 @@ test('reload executor persists the authenticated overlap successor for new and a
         startDaemon: true,
         buildCli: true,
         cliDir,
-        cliBin: join(cliDir, 'bin', 'happier.mjs'),
+        cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
         cliHomeDir: join(root, 'home'),
         internalServerUrl: 'http://127.0.0.1:3009',
         publicServerUrl: 'http://localhost:3009',
@@ -700,7 +700,7 @@ test('reload executor does not sync runtime state when overlap confirmation fail
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -758,7 +758,7 @@ test('reload executor awaits a stale source generation after control ping before
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -814,7 +814,7 @@ test('reload executor awaits a stale source generation before cold-start activat
       startDaemon: true,
       buildCli: true,
       cliDir: '/tmp/repo/apps/cli',
-      cliBin: '/tmp/repo/apps/cli/bin/happier.mjs',
+      cliBin: '/tmp/repo/apps/cli/bin/piggercode.mjs',
       cliHomeDir: '/tmp/repo/home',
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -863,7 +863,7 @@ test('reload executor cold-start carries the admitted build fingerprint into dae
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',
@@ -903,7 +903,7 @@ test('successful CLI publication waits for a live startup daemon to publish its 
       startDaemon: true,
       buildCli: true,
       cliDir,
-      cliBin: join(cliDir, 'bin', 'happier.mjs'),
+      cliBin: join(cliDir, 'bin', 'piggercode.mjs'),
       cliHomeDir: join(root, 'home'),
       internalServerUrl: 'http://127.0.0.1:3009',
       publicServerUrl: 'http://localhost:3009',

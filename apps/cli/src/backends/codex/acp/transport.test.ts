@@ -7,7 +7,7 @@ const ctx = { recentPromptHadChangeTitle: false, toolCallCountSincePrompt: 0 } a
 
 describe('CodexAcpTransport determineToolName', () => {
   it('canonicalizes slash-style server/tool names as MCP tool names instead of direct change_title aliases', () => {
-    expect(transport.determineToolName('happier/change_title', 'tool-1', {}, ctx)).toBe('mcp__happier__change_title');
+    expect(transport.determineToolName('piggercode/change_title', 'tool-1', {}, ctx)).toBe('mcp__piggercode__change_title');
     expect(transport.determineToolName('happy/change_title', 'tool-2', {}, ctx)).toBe('mcp__happy__change_title');
   });
 

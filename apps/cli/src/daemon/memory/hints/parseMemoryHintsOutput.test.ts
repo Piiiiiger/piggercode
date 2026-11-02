@@ -16,7 +16,7 @@ describe('parseMemoryHintsOutput', () => {
             createdAtToMs: 2000,
             summary: 'We discussed integrating OpenClaw memory hints.',
             keywords: ['openclaw', 'memory'],
-            entities: ['Happier'],
+            entities: ['PiggerCode'],
             decisions: ['Use execution runs for hint generation'],
           },
           synopsis: {

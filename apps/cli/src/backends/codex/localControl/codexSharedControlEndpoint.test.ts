@@ -11,7 +11,7 @@ import {
 } from './codexSharedControlEndpoint';
 
 describe('codexSharedControlEndpoint', () => {
-  it('publishes the private endpoint for the matching Happier session', async () => {
+  it('publishes the private endpoint for the matching PiggerCode session', async () => {
     const happyHomeDir = await mkdtemp(join(tmpdir(), 'happier-codex-shared-endpoint-'));
 
     await writeCodexSharedControlEndpoint({

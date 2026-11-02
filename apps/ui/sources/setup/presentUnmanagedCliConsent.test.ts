@@ -24,13 +24,13 @@ describe('presentUnmanagedCliConsent', () => {
     it('asks once, naming the exact binary, and returns the answer', async () => {
         confirmSpy.mockResolvedValueOnce(false);
 
-        const answer = await presentUnmanagedCliConsent({ cliCommand: '/home/dev/repo/apps/cli/bin/happier.mjs' });
+        const answer = await presentUnmanagedCliConsent({ cliCommand: '/home/dev/repo/apps/cli/bin/piggercode.mjs' });
 
         expect(answer).toBe(false);
         expect(confirmSpy).toHaveBeenCalledTimes(1);
         const [title, body] = confirmSpy.mock.calls[0] as unknown as [string, string];
         expect(title).toBe('setupSurface.cliTrustTitle');
-        expect(body).toContain('/home/dev/repo/apps/cli/bin/happier.mjs');
+        expect(body).toContain('/home/dev/repo/apps/cli/bin/piggercode.mjs');
     });
 
     it('still asks, without inventing a path, when the executor named no command', async () => {

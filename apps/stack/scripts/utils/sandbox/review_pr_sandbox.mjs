@@ -3,8 +3,8 @@ import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 
-export const REVIEW_PR_MARKER_FILENAME = '.happier-stack-sandbox-marker';
-export const REVIEW_PR_META_FILENAME = '.happier-stack-review-pr.json';
+export const REVIEW_PR_MARKER_FILENAME = '.piggercode-stack-sandbox-marker';
+export const REVIEW_PR_META_FILENAME = '.piggercode-stack-review-pr.json';
 
 export function reviewPrSandboxPrefixBase(baseStackName) {
   const base = String(baseStackName ?? '').trim() || 'pr';

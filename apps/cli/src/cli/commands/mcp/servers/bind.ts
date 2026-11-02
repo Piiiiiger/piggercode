@@ -20,7 +20,7 @@ export async function cmdMcpServersBind(
       await printJsonEnvelope({ ok: false, kind: 'mcp_servers_bind', error: { code: 'not_authenticated' } }, { exitCode: 1 });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exitCode = 1;
     return;
   }
@@ -28,7 +28,7 @@ export async function cmdMcpServersBind(
   const serverRef = readFlagValue(argv, '--mcp-server') ?? readFlagValue(argv, '--server');
   const allMachines = hasFlag(argv, '--all-machines');
   if (!serverRef) {
-    throw new Error('Usage: happier mcp servers bind --mcp-server <name|id> --all-machines [--json]');
+    throw new Error('Usage: piggercode mcp servers bind --mcp-server <name|id> --all-machines [--json]');
   }
   if (!allMachines) throw new Error('Missing binding target (try --all-machines).');
 

@@ -41,7 +41,7 @@ export function createFilteredPatchDir({ patchDir, nodeModulesDir, label }) {
     // cannot consume that cross-volume --patch-dir reliably, so keep the filtered directory
     // inside the target node_modules volume and remove it immediately after patching.
     const safeLabel = String(label ?? 'target').replace(/[^a-z0-9_-]+/gi, '-') || 'target';
-    const temporaryDir = fs.mkdtempSync(path.join(nodeModulesDir, `.happier-ui-patches-${safeLabel}-`));
+    const temporaryDir = fs.mkdtempSync(path.join(nodeModulesDir, `.piggercode-ui-patches-${safeLabel}-`));
     for (const fileName of selected) {
         fs.copyFileSync(path.resolve(patchDir, fileName), path.resolve(temporaryDir, fileName));
     }

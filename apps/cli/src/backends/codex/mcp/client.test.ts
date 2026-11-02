@@ -48,7 +48,7 @@ describe('createCodexTransport', () => {
     );
   });
 
-  it('uses the current happier cli fallback command when codex is unavailable', async () => {
+  it('uses the current piggercode cli fallback command when codex is unavailable', async () => {
     mockGetCodexVersionInfo.mockReturnValue({ raw: null, parsed: false, major: 0, minor: 0, patch: 0 });
 
     const { createCodexTransport } = await import('./client');
@@ -59,6 +59,6 @@ describe('createCodexTransport', () => {
         mode: 'codex-cli',
         mcpServerArgs: [],
       }),
-    ).toThrow(/happier claude/);
+    ).toThrow(/piggercode claude/);
   });
 });

@@ -10,10 +10,10 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 describe('daemon service apply', () => {
   it('writes planned install files with declared modes (without running commands)', async () => {
     await withTempDir('happier-service-home-', async (userHomeDir) => {
-      const unitPath = join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.cloud.service');
+      const unitPath = join(userHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.cloud.service');
       const unitContent = [
         '[Unit]',
-        'Description=Happier daemon',
+        'Description=PiggerCode daemon',
         '[Service]',
         'ExecStart=/usr/bin/node /opt/happier/dist/index.mjs daemon start-sync',
         '',
@@ -39,7 +39,7 @@ describe('daemon service apply', () => {
 
   it('removes only planned uninstall files (without running commands)', async () => {
     await withTempDir('happier-service-home-', async (userHomeDir) => {
-      const removablePath = join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.cloud.service');
+      const removablePath = join(userHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.cloud.service');
       const keepPath = join(userHomeDir, '.config', 'systemd', 'user', 'keep.service');
 
       await mkdir(join(userHomeDir, '.config', 'systemd', 'user'), { recursive: true });
@@ -49,7 +49,7 @@ describe('daemon service apply', () => {
       const uninstallPlan: DaemonServiceUninstallPlan = {
         platform: 'linux',
         filesToRemove: [removablePath, join(userHomeDir, '.config', 'systemd', 'user', 'missing.service')],
-        commands: [{ cmd: 'systemctl', args: ['--user', 'disable', '--now', 'happier-daemon.cloud.service'] }],
+        commands: [{ cmd: 'systemctl', args: ['--user', 'disable', '--now', 'piggercode-daemon.cloud.service'] }],
       };
       await applyDaemonServiceUninstallPlan(uninstallPlan, { runCommands: false });
 

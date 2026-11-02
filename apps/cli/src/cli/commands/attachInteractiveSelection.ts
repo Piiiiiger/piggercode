@@ -278,7 +278,7 @@ export function formatAttachIneligibilityFooter(hint: AttachSelectionFooterHint)
           ? 'on this computer'
           : '';
         return `${ineligible} ${sessionWord} on this machine were started outside tmux and can't be attached. `
-          + `Enable “Spawn Sessions in Tmux”${scope ? ` ${scope}` : ''} in the Happier app → Session Settings, then start a new session.`;
+          + `Enable “Spawn Sessions in Tmux”${scope ? ` ${scope}` : ''} in the PiggerCode app → Session Settings, then start a new session.`;
       }
       return `${ineligible} ${sessionWord} on this machine were started before "Spawn Sessions in Tmux" was enabled. `
         + `New sessions you start now will be attachable.`;
@@ -289,17 +289,17 @@ export function formatAttachIneligibilityFooter(hint: AttachSelectionFooterHint)
       return `${ineligible} hidden Windows ${sessionWord} can't be attached after start. `
         + `Restart ${ineligible === 1 ? 'it' : 'them'} with a visible terminal if you need to attach later.`;
     case 'machine_identity_mismatch':
-      return `${ineligible} ${sessionWord} ${beVerb} running on this computer under a different Happier machine identity, but no tmux target or local attachment marker is available. `
-        + `Use the same Happier app or daemon that started ${ineligible === 1 ? 'it' : 'them'}, or start a new tmux-backed session from this CLI profile.`;
+      return `${ineligible} ${sessionWord} ${beVerb} running on this computer under a different PiggerCode machine identity, but no tmux target or local attachment marker is available. `
+        + `Use the same PiggerCode app or daemon that started ${ineligible === 1 ? 'it' : 'them'}, or start a new tmux-backed session from this CLI profile.`;
     case 'remote_machine':
-      return `${ineligible} ${sessionWord} ${beVerb} running on other machines. Use \`happier session list --active\` to see all running sessions.`;
+      return `${ineligible} ${sessionWord} ${beVerb} running on other machines. Use \`piggercode session list --active\` to see all running sessions.`;
     case 'no_local_state':
       return `${ineligible} ${sessionWord} ${beVerb} running but ${ineligible === 1 ? 'its' : 'their'} local attachment state isn't visible. `
-        + `Try \`happier daemon start\` and re-run, or attach from the original terminal.`;
+        + `Try \`piggercode daemon start\` and re-run, or attach from the original terminal.`;
     case 'archived_or_inactive':
-      return `${ineligible} ${sessionWord} ${beVerb} no longer active. Use \`happier resume\` to revive a stopped session.`;
+      return `${ineligible} ${sessionWord} ${beVerb} no longer active. Use \`piggercode resume\` to revive a stopped session.`;
     case 'metadata_unreadable':
-      return `${ineligible} ${sessionWord} can't be decrypted on this machine. Sign in on the original device or pair this one with \`happier auth pair-remote\`.`;
+      return `${ineligible} ${sessionWord} can't be decrypted on this machine. Sign in on the original device or pair this one with \`piggercode auth pair-remote\`.`;
     case 'unsupported_agent':
       return `${ineligible} ${sessionWord} use an agent that doesn't support local terminal attach.`;
     default:

@@ -31,21 +31,21 @@ function createExitMock() {
 describe('resolveRuntimeEntrypointPath', () => {
   it('resolves a dist entrypoint under runtime/node_modules', () => {
     expect(
-      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.happier', packageName: '@piggercode/cli' }),
-    ).toBe('/home/x/.happier/runtime/node_modules/@piggercode/cli/dist/index.mjs');
+      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.piggercode', packageName: '@piggercode/cli' }),
+    ).toBe('/home/x/.piggercode/runtime/node_modules/@piggercode/cli/dist/index.mjs');
   });
 
   it('scopes runtime entrypoints by public release ring for side-by-side installs', () => {
     expect(
-      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.happier', packageName: '@piggercode/cli', publicReleaseRing: 'publicdev' }),
-    ).toBe('/home/x/.happier/runtime.dev/node_modules/@piggercode/cli/dist/index.mjs');
+      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.piggercode', packageName: '@piggercode/cli', publicReleaseRing: 'publicdev' }),
+    ).toBe('/home/x/.piggercode/runtime.dev/node_modules/@piggercode/cli/dist/index.mjs');
     expect(
-      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.happier', packageName: '@piggercode/cli', publicReleaseRing: 'preview' }),
-    ).toBe('/home/x/.happier/runtime.preview/node_modules/@piggercode/cli/dist/index.mjs');
+      resolveRuntimeEntrypointPath({ homeDir: '/home/x/.piggercode', packageName: '@piggercode/cli', publicReleaseRing: 'preview' }),
+    ).toBe('/home/x/.piggercode/runtime.preview/node_modules/@piggercode/cli/dist/index.mjs');
   });
 
   it('throws when packageName is empty', () => {
-    expect(() => resolveRuntimeEntrypointPath({ homeDir: '/home/x/.happier', packageName: '   ' })).toThrow(
+    expect(() => resolveRuntimeEntrypointPath({ homeDir: '/home/x/.piggercode', packageName: '   ' })).toThrow(
       /packageName is required/i,
     );
   });
@@ -60,7 +60,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       argv: ['self', 'check'],
       env: {},
@@ -73,7 +73,7 @@ describe('maybeReexecToRuntime', () => {
     expect(ensureJavaScriptRuntimeExecutableMock).toHaveBeenCalledWith({ isBunRuntime: false });
     expect(exec).toHaveBeenCalledWith(
       process.execPath,
-      expect.arrayContaining(['/home/x/.happier/runtime/node_modules/@piggercode/cli/dist/index.mjs', 'self', 'check']),
+      expect.arrayContaining(['/home/x/.piggercode/runtime/node_modules/@piggercode/cli/dist/index.mjs', 'self', 'check']),
       expect.any(Object),
     );
     expect(exit).toHaveBeenCalledWith(0);
@@ -87,7 +87,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       publicReleaseRing: 'preview',
       argv: ['service', 'install'],
@@ -100,7 +100,7 @@ describe('maybeReexecToRuntime', () => {
 
     expect(exec).toHaveBeenCalledWith(
       process.execPath,
-      expect.arrayContaining(['/home/x/.happier/runtime.preview/node_modules/@piggercode/cli/dist/index.mjs', 'service', 'install']),
+      expect.arrayContaining(['/home/x/.piggercode/runtime.preview/node_modules/@piggercode/cli/dist/index.mjs', 'service', 'install']),
       expect.objectContaining({
         env: expect.objectContaining({
           PIGGERCODE_CLI_RUNTIME_REEXEC: '1',
@@ -118,7 +118,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       argv: ['self', 'check'],
       env: {},
@@ -143,7 +143,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       argv: ['self', 'check'],
       env: {},
@@ -166,7 +166,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       argv: ['self', 'check'],
       env: {},
@@ -179,7 +179,7 @@ describe('maybeReexecToRuntime', () => {
     expect(ensureJavaScriptRuntimeExecutableMock).toHaveBeenCalledWith({ isBunRuntime: true });
     expect(exec).toHaveBeenCalledWith(
       '/managed/js-runtime',
-      expect.arrayContaining(['/home/x/.happier/runtime/node_modules/@piggercode/cli/dist/index.mjs', 'self', 'check']),
+      expect.arrayContaining(['/home/x/.piggercode/runtime/node_modules/@piggercode/cli/dist/index.mjs', 'self', 'check']),
       expect.any(Object),
     );
     expect(exit).toHaveBeenCalledWith(0);
@@ -195,7 +195,7 @@ describe('maybeReexecToRuntime', () => {
 
     await maybeReexecToRuntime({
       cliRootDir: '/repo/apps/cli',
-      homeDir: '/home/x/.happier',
+      homeDir: '/home/x/.piggercode',
       packageName: '@piggercode/cli',
       argv: ['self', 'check'],
       env: {},

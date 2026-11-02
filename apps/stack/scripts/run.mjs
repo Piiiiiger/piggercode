@@ -227,7 +227,7 @@ async function main() {
   const cliDir = cliLaunchSpec?.cliDir ?? getComponentDir(rootDir, 'happier-cli');
   const uiDir = getComponentDir(rootDir, 'happier-ui');
 
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const cliNodeEntrypoint = cliLaunchSpec?.nodeEntrypoint ?? '';
   const cliCommand = cliLaunchSpec?.command ?? '';
   const cliCommandArgs = cliLaunchSpec?.args ?? [];

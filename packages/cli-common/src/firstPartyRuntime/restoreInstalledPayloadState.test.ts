@@ -41,11 +41,11 @@ describe('captureInstalledPayloadStateForActivation', () => {
 
   it('puts every launcher it already moved back when a later one cannot be moved', async () => {
     const env = { PIGGERCODE_HOME_DIR: homeDir };
-    // Preview is the default channel: its update rewrites two launchers (`happier` and `hprev`).
+    // Preview is the default channel: its update rewrites two launchers (`piggercode` and `hprev`).
     await writeDefaultManagedReleaseChannel({ processEnv: env, releaseChannel: 'preview' });
     const payloadRoot = join(homeDir, 'payload');
     await mkdir(join(payloadRoot, 'package-dist'), { recursive: true });
-    await writeFile(join(payloadRoot, 'happier'), 'binary-1.0.0-preview.1', 'utf8');
+    await writeFile(join(payloadRoot, 'piggercode'), 'binary-1.0.0-preview.1', 'utf8');
     await writeFile(join(payloadRoot, 'package-dist', 'index.mjs'), 'export {};\n', 'utf8');
     await installVersionedPayload({
       componentId: 'happier-cli', channel: 'preview', versionId: '1.0.0-preview.1', processEnv: env, payloadRoot,
@@ -53,7 +53,7 @@ describe('captureInstalledPayloadStateForActivation', () => {
     });
     const layout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', channel: 'preview', processEnv: env });
     const launchers = (await readdir(layout.shimDir)).filter((name) => !name.startsWith('.')).sort();
-    expect(launchers).toEqual(['happier', 'hprev']);
+    expect(launchers).toEqual(['hprev', 'piggercode']);
 
     failure.failSetAsideRenameNumber = 2;
     await expect(captureInstalledPayloadStateForActivation({ componentId: 'happier-cli', channel: 'preview', processEnv: env }))

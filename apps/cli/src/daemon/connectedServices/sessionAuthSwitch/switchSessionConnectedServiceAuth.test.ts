@@ -41,9 +41,9 @@ function metadata(overrides: Record<string, unknown> = {}) {
     path: '/tmp/project',
     host: 'test-host',
     homeDir: '/tmp/home',
-    happyHomeDir: '/tmp/home/.happier',
-    happyLibDir: '/tmp/home/.happier/lib',
-    happyToolsDir: '/tmp/home/.happier/tools',
+    happyHomeDir: '/tmp/home/.piggercode',
+    happyLibDir: '/tmp/home/.piggercode/lib',
+    happyToolsDir: '/tmp/home/.piggercode/tools',
     ...overrides,
   };
 }

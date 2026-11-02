@@ -50,7 +50,7 @@ describe('prepareFirstPartyComponentPayloadFromGitHubRelease', () => {
       arch: 'arm64',
       artifactSource: {
         kind: 'github-release',
-        githubRepo: 'happier-dev/happier',
+        githubRepo: 'Piiiiiger/piggercode',
         githubToken: '',
       },
     }).then(

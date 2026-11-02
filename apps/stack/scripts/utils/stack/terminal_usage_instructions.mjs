@@ -18,9 +18,9 @@ export function renderTerminalUsageInstructions({
   return [
     '',
     sectionTitle('Terminal usage'),
-    dim(`To run ${cyan('happier')} against this stack (and have sessions appear in the UI), use the stack-aware wrapper:`),
+    dim(`To run ${cyan('piggercode')} against this stack (and have sessions appear in the UI), use the stack-aware wrapper:`),
     ...(stack ? [cmd(`export PIGGERCODE_STACK_STACK="${stack}"`)] : []),
-    cmd('hstack happier auth status --json'),
+    cmd('hstack piggercode auth status --json'),
     cmd('hstack happier'),
     '',
     dim('Low-level env fallback (if you need the raw CLI env directly):'),

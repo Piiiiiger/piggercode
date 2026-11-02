@@ -22,7 +22,7 @@ function setTtyMode(stdinIsTTY: boolean, stdoutIsTTY: boolean): () => void {
   };
 }
 
-describe('happier server add (self-heal from /v1/features capabilities)', () => {
+describe('piggercode server add (self-heal from /v1/features capabilities)', () => {
   const previousEnv = {
     homeDir: process.env.PIGGERCODE_HOME_DIR,
     serverUrl: process.env.PIGGERCODE_SERVER_URL,

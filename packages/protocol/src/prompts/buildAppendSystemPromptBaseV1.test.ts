@@ -19,8 +19,8 @@ describe('buildAppendSystemPromptBaseV1', () => {
     });
 
     expect(out).toContain('current backend\'s native subagent facility by default');
-    expect(out).toContain('Happier subagent');
-    expect(out).toContain('Happier delegation run');
+    expect(out).toContain('PiggerCode subagent');
+    expect(out).toContain('PiggerCode delegation run');
   });
 
   it('honors an explicit guidance opt-out', () => {
@@ -66,10 +66,10 @@ describe('buildAppendSystemPromptBaseV1', () => {
     });
 
     expect(out).toContain('BASE');
-    expect(out).toContain('Happier-Managed Runs');
+    expect(out).toContain('PiggerCode-Managed Runs');
     expect(out).toContain('Always use execution runs for code reviews.');
     expect(out).toContain('backend=agent:claude');
-    expect(out.indexOf('Happier-Managed Runs')).toBeLessThan(out.indexOf('Custom Execution-Run Rules'));
+    expect(out.indexOf('PiggerCode-Managed Runs')).toBeLessThan(out.indexOf('Custom Execution-Run Rules'));
   });
 
   it('appends memory recall guidance only when explicitly enabled', () => {

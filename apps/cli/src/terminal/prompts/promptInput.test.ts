@@ -279,7 +279,7 @@ describe('isInteractiveTerminal — a caller saying nobody is watching', () => {
 
     it('refuses to prompt under PIGGERCODE_NONINTERACTIVE=1 even with a terminal on both ends', () => {
         // The whole point: the terminal is still there. An installer, or
-        // `happier setup --yes`, has said that nobody is sitting at it — so a
+        // `piggercode setup --yes`, has said that nobody is sitting at it — so a
         // command that asks a question is a command that hangs.
         pretendBothTtys();
         process.env.PIGGERCODE_NONINTERACTIVE = '1';

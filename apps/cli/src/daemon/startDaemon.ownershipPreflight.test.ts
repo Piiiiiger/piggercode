@@ -25,7 +25,7 @@ const {
     renderDaemonInstalledServiceConflictMock: vi.fn(() => ({
         title: 'A background service is already installed for the selected relay.',
         lines: [
-            'Use `happier service start` to start the installed background service instead of starting another daemon.',
+            'Use `piggercode service start` to start the installed background service instead of starting another daemon.',
             'If you want to start a manual daemon, stop or replace the installed background service first.',
         ],
     })),
@@ -124,7 +124,7 @@ describe('startDaemon ownership preflight', () => {
         renderDaemonInstalledServiceConflictMock.mockImplementation(() => ({
             title: 'A background service is already installed for the selected relay.',
             lines: [
-                'Use `happier service start` to start the installed background service instead of starting another daemon.',
+                'Use `piggercode service start` to start the installed background service instead of starting another daemon.',
                 'If you want to start a manual daemon, stop or replace the installed background service first.',
             ],
         }));
@@ -182,7 +182,7 @@ describe('startDaemon ownership preflight', () => {
                 startedWithCliVersion: '0.0.0-other',
                 startedWithPublicReleaseChannel: 'preview',
                 startupSource: 'background-service',
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             });
 
             const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
@@ -313,7 +313,7 @@ describe('startDaemon ownership preflight', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.happier`,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.piggercode`,
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_TAKEOVER: '1',
             });
@@ -460,7 +460,7 @@ describe('startDaemon ownership preflight', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.happier`,
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.piggercode`,
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_TAKEOVER: '1',
             });
@@ -548,10 +548,10 @@ describe('startDaemon ownership preflight', () => {
                         serverId: 'default',
                         name: 'Default background service',
                         installed: true,
-                        path: join(homeDir, 'service', 'happier-daemon.default.service'),
+                        path: join(homeDir, 'service', 'piggercode-daemon.default.service'),
                         platform: 'linux',
                         releaseChannel: 'stable',
-                        label: 'happier-daemon.default',
+                        label: 'piggercode-daemon.default',
                         targetMode: 'default-following',
                     },
                 ],
@@ -570,7 +570,7 @@ describe('startDaemon ownership preflight', () => {
             logger.flushSync();
             const logContent = await readFile(logger.logFilePath, 'utf8');
             expect(logContent).toContain('Installed background service prevented manual daemon startup');
-            expect(logContent).toContain('happier service start');
+            expect(logContent).toContain('piggercode service start');
             expect(waitForInitialCredentialsMock).not.toHaveBeenCalled();
         });
     });

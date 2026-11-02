@@ -317,7 +317,7 @@ export async function persistSessionMediaItem(params: Readonly<{
 
     const config = params.config ?? DEFAULT_SESSION_MEDIA_TRANSFER_CONFIG;
     const transferCategory = persistedSessionMediaCategoryToTransferCategory(params.input.category);
-    const tempUploadRoot = join(tmpdir(), 'happier', 'uploads', randomUUID());
+    const tempUploadRoot = join(tmpdir(), 'piggercode', 'uploads', randomUUID());
     const resolvedTarget = resolveConfiguredSessionMediaTransferTarget({
         config,
         tempUploadRoot,

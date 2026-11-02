@@ -13,7 +13,7 @@ vi.mock('@/session/actions/createCliActionExecutor', () => ({
   createCliActionExecutor,
 }));
 
-describe('happier session actions --json contract', () => {
+describe('piggercode session actions --json contract', () => {
   let protocol: typeof import('@piggercode/protocol');
   let handleSessionCommand: typeof import('../index').handleSessionCommand;
 

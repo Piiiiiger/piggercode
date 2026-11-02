@@ -73,9 +73,9 @@ describe('canonicalizeToolNameV2 mappings', () => {
   it.each([
     'change_title',
     'change-title',
-    'mcp__happier__change_title',
+    'mcp__piggercode__change_title',
     'mcp__happy__change_title',
-    'happier__change_title',
+    'piggercode__change_title',
     'happy__change_title',
   ])('normalizes `%s` to change_title', (toolName) => {
     expect(canonicalize(toolName)).toBe('change_title');

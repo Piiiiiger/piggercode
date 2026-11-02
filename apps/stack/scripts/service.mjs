@@ -73,7 +73,7 @@ function getAutostartEnv({ mode, systemUserHomeDir } = {}) {
   // - `hstack stack service <name> ...` runs under a stack env already, so we persist that pointer.
   //
   // Main installs:
-  // - default to the main stack env (outside the repo): ~/.happier/stacks/main/env
+  // - default to the main stack env (outside the repo): ~/.piggercode/stacks/main/env
 
   const explicitEnvFilePath = resolveExplicitStackEnvFilePath(process.env);
   const defaultMainEnvFilePath = resolveStackEnvPath('main').envPath;
@@ -142,11 +142,11 @@ export async function resolveStackAutostartProgramArgs({ rootDir, mode, systemUs
       const systemCandidates =
         process.platform === 'win32'
           ? [
-              join(home, '.happier-stack', 'bin', 'hstack.exe'),
-              join(home, '.happier-stack', 'bin', 'hstack.cmd'),
-              join(home, '.happier-stack', 'bin', 'hstack'),
+              join(home, '.piggercode-stack', 'bin', 'hstack.exe'),
+              join(home, '.piggercode-stack', 'bin', 'hstack.cmd'),
+              join(home, '.piggercode-stack', 'bin', 'hstack'),
             ]
-          : [join(home, '.happier-stack', 'bin', 'hstack')];
+          : [join(home, '.piggercode-stack', 'bin', 'hstack')];
       shimPath = systemCandidates.find((p) => existsSync(p)) ?? shimPath;
     }
   }
@@ -382,7 +382,7 @@ export async function postStartDiagnostics() {
   const publicServerUrlSource = String(resolvedUrls?.publicServerUrlSource ?? '').trim();
 
   const cliDir = getComponentDir(rootDir, 'happier-cli');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
 
   const credentialPaths = resolveStackCredentialPaths({ cliHomeDir, serverUrl: internalUrl, env: scopedEnv });
   const existingCredentialPath = findExistingStackCredentialPath({ cliHomeDir, serverUrl: internalUrl, env: scopedEnv });

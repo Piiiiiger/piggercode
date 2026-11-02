@@ -156,7 +156,7 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
                 vendorResumeId: 'rollout-legacy',
                 cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
                 reason: 'native_session_file_missing',
-                targetMaterializedRoot: '/Users/leeroy/.happier/materialized/codex',
+                targetMaterializedRoot: '/Users/leeroy/.piggercode/materialized/codex',
                 candidatePersistedSessionFile: '/Users/leeroy/.codex/sessions/rollout-legacy.jsonl',
                 uxDiagnostic: {
                     code: 'provider_session_state_unavailable_for_resume',
@@ -205,7 +205,7 @@ describe('normalizeSpawnSessionResult errorDetail carry-through (D2)', () => {
                 vendorResumeId: 'pi-session-missing',
                 cwd: '/Users/leeroy/Documents/Development/happier/remote-dev',
                 reason: 'no_resumable_session_file',
-                targetMaterializedRoot: '/Users/leeroy/.happier/materialized/pi',
+                targetMaterializedRoot: '/Users/leeroy/.piggercode/materialized/pi',
             },
         });
 

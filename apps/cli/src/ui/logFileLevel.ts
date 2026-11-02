@@ -5,7 +5,7 @@
  * early return when debug file logging is disabled (no timestamp, no stringify).
  *
  * Defaults:
- * - daemon processes: `debug` (daemon logs are the primary `happier doctor` forensics
+ * - daemon processes: `debug` (daemon logs are the primary `piggercode doctor` forensics
  *   artifact and are already pruned by count)
  * - session processes: `info` (debug entries are opt-in via `DEBUG` or `PIGGERCODE_LOG_LEVEL`)
  */

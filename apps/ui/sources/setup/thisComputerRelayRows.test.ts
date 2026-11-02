@@ -8,7 +8,7 @@ const APP_RELAY = 'https://relay.example.com';
 
 function facts(relayUrl: string, validatedAccountId = 'acct_app') {
     return {
-        acquisition: { command: '/home/me/.happier/bin/happier', provenance: 'managed' },
+        acquisition: { command: '/home/me/.piggercode/bin/happier', provenance: 'managed' },
         server: { serverUrl: relayUrl, publicServerUrl: relayUrl, localServerUrl: null, comparableKey: null },
         auth: { credentialState: 'valid', validatedAccountId, accountId: validatedAccountId, machineId: 'machine-1' },
         service: { installed: true, running: true, autostart: 'at-login', targetMode: 'default-following' },

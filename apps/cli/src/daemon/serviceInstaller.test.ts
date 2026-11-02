@@ -10,7 +10,7 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 describe('daemon service installer', () => {
   it('installs and uninstalls a linux user service (no systemctl)', async () => {
     await withTempDir('happier-service-installer-home-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
       await installDaemonService({
         platform: 'linux',
         uid: 123,
@@ -23,7 +23,7 @@ describe('daemon service installer', () => {
         runCommands: false,
       });
 
-      expect(existsSync(join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.cloud.service'))).toBe(true);
+      expect(existsSync(join(userHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.cloud.service'))).toBe(true);
 
       await uninstallDaemonService({
         platform: 'linux',
@@ -34,14 +34,14 @@ describe('daemon service installer', () => {
         runCommands: false,
       });
 
-      expect(existsSync(join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.cloud.service'))).toBe(false);
+      expect(existsSync(join(userHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.cloud.service'))).toBe(false);
     });
   });
 
   it('installs and uninstalls a darwin LaunchAgent (no launchctl)', async () => {
     await withTempDir('happier-service-installer-home-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
-      const plistPath = join(userHomeDir, 'Library', 'LaunchAgents', 'com.happier.cli.daemon.cloud.plist');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
+      const plistPath = join(userHomeDir, 'Library', 'LaunchAgents', 'com.piggercode.cli.daemon.cloud.plist');
       await installDaemonService({
         platform: 'darwin',
         uid: 501,
@@ -83,7 +83,7 @@ describe('daemon service installer', () => {
         platform: 'darwin',
         mode: 'system',
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         instanceId: 'cloud',
         nodePath: '/usr/bin/node',
         entryPath: '/opt/happier/dist/index.mjs',
@@ -98,7 +98,7 @@ describe('daemon service installer', () => {
         platform: 'win32',
         mode: 'system',
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         instanceId: 'cloud',
         runCommands: false,
       }),
@@ -115,7 +115,7 @@ describe('daemon service installer', () => {
     ]);
 
     await withTempDir('happier-service-installer-home-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_ACTIVE_SERVER_ID: 'company',
@@ -136,7 +136,7 @@ describe('daemon service installer', () => {
           runCommands: false,
         });
 
-        const unitPath = join(userHomeDir, '.config', 'systemd', 'user', 'happier-daemon.company.service');
+        const unitPath = join(userHomeDir, '.config', 'systemd', 'user', 'piggercode-daemon.company.service');
         expect(existsSync(unitPath)).toBe(true);
         const raw = await (await import('node:fs/promises')).readFile(unitPath, 'utf-8');
         expect(raw).toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=company');

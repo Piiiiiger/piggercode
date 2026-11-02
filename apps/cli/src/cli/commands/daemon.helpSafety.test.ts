@@ -75,7 +75,7 @@ vi.mock('@/ui/logger', () => ({
 
 import { handleDaemonCliCommand } from './daemon';
 
-describe('happier daemon help safety', () => {
+describe('piggercode daemon help safety', () => {
   beforeEach(() => {
     for (const mock of Object.values(sideEffects)) {
       mock.mockClear();
@@ -100,7 +100,7 @@ describe('happier daemon help safety', () => {
         terminalRuntime: null,
       });
 
-      expect(output.text()).toContain('happier daemon');
+      expect(output.text()).toContain('piggercode daemon');
       expect(output.text()).toContain('Usage:');
       for (const mock of Object.values(sideEffects)) {
         expect(mock).not.toHaveBeenCalled();

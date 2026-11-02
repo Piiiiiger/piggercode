@@ -30,7 +30,7 @@ async function readMarker(markerPath) {
     .filter(Boolean);
 }
 
-test('setup-pr mobile in sandbox defaults to dev-client scheme (not happier://)', async (t) => {
+test('setup-pr mobile in sandbox defaults to dev-client scheme (not piggercode://)', async (t) => {
   const scriptsDir = dirname(fileURLToPath(import.meta.url));
   const rootDir = dirname(scriptsDir);
   const tmp = await mkdtemp(join(tmpdir(), 'hstack-setup-pr-mobile-scheme-'));

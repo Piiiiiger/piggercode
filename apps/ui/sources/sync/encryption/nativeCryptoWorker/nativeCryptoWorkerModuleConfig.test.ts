@@ -9,7 +9,7 @@ function readJson(path: string): unknown {
     return JSON.parse(readFileSync(path, 'utf8'));
 }
 
-describe('happier crypto worker local Expo module config', () => {
+describe('piggercode crypto worker local Expo module config', () => {
     it('declares an app-local module package for autolinking', () => {
         const packageJson = readJson(join(moduleRoot, 'package.json'));
 

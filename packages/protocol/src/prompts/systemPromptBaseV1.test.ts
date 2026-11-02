@@ -12,7 +12,7 @@ describe('PIGGERCODE_BASE_SYSTEM_PROMPT_V1', () => {
     expect(PIGGERCODE_BASE_SYSTEM_PROMPT_V1).toContain('change_title');
     expect(PIGGERCODE_BASE_SYSTEM_PROMPT_V1).toContain('first user message');
     expect(PIGGERCODE_BASE_SYSTEM_PROMPT_V1).toContain('MUST');
-    expect(PIGGERCODE_BASE_SYSTEM_PROMPT_V1).toContain('Prefer "mcp__happier__change_title"');
+    expect(PIGGERCODE_BASE_SYSTEM_PROMPT_V1).toContain('Prefer "mcp__piggercode__change_title"');
   });
 
   it('documents attachment blocks so referenced files are read before answering', () => {

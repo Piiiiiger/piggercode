@@ -4,7 +4,7 @@ const BOILERPLATE_PATTERNS = [
   '# session title',
   'at the start of the session',
   'change_title tool',
-  'happier voice is a voice interface',
+  'piggercode voice is a voice interface',
   'core behavior:',
   '<environment_context>',
   '<instructions>',

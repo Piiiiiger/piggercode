@@ -139,7 +139,7 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
 describe('installOrUpdateRelayRuntimeDefault', () => {
     it('installs the local relay runtime without requiring `hstack self-host install`', async () => {
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-local-relay-runtime-install-'));
-        const happyHomeDir = join(rootDir, '.happier-home');
+        const happyHomeDir = join(rootDir, '.piggercode-home');
         const fakeOsHomeDir = join(rootDir, '.home');
         const payloadRoot = join(rootDir, 'payload');
         const previousHomeDir = process.env.PIGGERCODE_HOME_DIR;
@@ -193,7 +193,7 @@ describe('installOrUpdateRelayRuntimeDefault', () => {
             }));
             expect(createRelayHostEngineMock).toHaveBeenCalled();
 
-            const installRoot = join(fakeOsHomeDir, '.happier', 'self-host');
+            const installRoot = join(fakeOsHomeDir, '.piggercode', 'self-host');
             expect(readFileSync(join(installRoot, 'self-host-state.json'), 'utf8')).toContain('"version"');
             expect(readFileSync(join(installRoot, 'config', 'server.env'), 'utf8')).toContain('PORT=3005');
         } finally {
@@ -240,8 +240,8 @@ describe('installOrUpdateRelayRuntimeDefault', () => {
                 }, {}, {
                     installRemoteFirstPartyComponent: async ({ componentId }) => ({
                         binaryPath: componentId === 'happier-cli'
-                            ? '$HOME/.happier/cli/current/happier'
-                            : '$HOME/.happier/server/current/happier-server',
+                            ? '$HOME/.piggercode/cli/current/happier'
+                            : '$HOME/.piggercode/server/current/happier-server',
                         versionId: '1.2.3',
                         source: 'https://example.test/payload.tgz',
                     }),
@@ -275,13 +275,13 @@ describe('installOrUpdateRelayRuntimeDefault', () => {
                         switch (componentId) {
                             case 'happier-cli':
                                 return {
-                                    binaryPath: '$HOME/.happier/cli/current/happier',
+                                    binaryPath: '$HOME/.piggercode/cli/current/happier',
                                     versionId: '1.2.3',
                                     source: 'https://example.test/payload.tgz',
                                 };
                             case 'happier-server':
                                 return {
-                                    binaryPath: '$HOME/.happier/server/current/happier-server',
+                                    binaryPath: '$HOME/.piggercode/server/current/happier-server',
                                     versionId: '1.2.3',
                                     source: 'https://example.test/payload.tgz',
                                 };

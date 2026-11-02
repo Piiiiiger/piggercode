@@ -18,7 +18,7 @@ describe('windowsHostedSessionRuntime', () => {
       randomHex: () => 'abcd1234',
     })).toEqual({
       windowId: 'happier',
-      title: 'Happier codex sess_123',
+      title: 'PiggerCode codex sess_123',
     });
   });
 
@@ -30,15 +30,15 @@ describe('windowsHostedSessionRuntime', () => {
       randomHex: () => 'beefcafe',
     })).toEqual({
       windowId: 'happier',
-      title: 'Happier claude spawn-42-beefcafe',
+      title: 'PiggerCode claude spawn-42-beefcafe',
     });
   });
 
   it('normalizes configured Windows Terminal window names', () => {
-    expect(normalizeWindowsTerminalWindowName('  happier qa  ')).toBe('happier qa');
-    expect(normalizeWindowsTerminalWindowName('')).toBe('happier');
-    expect(normalizeWindowsTerminalWindowName('last')).toBe('happier');
-    expect(normalizeWindowsTerminalWindowName('-1')).toBe('happier');
+    expect(normalizeWindowsTerminalWindowName('  piggercode qa  ')).toBe('piggercode qa');
+    expect(normalizeWindowsTerminalWindowName('')).toBe('piggercode');
+    expect(normalizeWindowsTerminalWindowName('last')).toBe('piggercode');
+    expect(normalizeWindowsTerminalWindowName('-1')).toBe('piggercode');
   });
 
   it('lets the daemon environment override the requested Windows Terminal window name', () => {
@@ -62,7 +62,7 @@ describe('windowsHostedSessionRuntime', () => {
       actualMode: 'windows_terminal',
       requestedMode: 'windows_terminal',
       windowId: 'happy-codex-sess_123',
-      title: 'Happier codex sess_123',
+      title: 'PiggerCode codex sess_123',
     })).toEqual([
       'codex',
       '--happy-starting-mode',
@@ -74,7 +74,7 @@ describe('windowsHostedSessionRuntime', () => {
       '--happy-terminal-window-id',
       'happy-codex-sess_123',
       '--happy-terminal-title',
-      'Happier codex sess_123',
+      'PiggerCode codex sess_123',
     ]);
   });
 
@@ -101,7 +101,7 @@ describe('windowsHostedSessionRuntime', () => {
       requestedMode: 'windows_terminal',
       pid: 8888,
       windowId: 'happy-codex-sess_123',
-      title: 'Happier codex sess_123',
+      title: 'PiggerCode codex sess_123',
     })).toEqual({
       mode: 'windows_terminal',
       requested: 'windows_terminal',
@@ -109,7 +109,7 @@ describe('windowsHostedSessionRuntime', () => {
         host: 'windows_terminal',
         pid: 8888,
         windowId: 'happy-codex-sess_123',
-        title: 'Happier codex sess_123',
+        title: 'PiggerCode codex sess_123',
       },
     });
   });

@@ -15,7 +15,7 @@ test('resolveCliRuntimeLaunchSpec returns a runtime binary command from the snap
       daemonDistClosureFingerprint: '1111111111111111',
       manifest: {
         components: {
-          daemon: { entrypoint: 'cli/happier' },
+          daemon: { entrypoint: 'cli/piggercode' },
         },
       },
     },
@@ -24,9 +24,9 @@ test('resolveCliRuntimeLaunchSpec returns a runtime binary command from the snap
   assert.deepEqual(resolved, {
     source: 'runtime',
     cliDir: '/tmp/stack/runtime/builds/snap-1/cli',
-    entrypoint: '/tmp/stack/runtime/builds/snap-1/cli/happier',
+    entrypoint: '/tmp/stack/runtime/builds/snap-1/cli/piggercode',
     nodeEntrypoint: '/tmp/stack/runtime/builds/snap-1/cli/package-dist/index.mjs',
-    command: '/tmp/stack/runtime/builds/snap-1/cli/happier',
+    command: '/tmp/stack/runtime/builds/snap-1/cli/piggercode',
     args: [],
     runtimeBacked: true,
     daemonDistClosureFingerprint: '1111111111111111',
@@ -40,7 +40,7 @@ test('runtime CLI provenance is one canonical shape for daemon options and neste
       launchPath: '/tmp/runtime/builds/snap-a',
       daemonDistClosureFingerprint: 'abcdef1234567890',
       manifest: {
-        entrypoints: { daemon: 'cli/happier' },
+        entrypoints: { daemon: 'cli/piggercode' },
       },
     },
   });
@@ -214,9 +214,9 @@ test('resolveCliRuntimeLaunchSpec falls back to the canonical cli path when the 
   assert.deepEqual(resolved, {
     source: 'runtime',
     cliDir: '/tmp/stack/runtime/builds/snap-1/cli',
-    entrypoint: '/tmp/stack/runtime/builds/snap-1/cli/happier',
+    entrypoint: '/tmp/stack/runtime/builds/snap-1/cli/piggercode',
     nodeEntrypoint: '/tmp/stack/runtime/builds/snap-1/cli/package-dist/index.mjs',
-    command: '/tmp/stack/runtime/builds/snap-1/cli/happier',
+    command: '/tmp/stack/runtime/builds/snap-1/cli/piggercode',
     args: [],
     runtimeBacked: true,
     daemonDistClosureFingerprint: '1111111111111111',

@@ -30,7 +30,7 @@ export function assertAccountEncryptionModeAllowedByEffectiveClientRequirement(
     mode,
   )) return;
   throw Object.assign(
-    new Error('This Happier client requires end-to-end encryption, but the Account settings are stored as plaintext.'),
+    new Error('This PiggerCode client requires end-to-end encryption, but the Account settings are stored as plaintext.'),
     { code: 'CLIENT_E2EE_REQUIRED', retryable: false },
   );
 }
@@ -49,7 +49,7 @@ export function assertSessionEncryptionModeAllowedByEffectiveClientRequirement(
 ): void {
   if (isSessionEncryptionModeAllowedByEffectiveClientRequirement(mode)) return;
   throw Object.assign(
-    new Error('This Happier client requires end-to-end encryption, but the server or Account selected plaintext storage.'),
+    new Error('This PiggerCode client requires end-to-end encryption, but the server or Account selected plaintext storage.'),
     { code: 'CLIENT_E2EE_REQUIRED', retryable: false },
   );
 }

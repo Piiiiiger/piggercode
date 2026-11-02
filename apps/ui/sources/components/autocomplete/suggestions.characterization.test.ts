@@ -91,7 +91,7 @@ const REVIEW_SKILL = {
     name: 'review',
     displayName: 'Review',
     description: 'Review a diff',
-    path: '/repo/.happier/skills/review/SKILL.md',
+    path: '/repo/.piggercode/skills/review/SKILL.md',
     origin: 'happier',
 };
 
@@ -295,7 +295,7 @@ describe('getSuggestions characterization (EU-2)', () => {
                 structuredInput: {
                     kind: 'skill',
                     name: 'review',
-                    path: '/repo/.happier/skills/review/SKILL.md',
+                    path: '/repo/.piggercode/skills/review/SKILL.md',
                     displayName: 'Review',
                     description: 'Review a diff',
                     origin: 'happier',

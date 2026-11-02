@@ -90,11 +90,11 @@ describe('resolveDaemonLaunchSpec', () => {
 
     try {
       Object.defineProperty(process, 'execPath', {
-        value: 'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\happier.exe',
+        value: 'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\piggercode.exe',
         configurable: true,
       });
       process.argv = [
-        'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\happier.exe',
+        'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\piggercode.exe',
         'B:/~BUN/root/happier.exe',
         'daemon',
         'start',
@@ -104,7 +104,7 @@ describe('resolveDaemonLaunchSpec', () => {
       const result = await mod.resolveDaemonLaunchSpec(['daemon', 'start-sync']);
 
       expect(result).toEqual({
-        filePath: 'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\happier.exe',
+        filePath: 'C:\\hq\\winsvc005-live\\happier-v0.2.4-windows-x64\\piggercode.exe',
         args: ['daemon', 'start-sync'],
       });
       expect(ensureJavaScriptRuntimeExecutableMock).not.toHaveBeenCalled();
@@ -123,12 +123,12 @@ describe('resolveDaemonLaunchSpec', () => {
 
     try {
       Object.defineProperty(process, 'execPath', {
-        value: 'C:\\Users\\test_qa\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+        value: 'C:\\Users\\test_qa\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
         configurable: true,
       });
       process.argv = [
         'happier',
-        'C:\\Users\\test_qa\\.happier\\cli-preview\\versions\\0.2.8\\package-dist\\index.mjs',
+        'C:\\Users\\test_qa\\.piggercode\\cli-preview\\versions\\0.2.8\\package-dist\\index.mjs',
         'daemon',
         'restart',
       ];
@@ -137,8 +137,8 @@ describe('resolveDaemonLaunchSpec', () => {
       const result = await mod.resolveDaemonLaunchSpec(['daemon', 'start-sync']);
 
       expect(result).toEqual({
-        filePath: 'C:\\Users\\test_qa\\.happier\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
-        args: ['C:\\Users\\test_qa\\.happier\\cli-preview\\versions\\0.2.8\\package-dist\\index.mjs', 'daemon', 'start-sync'],
+        filePath: 'C:\\Users\\test_qa\\.piggercode\\tools\\js-runtime\\current\\bin\\happier-js-runtime.cmd',
+        args: ['C:\\Users\\test_qa\\.piggercode\\cli-preview\\versions\\0.2.8\\package-dist\\index.mjs', 'daemon', 'start-sync'],
       });
       expect(ensureJavaScriptRuntimeExecutableMock).not.toHaveBeenCalled();
     } finally {
@@ -249,7 +249,7 @@ describe('resolveDaemonLaunchSpec', () => {
 
   it('prefers the installed Windows packaged binary when launched under bun with an embedded bundle argv path', async () => {
     resolvePackagedRuntimeEntrypointMock.mockReturnValueOnce(
-      'C:\\Users\\test\\.happier\\cli-preview\\versions\\0.2.6-preview.9\\package-dist\\index.mjs',
+      'C:\\Users\\test\\.piggercode\\cli-preview\\versions\\0.2.6-preview.9\\package-dist\\index.mjs',
     );
     vi.doMock('node:fs', async () => {
       const actual = await vi.importActual<typeof import('node:fs')>('node:fs');
@@ -257,8 +257,8 @@ describe('resolveDaemonLaunchSpec', () => {
         ...actual,
         existsSync: (path: string) => {
           const normalized = path.replaceAll('\\', '/');
-          return normalized === 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs'
-            || normalized === 'C:/Users/test/.happier/cli-preview/versions/0.2.6-preview.9/happier.exe';
+          return normalized === 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/package-dist/index.mjs'
+            || normalized === 'C:/Users/test/.piggercode/cli-preview/versions/0.2.6-preview.9/piggercode.exe';
         },
       };
     });
@@ -279,7 +279,7 @@ describe('resolveDaemonLaunchSpec', () => {
       const result = await mod.resolveDaemonLaunchSpec(['daemon', 'start-sync']);
 
       expect(result).toEqual({
-        filePath: 'C:\\Users\\test\\.happier\\cli-preview\\versions\\0.2.6-preview.9\\happier.exe',
+        filePath: 'C:\\Users\\test\\.piggercode\\cli-preview\\versions\\0.2.6-preview.9\\piggercode.exe',
         args: ['daemon', 'start-sync'],
       });
       expect(ensureJavaScriptRuntimeExecutableMock).not.toHaveBeenCalled();
@@ -395,7 +395,7 @@ describe('resolveDaemonLaunchSpec', () => {
 
     try {
       Object.defineProperty(process, 'execPath', {
-        value: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        value: '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
         configurable: true,
       });
       process.argv = [

@@ -13,12 +13,12 @@ describe('setup welcome handoff', () => {
   it('keeps setup context without repeating installer artwork or the brand heading', () => {
     vi.stubEnv('TERM', 'xterm-256color');
     vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '');
-    expect(renderSetupWelcome({ machineName: 'preview-machine', subtitle: 'Choose your connection' }).split('\n')).toContain('Happier');
+    expect(renderSetupWelcome({ machineName: 'preview-machine', subtitle: 'Choose your connection' }).split('\n')).toContain('PiggerCode');
     vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '1');
     const output = renderSetupWelcome({ machineName: 'preview-machine', subtitle: 'Choose your connection', columns: 80 });
     expect(output).toContain('preview-machine');
     expect(output).toContain('Choose your connection');
-    expect(output.split('\n')).not.toContain('Happier');
+    expect(output.split('\n')).not.toContain('PiggerCode');
     expect(output).not.toMatch(PLANET_DOT);
   });
 
@@ -32,7 +32,7 @@ describe('setup welcome handoff', () => {
       question: 'How would you like to connect your devices?',
       choices: [
         { key: 'c', label: 'Happier Cloud (recommended)', description: 'No server maintenance', isDefault: true },
-        { key: 'r', label: 'Existing server', description: 'Address from the Happier app or your administrator' },
+        { key: 'r', label: 'Existing server', description: 'Address from the PiggerCode app or your administrator' },
         { key: 't', label: 'Host on this computer', description: 'Installs an additional server; needs a reachable network route' },
       ],
       columns: 92,
@@ -40,10 +40,10 @@ describe('setup welcome handoff', () => {
       isTTY: true,
     });
     const lines = output.split('\n');
-    expect(lines.some((line) => /^[ \u2800-\u28ff]{24} {3}Happier$/u.test(line))).toBe(true);
+    expect(lines.some((line) => /^[ \u2800-\u28ff]{24} {3}PiggerCode$/u.test(line))).toBe(true);
     expect(lines.some((line) => /^[ \u2800-\u28ff]{24} {3}How would you like to connect your devices\?$/u.test(line))).toBe(true);
     expect(output).toContain('Existing server');
-    expect(output).toContain('Happier app or your administrator');
+    expect(output).toContain('PiggerCode app or your administrator');
     expect(output.trimEnd().endsWith('Use ↑/↓ to move, Enter to select, or type a letter')).toBe(true);
   });
 
@@ -80,13 +80,13 @@ describe('setup welcome handoff', () => {
       isTTY: true,
     } as const;
     const narrow = renderSetupChoice(options);
-    expect(narrow).toContain('Happier\nChoose your connection\nComputer: preview-machine');
+    expect(narrow).toContain('PiggerCode\nChoose your connection\nComputer: preview-machine');
     expect(narrow.replace(/\n\s*/gu, ' ')).toContain('A deliberately long option whose meaning must wrap instead of being cropped');
     expect(narrow).not.toMatch(PLANET_DOT);
 
     vi.stubEnv('PIGGERCODE_INSTALLER_WELCOME_SHOWN', '1');
     const handedOff = renderSetupChoice({ ...options, columns: 100 });
-    expect(handedOff).not.toContain('Happier');
+    expect(handedOff).not.toContain('PiggerCode');
     expect(handedOff).toMatch(PLANET_DOT);
     expect(handedOff).toContain('Question');
     expect(handedOff).toContain('Computer: preview-machine');
@@ -150,7 +150,7 @@ describe('setup welcome handoff', () => {
       isTTY: true,
     });
     expect(prompt.message).toContain('Try again?\n› r) Retry\n  x) Exit');
-    expect(prompt.message).not.toContain('Happier');
+    expect(prompt.message).not.toContain('PiggerCode');
     expect(prompt.message).not.toContain('Computer:');
     expect(prompt.message).not.toMatch(PLANET_DOT);
     expect(prompt).toMatchObject({ animate: false, renderMessage: expect.any(Function) });

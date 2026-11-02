@@ -6,7 +6,7 @@ describe('parsePairingDeepLink', () => {
     it('parses canonical pairing deep links', () => {
         expect(
             parsePairingDeepLink(
-                'happier:///pair?v=1&pairId=pid123&secret=sec_abc&server=https%3A%2F%2Fstack.example.test',
+                'piggercode:///pair?v=1&pairId=pid123&secret=sec_abc&server=https%3A%2F%2Fstack.example.test',
             ),
         ).toEqual({
             pairId: 'pid123',
@@ -16,16 +16,16 @@ describe('parsePairingDeepLink', () => {
     });
 
     it('rejects non-pair links', () => {
-        expect(parsePairingDeepLink('happier:///account?abc')).toBeNull();
+        expect(parsePairingDeepLink('piggercode:///account?abc')).toBeNull();
     });
 
     it('rejects missing required params', () => {
-        expect(parsePairingDeepLink('happier:///pair?v=1&pairId=pid123')).toBeNull();
+        expect(parsePairingDeepLink('piggercode:///pair?v=1&pairId=pid123')).toBeNull();
     });
 
     it('ignores unsafe server URL schemes', () => {
         expect(
-            parsePairingDeepLink('happier:///pair?v=1&pairId=pid123&secret=sec_abc&server=javascript%3Aalert(1)'),
+            parsePairingDeepLink('piggercode:///pair?v=1&pairId=pid123&secret=sec_abc&server=javascript%3Aalert(1)'),
         ).toEqual({
             pairId: 'pid123',
             secret: 'sec_abc',
@@ -43,7 +43,7 @@ describe('buildPairingDeepLink', () => {
                 serverUrl: 'https://stack.example.test/path?x=1',
             }),
         ).toBe(
-            'happier:///pair?v=1&pairId=pid123&secret=sec_abc&server=https%3A%2F%2Fstack.example.test%2Fpath%3Fx%3D1',
+            'piggercode:///pair?v=1&pairId=pid123&secret=sec_abc&server=https%3A%2F%2Fstack.example.test%2Fpath%3Fx%3D1',
         );
     });
 });

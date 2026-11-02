@@ -17,7 +17,7 @@ describe('scmStash protocol contracts', () => {
           kind: 'branch',
           branch: 'main',
           createdAt: Date.now(),
-          message: '!!Happier<main>: WIP on main',
+          message: '!!PiggerCode<main>: WIP on main',
         },
       ],
       managedCount: 1,

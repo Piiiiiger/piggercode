@@ -185,7 +185,7 @@ function sendUnifiedTerminalHostDeadMessage(
   session.client.sendSessionEvent({
     type: 'message',
     message: params.promptDeliveryWasPending
-      ? 'Claude unified terminal host is not alive. The terminal process exited before Happier could send your prompt.'
+      ? 'Claude unified terminal host is not alive. The terminal process exited before PiggerCode could send your prompt.'
       : 'Claude unified terminal host is not alive. The terminal process exited.',
   });
 }
@@ -193,7 +193,7 @@ function sendUnifiedTerminalHostDeadMessage(
 function sendUnifiedTerminalDeliveryUnknownMessage(session: Session): void {
   session.client.sendSessionEvent({
     type: 'message',
-    message: 'Claude could not confirm whether your queued message reached the terminal. Happier stopped automatic retry to avoid sending the same prompt twice; send a new message or restart the session when you are ready.',
+    message: 'Claude could not confirm whether your queued message reached the terminal. PiggerCode stopped automatic retry to avoid sending the same prompt twice; send a new message or restart the session when you are ready.',
   });
 }
 

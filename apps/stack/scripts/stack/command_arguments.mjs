@@ -12,7 +12,7 @@ const STACK_NAME_FIRST_SUPPORTED_COMMANDS = new Set([
   'pr',
   'create-dev-auth-seed',
   'daemon',
-  'happier',
+  'piggercode',
   'bug-report',
   'env',
   'auth',

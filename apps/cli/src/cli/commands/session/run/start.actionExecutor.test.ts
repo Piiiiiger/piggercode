@@ -19,7 +19,7 @@ vi.mock('@/session/transport/http/sessionsHttp', () => ({
   fetchSessionById,
 }));
 
-describe('happier session run start (action executor)', () => {
+describe('piggercode session run start (action executor)', () => {
   it('routes through ActionExecutor with the expected action id and args', async () => {
     execute.mockResolvedValueOnce({
       ok: true,

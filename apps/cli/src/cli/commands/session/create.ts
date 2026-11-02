@@ -78,7 +78,7 @@ export async function cmdSessionCreate(
       await printJsonEnvelope({ ok: false, kind: 'session_create', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

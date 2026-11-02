@@ -45,7 +45,7 @@ function normalizeSessionAttachmentUploadPath(value: unknown): string | null {
 
   if (
     segments.length >= 5
-    && segments[0] === '.happier'
+    && segments[0] === '.piggercode'
     && segments[1] === 'uploads'
     && segments[2] === 'messages'
   ) {
@@ -53,7 +53,7 @@ function normalizeSessionAttachmentUploadPath(value: unknown): string | null {
   }
 
   const tempRootIndex = segments.findIndex((segment, index) => {
-    return segment === 'happier'
+    return segment === 'piggercode'
       && segments[index + 1] === 'uploads'
       && typeof segments[index + 2] === 'string'
       && segments[index + 3] === 'messages'

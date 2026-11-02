@@ -7,10 +7,10 @@ import { fail } from '@piggercode/cli-common/output';
 
 function usage(): string {
   return [
-    `${chalk.bold('happier capabilities')} - Inspect local capability metadata`,
+    `${chalk.bold('piggercode capabilities')} - Inspect local capability metadata`,
     '',
     `${chalk.bold('Usage:')}`,
-    '  happier capabilities [describe] [--json]',
+    '  piggercode capabilities [describe] [--json]',
     '',
   ].join('\n');
 }

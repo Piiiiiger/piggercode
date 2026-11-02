@@ -112,7 +112,7 @@ describe('readAuthMtlsFeatureEnv', () => {
 
     const res = readAuthMtlsFeatureEnv(env);
     expect(res.returnToAllowPrefixes).toEqual([
-      'happier://',
+      'piggercode://',
       'https://stack.example.test/base/ui',
     ]);
   });

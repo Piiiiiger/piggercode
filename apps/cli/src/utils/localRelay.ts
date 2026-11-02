@@ -85,7 +85,7 @@ async function listAllInstalledLocalRelays(): Promise<ReadonlyArray<{ channel: '
  * only one installed. The channel is the user's declared identity; we respect
  * it.
  *
- * Shared between `happier relay use/add/set --local`, `relay start-daemon`,
+ * Shared between `piggercode relay use/add/set --local`, `relay start-daemon`,
  * and `service install --local-relay`.
  */
 export async function resolveLocalRelay(params: Readonly<{
@@ -115,7 +115,7 @@ export async function resolveLocalRelay(params: Readonly<{
  */
 export async function buildMissingLocalRelayError(channel: 'stable' | 'preview' | 'dev'): Promise<string> {
   const others = (await listAllInstalledLocalRelays()).filter((e) => e.channel !== channel);
-  const base = `No local relay installed on the ${channel} channel. Run \`happier relay host install --channel ${channel}\` first.`;
+  const base = `No local relay installed on the ${channel} channel. Run \`piggercode relay host install --channel ${channel}\` first.`;
   if (others.length === 0) return base;
   const list = others.map((e) => `${e.channel} (${e.url})`).join(', ');
   return `${base}\n  Other installed relays: ${list}. Pass --local-channel <stable|preview|dev> to target one explicitly.`;

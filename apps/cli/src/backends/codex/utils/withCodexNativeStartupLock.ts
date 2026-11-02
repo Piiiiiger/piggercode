@@ -13,7 +13,7 @@ export async function withCodexNativeStartupLock<TResult>(
   // Serialize Happier-owned native starts for the OS user instead of duplicating
   // Codex's layered configuration parser. Ordinary session activity is unlocked.
   return await withJsonOwnerFileLock({
-    lockPath: join(userInfo().homedir, '.happier-codex-native-startup.lock'),
+    lockPath: join(userInfo().homedir, '.piggercode-codex-native-startup.lock'),
     // Native initialization retains its owning RPC budget; queued startup must
     // not impose a shorter competing timeout on another valid startup.
     timeoutMs: Number.POSITIVE_INFINITY,

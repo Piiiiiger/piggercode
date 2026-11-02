@@ -27,7 +27,7 @@ function buildDefaultStackTauriEnv(env, stackName) {
   }
 
   if (!String(nextEnv.PIGGERCODE_STACK_TAURI_IDENTIFIER ?? '').trim()) {
-    nextEnv.PIGGERCODE_STACK_TAURI_IDENTIFIER = `com.happier.stack.${normalizedStack}`;
+    nextEnv.PIGGERCODE_STACK_TAURI_IDENTIFIER = `com.piggercode.stack.${normalizedStack}`;
   }
   if (!String(nextEnv.PIGGERCODE_STACK_TAURI_PRODUCT_NAME ?? '').trim()) {
     nextEnv.PIGGERCODE_STACK_TAURI_PRODUCT_NAME = `Happier (${normalizedStack})`;

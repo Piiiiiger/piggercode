@@ -12,7 +12,7 @@ import type { DownloadTransferSource } from '@/transfers/targets/downloadTransfe
 export type PromptAssetTransferPayload = Extract<PromptAssetReadResponseV1, { ok: true }>['item'];
 
 function createTempPromptAssetPayloadPath(): string {
-  return join(tmpdir(), 'happier', 'prompt-assets', `${randomUUID()}.json`);
+  return join(tmpdir(), 'piggercode', 'prompt-assets', `${randomUUID()}.json`);
 }
 
 function normalizePromptAssetTransferName(title: string): string {
@@ -37,7 +37,7 @@ export async function writePromptAssetTransferPayload(
     throw new Error('Prompt transfer payload exceeds size limit');
   }
 
-  await mkdir(join(tmpdir(), 'happier', 'prompt-assets'), { recursive: true });
+  await mkdir(join(tmpdir(), 'piggercode', 'prompt-assets'), { recursive: true });
   await writeFile(filePath, fileBody, 'utf8');
 
   return {

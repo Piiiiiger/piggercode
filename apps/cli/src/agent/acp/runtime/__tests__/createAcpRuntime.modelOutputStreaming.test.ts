@@ -397,7 +397,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       mediaKind: 'image',
       mimeType: 'image/png',
       name: 'generated-image.png',
-      path: '.happier/uploads/generated/message-1/media-1.png',
+      path: '.piggercode/uploads/generated/message-1/media-1.png',
       sizeBytes: 67,
       sha256: 'a'.repeat(64),
       origin: {
@@ -482,7 +482,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       mediaKind: 'image',
       mimeType: 'image/png',
       name: 'image.png',
-      path: '.happier/uploads/generated/image-1/media-image-1.png',
+      path: '.piggercode/uploads/generated/image-1/media-image-1.png',
       sizeBytes: 67,
       origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
     } as const;
@@ -541,7 +541,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       mediaKind: 'image',
       mimeType: 'image/png',
       name: 'image.png',
-      path: '.happier/uploads/generated/image-1/media-image-1.png',
+      path: '.piggercode/uploads/generated/image-1/media-image-1.png',
       sizeBytes: 67,
       sha256: 'b'.repeat(64),
       origin: { source: 'provider-generated', agentId: 'codex', toolCallId: 'image-1' },
@@ -647,7 +647,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
               mediaKind: 'image',
               mimeType: 'image/png',
               name: `${sourceId}.png`,
-              path: `.happier/uploads/generated/${sourceId}.png`,
+              path: `.piggercode/uploads/generated/${sourceId}.png`,
               sizeBytes: 67,
               origin: { source: 'provider-generated', providerEventId: sourceId },
             }],
@@ -742,7 +742,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
               mediaKind: 'image',
               mimeType: 'image/png',
               name: `${sourceId}.png`,
-              path: `.happier/uploads/generated/${sourceId}.png`,
+              path: `.piggercode/uploads/generated/${sourceId}.png`,
               sizeBytes: 67,
               origin: { source: 'provider-generated', providerEventId: sourceId },
             }],
@@ -826,7 +826,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
                 mediaKind: 'image' as const,
                 mimeType: 'image/png' as const,
                 name: `${sourceId}-${index}.png`,
-                path: `.happier/uploads/generated/${sourceId}-${index}.png`,
+                path: `.piggercode/uploads/generated/${sourceId}-${index}.png`,
                 sizeBytes: 67,
                 origin: { source: 'provider-generated' as const, providerEventId: sourceId },
               })),
@@ -964,7 +964,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       mediaKind: 'image',
       mimeType: 'image/png',
       name: 'tool-output.png',
-      path: '.happier/uploads/artifacts/tool-1/media-tool-1.png',
+      path: '.piggercode/uploads/artifacts/tool-1/media-tool-1.png',
       sizeBytes: 67,
       sha256: 'b'.repeat(64),
       origin: {
@@ -1117,7 +1117,7 @@ describe('createAcpRuntime (transcript streaming vNext)', () => {
       expect(envelope?.kind).toBe('session_media.v1');
       expect(envelope?.payload?.media).toHaveLength(1);
       const mediaItem = envelope?.payload?.media?.[0];
-      expect(mediaItem?.path).toMatch(/^\.happier\/uploads\/generated\//);
+      expect(mediaItem?.path).toMatch(/^\.piggercode\/uploads\/generated\//);
       expect(JSON.stringify(finalCommit?.meta)).not.toContain(pngBytes.toString('base64'));
       expect(JSON.stringify(finalCommit?.meta)).not.toContain(workingDirectory);
       expect(JSON.stringify(finalCommit?.meta)).not.toContain('file://');

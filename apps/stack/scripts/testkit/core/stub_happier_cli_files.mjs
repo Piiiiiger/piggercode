@@ -30,7 +30,7 @@ export async function writeStubHappierCliFiles(
 
   if (typeof binHappierScript !== 'undefined') {
     await mkdir(join(cliDir, 'bin'), { recursive: true });
-    await writeFile(join(cliDir, 'bin', 'happier.mjs'), binHappierScript, 'utf-8');
+    await writeFile(join(cliDir, 'bin', 'piggercode.mjs'), binHappierScript, 'utf-8');
   }
 
   if (typeof tsconfigContent !== 'undefined') {

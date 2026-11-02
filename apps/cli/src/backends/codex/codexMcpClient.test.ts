@@ -277,7 +277,7 @@ describe('CodexMcpClient command detection', () => {
             const transportInstances = await getTransportInstances();
             transportInstances.length = 0;
 
-            const mcpServerCmdPath = 'C:\\Users\\herbz\\AppData\\Local\\Happier\\some-mcp-server.CMD';
+            const mcpServerCmdPath = 'C:\\Users\\herbz\\AppData\\Local\\PiggerCode\\some-mcp-server.CMD';
             const mod = await import('./codexMcpClient');
             const client = new mod.CodexMcpClient({
                 mode: 'mcp-server',

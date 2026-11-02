@@ -90,7 +90,7 @@ async function runInstall(extraArgs: readonly string[] = []): Promise<string[]> 
     }
 }
 
-describe('happier relay host install open-signup notice', () => {
+describe('piggercode relay host install open-signup notice', () => {
     let home = '';
     let preparedPayloadRoot = '';
     let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
@@ -128,7 +128,7 @@ describe('happier relay host install open-signup notice', () => {
 
         expect(logs).toContain('This relay listens on 192.168.1.20');
         expect(logs).toContain('create an account on it');
-        expect(logs).toContain('https://docs.happier.dev/self-hosting/auth');
+        expect(logs).toContain('https://github.com/Piiiiiger/piggercode#readme');
     });
 
     it('stays quiet for the loopback default', { timeout: 120_000 }, async () => {

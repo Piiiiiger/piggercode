@@ -7,14 +7,14 @@ import {
 
 describe('resolveHappierRuntimeContextEnv', () => {
   it('returns only PIGGERCODE_HOME_DIR when given just a home dir', () => {
-    expect(resolveHappierRuntimeContextEnv({ homeDir: '/home/.happier' })).toEqual({
-      PIGGERCODE_HOME_DIR: '/home/.happier',
+    expect(resolveHappierRuntimeContextEnv({ homeDir: '/home/.piggercode' })).toEqual({
+      PIGGERCODE_HOME_DIR: '/home/.piggercode',
     });
   });
 
   it('sets a single PIGGERCODE_SERVER_URL for a non-split stack (api === canonical) and omits local/public', () => {
     const env = resolveHappierRuntimeContextEnv({
-      homeDir: '/home/.happier',
+      homeDir: '/home/.piggercode',
       server: {
         activeServerId: 'cloud',
         canonicalServerUrl: 'https://api.happier.dev',
@@ -24,7 +24,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
     });
 
     expect(env).toEqual({
-      PIGGERCODE_HOME_DIR: '/home/.happier',
+      PIGGERCODE_HOME_DIR: '/home/.piggercode',
       PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
       PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
       PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
@@ -35,7 +35,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
 
   it('expresses a split local/public stack: SERVER=local, LOCAL=local, PUBLIC=canonical', () => {
     const env = resolveHappierRuntimeContextEnv({
-      homeDir: '/home/.happier',
+      homeDir: '/home/.piggercode',
       daemonLifecycleScopeId: 'stack_repo-remote-dev-d72117acdb__id_default',
       server: {
         activeServerId: 'android-keyboard-qa',
@@ -46,7 +46,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
     });
 
     expect(env).toEqual({
-      PIGGERCODE_HOME_DIR: '/home/.happier',
+      PIGGERCODE_HOME_DIR: '/home/.piggercode',
       PIGGERCODE_ACTIVE_SERVER_ID: 'android-keyboard-qa',
       PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: 'stack_repo-remote-dev-d72117acdb__id_default',
       PIGGERCODE_SERVER_URL: 'http://127.0.0.1:3005',
@@ -82,7 +82,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
     expect(resolveHappierRuntimeContextEnv({})).toEqual({});
     expect(
       resolveHappierRuntimeContextEnv({
-        homeDir: '/home/.happier',
+        homeDir: '/home/.piggercode',
         server: {
           activeServerId: '',
           canonicalServerUrl: '',
@@ -90,7 +90,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
           webappUrl: '',
         },
       }),
-    ).toEqual({ PIGGERCODE_HOME_DIR: '/home/.happier' });
+    ).toEqual({ PIGGERCODE_HOME_DIR: '/home/.piggercode' });
   });
 
   it('falls back to the api URL for PIGGERCODE_SERVER_URL when only the api URL is known', () => {
@@ -110,7 +110,7 @@ describe('resolveHappierRuntimeContextEnv', () => {
 
   it('never emits secret-bearing keys', () => {
     const env = resolveHappierRuntimeContextEnv({
-      homeDir: '/home/.happier',
+      homeDir: '/home/.piggercode',
       server: {
         activeServerId: 'cloud',
         canonicalServerUrl: 'https://api.happier.dev',

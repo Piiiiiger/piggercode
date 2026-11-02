@@ -38,9 +38,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     const upserts: unknown[] = [];
     const binding: TestBinding = {
@@ -81,9 +81,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     const order: string[] = [];
     let metadataUpdates = 0;
@@ -130,9 +130,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     let resolveCalls = 0;
     const upserts: unknown[] = [];
@@ -163,9 +163,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     let metadataAttempts = 0;
     const binding: TestBinding = {
@@ -206,9 +206,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
       sessionWorkflowActivityHeadlineV1: {
         v: 1,
         backendId: 'claude',
@@ -275,9 +275,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
       sessionWorkflowActivityHeadlineV1: {
         v: 1,
         backendId: 'claude',
@@ -349,9 +349,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
       sessionWorkflowActivityHeadlineV1: {
         v: 1,
         backendId: 'claude',
@@ -433,9 +433,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
       sessionWorkflowActivityHeadlineV1: {
         v: 1,
         backendId: 'claude',
@@ -523,9 +523,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
       sessionWorkflowActivityHeadlineV1: {
         v: 1,
         backendId: 'claude',
@@ -625,9 +625,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     const upserts: Array<{ namespace: string; kind: string; localId: string; content: unknown }> = [];
     const binding: TestBinding = {
@@ -716,9 +716,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
     const upserts: Array<{ namespace: string; kind: string; localId: string; content: unknown }> = [];
     const binding: TestBinding = {
@@ -795,9 +795,9 @@ describe('wireClaudeWorkflowActivitySource', () => {
       path: '/x',
       host: 'h',
       homeDir: '/home/tester',
-      happyHomeDir: '/home/tester/.happier',
-      happyLibDir: '/home/tester/.happier/lib',
-      happyToolsDir: '/home/tester/.happier/tools',
+      happyHomeDir: '/home/tester/.piggercode',
+      happyLibDir: '/home/tester/.piggercode/lib',
+      happyToolsDir: '/home/tester/.piggercode/tools',
     };
 
     it('reports an unusable startup snapshot on a signal that is on by default', () => {

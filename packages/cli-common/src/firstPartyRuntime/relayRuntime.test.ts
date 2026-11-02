@@ -14,10 +14,10 @@ describe('resolveRelayRuntimeDefaults', () => {
       channel: 'stable',
       homeDir: '/Users/alex',
     })).toMatchObject({
-      installRoot: '/Users/alex/.happier/self-host',
-      configDir: '/Users/alex/.happier/self-host/config',
-      dataDir: '/Users/alex/.happier/self-host/data',
-      logDir: '/Users/alex/.happier/self-host/logs',
+      installRoot: '/Users/alex/.piggercode/self-host',
+      configDir: '/Users/alex/.piggercode/self-host/config',
+      dataDir: '/Users/alex/.piggercode/self-host/data',
+      logDir: '/Users/alex/.piggercode/self-host/logs',
       serviceName: 'happier-server',
     });
 
@@ -27,8 +27,8 @@ describe('resolveRelayRuntimeDefaults', () => {
       channel: 'preview',
       homeDir: 'C:\\Users\\alex',
     })).toMatchObject({
-      installRoot: 'C:\\Users\\alex\\.happier\\self-host-preview',
-      binDir: 'C:\\Users\\alex\\.happier\\bin',
+      installRoot: 'C:\\Users\\alex\\.piggercode\\self-host-preview',
+      binDir: 'C:\\Users\\alex\\.piggercode\\bin',
       serviceName: 'happier-server-preview',
     });
   });

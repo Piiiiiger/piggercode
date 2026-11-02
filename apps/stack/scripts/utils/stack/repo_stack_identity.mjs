@@ -67,7 +67,7 @@ export function resolveStacksStorageRoot(env = process.env) {
   const configured = String(env.PIGGERCODE_STACK_STORAGE_DIR ?? '').trim();
   if (configured === '~') return homedir();
   if (configured.startsWith('~/')) return join(homedir(), configured.slice(2));
-  return configured || join(homedir(), '.happier', 'stacks');
+  return configured || join(homedir(), '.piggercode', 'stacks');
 }
 
 export function resolveRepoStackIdentity({

@@ -90,7 +90,7 @@ function buildCredentialBackoffKey(record: ConnectedServiceCredentialRecordV1): 
 
 function createMissingClaudeCodeScopeQuotaError(): ConnectedServiceQuotaFetchError {
   return new ConnectedServiceQuotaFetchError(
-    'Reconnect Claude in Happier before Claude Code quota can be used.',
+    'Reconnect Claude in PiggerCode before Claude Code quota can be used.',
     {
       status: 403,
       quotaFetchErrorCode: 'auth_failure',
@@ -704,7 +704,7 @@ export function createClaudeSubscriptionQuotaFetcher(params?: Readonly<{
     const body = await response.text().catch(() => '');
     if (response.status === 401) {
       throw new ConnectedServiceQuotaFetchError(
-        'Anthropic usage fetch failed (401): reconnect Claude in Happier and retry.',
+        'Anthropic usage fetch failed (401): reconnect Claude in PiggerCode and retry.',
         { status: 401, quotaFetchErrorCode: 'auth_failure' },
       );
     }

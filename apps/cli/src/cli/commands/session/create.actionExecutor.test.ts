@@ -16,7 +16,7 @@ beforeEach(() => {
   createCliActionExecutorFromCredentials.mockClear();
 });
 
-describe('happier session create (action executor)', () => {
+describe('piggercode session create (action executor)', () => {
   it('prints usage and does not execute any action when --help is requested', async () => {
     const { handleSessionCommand } = await import('./handleSessionCommand');
 

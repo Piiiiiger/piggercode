@@ -115,7 +115,7 @@ async function createScpReadyPayloadArchive(payloadRoot) {
   }
 }
 
-export function resolveRemoteInstalledFirstPartyBinaryPath({ componentId, channel, remoteHomeDir = '$HOME/.happier' }) {
+export function resolveRemoteInstalledFirstPartyBinaryPath({ componentId, channel, remoteHomeDir = '$HOME/.piggercode' }) {
   const normalizedChannel = normalizeChannel(channel);
   const component = getFirstPartyComponentCatalogEntry(componentId);
   const variant = resolveFirstPartyComponentPublicReleaseVariant({
@@ -156,7 +156,7 @@ export async function installRemoteFirstPartyComponent(
     componentId,
     channel,
     target,
-    remoteHomeDir = '$HOME/.happier',
+    remoteHomeDir = '$HOME/.piggercode',
     userAgent = 'hstack-remote-bootstrap',
   },
   deps = {},

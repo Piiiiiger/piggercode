@@ -83,7 +83,7 @@ describe('voiceConversationSession', () => {
         id: 'm1',
         active: true,
         activeAt: now,
-        metadata: { host: 'm1', platform: 'darwin', happyCliVersion: '1', happyHomeDir: '/tmp/.happier', homeDir: '/home/u' },
+        metadata: { host: 'm1', platform: 'darwin', happyCliVersion: '1', happyHomeDir: '/tmp/.piggercode', homeDir: '/home/u' },
       },
     };
     state.machineListByServerId = {};
@@ -136,7 +136,7 @@ describe('voiceConversationSession', () => {
     expect(spawnSession).toHaveBeenCalledWith(
       expect.objectContaining({
         machineId: 'm1',
-        directory: '/tmp/.happier/voice-agent',
+        directory: '/tmp/.piggercode/voice-agent',
         approvedNewDirectoryCreation: true,
         backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
         serverId: 'server-a',
@@ -173,7 +173,7 @@ describe('voiceConversationSession', () => {
     expect(spawnSession).toHaveBeenCalledWith(
       expect.objectContaining({
         machineId: 'm1',
-        directory: '/tmp/.happier/voice-agent',
+        directory: '/tmp/.piggercode/voice-agent',
       }),
     );
   });
@@ -627,7 +627,7 @@ describe('voiceConversationSession', () => {
       active: true,
       activeAt: Date.now() - 5 * 60_000,
       revokedAt: null,
-      metadata: { host: 'm1', platform: 'darwin', happyCliVersion: '1', happyHomeDir: '/tmp/.happier', homeDir: '/home/u' },
+      metadata: { host: 'm1', platform: 'darwin', happyCliVersion: '1', happyHomeDir: '/tmp/.piggercode', homeDir: '/home/u' },
       metadataVersion: 0,
       daemonState: null,
       daemonStateVersion: 0,
@@ -650,7 +650,7 @@ describe('voiceConversationSession', () => {
       activeAt: 10,
       updatedAt: 999,
       metadata: {
-        path: '/tmp/.happier/voice-agent',
+        path: '/tmp/.piggercode/voice-agent',
         host: 'm1',
         machineId: 'm1',
         homeDir: '/home/u',
@@ -665,7 +665,7 @@ describe('voiceConversationSession', () => {
         active: true,
         activeAt: 1000,
         updatedAt: 1000,
-        metadata: { path: '/tmp/.happier/voice-agent', host: 'm1', machineId: 'm1', homeDir: '/home/u' },
+        metadata: { path: '/tmp/.piggercode/voice-agent', host: 'm1', machineId: 'm1', homeDir: '/home/u' },
       };
     });
     patchSessionMetadataWithRetry.mockImplementation(async (sessionId: string, updater: (m: any) => any) => {
@@ -758,7 +758,7 @@ describe('voiceConversationSession', () => {
       id: 'legacy_direct',
       updatedAt: 20,
       metadata: {
-        path: '/tmp/.happier/voice-agent',
+        path: '/tmp/.piggercode/voice-agent',
         machineId: 'm1',
         directSessionV1: {
           v: 1,
@@ -776,7 +776,7 @@ describe('voiceConversationSession', () => {
       state.sessions.sys_voice_fresh = {
         id: 'sys_voice_fresh',
         updatedAt: 21,
-        metadata: { path: '/tmp/.happier/voice-agent', host: 'm1', machineId: 'm1', homeDir: '/home/u' },
+        metadata: { path: '/tmp/.piggercode/voice-agent', host: 'm1', machineId: 'm1', homeDir: '/home/u' },
       };
     });
     patchSessionMetadataWithRetry.mockImplementation(async (sessionId: string, updater: (m: any) => any) => {
@@ -792,7 +792,7 @@ describe('voiceConversationSession', () => {
     });
     expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'm1',
-      directory: '/tmp/.happier/voice-agent',
+      directory: '/tmp/.piggercode/voice-agent',
       transcriptStorage: 'persisted',
     }));
   });

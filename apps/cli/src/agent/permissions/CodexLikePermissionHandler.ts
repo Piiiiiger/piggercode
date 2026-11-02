@@ -180,7 +180,7 @@ export class CodexLikePermissionHandler extends BasePermissionHandler {
     const parsed = parseTrustedHappierToolsShellBridgeCommand(command);
     if (!parsed) return false;
     if (parsed.kind === 'list') return true;
-    if (parsed.source !== 'happier') return false;
+    if (parsed.source !== 'piggercode') return false;
     if (AUTO_APPROVE_PIGGERCODE_SHELL_BRIDGE_TOOLS.has(parsed.tool)) return true;
     if (parsed.argsJson == null) return false;
     try {

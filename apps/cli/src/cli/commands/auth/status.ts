@@ -28,7 +28,7 @@ export async function handleAuthStatus(argv: string[] = []): Promise<void> {
 
   if (!credentials) {
     console.log(fail(`Not authenticated on ${relayHost}`));
-    console.log(chalk.gray(`  Run ${cmd('happier auth login')} to sign in.`));
+    console.log(chalk.gray(`  Run ${cmd('piggercode auth login')} to sign in.`));
     return;
   }
 
@@ -40,7 +40,7 @@ export async function handleAuthStatus(argv: string[] = []): Promise<void> {
 
     console.log(fail(`Not authenticated on ${relayHost}`));
     console.log(chalk.gray('  The selected relay rejected the stored credentials.'));
-    console.log(chalk.gray(`  Run ${cmd('happier auth login --force')} to sign in again.`));
+    console.log(chalk.gray(`  Run ${cmd('piggercode auth login --force')} to sign in again.`));
     return;
   }
 
@@ -102,7 +102,7 @@ export async function handleAuthStatus(argv: string[] = []): Promise<void> {
     console.log(ok('Machine registered'));
   } else {
     console.log(warn('Machine not registered'));
-    console.log(chalk.gray(`  Run ${cmd('happier auth login --force')} to fix this.`));
+    console.log(chalk.gray(`  Run ${cmd('piggercode auth login --force')} to fix this.`));
   }
   console.log(daemonRunning ? ok('Daemon running') : neutral('Daemon not running'));
   console.log(definitionList([

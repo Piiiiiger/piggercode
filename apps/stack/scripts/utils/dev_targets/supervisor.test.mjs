@@ -173,7 +173,7 @@ test('authoritative remote server retires the prior target owner and becomes run
     platform: 'posix',
     ssh: 'mac-ssh',
     repoDir: '/Users/test/happier',
-    cliHomeDir: '/Users/test/.happier/mac',
+    cliHomeDir: '/Users/test/.piggercode/mac',
     remoteServerPort: 43005,
   };
   const calls = [];
@@ -282,7 +282,7 @@ test('authoritative Mac server forwards its target-owned Expo through the guest 
     platform: 'posix',
     ssh: 'mac-ssh',
     repoDir: '/Users/test/happier',
-    cliHomeDir: '/Users/test/.happier/mac',
+    cliHomeDir: '/Users/test/.piggercode/mac',
   };
   const calls = [];
   let releaseReady;
@@ -371,7 +371,7 @@ test('a co-located server stays available when deferred Expo or daemon preparati
     platform: 'posix',
     ssh: 'mac-ssh',
     repoDir: '/Users/test/happier',
-    cliHomeDir: '/Users/test/.happier/mac',
+    cliHomeDir: '/Users/test/.piggercode/mac',
   };
   await writeFile(credentialPath, '{"token":"secret"}\n', { mode: 0o600 });
   try {
@@ -486,7 +486,7 @@ test('dev target supervisor resumes an equivalent Mutagen project and pauses it 
     platform: 'posix',
     ssh: 'linux-ssh',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
   };
   const calls = [];
   try {
@@ -558,7 +558,7 @@ test('superseded controller cannot terminate the replacement Mutagen project', a
     platform: 'posix',
     ssh: 'linux-ssh',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
   };
   await writeFile(credentialPath, '{"token":"secret"}\n', { mode: 0o600 });
 
@@ -644,7 +644,7 @@ test('supervisor streams Mutagen status for the lifetime of the controller', asy
           platform: 'posix',
           ssh: 'linux-ssh',
           repoDir: '/home/dev/happier',
-          cliHomeDir: '/home/dev/.happier/linux',
+          cliHomeDir: '/home/dev/.piggercode/linux',
         }],
         env: {},
       },
@@ -714,14 +714,14 @@ test('supervisor keeps healthy targets and retries another target after its init
             limaInstance: 'hslqa',
             limaHome: '/tmp/lima-happier',
             repoDir: '/home/dev/happier',
-            cliHomeDir: '/home/dev/.happier/linux',
+            cliHomeDir: '/home/dev/.piggercode/linux',
           },
           {
             name: 'windows',
             platform: 'windows',
             ssh: 'windows-ssh',
             repoDir: 'C:/Users/dev/happier',
-            cliHomeDir: 'C:/Users/dev/.happier/windows',
+            cliHomeDir: 'C:/Users/dev/.piggercode/windows',
           },
         ],
         env: {},
@@ -785,7 +785,7 @@ test('supervisor retries when the only target bootstrap fails after its initial 
     platform: 'posix',
     ssh: 'linux-ssh',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
   };
   let bootstrapAttempts = 0;
   let notifyWorkerStarted;
@@ -866,7 +866,7 @@ test('supervisor increases retry delay across repeated target lifecycle failures
           platform: 'posix',
           ssh: 'linux-ssh',
           repoDir: '/home/dev/happier',
-          cliHomeDir: '/home/dev/.happier/linux',
+          cliHomeDir: '/home/dev/.piggercode/linux',
         }],
         env: {},
       },
@@ -930,7 +930,7 @@ test('remote worker exit restarts its configured target lifecycle without restar
           limaInstance: 'hslqa',
           limaHome: '/tmp/lima-happier',
           repoDir: '/home/dev/happier',
-          cliHomeDir: '/home/dev/.happier/linux',
+          cliHomeDir: '/home/dev/.piggercode/linux',
         }],
         env: {},
       },
@@ -1010,7 +1010,7 @@ test('dev target processes are tagged as Stack-owned infrastructure for owner-de
           platform: 'windows',
           ssh: 'windows-ssh',
           repoDir: 'C:/happier',
-          cliHomeDir: 'C:/Users/test/.happier/windows',
+          cliHomeDir: 'C:/Users/test/.piggercode/windows',
         }],
         env: { PIGGERCODE_STACK_STACK: 'repo-test' },
       },
@@ -1070,7 +1070,7 @@ test('remote worker exit reuses its independent healthy reverse tunnel', async (
           platform: 'posix',
           ssh: 'linux-ssh',
           repoDir: '/home/dev/happier',
-          cliHomeDir: '/home/dev/.happier/linux',
+          cliHomeDir: '/home/dev/.piggercode/linux',
         }],
         env: {},
       },
@@ -1173,14 +1173,14 @@ test('a slow target preparation does not delay another target worker', async () 
             platform: 'windows',
             ssh: 'windows-ssh',
             repoDir: 'C:/Users/dev/happier',
-            cliHomeDir: 'C:/Users/dev/.happier/windows',
+            cliHomeDir: 'C:/Users/dev/.piggercode/windows',
           },
           {
             name: 'linux',
             platform: 'posix',
             ssh: 'linux-ssh',
             repoDir: '/home/dev/happier',
-            cliHomeDir: '/home/dev/.happier/linux',
+            cliHomeDir: '/home/dev/.piggercode/linux',
           },
         ],
         env: {},
@@ -1257,14 +1257,14 @@ test('a failed target retries while another target is still preparing', async ()
             platform: 'windows',
             ssh: 'windows-ssh',
             repoDir: 'C:/Users/dev/happier',
-            cliHomeDir: 'C:/Users/dev/.happier/windows',
+            cliHomeDir: 'C:/Users/dev/.piggercode/windows',
           },
           {
             name: 'linux',
             platform: 'posix',
             ssh: 'linux-ssh',
             repoDir: '/home/dev/happier',
-            cliHomeDir: '/home/dev/.happier/linux',
+            cliHomeDir: '/home/dev/.piggercode/linux',
           },
         ],
         env: {},
@@ -1331,7 +1331,7 @@ test('dev target supervisor owns Mutagen publication, remote bootstrap, auth see
     platform: 'posix',
     ssh: 'linux-ssh',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
     remoteServerPort: 43005,
   };
   try {
@@ -1434,7 +1434,7 @@ test('dev target supervisor terminates a started Mutagen project when every targ
     platform: 'posix',
     ssh: 'linux-ssh',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
     remoteServerPort: null,
   };
   try {

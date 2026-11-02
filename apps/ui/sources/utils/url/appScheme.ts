@@ -23,7 +23,7 @@ function listConfiguredAppUrlSchemes(): string[] {
 export function resolveAppUrlScheme(): string {
     const configured = listConfiguredAppUrlSchemes()[0];
     if (configured) return configured;
-    return 'happier';
+    return 'piggercode';
 }
 
 export function resolveAppUrlProtocol(): string {
@@ -41,9 +41,10 @@ export function listAcceptedHappierUrlSchemes(): readonly string[] {
         result.push(value);
     }
 
-    if (!seen.has('happier')) {
-        seen.add('happier');
-        result.push('happier');
+    for (const fallback of ['piggercode', 'happier']) {
+        if (seen.has(fallback)) continue;
+        seen.add(fallback);
+        result.push(fallback);
     }
 
     return result;
@@ -53,5 +54,5 @@ export function isAcceptedHappierUrlProtocol(protocol: string): boolean {
     const normalized = normalizeScheme(String(protocol ?? '').replace(/:$/, ''));
     if (!normalized) return false;
     if (listAcceptedHappierUrlSchemes().includes(normalized)) return true;
-    return normalized.startsWith('happier');
+    return normalized.startsWith('piggercode') || normalized.startsWith('happier');
 }

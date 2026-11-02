@@ -49,7 +49,7 @@ function writeValidPinnedDaemonServiceForCurrentRuntime(homeDir: string, serverI
     writeFileSync(
       paths.installedPath,
       renderSystemdServiceUnit({
-        description: 'Happier Daemon',
+        description: 'PiggerCode Daemon',
         execStart: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
         env: {
           PIGGERCODE_HOME_DIR: homeDir,
@@ -69,7 +69,7 @@ function writeValidPinnedDaemonServiceForCurrentRuntime(homeDir: string, serverI
     paths.installedPath,
     renderWindowsScheduledTaskWrapperPs1({
       workingDirectory: homeDir,
-      programArgs: ['C:\\hq\\happier.exe', 'daemon', 'start-sync'],
+      programArgs: ['C:\\hq\\piggercode.exe', 'daemon', 'start-sync'],
       env: {
         PIGGERCODE_HOME_DIR: homeDir,
         PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: homeDir,

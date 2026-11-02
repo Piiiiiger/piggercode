@@ -4,7 +4,7 @@ import { buildCodexAppServerTurnInput } from './turnInput';
 
 describe('turnInput', () => {
     it('builds text, vendor plugin mentions, skills, and uploaded images through one structured path', () => {
-        const imagePath = '.happier/uploads/messages/m1/image.png';
+        const imagePath = '.piggercode/uploads/messages/m1/image.png';
         expect(buildCodexAppServerTurnInput({
             text: 'Use @gmail and $review',
             trustedLocalImagePaths: new Set([imagePath]),
@@ -59,7 +59,7 @@ describe('turnInput', () => {
     });
 
     it('converts local images only when the caller supplies a trusted path allowance', () => {
-        const imagePath = '.happier/uploads/messages/m1/image.png';
+        const imagePath = '.piggercode/uploads/messages/m1/image.png';
         const input: Parameters<typeof buildCodexAppServerTurnInput>[0] & {
             trustedLocalImagePaths: ReadonlySet<string>;
         } = {
@@ -86,7 +86,7 @@ describe('turnInput', () => {
     });
 
     it('converts final structured image inputs into Codex app-server image input', () => {
-        const imagePath = '.happier/uploads/messages/m1/image.png';
+        const imagePath = '.piggercode/uploads/messages/m1/image.png';
         expect(buildCodexAppServerTurnInput({
             text: 'Use uploaded image',
             trustedLocalImagePaths: new Set([imagePath]),
@@ -143,7 +143,7 @@ describe('turnInput', () => {
                     payload: {
                         attachments: [
                             {
-                                path: '.happier/uploads/messages/m1/private.png',
+                                path: '.piggercode/uploads/messages/m1/private.png',
                                 mimeType: 'image/png',
                             },
                         ],
@@ -155,7 +155,7 @@ describe('turnInput', () => {
                         {
                             kind: 'image',
                             mimeType: 'image/png',
-                            localPath: '.happier/uploads/messages/m1/private.png',
+                            localPath: '.piggercode/uploads/messages/m1/private.png',
                             provenance: { kind: 'sessionAttachmentUpload' },
                         },
                     ],

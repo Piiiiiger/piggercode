@@ -99,7 +99,7 @@ async function unpackTools(options = {}) {
   const binaryName = platformDir === 'x64-win32' ? 'zellij.exe' : 'zellij';
   fs.writeFileSync(path.join(unpackedPath, binaryName), 'zellij 0.44.3 for ' + platformDir + '\\n');
   fs.writeFileSync(path.join(unpackedPath, 'zellij-LICENSE'), 'fake zellij license\\n');
-  fs.writeFileSync(path.join(unpackedPath, '.happier-tools-manifest.json'), JSON.stringify({
+  fs.writeFileSync(path.join(unpackedPath, '.piggercode-tools-manifest.json'), JSON.stringify({
     platformDir,
     tools: { zellij: { version: '0.44.3' } },
   }, null, 2) + '\\n');
@@ -459,7 +459,7 @@ test('buildCliBinaryArtifactPayload compiles the local CLI binary into the paylo
     assert.equal(readFileSync(join(payloadDir, 'scripts', 'shims', 'git'), 'utf8'), '#!/bin/sh\nexit 0\n');
     assert.equal(readFileSync(join(payloadDir, 'tools', 'unpacked', 'zellij'), 'utf8'), 'zellij 0.44.3 for x64-linux\n');
     assert.deepEqual(
-      JSON.parse(readFileSync(join(payloadDir, 'tools', 'unpacked', '.happier-tools-manifest.json'), 'utf8')),
+      JSON.parse(readFileSync(join(payloadDir, 'tools', 'unpacked', '.piggercode-tools-manifest.json'), 'utf8')),
       {
         platformDir: 'x64-linux',
         tools: { zellij: { version: '0.44.3' } },

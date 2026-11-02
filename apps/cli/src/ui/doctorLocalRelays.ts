@@ -77,7 +77,7 @@ export function formatDoctorLocalRelayLines(
         .join(dim(', '));
       lines.push('');
       lines.push(chalk.yellow(`  • Tip: you have local relays for ${installedChannels}, but this CLI is ${formatReleaseChannel(currentCliReleaseChannel)}.`));
-      lines.push(dim(`    • If you use a local relay, install the ${currentCliReleaseChannel} relay: happier relay host install --channel ${currentCliReleaseChannel}`));
+      lines.push(dim(`    • If you use a local relay, install the ${currentCliReleaseChannel} relay: piggercode relay host install --channel ${currentCliReleaseChannel}`));
     }
   }
 

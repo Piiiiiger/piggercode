@@ -21,7 +21,7 @@ vi.mock('../taskRuntime.js', async (importOriginal) => {
 import { createCliUpdateHandler } from './cliUpdate.js';
 import { planLocalHappierCliUpdateRestart } from '../localDaemonCli.js';
 
-const CURRENT_CLI = { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' as const, version: '0.2.13' };
+const CURRENT_CLI = { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' as const, version: '0.2.13' };
 
 function statusJson(params: Readonly<{ running: boolean; serviceManaged: boolean; version?: string }>) {
   return {

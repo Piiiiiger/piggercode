@@ -57,7 +57,7 @@ describe('resolveDaemonServiceCliRuntimeFromEnv', () => {
               ...process.env,
               PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
               PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.happier`,
+              PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: `${homeDir}/.piggercode`,
               PIGGERCODE_DAEMON_SERVICE_CHANNEL: '',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: '',
             },

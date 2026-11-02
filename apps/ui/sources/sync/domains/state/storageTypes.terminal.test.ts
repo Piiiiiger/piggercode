@@ -55,9 +55,9 @@ describe('MetadataSchema', () => {
         const parsed = MetadataSchema.parse({
             path: '/tmp',
             host: 'host',
-            sessionLogPath: '/Users/test/.happier/logs/session.log',
+            sessionLogPath: '/Users/test/.piggercode/logs/session.log',
         } as any);
 
-        expect((parsed as any).sessionLogPath).toBe('/Users/test/.happier/logs/session.log');
+        expect((parsed as any).sessionLogPath).toBe('/Users/test/.piggercode/logs/session.log');
     });
 });

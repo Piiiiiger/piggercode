@@ -59,7 +59,7 @@ async function unpackTools(options = {}) {
   fs.mkdirSync(unpackedPath, { recursive: true });
   const binaryName = platformDir === 'x64-win32' ? 'zellij.exe' : 'zellij';
   fs.writeFileSync(path.join(unpackedPath, binaryName), 'zellij 0.44.3 for ' + platformDir + '\\n');
-  fs.writeFileSync(path.join(unpackedPath, '.happier-tools-manifest.json'), JSON.stringify({
+  fs.writeFileSync(path.join(unpackedPath, '.piggercode-tools-manifest.json'), JSON.stringify({
     platformDir,
     tools: { zellij: { version: '0.44.3' } },
   }, null, 2) + '\\n');

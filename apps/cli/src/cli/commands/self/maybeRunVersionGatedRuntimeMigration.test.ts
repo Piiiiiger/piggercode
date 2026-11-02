@@ -27,7 +27,7 @@ const {
     instanceId: 'default',
     uid: 1000,
     userHomeDir: '/tmp/user',
-    happierHomeDir: '/tmp/user/.happier',
+    happierHomeDir: '/tmp/user/.piggercode',
     serverUrl: 'https://company.example.test',
     publicServerUrl: 'https://company.example.test',
     webappUrl: 'https://company.example.test',
@@ -100,7 +100,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 1000,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -114,11 +114,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/tmp/user/.config/systemd/user/happier-daemon.preview.company.service',
+          path: '/tmp/user/.config/systemd/user/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'user',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -132,14 +132,14 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
       toVersion: '0.2.3',
       hadLegacyCurrentInstallWithoutVersionMarkers: false,
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     })).resolves.toBe(true);
 
     expect(resolveDaemonServiceCliRuntimeFromEnvMock).toHaveBeenCalled();
     expect(resolveDaemonServiceListEntriesMock).toHaveBeenCalled();
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--yes', '--mode', 'user'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -151,7 +151,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
       toVersion: '0.2.4',
       hadLegacyCurrentInstallWithoutVersionMarkers: false,
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     })).resolves.toBe(false);
 
     expect(resolveDaemonServiceCliRuntimeFromEnvMock).not.toHaveBeenCalled();
@@ -166,11 +166,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.preview.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -184,7 +184,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
       toVersion: '0.2.3',
       hadLegacyCurrentInstallWithoutVersionMarkers: false,
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     })).resolves.toBe(false);
 
     expect(handleServiceRepairCliCommandMock).not.toHaveBeenCalled();
@@ -204,7 +204,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'default',
         uid: 0,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -218,11 +218,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.default.service',
+          path: '/etc/systemd/system/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'preview',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         }];
       }
@@ -230,11 +230,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
         }];
     });
@@ -247,7 +247,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       })).resolves.toBe(true);
     } finally {
       if (previousSudoUser === undefined) {
@@ -260,7 +260,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledTimes(1);
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--yes', '--mode', 'system', '--system-user', 'developer'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -278,7 +278,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 0,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -292,11 +292,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.preview.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'stable',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -311,7 +311,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       })).resolves.toBe(true);
     } finally {
       if (previousSudoUser === undefined) {
@@ -323,7 +323,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--yes', '--mode', 'system', '--system-user', 'developer'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -341,7 +341,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 0,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -355,11 +355,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.preview.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'stable',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -374,7 +374,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair', '--mode', 'user'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       })).resolves.toBe(true);
     } finally {
       if (previousSudoUser === undefined) {
@@ -386,7 +386,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--mode', 'system', '--migrate', '--yes', '--system-user', 'developer'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -404,7 +404,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 0,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -418,11 +418,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.preview.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'stable',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -437,7 +437,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair', '--mode=user', '--system-user=stale-user'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       })).resolves.toBe(true);
     } finally {
       if (previousSudoUser === undefined) {
@@ -449,7 +449,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--mode=system', '--system-user=developer', '--migrate', '--yes'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -465,7 +465,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 0,
         userHomeDir: '/root',
-        happierHomeDir: '/root/.happier',
+        happierHomeDir: '/root/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -479,11 +479,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.preview.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'system',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -497,12 +497,12 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
       toVersion: '0.2.3',
       hadLegacyCurrentInstallWithoutVersionMarkers: false,
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     })).resolves.toBe(false);
 
     expect(handleServiceRepairCliCommandMock).not.toHaveBeenCalled();
     expect(console.warn).toHaveBeenCalledWith(
-      'Skipping automatic system background service migration because no system user could be resolved. Re-run manually with: sudo happier doctor repair --yes --mode system --system-user <user>',
+      'Skipping automatic system background service migration because no system user could be resolved. Re-run manually with: sudo piggercode doctor repair --yes --mode system --system-user <user>',
     );
   });
 
@@ -518,7 +518,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 501,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -532,11 +532,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
             serverId: 'company',
             name: 'Company',
             installed: true,
-            path: '/Users/test/Library/LaunchAgents/com.happier.cli.daemon.preview.company.plist',
+            path: '/Users/test/Library/LaunchAgents/com.piggercode.cli.daemon.preview.company.plist',
             platform: 'darwin',
             mode: 'user',
             releaseChannel: 'preview',
-            label: 'com.happier.cli.daemon.preview.company',
+            label: 'com.piggercode.cli.daemon.preview.company',
             targetMode: 'pinned',
           }]
         : [];
@@ -549,13 +549,13 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
       toVersion: '0.2.3',
       hadLegacyCurrentInstallWithoutVersionMarkers: false,
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     })).resolves.toBe(true);
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledTimes(1);
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--yes', '--mode', 'user'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -576,7 +576,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 1000,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -590,11 +590,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/tmp/user/.config/systemd/user/happier-daemon.preview.company.service',
+          path: '/tmp/user/.config/systemd/user/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'user',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -609,7 +609,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       })).resolves.toBe(true);
     } finally {
       (process.stdin as { isTTY?: boolean }).isTTY = originalStdinIsTTY;
@@ -618,7 +618,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--mode', 'user'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 
@@ -639,7 +639,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         instanceId: 'company',
         uid: 1000,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://company.example.test',
         publicServerUrl: 'https://company.example.test',
         webappUrl: 'https://company.example.test',
@@ -653,11 +653,11 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
           serverId: 'company',
           name: 'Company',
           installed: true,
-          path: '/tmp/user/.config/systemd/user/happier-daemon.preview.company.service',
+          path: '/tmp/user/.config/systemd/user/piggercode-daemon.preview.company.service',
           platform: 'linux',
           mode: 'user',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           targetMode: 'pinned',
         }];
       }
@@ -672,7 +672,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
         toVersion: '0.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
         forceNonInteractive: true,
       })).resolves.toBe(true);
     } finally {
@@ -682,7 +682,7 @@ describe('maybeRunVersionGatedRuntimeMigration', () => {
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--migrate', '--yes', '--mode', 'user'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
   });
 });

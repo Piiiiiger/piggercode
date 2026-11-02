@@ -97,7 +97,7 @@ export type ProviderUnderTest = {
   >;
   // How to spawn the provider through the Happy CLI (workspace-local).
   cli: {
-    // `happier dev <subcommand> ...`
+    // `piggercode dev <subcommand> ...`
     subcommand: string;
     extraArgs?: string[];
     // Most providers need a TTY for rich UI; our tests should be headless.

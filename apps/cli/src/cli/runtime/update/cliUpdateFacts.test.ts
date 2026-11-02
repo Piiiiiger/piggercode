@@ -58,21 +58,21 @@ describe('readCliUpdateFacts (K5)', () => {
     const execPath = installManaged('cli', '0.2.13');
     expect(readCliUpdateFacts({
       homeDir, publicReleaseRing: 'stable', currentVersion: '0.2.13', execPath, invokedPath: execPath, platform: 'win32', npmPackageName: '@piggercode/cli',
-    })).toMatchObject({ installSource: 'managed', canUpdateRemotely: false, updateCommand: 'happier self update' });
+    })).toMatchObject({ installSource: 'managed', canUpdateRemotely: false, updateCommand: 'piggercode self update' });
   });
 
   it('names the package manager\'s command for an npm install and never offers a remote update', () => {
     const packageRoot = join(homeDir, 'global', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
     writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }));
-    writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '');
+    writeFileSync(join(packageRoot, 'bin', 'piggercode.mjs'), '');
 
     expect(readCliUpdateFacts({
       homeDir,
       publicReleaseRing: 'stable',
       currentVersion: '0.2.12',
       execPath: '/usr/bin/node',
-      invokedPath: join(packageRoot, 'bin', 'happier.mjs'),
+      invokedPath: join(packageRoot, 'bin', 'piggercode.mjs'),
       platform: 'linux',
       npmPackageName: '@piggercode/cli',
     })).toMatchObject({
@@ -95,7 +95,7 @@ describe('readCliUpdateFacts (K5)', () => {
     const packageRoot = join(homeDir, 'homebrew', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
     writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }));
-    writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '');
+    writeFileSync(join(packageRoot, 'bin', 'piggercode.mjs'), '');
     const checkout = join(homeDir, 'src', 'happier', 'apps', 'cli', 'dist', 'index.mjs');
     mkdirSync(join(checkout, '..'), { recursive: true });
     writeFileSync(checkout, '');
@@ -103,7 +103,7 @@ describe('readCliUpdateFacts (K5)', () => {
     const read = (invokedPath: string) => readCliUpdateFacts({
       homeDir, publicReleaseRing: 'stable', currentVersion: '1.0.0', execPath: nodeKeg, invokedPath, platform: 'darwin', npmPackageName: '@piggercode/cli',
     });
-    expect(read(join(packageRoot, 'bin', 'happier.mjs'))).toMatchObject({
+    expect(read(join(packageRoot, 'bin', 'piggercode.mjs'))).toMatchObject({
       installSource: 'npm',
       updateCommand: 'npm install -g @piggercode/cli@latest',
     });

@@ -52,7 +52,7 @@ export async function handleConnectCommand(args: string[]): Promise<void> {
       const hiddenTarget = target;
       if (hiddenTarget && hiddenTarget.status === 'experimental' && !includeExperimental) {
         console.error(chalk.yellow(`Connect target '${hiddenTarget.id}' is experimental and not enabled by default.`));
-        console.error(chalk.gray(`Run: happier connect --all ${hiddenTarget.id}`));
+        console.error(chalk.gray(`Run: piggercode connect --all ${hiddenTarget.id}`));
         process.exit(1);
       }
       console.error(chalk.red(`Unknown connect target: ${subcommand}`));
@@ -78,36 +78,36 @@ function showConnectHelp(targets: ReadonlyArray<CloudConnectTarget>, opts: Reado
       ? targets.map((t) => formatTargetLine(t)).join('\n')
       : '  (no connect targets registered)';
     console.log(`
-${chalk.bold('happier connect')} - Connect AI vendor subscriptions and API keys to your relay
+${chalk.bold('piggercode connect')} - Connect AI vendor subscriptions and API keys to your relay
 
 ${chalk.bold('Usage:')}
 ${targetLines}
-  happier connect status       Show connection status for all vendors
-  happier connect help         Show this help message
-  happier connect --all ...    Include experimental providers
-  happier connect <target> --profile <id>      Store under a specific profile (default: default)
-  happier connect <target> --import --source <id>  Import a native login on this machine
-  happier connect <target> --paste             Headless mode: paste redirect URL
-  happier connect <target> --device            Use device-code auth (Codex)
-  happier connect codex --api-key              Store an OpenAI API key
-  happier connect claude --api-key             Store an Anthropic API key (not Claude subscription)
-  happier connect claude --setup-token         Store a Claude setup-token (default for claude)
-  happier connect claude --oauth               Store Claude subscription OAuth (advanced)
-  happier connect github --token               Store a GitHub access token
-  happier connect <target> --no-open           Do not attempt to open a browser
-  happier connect <target> --timeout <seconds> Override OAuth timeout
+  piggercode connect status       Show connection status for all vendors
+  piggercode connect help         Show this help message
+  piggercode connect --all ...    Include experimental providers
+  piggercode connect <target> --profile <id>      Store under a specific profile (default: default)
+  piggercode connect <target> --import --source <id>  Import a native login on this machine
+  piggercode connect <target> --paste             Headless mode: paste redirect URL
+  piggercode connect <target> --device            Use device-code auth (Codex)
+  piggercode connect codex --api-key              Store an OpenAI API key
+  piggercode connect claude --api-key             Store an Anthropic API key (not Claude subscription)
+  piggercode connect claude --setup-token         Store a Claude setup-token (default for claude)
+  piggercode connect claude --oauth               Store Claude subscription OAuth (advanced)
+  piggercode connect github --token               Store a GitHub access token
+  piggercode connect <target> --no-open           Do not attempt to open a browser
+  piggercode connect <target> --timeout <seconds> Override OAuth timeout
 
 ${chalk.bold('Description:')}
   The connect command allows you to securely store your connected-service credentials
-  on your relay. This enables you to use these services through Happier
+  on your relay. This enables you to use these services through PiggerCode
   without exposing credentials locally.
 
 ${chalk.bold('Examples:')}
-  happier connect ${targets[0]?.id ?? 'claude'}
-  happier connect status
+  piggercode connect ${targets[0]?.id ?? 'claude'}
+  piggercode connect status
 
 ${chalk.bold('Notes:')} 
-  • You must be authenticated with Happier first (run 'happier auth login')
+  • You must be authenticated with PiggerCode first (run 'piggercode auth login')
   • Credentials are encrypted and stored securely on your relay
   • You can manage your stored keys in the app
   ${opts.includeExperimental ? '' : '• Some providers are experimental; use --all to show them'}
@@ -116,7 +116,7 @@ ${chalk.bold('Notes:')}
 
 function formatTargetLine(target: CloudConnectTarget): string {
   const statusSuffix = target.status === 'wired' ? '' : chalk.gray(' (experimental)');
-  return `  happier connect ${target.id.padEnd(12)} ${target.vendorDisplayName}${statusSuffix}`;
+  return `  piggercode connect ${target.id.padEnd(12)} ${target.vendorDisplayName}${statusSuffix}`;
 }
 
 async function handleConnectVendor(target: CloudConnectTarget, options: ConnectParsedOptions): Promise<void> {
@@ -125,8 +125,8 @@ async function handleConnectVendor(target: CloudConnectTarget, options: ConnectP
     // Check if authenticated
     const credentials = await readCredentials();
     if (!credentials) {
-        console.log(warn('Not authenticated with Happier'));
-        console.log(chalk.gray('  Please run "happier auth login" first'));
+        console.log(warn('Not authenticated with PiggerCode'));
+        console.log(chalk.gray('  Please run "piggercode auth login" first'));
         process.exit(1);
     }
 
@@ -235,8 +235,8 @@ async function handleConnectStatus(targets: ReadonlyArray<CloudConnectTarget>): 
     // Check if authenticated
     const credentials = await readCredentials();
     if (!credentials) {
-        console.log(warn('Not authenticated with Happier'));
-        console.log(chalk.gray('  Please run "happier auth login" first'));
+        console.log(warn('Not authenticated with PiggerCode'));
+        console.log(chalk.gray('  Please run "piggercode auth login" first'));
         process.exit(1);
     }
 
@@ -279,8 +279,8 @@ async function handleConnectStatus(targets: ReadonlyArray<CloudConnectTarget>): 
     }
 
     console.log('');
-    console.log(chalk.gray('To connect a vendor, run: happier connect <vendor>'));
-    console.log(chalk.gray('Example: happier connect claude'));
+    console.log(chalk.gray('To connect a vendor, run: piggercode connect <vendor>'));
+    console.log(chalk.gray('Example: piggercode connect claude'));
     console.log('');
 }
 

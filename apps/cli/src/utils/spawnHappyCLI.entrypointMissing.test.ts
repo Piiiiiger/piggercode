@@ -111,11 +111,11 @@ describe('buildHappyCliSubprocessInvocation (missing entrypoint)', () => {
 
     const originalArgv = [...process.argv];
     const originalExecPath = process.execPath;
-    process.argv = ['/Applications/Happier.app/Contents/MacOS/happier', '/$bunfs/root/happier-darwin-arm64', 'daemon', 'start-sync'];
+    process.argv = ['/Applications/PiggerCode.app/Contents/MacOS/happier', '/$bunfs/root/happier-darwin-arm64', 'daemon', 'start-sync'];
 
     try {
       Object.defineProperty(process, 'execPath', {
-        value: '/Applications/Happier.app/Contents/MacOS/happier',
+        value: '/Applications/PiggerCode.app/Contents/MacOS/happier',
         configurable: true,
       });
       const mod = (await import('./spawnHappyCLI')) as typeof import('./spawnHappyCLI');

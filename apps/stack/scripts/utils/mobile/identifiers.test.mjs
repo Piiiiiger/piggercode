@@ -18,7 +18,7 @@ test('sanitizeBundleIdSegment produces a safe segment', () => {
 test('sanitizeUrlScheme produces a safe scheme', () => {
   assert.equal(sanitizeUrlScheme('Happier-Dev'), 'happier-dev');
   assert.equal(sanitizeUrlScheme('123bad'), 'h123bad');
-  assert.equal(sanitizeUrlScheme(''), 'happier-dev');
+  assert.equal(sanitizeUrlScheme(''), 'piggercode-dev');
 });
 
 test('stackSlugForMobileIds derives a stable slug', () => {
@@ -30,7 +30,7 @@ test('defaultDevClientIdentity is stable and safe', () => {
   const id = defaultDevClientIdentity({ user: 'Leeroy' });
   assert.equal(id.profile, 'internaldev');
   assert.equal(id.iosAppName, 'Happier (internal dev)');
-  assert.equal(id.scheme, 'happier-internaldev');
+  assert.equal(id.scheme, 'piggercode-internaldev');
   assert.equal(id.iosBundleId, 'dev.happier.app.dev.internal.devclient');
   assert.equal(id.androidPackage, 'dev.happier.app.internaldev.devclient');
 });
@@ -39,7 +39,7 @@ test('defaultDevClientIdentity supports the public dev profile', () => {
   const id = defaultDevClientIdentity({ profile: 'publicdev', user: 'Leeroy' });
   assert.equal(id.profile, 'publicdev');
   assert.equal(id.iosAppName, 'Happier (dev)');
-  assert.equal(id.scheme, 'happier-dev');
+  assert.equal(id.scheme, 'piggercode-dev');
   assert.equal(id.iosBundleId, 'dev.happier.app.publicdev.devclient');
   assert.equal(id.androidPackage, 'dev.happier.app.publicdev.devclient');
 });

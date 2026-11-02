@@ -40,7 +40,7 @@ export function useDesktopBackgroundServiceAutostart(): DesktopBackgroundService
 
     // The one ambient observation, read where every other desktop surface reads it. This row used
     // to await `inspect()` once and keep the answer, so a mode changed by anyone else — the gate's
-    // post-setup re-read, the Machines refresh, `happier service install --autostart …` in a
+    // post-setup re-read, the Machines refresh, `piggercode service install --autostart …` in a
     // terminal — was not reflected until it remounted.
     const { inspection, refresh } = useDesktopLocalInspection(supported);
     const facts = inspection.status === 'resolved' ? inspection.facts : null;

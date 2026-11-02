@@ -788,7 +788,7 @@ describe('Action Spec Registry', () => {
       },
       windowsRemoteSessionLaunchMode: 'hidden',
       windowsRemoteSessionConsole: 'hidden',
-      windowsTerminalWindowName: 'Happier',
+      windowsTerminalWindowName: 'PiggerCode',
       codexBackendMode: 'appServer',
       agentRuntimeDescriptorV1: {
         v: 1,

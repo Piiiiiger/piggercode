@@ -15,7 +15,7 @@ export function expandHome(p, env = process.env) {
 
 export function getCanonicalHomeDirFromEnv(env = process.env) {
   const fromEnv = (env.PIGGERCODE_STACK_CANONICAL_HOME_DIR ?? '').trim();
-  return fromEnv ? expandHome(fromEnv, env) : join(resolveHomeDirFromEnv(env), '.happier-stack');
+  return fromEnv ? expandHome(fromEnv, env) : join(resolveHomeDirFromEnv(env), '.piggercode-stack');
 }
 
 export function getCanonicalHomeEnvPathFromEnv(env = process.env) {

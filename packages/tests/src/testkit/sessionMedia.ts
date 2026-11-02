@@ -66,9 +66,9 @@ export async function createGeneratedSessionMediaFixture(params: Readonly<{
   assertSafeMessageLocalIdSegment(messageLocalId);
   const mediaId = randomUUID();
   const fileName = `${mediaId}-generated-image.png`;
-  const relativeMediaPath = ['.happier', 'uploads', 'generated', messageLocalId, fileName].join('/');
+  const relativeMediaPath = ['.piggercode', 'uploads', 'generated', messageLocalId, fileName].join('/');
   const mediaPath = join(params.workspaceDir, relativeMediaPath);
-  await mkdir(join(params.workspaceDir, '.happier', 'uploads', 'generated', messageLocalId), { recursive: true });
+  await mkdir(join(params.workspaceDir, '.piggercode', 'uploads', 'generated', messageLocalId), { recursive: true });
   await writeFile(mediaPath, tinyPngBytes);
 
   const metadataEnvelope = {

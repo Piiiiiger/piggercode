@@ -81,7 +81,7 @@ test('installVersionedPayload resolves Windows .exe payloads and shims', async (
       const result = await installVersionedPayload({
         componentId: 'happier-cli',
         versionId: '1.0.0',
-        payloadRoot: await createPayload(homeDir, '1.0.0', 'windows-version', 'happier.exe'),
+        payloadRoot: await createPayload(homeDir, '1.0.0', 'windows-version', 'piggercode.exe'),
         processEnv: env,
       });
 
@@ -92,11 +92,11 @@ test('installVersionedPayload resolves Windows .exe payloads and shims', async (
 
       assert.equal(result.currentVersionId, '1.0.0');
       assert.equal(result.hadLegacyCurrentInstallWithoutVersionMarkers, false);
-      assert.equal(paths.binaryPath, join(homeDir, 'cli', 'current', 'happier.exe'));
-      assert.equal(paths.shimPaths[0], join(homeDir, 'bin', 'happier.exe'));
+      assert.equal(paths.binaryPath, join(homeDir, 'cli', 'current', 'piggercode.exe'));
+      assert.equal(paths.shimPaths[0], join(homeDir, 'bin', 'piggercode.exe'));
       assert.equal(await readFile(paths.binaryPath, 'utf8'), 'windows-version');
       assert.equal(await readFile(paths.shimPaths[0], 'utf8'), 'windows-version');
-      assert.equal(existsSync(join(homeDir, 'bin', 'happier.exe')), true);
+      assert.equal(existsSync(join(homeDir, 'bin', 'piggercode.exe')), true);
     } finally {
       await rm(homeDir, { recursive: true, force: true });
     }

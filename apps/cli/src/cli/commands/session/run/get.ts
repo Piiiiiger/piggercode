@@ -19,7 +19,7 @@ export async function cmdSessionRunGet(
   const [idOrPrefix = '', runId = ''] = readCommandPositionals(argv, { startIndex: 2 });
 
   if (!idOrPrefix || !runId) {
-    throw new Error('Usage: happier session run get <session-id-or-prefix> <run-id> [--include-structured] [--json]');
+    throw new Error('Usage: piggercode session run get <session-id-or-prefix> <run-id> [--include-structured] [--json]');
   }
 
   const credentials = await deps.readCredentialsFn();
@@ -28,7 +28,7 @@ export async function cmdSessionRunGet(
       await printJsonEnvelope({ ok: false, kind: 'session_run_get', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

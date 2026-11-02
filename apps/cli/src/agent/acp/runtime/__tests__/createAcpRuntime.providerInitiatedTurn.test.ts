@@ -520,7 +520,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     return sent.find((message): message is Extract<ACPMessageData, { type: T }> => message.type === type);
   }
 
-  it.each([false, true])('opens a task turn when the provider reports running without a Happier turn in flight (idle cancel: %s)', async (cancelWhileIdle) => {
+  it.each([false, true])('opens a task turn when the provider reports running without a PiggerCode turn in flight (idle cancel: %s)', async (cancelWhileIdle) => {
     const backend = createFakeAcpRuntimeBackend();
     const sent: ACPMessageData[] = [];
     const keepAliveCalls: Array<[boolean, string]> = [];
@@ -611,7 +611,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     expect(keepAliveCalls).toContainEqual([false, 'remote']);
   });
 
-  it('does not open a provider-initiated turn while a Happier turn is in flight', async () => {
+  it('does not open a provider-initiated turn while a PiggerCode turn is in flight', async () => {
     const backend = createFakeAcpRuntimeBackend();
     const sent: ACPMessageData[] = [];
 
@@ -642,7 +642,7 @@ describe('createAcpRuntime (provider-initiated turns)', () => {
     expect(findTaskMarker(sent, 'task_complete')).toBeTruthy();
   });
 
-  it('adopts the open provider-initiated turn when a Happier prompt turn begins', async () => {
+  it('adopts the open provider-initiated turn when a PiggerCode prompt turn begins', async () => {
     const backend = createFakeAcpRuntimeBackend();
     const sent: ACPMessageData[] = [];
 

@@ -23,7 +23,7 @@ function assertCoreAuthLoginInvocation(invocation) {
   assert.deepEqual(invocation.args, ['auth', 'login']);
 }
 
-test('guided stack auth login invokes core happier auth login directly', async () => {
+test('guided stack auth login invokes core piggercode auth login directly', async () => {
   const rootDir = getStackRootFromMeta(import.meta.url);
   const webappUrl = 'http://localhost:1234';
   const inv = await buildStackAuthLoginInvocation({ rootDir, stackName: 'main', webappUrl });

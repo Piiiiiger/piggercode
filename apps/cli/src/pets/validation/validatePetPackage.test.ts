@@ -39,7 +39,7 @@ describe('validatePetPackage', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: '..sprites/spritesheet.png',
     }));
     await writeFile(join(spritesheetDir, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -65,7 +65,7 @@ describe('validatePetPackage', () => {
     await writeFile(join(outside, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.png',
     }));
     await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -90,7 +90,7 @@ describe('validatePetPackage', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.png',
     }));
     await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -130,7 +130,7 @@ describe('validatePetPackage', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.png',
     }));
     await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));

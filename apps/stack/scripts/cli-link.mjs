@@ -11,7 +11,7 @@ import { printResult, wantsHelp, wantsJson } from './utils/cli/cli.mjs';
  *
  * What it does:
  * - optionally builds the monorepo CLI package (apps/cli or packages/cli) (controlled by env/flags)
- * - installs `happier`/`hstack` shims under `<homeDir>/bin` (default: `~/.happier-stack/bin`) (recommended over `npm link`)
+ * - installs `happier`/`hstack` shims under `<homeDir>/bin` (default: `~/.piggercode-stack/bin`) (recommended over `npm link`)
  *
  * Env:
  * - PIGGERCODE_STACK_CLI_BUILD=0 to skip building happier-cli

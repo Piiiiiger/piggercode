@@ -170,7 +170,7 @@ describe('readDaemonState', () => {
                         startedWithPublicReleaseChannel: 'preview',
                         runtimeId: 'runtime-654',
                         startupSource: 'background-service',
-                        serviceLabel: 'com.happier.cli.daemon.default',
+                        serviceLabel: 'com.piggercode.cli.daemon.default',
                         controlToken: 'ownership-token-654',
                     },
                     null,
@@ -182,7 +182,7 @@ describe('readDaemonState', () => {
             const state = await readDaemonState();
             expect(state?.runtimeId).toBe('runtime-654');
             expect(state?.startupSource).toBe('background-service');
-            expect(state?.serviceLabel).toBe('com.happier.cli.daemon.default');
+            expect(state?.serviceLabel).toBe('com.piggercode.cli.daemon.default');
             expect(state?.startedWithPublicReleaseChannel).toBe('preview');
         });
     });

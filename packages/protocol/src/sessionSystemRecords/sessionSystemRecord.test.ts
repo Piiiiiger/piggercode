@@ -21,7 +21,7 @@ function validSummaryShardPayload() {
     createdAtToMs: 2000,
     summary: 'We discussed memory search and shard indexing.',
     keywords: ['memory', 'search'],
-    entities: ['Happier'],
+    entities: ['PiggerCode'],
     decisions: ['Store memory summaries outside the transcript.'],
   };
 }

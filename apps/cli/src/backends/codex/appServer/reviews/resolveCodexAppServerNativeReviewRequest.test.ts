@@ -85,7 +85,7 @@ describe('resolveCodexAppServerNativeReviewRequest', () => {
     });
   });
 
-  it('does not map Happier base commits to Codex commit targets', () => {
+  it('does not map PiggerCode base commits to Codex commit targets', () => {
     const resolved = resolveCodexAppServerNativeReviewRequest({
       start: {
         intent: 'review',

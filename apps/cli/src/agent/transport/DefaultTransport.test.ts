@@ -13,7 +13,7 @@ describe('DefaultTransport handleStderr', () => {
     'Please run /login - API Error: 401 Invalid authentication credentials',
     'API Error: 401 OAuth access token has been revoked',
     'Token refresh failed: 401',
-    'The Happier API returned HTTP 401.',
+    'The PiggerCode API returned HTTP 401.',
     'Request failed with status code 401',
     'Authentication failed: unauthorized',
     'Auth error: credential rejected',

@@ -30,7 +30,7 @@ async function withPlatform<T>(platform: NodeJS.Platform, run: () => Promise<T>)
 }
 
 function binaryName(): string {
-  return process.platform === 'win32' ? 'happier.exe' : 'happier';
+  return process.platform === 'win32' ? 'piggercode.exe' : 'piggercode';
 }
 
 async function createPayload(rootDir: string, versionId: string): Promise<string> {

@@ -122,7 +122,7 @@ describe('UpdatesPopoverButton', () => {
     it('the open header says "not checked" when an online machine was never asked, like the pill', async () => {
         machinesState.value = [{
             id: 'studio', seq: 1, createdAt: 1, updatedAt: 1, active: true, activeAt: Date.now(),
-            metadata: { host: 'studio', platform: 'darwin', happyCliVersion: '0.2.12', happyHomeDir: '/h/.happier', homeDir: '/h' },
+            metadata: { host: 'studio', platform: 'darwin', happyCliVersion: '0.2.12', happyHomeDir: '/h/.piggercode', homeDir: '/h' },
         } as Machine];
         try {
             const screen = await renderScreen(<UpdatesPopoverButton summary={TWO} variant="icon" testID="pill" />);
@@ -153,10 +153,10 @@ describe('UpdatesPopoverButton', () => {
         machinesState.value = [{
             id: 'studio', seq: 1, createdAt: 1, updatedAt: 1, active: true, activeAt: Date.now(),
             metadata: {
-                host: 'studio', platform: 'darwin', happyCliVersion: '0.2.12', happyHomeDir: '/h/.happier', homeDir: '/h',
+                host: 'studio', platform: 'darwin', happyCliVersion: '0.2.12', happyHomeDir: '/h/.piggercode', homeDir: '/h',
                 cliUpdate: {
                     currentVersion: '0.2.12', latestVersion: '0.2.13', channel: 'stable', installSource: 'managed',
-                    updateCommand: 'happier self update', canUpdateRemotely: true, lastUpdate: null,
+                    updateCommand: 'piggercode self update', canUpdateRemotely: true, lastUpdate: null,
                 },
             },
         } as Machine];

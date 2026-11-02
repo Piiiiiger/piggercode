@@ -8,7 +8,7 @@ import { resolveHappierToolsShellBridgeContextEnv } from './resolveHappierToolsS
 
 /**
  * Build the POSIX shell command a shell_bridge provider runs to invoke
- * `happier tools ...`.
+ * `piggercode tools ...`.
  *
  * By default this command stays clean and relies on the provider shell's inherited
  * environment. Set PIGGERCODE_SHELL_BRIDGE_CONTEXT_ENV=home or full to inline the

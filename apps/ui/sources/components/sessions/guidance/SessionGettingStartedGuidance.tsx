@@ -247,7 +247,7 @@ function subtitleForKind(kind: SessionGettingStartedDecisionKind, targetLabel: s
     }
 }
 
-function buildCliCommandName(): 'happier' | 'hprev' | 'hdev' {
+function buildCliCommandName(): 'piggercode' | 'hprev' | 'hdev' {
     return buildHappierCliCommandName({
         appVariant: resolveCurrentAppVariant(),
         distTagOverride: config.cliNpmDistTag,

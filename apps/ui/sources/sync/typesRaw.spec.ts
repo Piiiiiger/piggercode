@@ -522,7 +522,7 @@ describe('Zod Transform - WOLOG Content Normalization', () => {
                                     category: 'generated',
                                     mediaKind: 'image',
                                     name: 'generated.png',
-                                    path: '.happier/uploads/generated/m1/generated.png',
+                                    path: '.piggercode/uploads/generated/m1/generated.png',
                                     mimeType: 'image/png',
                                     sizeBytes: 10,
                                     origin: { source: 'provider-generated' },

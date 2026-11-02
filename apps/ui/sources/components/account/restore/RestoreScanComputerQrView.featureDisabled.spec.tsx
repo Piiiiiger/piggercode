@@ -41,7 +41,7 @@ vi.mock('@/sync/domains/server/activeServerSwitch', () => ({
 }));
 
 vi.mock('@/auth/pairing/pairingUrl', () => ({
-    buildPairingDeepLink: () => 'happier:///pair?v=1&pairId=p&secret=s',
+    buildPairingDeepLink: () => 'piggercode:///pair?v=1&pairId=p&secret=s',
     parsePairingDeepLink: () => ({ pairId: 'pair_123', secret: 'secret_123', serverUrl: null }),
 }));
 

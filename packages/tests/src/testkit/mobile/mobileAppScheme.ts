@@ -1,11 +1,11 @@
-const DEFAULT_APP_SCHEME = 'happier';
+const DEFAULT_APP_SCHEME = 'piggercode';
 
 const APP_SCHEME_BY_APP_ID = new Map<string, string>([
-  ['dev.happier.app.internaldev', 'happier-internaldev'],
-  ['dev.happier.app.internaldev.devclient', 'happier-internaldev-devclient'],
-  ['dev.happier.app.dev.internal.devclient', 'happier-internaldev'],
-  ['dev.happier.app.publicdev', 'happier-dev'],
-  ['dev.happier.app.publicdev.devclient', 'happier-dev-devclient'],
+  ['dev.happier.app.internaldev', 'piggercode-internaldev'],
+  ['dev.happier.app.internaldev.devclient', 'piggercode-internaldev-devclient'],
+  ['dev.happier.app.dev.internal.devclient', 'piggercode-internaldev'],
+  ['dev.happier.app.publicdev', 'piggercode-dev'],
+  ['dev.happier.app.publicdev.devclient', 'piggercode-dev-devclient'],
 ]);
 
 export function resolveMobileAppScheme(

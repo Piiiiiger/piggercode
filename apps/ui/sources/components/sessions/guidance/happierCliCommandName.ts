@@ -24,8 +24,8 @@ export function buildHappierCliCommandName(input: Readonly<{
     appVariant: AppVariant;
     distTagOverride?: unknown;
     channelOverride?: HappierCliInstallChannel;
-}>): 'happier' | 'hprev' | 'hdev' {
+}>): 'piggercode' | 'hprev' | 'hdev' {
     const channel = resolveInstallChannel(input);
     if (channel === 'dev') return 'hdev';
-    return channel === 'preview' ? 'hprev' : 'happier';
+    return channel === 'preview' ? 'hprev' : 'piggercode';
 }

@@ -51,7 +51,7 @@ describe('cli.pathExposure system task handlers', () => {
 posixOnly('cli.pathExposure system task handlers (POSIX)', () => {
   it('exposes the managed CLI bin dir in the shell profile and removes only that entry again', async () => {
     const homeDir = await createHome();
-    const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PIGGERCODE_HOME_DIR: join(homeDir, '.happier') };
+    const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode') };
     const zshrcPath = join(homeDir, '.zshrc');
     await writeFile(zshrcPath, '# mine\n', 'utf8');
 
@@ -62,7 +62,7 @@ posixOnly('cli.pathExposure system task handlers (POSIX)', () => {
       failure: null,
       existingCommand: null,
     });
-    expect(await readFile(zshrcPath, 'utf8')).toContain(`export PATH="${join(homeDir, '.happier', 'bin')}:$PATH"`);
+    expect(await readFile(zshrcPath, 'utf8')).toContain(`export PATH="${join(homeDir, '.piggercode', 'bin')}:$PATH"`);
 
     const removed = await collectResult(createCliPathExposureRemoveHandler({ processEnv }), LOCAL_PARAMS);
     expect(removed.result).toEqual({ removed: true, failure: null });
@@ -74,7 +74,7 @@ posixOnly('cli.pathExposure system task handlers (POSIX)', () => {
       return;
     }
     const homeDir = await createHome();
-    const processEnv = { HOME: homeDir, SHELL: '/usr/bin/fish', PIGGERCODE_HOME_DIR: join(homeDir, '.happier') };
+    const processEnv = { HOME: homeDir, SHELL: '/usr/bin/fish', PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode') };
     const profilePath = join(homeDir, '.profile');
     await writeFile(profilePath, '# locked\n', 'utf8');
     await chmod(profilePath, 0o444);

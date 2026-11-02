@@ -84,7 +84,7 @@ notes/
 .project/qa/evidence-snapshots/
 .project/qa/locks/
 .project/qa/score-history/
-.happier/local/
+.piggercode/local/
 .argent/
 .vscode/mcp.json
 /output
@@ -108,7 +108,7 @@ _.env.pipeline.production.local
 
 # Local package-manager/runtime artifacts
 /package-lock.json
-**/.happier/
+**/.piggercode/
 
 # Local probe/debug scratch files
 /apps/cli/tmp-*

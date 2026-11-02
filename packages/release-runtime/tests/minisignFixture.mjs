@@ -32,7 +32,7 @@ export function signMinisignMessage({ message, keyId, privateKey }) {
   const trustedSuffix = Buffer.from(trustedComment.slice('trusted comment: '.length), 'utf-8');
   const globalSignature = sign(null, Buffer.concat([signature, trustedSuffix]), privateKey);
   return [
-    'untrusted comment: signature from happier test',
+    'untrusted comment: signature from piggercode test',
     b64(sigLineBytes),
     trustedComment,
     b64(globalSignature),

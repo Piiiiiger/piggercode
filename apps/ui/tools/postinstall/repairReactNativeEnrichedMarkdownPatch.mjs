@@ -24,7 +24,7 @@ export function repairReactNativeEnrichedMarkdownPatch({
 
     const safeLabel = String(label).replace(/[^a-z0-9_-]+/gi, '-') || 'installed';
     const recoveryWorkingDir = fs.mkdtempSync(
-        path.join(appRootDir, `.happier-enriched-markdown-repair-${safeLabel}-`),
+        path.join(appRootDir, `.piggercode-enriched-markdown-repair-${safeLabel}-`),
     );
     const recoveryPatchDir = path.join(recoveryWorkingDir, 'patches');
     const recoveryNodeModulesLink = path.join(recoveryWorkingDir, 'node_modules');

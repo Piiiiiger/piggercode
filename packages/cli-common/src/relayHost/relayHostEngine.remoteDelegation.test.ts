@@ -11,7 +11,7 @@ describe('RelayHostEngine remote installation ownership', () => {
       copyLocalDirectoryToRemote: async () => {},
       installRemoteComponent: async ({ componentId }) => {
         installedComponents.push(componentId);
-        return { binaryPath: '$HOME/.happier/cli-dev/current/happier', versionId: 'cli-dev-1' };
+        return { binaryPath: '$HOME/.piggercode/cli-dev/current/piggercode', versionId: 'cli-dev-1' };
       },
       runRemoteText: async ({ remoteCommand }) => {
         commands.push(remoteCommand);
@@ -58,8 +58,8 @@ describe('RelayHostEngine remote installation ownership', () => {
         installations.push({ componentId, ...(localBinaryPath ? { localBinaryPath } : {}) });
         return {
           binaryPath: componentId === 'happier-cli'
-            ? '$HOME/.happier/cli-preview/current/happier'
-            : '$HOME/.happier/happier-server/preview/current/bin/happier-server',
+            ? '$HOME/.piggercode/cli-preview/current/piggercode'
+            : '$HOME/.piggercode/happier-server/preview/current/bin/happier-server',
           versionId: 'preview-1',
         };
       },
@@ -100,7 +100,7 @@ describe('RelayHostEngine remote installation ownership', () => {
       { componentId: 'happier-cli' },
       { componentId: 'happier-server', localBinaryPath: '/tmp/local/happier-server' },
     ]);
-    expect(installCommand).toContain(`--self-host-server-binary "$HOME"/'.happier/happier-server/preview/current/bin/happier-server'`);
+    expect(installCommand).toContain(`--self-host-server-binary "$HOME"/'.piggercode/happier-server/preview/current/bin/happier-server'`);
     expect(installCommand).not.toContain('--server-binary');
     expect(installCommand).toContain('--mode system');
     expect(installCommand).toMatch(/^sudo -n /u);
@@ -114,7 +114,7 @@ describe('RelayHostEngine remote installation ownership', () => {
       resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
       copyLocalDirectoryToRemote: async () => {},
       installRemoteComponent: async () => ({
-        binaryPath: '$HOME/.happier/cli/current/happier',
+        binaryPath: '$HOME/.piggercode/cli/current/piggercode',
         versionId: 'stable-1',
       }),
       runRemoteText: async () => ({
@@ -166,7 +166,7 @@ describe('RelayHostEngine remote installation ownership', () => {
     })).resolves.toBeUndefined();
 
     expect(commands).toHaveLength(1);
-    expect(commands[0]).toContain('$HOME/.happier/cli-preview/current/happier relay host uninstall');
+    expect(commands[0]).toContain('$HOME/.piggercode/cli-preview/current/piggercode relay host uninstall');
     expect(commands[0]).toContain('--channel \'preview\'');
     expect(commands[0]).toContain('--mode system');
     expect(commands[0]).toContain('--yes');

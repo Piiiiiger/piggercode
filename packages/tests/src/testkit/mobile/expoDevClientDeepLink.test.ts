@@ -10,7 +10,7 @@ describe('resolveExpoDevClientDeepLink', () => {
         metroUrl: 'http://localhost:62346/',
       }),
     ).toBe(
-      `happier://expo-development-client/?url=${encodeURIComponent('http://localhost:62346')}&disableOnboarding=1`,
+      `piggercode://expo-development-client/?url=${encodeURIComponent('http://localhost:62346')}&disableOnboarding=1`,
     );
   });
 
@@ -33,7 +33,7 @@ describe('resolveExpoDevClientDeepLink', () => {
         metroUrl: 'http://localhost:62346',
       }),
     ).toBe(
-      `happier://expo-development-client/?url=${encodeURIComponent('http://localhost:62346')}&disableOnboarding=1`,
+      `piggercode://expo-development-client/?url=${encodeURIComponent('http://localhost:62346')}&disableOnboarding=1`,
     );
   });
 });

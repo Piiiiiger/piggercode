@@ -23,22 +23,22 @@ function withPlatform(platform, fn) {
 test('cli and daemon resolve to the same install root and current payload paths', () => {
   const env = {
     HOME: '/Users/tester',
-    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.piggercode-custom',
   };
 
   const cliLayout = resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv: env });
   const daemonLayout = resolveFirstPartyInstallLayout({ componentId: 'happier-daemon', processEnv: env });
 
-  assert.equal(cliLayout.installRoot, '/Users/tester/.happier-custom/cli');
+  assert.equal(cliLayout.installRoot, '/Users/tester/.piggercode-custom/cli');
   assert.equal(daemonLayout.installRoot, cliLayout.installRoot);
-  assert.equal(cliLayout.currentPath, '/Users/tester/.happier-custom/cli/current');
-  assert.equal(cliLayout.previousPath, '/Users/tester/.happier-custom/cli/previous');
+  assert.equal(cliLayout.currentPath, '/Users/tester/.piggercode-custom/cli/current');
+  assert.equal(cliLayout.previousPath, '/Users/tester/.piggercode-custom/cli/previous');
 });
 
 test('installed component paths resolve binary, shim, and node entrypoint locations', () => {
   const env = {
     HOME: '/Users/tester',
-    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.piggercode-custom',
   };
 
   const paths = resolveInstalledFirstPartyComponentPaths({
@@ -46,15 +46,15 @@ test('installed component paths resolve binary, shim, and node entrypoint locati
     processEnv: env,
   });
 
-  assert.equal(paths.binaryPath, '/Users/tester/.happier-custom/cli/current/happier');
-  assert.equal(paths.nodeEntrypointPath, '/Users/tester/.happier-custom/cli/current/package-dist/index.mjs');
-  assert.equal(paths.shimPaths[0], '/Users/tester/.happier-custom/bin/happier');
+  assert.equal(paths.binaryPath, '/Users/tester/.piggercode-custom/cli/current/happier');
+  assert.equal(paths.nodeEntrypointPath, '/Users/tester/.piggercode-custom/cli/current/package-dist/index.mjs');
+  assert.equal(paths.shimPaths[0], '/Users/tester/.piggercode-custom/bin/happier');
 });
 
 test('public release rings resolve to distinct install roots and public shims', () => {
   const env = {
     HOME: '/Users/tester',
-    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.piggercode-custom',
   };
 
   const previewLayout = resolveFirstPartyInstallLayout({
@@ -78,19 +78,19 @@ test('public release rings resolve to distinct install roots and public shims', 
     releaseRing: 'publicdev',
   });
 
-  assert.equal(previewLayout.installRoot, '/Users/tester/.happier-custom/cli-preview');
-  assert.equal(previewLayout.currentPath, '/Users/tester/.happier-custom/cli-preview/current');
-  assert.equal(previewPaths.shimPaths[0], '/Users/tester/.happier-custom/bin/hprev');
+  assert.equal(previewLayout.installRoot, '/Users/tester/.piggercode-custom/cli-preview');
+  assert.equal(previewLayout.currentPath, '/Users/tester/.piggercode-custom/cli-preview/current');
+  assert.equal(previewPaths.shimPaths[0], '/Users/tester/.piggercode-custom/bin/hprev');
 
-  assert.equal(publicdevLayout.installRoot, '/Users/tester/.happier-custom/cli-dev');
-  assert.equal(publicdevLayout.currentPath, '/Users/tester/.happier-custom/cli-dev/current');
-  assert.equal(publicdevPaths.shimPaths[0], '/Users/tester/.happier-custom/bin/hdev');
+  assert.equal(publicdevLayout.installRoot, '/Users/tester/.piggercode-custom/cli-dev');
+  assert.equal(publicdevLayout.currentPath, '/Users/tester/.piggercode-custom/cli-dev/current');
+  assert.equal(publicdevPaths.shimPaths[0], '/Users/tester/.piggercode-custom/bin/hdev');
 });
 
 test('publicdev install layout resolves a side-by-side cli root and shim', () => {
   const env = {
     HOME: '/Users/tester',
-    PIGGERCODE_HOME_DIR: '/Users/tester/.happier-custom',
+    PIGGERCODE_HOME_DIR: '/Users/tester/.piggercode-custom',
   };
 
   const cliLayout = resolveFirstPartyInstallLayout({
@@ -104,18 +104,18 @@ test('publicdev install layout resolves a side-by-side cli root and shim', () =>
     processEnv: env,
   });
 
-  assert.equal(cliLayout.installRoot, '/Users/tester/.happier-custom/cli-dev');
-  assert.equal(cliLayout.currentPath, '/Users/tester/.happier-custom/cli-dev/current');
-  assert.equal(daemonPaths.binaryPath, '/Users/tester/.happier-custom/cli-dev/current/happier');
-  assert.equal(daemonPaths.nodeEntrypointPath, '/Users/tester/.happier-custom/cli-dev/current/package-dist/index.mjs');
-  assert.equal(daemonPaths.shimPaths[0], '/Users/tester/.happier-custom/bin/hdev');
+  assert.equal(cliLayout.installRoot, '/Users/tester/.piggercode-custom/cli-dev');
+  assert.equal(cliLayout.currentPath, '/Users/tester/.piggercode-custom/cli-dev/current');
+  assert.equal(daemonPaths.binaryPath, '/Users/tester/.piggercode-custom/cli-dev/current/happier');
+  assert.equal(daemonPaths.nodeEntrypointPath, '/Users/tester/.piggercode-custom/cli-dev/current/package-dist/index.mjs');
+  assert.equal(daemonPaths.shimPaths[0], '/Users/tester/.piggercode-custom/bin/hdev');
 });
 
 test('installed component paths use .exe suffixes for Windows binaries and shims', () => {
   withPlatform('win32', () => {
     const env = {
       HOME: 'C:\\Users\\tester',
-      PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier-custom',
+      PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode-custom',
     };
 
     const stablePaths = resolveInstalledFirstPartyComponentPaths({
@@ -128,9 +128,9 @@ test('installed component paths use .exe suffixes for Windows binaries and shims
       releaseRing: 'preview',
     });
 
-    assert.equal(stablePaths.binaryPath, 'C:\\Users\\tester\\.happier-custom\\cli\\current\\happier.exe');
-    assert.equal(stablePaths.shimPaths[0], 'C:\\Users\\tester\\.happier-custom\\bin\\happier.exe');
-    assert.equal(previewPaths.binaryPath, 'C:\\Users\\tester\\.happier-custom\\cli-preview\\current\\happier.exe');
-    assert.equal(previewPaths.shimPaths[0], 'C:\\Users\\tester\\.happier-custom\\bin\\hprev.exe');
+    assert.equal(stablePaths.binaryPath, 'C:\\Users\\tester\\.piggercode-custom\\cli\\current\\piggercode.exe');
+    assert.equal(stablePaths.shimPaths[0], 'C:\\Users\\tester\\.piggercode-custom\\bin\\piggercode.exe');
+    assert.equal(previewPaths.binaryPath, 'C:\\Users\\tester\\.piggercode-custom\\cli-preview\\current\\piggercode.exe');
+    assert.equal(previewPaths.shimPaths[0], 'C:\\Users\\tester\\.piggercode-custom\\bin\\hprev.exe');
   });
 });

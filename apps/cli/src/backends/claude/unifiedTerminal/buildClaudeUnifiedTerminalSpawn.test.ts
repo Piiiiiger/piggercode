@@ -83,7 +83,7 @@ async function readLaunchSpecFromSpawn(spawn: ClaudeUnifiedTerminalSpawn): Promi
 
 describe('buildClaudeUnifiedTerminalSpawn', () => {
   const tempDirs: string[] = [];
-  it.each([false, true])('applies configured Happier attribution at the native terminal launch boundary (%s)', async (enabled) => {
+  it.each([false, true])('applies configured PiggerCode attribution at the native terminal launch boundary (%s)', async (enabled) => {
     await withPatchedEnv({ CLAUDE_CODE_ENTRYPOINT: 'sdk-ts', CLAUDECODE: '1' }, async () => {
       const spawn = await buildClaudeUnifiedTerminalSpawn({
         path: '/workspace/project',
@@ -97,7 +97,7 @@ describe('buildClaudeUnifiedTerminalSpawn', () => {
         },
       });
       const launch = await readLaunchSpecFromSpawn(spawn);
-      expect(spawn.spawnEnv.CLAUDE_CODE_ENTRYPOINT).toBe(enabled ? 'happier' : undefined);
+      expect(spawn.spawnEnv.CLAUDE_CODE_ENTRYPOINT).toBe(enabled ? 'piggercode' : undefined);
       expect(launch.env?.CLAUDE_CODE_ENTRYPOINT).toBeUndefined();
       expect(launch.env?.CLAUDECODE).toBeUndefined();
     });
@@ -431,7 +431,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     const { join } = await import('node:path');
     const settingsDir = await mkdtemp(join(tmpdir(), 'happier-ultracode-settings-'));
     const hookSettingsPath = join(settingsDir, 'settings.json');
-    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__happier__change_title'] } }));
+    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__piggercode__change_title'] } }));
 
     try {
       const spawn = await buildClaudeUnifiedTerminalSpawn({
@@ -461,7 +461,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
       expect(overlay.ultracode).toBe(true);
       expect(overlay).not.toHaveProperty('skipDangerousModePermissionPrompt');
       // The hook settings content survives the merge.
-      expect(overlay.permissions).toEqual({ allow: ['mcp__happier__change_title'] });
+      expect(overlay.permissions).toEqual({ allow: ['mcp__piggercode__change_title'] });
     } finally {
       await rm(settingsDir, { recursive: true, force: true });
     }
@@ -473,7 +473,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     const { join } = await import('node:path');
     const settingsDir = await mkdtemp(join(tmpdir(), 'happier-yolo-settings-'));
     const hookSettingsPath = join(settingsDir, 'settings.json');
-    const sourceSettings = { permissions: { allow: ['mcp__happier__change_title'] } };
+    const sourceSettings = { permissions: { allow: ['mcp__piggercode__change_title'] } };
     await writeFile(hookSettingsPath, JSON.stringify(sourceSettings));
 
     try {
@@ -512,7 +512,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     const { join } = await import('node:path');
     const settingsDir = await mkdtemp(join(tmpdir(), 'happier-ultracode-existing-overlay-'));
     const hookSettingsPath = join(settingsDir, 'settings.json');
-    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__happier__change_title'] } }));
+    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__piggercode__change_title'] } }));
     const overlayPath = hookSettingsPath.replace(/\.json$/, '.overlay.json');
     await writeFile(overlayPath, JSON.stringify({ stale: true }), { mode: 0o644 });
     await chmod(overlayPath, 0o644);
@@ -553,7 +553,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     const { join } = await import('node:path');
     const settingsDir = await mkdtemp(join(tmpdir(), 'happier-statusline-spawn-'));
     const hookSettingsPath = join(settingsDir, 'hook-settings.json');
-    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__happier__change_title'] } }));
+    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__piggercode__change_title'] } }));
     const configRoot = join(settingsDir, 'claude-config');
     const { mkdir } = await import('node:fs/promises');
     await mkdir(configRoot, { recursive: true });
@@ -591,7 +591,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
         expect(args.join(' ')).not.toContain('secret-xyz');
         const overlay = await readOverlayFromArgs(args, hookSettingsPath);
         // The hook settings content survives the merge.
-        expect(overlay.permissions).toEqual({ allow: ['mcp__happier__change_title'] });
+        expect(overlay.permissions).toEqual({ allow: ['mcp__piggercode__change_title'] });
         const statusLine = overlay.statusLine as Record<string, unknown>;
         expect(statusLine.type).toBe('command');
         expect(statusLine.padding).toBe(0);
@@ -619,7 +619,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
     const { join } = await import('node:path');
     const settingsDir = await mkdtemp(join(tmpdir(), 'happier-statusline-noorig-'));
     const hookSettingsPath = join(settingsDir, 'hook-settings.json');
-    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__happier__change_title'] } }));
+    await writeFile(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__piggercode__change_title'] } }));
     const configRoot = join(settingsDir, 'claude-config');
     await mkdir(configRoot, { recursive: true });
 
@@ -654,7 +654,7 @@ async function readOverlayFromArgs(args: readonly string[], hookSettingsPath: st
         const overlay = await readOverlayFromArgs(args, hookSettingsPath);
         // Ultracode and statusline ride the SAME single overlay.
         expect(overlay.ultracode).toBe(true);
-        expect(overlay.permissions).toEqual({ allow: ['mcp__happier__change_title'] });
+        expect(overlay.permissions).toEqual({ allow: ['mcp__piggercode__change_title'] });
         const statusLine = overlay.statusLine as Record<string, unknown>;
         expect(statusLine.type).toBe('command');
         const command = statusLine.command as string;

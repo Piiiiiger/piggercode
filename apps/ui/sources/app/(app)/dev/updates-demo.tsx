@@ -66,7 +66,7 @@ function buildDemoGroups(state: DemoState): UpdatesGroup[] {
         online: true,
         data: { available: true, version: '2.1.3', latestVersion: '2.1.4', installSource: 'managed', updateSupported: true, updateCommand: null },
         task: state === 'failed'
-            ? { running: false, step: null, errorMessage: 'The update didn’t finish. Try again.', logPath: '/Users/lee/.happier/logs/provider-installs/claude-2026-09-25.log' }
+            ? { running: false, step: null, errorMessage: 'The update didn’t finish. Try again.', logPath: '/Users/lee/.piggercode/logs/provider-installs/claude-2026-09-25.log' }
             : IDLE,
     });
     const codex = buildAgentCliUpdateItem({
@@ -99,7 +99,7 @@ function buildDemoGroups(state: DemoState): UpdatesGroup[] {
             latestVersion: '0.2.14',
             channel: 'stable',
             installSource: 'managed',
-            updateCommand: 'happier self update',
+            updateCommand: 'piggercode self update',
             canUpdateRemotely: true,
             lastUpdate: { targetVersion: '0.2.14', outcome: 'pendingReconnect', at: Date.now(), message: null },
         },
@@ -108,7 +108,7 @@ function buildDemoGroups(state: DemoState): UpdatesGroup[] {
     });
     const offline = buildRemoteCliUpdateItem({
         machineId: 'nas', title: 'Happier CLI', online: false, platform: 'linux', happyCliVersion: '0.2.11',
-        facts: { currentVersion: '0.2.11', latestVersion: '0.2.14', channel: 'stable', installSource: 'managed', updateCommand: 'happier self update', canUpdateRemotely: true, lastUpdate: null },
+        facts: { currentVersion: '0.2.11', latestVersion: '0.2.14', channel: 'stable', installSource: 'managed', updateCommand: 'piggercode self update', canUpdateRemotely: true, lastUpdate: null },
         remoteUpdateAdvertised: null,
         task: IDLE,
     });

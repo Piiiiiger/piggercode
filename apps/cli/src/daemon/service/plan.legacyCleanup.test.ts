@@ -11,17 +11,17 @@ describe('daemon service legacy cleanup planning', () => {
       targetMode: 'default-following',
       instanceId: 'cloud',
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       serverUrl: 'http://127.0.0.1:24910',
       webappUrl: 'http://localhost:24910',
       publicServerUrl: 'http://localhost:24910',
-      nodePath: '/home/tester/.happier/cli/current/happier',
-      entryPath: '/home/tester/.happier/cli/current/happier',
+      nodePath: '/home/tester/.piggercode/cli/current/happier',
+      entryPath: '/home/tester/.piggercode/cli/current/happier',
     });
 
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'disable', '--now', 'happier-daemon.service'],
+      args: ['--user', 'disable', '--now', 'piggercode-daemon.service'],
       ignoreFailure: true,
     });
   });
@@ -38,12 +38,12 @@ describe('daemon service legacy cleanup planning', () => {
 
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'disable', '--now', 'happier-daemon.service'],
+      args: ['--user', 'disable', '--now', 'piggercode-daemon.service'],
       ignoreFailure: true,
     });
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'stop', 'happier-daemon.service'],
+      args: ['--user', 'stop', 'piggercode-daemon.service'],
       ignoreFailure: true,
     });
   });
@@ -58,15 +58,15 @@ describe('daemon service legacy cleanup planning', () => {
       userHomeDir: '/home/tester',
     });
 
-    expect(plan.filesToRemove).toContain('/home/tester/.config/systemd/user/happier-daemon.dev.default.service');
+    expect(plan.filesToRemove).toContain('/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service');
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'disable', '--now', 'happier-daemon.dev.default.service'],
+      args: ['--user', 'disable', '--now', 'piggercode-daemon.dev.default.service'],
       ignoreFailure: true,
     });
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'stop', 'happier-daemon.dev.default.service'],
+      args: ['--user', 'stop', 'piggercode-daemon.dev.default.service'],
       ignoreFailure: true,
     });
   });
@@ -79,18 +79,18 @@ describe('daemon service legacy cleanup planning', () => {
       targetMode: 'default-following',
       instanceId: 'default',
       userHomeDir: '/home/tester',
-      installedPath: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+      installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
     });
 
-    expect(plan.filesToRemove).toContain('/home/tester/.config/systemd/user/happier-daemon.dev.default.service');
-    expect(plan.filesToRemove).not.toContain('/home/tester/.config/systemd/user/happier-daemon.default.service');
+    expect(plan.filesToRemove).toContain('/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service');
+    expect(plan.filesToRemove).not.toContain('/home/tester/.config/systemd/user/piggercode-daemon.default.service');
     expect(plan.commands).toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'disable', '--now', 'happier-daemon.dev.default.service'],
+      args: ['--user', 'disable', '--now', 'piggercode-daemon.dev.default.service'],
     });
     expect(plan.commands).not.toContainEqual({
       cmd: 'systemctl',
-      args: ['--user', 'disable', '--now', 'happier-daemon.default.service'],
+      args: ['--user', 'disable', '--now', 'piggercode-daemon.default.service'],
     });
   });
 
@@ -102,22 +102,22 @@ describe('daemon service legacy cleanup planning', () => {
       targetMode: 'default-following',
       instanceId: 'cloud',
       userHomeDir: 'C:\\Users\\tester',
-      happierHomeDir: 'C:\\Users\\tester\\.happier',
+      happierHomeDir: 'C:\\Users\\tester\\.piggercode',
       serverUrl: 'http://127.0.0.1:24910',
       webappUrl: 'http://localhost:24910',
       publicServerUrl: 'http://localhost:24910',
-      nodePath: 'C:\\Users\\tester\\.happier\\cli\\current\\happier.exe',
-      entryPath: 'C:\\Users\\tester\\.happier\\cli\\current\\happier.exe',
+      nodePath: 'C:\\Users\\tester\\.piggercode\\cli\\current\\piggercode.exe',
+      entryPath: 'C:\\Users\\tester\\.piggercode\\cli\\current\\piggercode.exe',
     });
 
     expect(plan.commands).toContainEqual({
       cmd: 'schtasks',
-      args: ['/End', '/TN', 'Happier\\happier-daemon'],
+      args: ['/End', '/TN', 'PiggerCode\\piggercode-daemon'],
       ignoreFailure: true,
     });
     expect(plan.commands).toContainEqual({
       cmd: 'schtasks',
-      args: ['/Delete', '/F', '/TN', 'Happier\\happier-daemon'],
+      args: ['/Delete', '/F', '/TN', 'PiggerCode\\piggercode-daemon'],
       ignoreFailure: true,
     });
   });

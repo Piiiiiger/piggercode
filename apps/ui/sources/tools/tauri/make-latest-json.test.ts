@@ -42,7 +42,7 @@ describe('make-latest-json (tool)', () => {
             const artifactsDir = path.join(tmp, 'artifacts');
             const outPath = path.join(tmp, 'latest.json');
 
-            const repo = 'happier-dev/happier';
+            const repo = 'Piiiiiger/piggercode';
             const releaseTag = 'ui-desktop-preview';
             const pubDate = '2026-02-06T00:00:00Z';
             const version = '1.2.3-preview.456';
@@ -151,7 +151,7 @@ describe('make-latest-json (tool)', () => {
                 '--notes',
                 'preview',
                 '--repo',
-                'happier-dev/happier',
+                'Piiiiiger/piggercode',
                 '--release-tag',
                 'ui-desktop-preview',
                 '--artifacts-dir',
@@ -195,7 +195,7 @@ describe('make-latest-json (tool)', () => {
                 '--notes',
                 'dev',
                 '--repo',
-                'happier-dev/happier',
+                'Piiiiiger/piggercode',
                 '--release-tag',
                 'ui-desktop-dev',
                 '--artifacts-dir',

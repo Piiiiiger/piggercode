@@ -66,11 +66,11 @@ describe('/scan/terminal', () => {
         expect(typeof lastScannerProps?.onScan).toBe('function');
 
         await act(async () => {
-            await lastScannerProps.onScan('happier://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
+            await lastScannerProps.onScan('piggercode://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
         });
 
         expect(processTerminalAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processTerminalAuthUrlSpy).toHaveBeenCalledWith('happier://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
+        expect(processTerminalAuthUrlSpy).toHaveBeenCalledWith('piggercode://terminal?key=abc&server=https%3A%2F%2Fapi.happier.dev');
         expect(processAccountAuthUrlSpy).not.toHaveBeenCalled();
     });
 
@@ -82,11 +82,11 @@ describe('/scan/terminal', () => {
         expect(typeof lastScannerProps?.onScan).toBe('function');
 
         await act(async () => {
-            await lastScannerProps.onScan('happier:///account?abc123');
+            await lastScannerProps.onScan('piggercode:///account?abc123');
         });
 
         expect(processAccountAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('happier:///account?abc123');
+        expect(processAccountAuthUrlSpy).toHaveBeenCalledWith('piggercode:///account?abc123');
         expect(processTerminalAuthUrlSpy).not.toHaveBeenCalled();
     });
 });

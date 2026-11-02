@@ -506,7 +506,7 @@ export function classifySessionTransportErrorToProbeResult(
         return {
             status: 'auth_failed',
             statusCode: 426,
-            errorMessage: 'This Happier session runner must be upgraded before it can sync sessions.',
+            errorMessage: 'This PiggerCode session runner must be upgraded before it can sync sessions.',
         };
     }
     const statusCode = readAuthenticationStatus(error);

@@ -2,7 +2,7 @@ import { copyFile, rename, rm } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { basename, dirname, join } from 'node:path';
 
-const CROSS_DEVICE_STAGING_PREFIX = '.happier-upload-stage-';
+const CROSS_DEVICE_STAGING_PREFIX = '.piggercode-upload-stage-';
 
 function readErrorCode(error: unknown): string | null {
     if (typeof error !== 'object' || error === null || !('code' in error)) {

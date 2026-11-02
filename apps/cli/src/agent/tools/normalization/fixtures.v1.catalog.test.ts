@@ -95,7 +95,7 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
 
   it('normalizes MCP generic tools into a stable safe-display shape (title/subtitle + raw preserved)', () => {
     const fixtures = loadFixtureV1();
-    const call = firstFixtureEvent(fixtures, 'codex/codex/tool-call/mcp__happier__change_title');
+    const call = firstFixtureEvent(fixtures, 'codex/codex/tool-call/mcp__piggercode__change_title');
     expect(call).toBeTruthy();
     const callPayload = asRecord(call?.payload) ?? {};
     const callNorm = normalizeToolCallV2({
@@ -110,7 +110,7 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
     expect(typeof input?.title).toBe('string');
     expect(asRecord(input)?._raw).toBeDefined();
 
-    const result = firstFixtureEvent(fixtures, 'codex/codex/tool-call-result/mcp__happier__change_title');
+    const result = firstFixtureEvent(fixtures, 'codex/codex/tool-call-result/mcp__piggercode__change_title');
     expect(result).toBeTruthy();
     const resultPayload = asRecord(result?.payload) ?? {};
     const resultNorm = normalizeToolResultV2({
@@ -125,7 +125,7 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
     expect(out?._raw).toBeDefined();
   });
 
-  it('promotes Happier shell-bridge tool calls to the underlying built-in or MCP tool', () => {
+  it('promotes PiggerCode shell-bridge tool calls to the underlying built-in or MCP tool', () => {
     const bridgeChangeTitle = normalizeToolCallV2({
       protocol: 'acp',
       provider: 'codex',
@@ -133,14 +133,14 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
       callId: 'run_shell_command-1',
       rawInput: {
         command:
-          `happier tools call --source happier --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
+          `piggercode tools call --source piggercode --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
         happierToolsShellBridge: {
           kind: 'call',
           rawCommand:
-            `happier tools call --source happier --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
+            `piggercode tools call --source piggercode --tool change_title --args-json '{"title":"Tools Proof 2026-03-06"}' --json`,
           sessionId: null,
           directory: null,
-          source: 'happier',
+          source: 'piggercode',
           tool: 'change_title',
           argsJson: '{"title":"Tools Proof 2026-03-06"}',
           args: { title: 'Tools Proof 2026-03-06' },
@@ -165,7 +165,7 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
       ok: true,
       kind: 'tools_call',
       data: {
-        source: 'happier',
+        source: 'piggercode',
         tool: 'change_title',
         isError: false,
         output: { success: true, title: 'Tools Proof 2026-03-06' },
@@ -198,11 +198,11 @@ describe('tool normalization fixtures (v1): catalog coverage', () => {
       callId: 'run_shell_command-2',
       rawInput: {
         command:
-          `happier tools call --source qa_marker_stdio_20260306 --tool get_marker --args-json '{}' --json`,
+          `piggercode tools call --source qa_marker_stdio_20260306 --tool get_marker --args-json '{}' --json`,
         happierToolsShellBridge: {
           kind: 'call',
           rawCommand:
-            `happier tools call --source qa_marker_stdio_20260306 --tool get_marker --args-json '{}' --json`,
+            `piggercode tools call --source qa_marker_stdio_20260306 --tool get_marker --args-json '{}' --json`,
           sessionId: null,
           directory: null,
           source: 'qa_marker_stdio_20260306',

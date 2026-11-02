@@ -24,13 +24,13 @@ const envKeys = [
 let envScope = createEnvKeyScope(envKeys);
 
 function writeInstalledDefaultFollowingServiceFixture(homeDir: string, happierHomeDir: string): void {
-  const installedPath = join(homeDir, '.config', 'systemd', 'user', 'happier-daemon.default.service');
+  const installedPath = join(homeDir, '.config', 'systemd', 'user', 'piggercode-daemon.default.service');
   mkdirSync(dirname(installedPath), { recursive: true });
   writeFileSync(
     installedPath,
     renderSystemdServiceUnit({
-      description: 'Happier CLI daemon (default)',
-      execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+      description: 'PiggerCode CLI daemon (default)',
+      execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
       env: {
         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -43,7 +43,7 @@ function writeInstalledDefaultFollowingServiceFixture(homeDir: string, happierHo
   );
 }
 
-describe('happier server add', () => {
+describe('piggercode server add', () => {
   it('prints follow-up daemon commands in non-interactive mode when --use is set', async () => {
     const home = await createTempDir('happier-server-add-');
     const output = captureConsoleLogAndMuteStdout();
@@ -68,7 +68,7 @@ describe('happier server add', () => {
       ]);
 
       const out = output.logs.join('\n');
-      expect(out).toContain('happier --server');
+      expect(out).toContain('piggercode --server');
       expect(out).toContain('daemon start');
       expect(out).toContain('service install');
       expect(out).not.toContain('daemon service install');
@@ -105,7 +105,7 @@ describe('happier server add', () => {
 
       const out = output.logs.join('\n');
       expect(out).toContain('Next steps');
-      expect(out).toContain('happier --server');
+      expect(out).toContain('piggercode --server');
       expect(out).toContain('daemon start');
       expect(out).toContain('service install');
       expect(out).not.toContain('daemon service install');
@@ -120,7 +120,7 @@ describe('happier server add', () => {
 
   it('guides to restart a default-following background service after adding and using a new server', async () => {
     const home = await createTempDir('happier-server-add-use-followup-');
-    const happierHomeDir = join(home, '.happier');
+    const happierHomeDir = join(home, '.piggercode');
     const output = captureConsoleLogAndMuteStdout();
 
     try {
@@ -147,9 +147,9 @@ describe('happier server add', () => {
       ]);
 
       const out = output.logs.join('\n');
-      expect(out).toContain('Authenticate Happier against https://company.example.test');
-      expect(out).toContain('happier auth login');
-      expect(out).toContain('happier service restart');
+      expect(out).toContain('Authenticate PiggerCode against https://company.example.test');
+      expect(out).toContain('piggercode auth login');
+      expect(out).toContain('piggercode service restart');
       expect(out).not.toContain('daemon service restart');
     } finally {
       output.restore();
@@ -162,7 +162,7 @@ describe('happier server add', () => {
 
   it('guides to restart a default-following background service after switching the active server', async () => {
     const home = await createTempDir('happier-server-use-followup-');
-    const happierHomeDir = join(home, '.happier');
+    const happierHomeDir = join(home, '.piggercode');
     const output = captureConsoleLogAndMuteStdout();
 
     try {
@@ -201,9 +201,9 @@ describe('happier server add', () => {
       await handleServerCommand(['use', 'Beta']);
 
       const out = output.logs.join('\n');
-      expect(out).toContain('Authenticate Happier against https://beta.example.test');
-      expect(out).toContain('happier auth login');
-      expect(out).toContain('happier service restart');
+      expect(out).toContain('Authenticate PiggerCode against https://beta.example.test');
+      expect(out).toContain('piggercode auth login');
+      expect(out).toContain('piggercode service restart');
       expect(out).not.toContain('daemon service restart');
     } finally {
       output.restore();

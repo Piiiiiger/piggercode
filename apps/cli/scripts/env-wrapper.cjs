@@ -6,8 +6,8 @@
  * Usage: node scripts/env-wrapper.js <variant> <command> [...args]
  *
  * Variants:
- *   - stable: Production-ready version using ~/.happier/
- *   - dev: Development version using ~/.happier-dev/
+ *   - stable: Production-ready version using ~/.piggercode/
+ *   - dev: Development version using ~/.piggercode-dev/
  *
  * Examples:
  *   node scripts/env-wrapper.js stable daemon start
@@ -21,13 +21,13 @@ const fs = require('fs');
 
 const VARIANTS = {
   stable: {
-    homeDir: path.join(os.homedir(), '.happier'),
+    homeDir: path.join(os.homedir(), '.piggercode'),
     color: '\x1b[32m', // Green
     label: '✅ STABLE',
     serverUrl: process.env.PIGGERCODE_SERVER_URL || 'https://api.happier.dev'
   },
   dev: {
-    homeDir: path.join(os.homedir(), '.happier-dev'),
+    homeDir: path.join(os.homedir(), '.piggercode-dev'),
     color: '\x1b[33m', // Yellow
     label: '🔧 DEV',
     serverUrl: process.env.PIGGERCODE_SERVER_URL || 'https://api.happier.dev'
@@ -42,8 +42,8 @@ if (!variant || !VARIANTS[variant]) {
   console.error('Usage: node scripts/env-wrapper.js <stable|dev> <command> [...args]');
   console.error('');
   console.error('Variants:');
-  console.error('  stable - Production-ready version (data: ~/.happier/)');
-  console.error('  dev    - Development version (data: ~/.happier-dev/)');
+  console.error('  stable - Production-ready version (data: ~/.piggercode/)');
+  console.error('  dev    - Development version (data: ~/.piggercode-dev/)');
   console.error('');
   console.error('Examples:');
   console.error('  node scripts/env-wrapper.js stable daemon start');
@@ -68,7 +68,7 @@ if (!fs.existsSync(config.homeDir)) {
 }
 
 // Visual feedback
-console.log(`${config.color}${config.label}\x1b[0m Happier CLI (data: ${config.homeDir})`);
+console.log(`${config.color}${config.label}\x1b[0m PiggerCode CLI (data: ${config.homeDir})`);
 
 // Set environment and execute command
 const env = {
@@ -78,7 +78,7 @@ const env = {
   PIGGERCODE_VARIANT: variant, // For internal validation
 };
 
-const binPath = path.join(__dirname, '..', 'bin', 'happier.mjs');
+const binPath = path.join(__dirname, '..', 'bin', 'piggercode.mjs');
 const proc = spawn('node', [binPath, command, ...args], {
   env,
   stdio: 'inherit',

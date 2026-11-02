@@ -223,7 +223,7 @@ function renderRelayRuntimeEnv(config: RelayRuntimeConfig, existingEnvText: stri
 function buildRelayRuntimeServiceSpec(config: RelayRuntimeConfig, envText: string): ServiceSpec {
   return {
     label: config.serviceName,
-    description: `Happier Relay Runtime (${config.serviceName})`,
+    description: `PiggerCode Relay Runtime (${config.serviceName})`,
     programArgs: [config.serverBinaryPath],
     workingDirectory: config.currentPath,
     env: parseEnvText(envText),
@@ -392,7 +392,7 @@ async function readServiceStatus(config: RelayRuntimeConfig): Promise<ServiceSta
         };
       }
     }
-    const result = runCommand('schtasks', ['/Query', '/TN', `Happier\\${config.serviceName}`, '/FO', 'LIST', '/V']);
+    const result = runCommand('schtasks', ['/Query', '/TN', `PiggerCode\\${config.serviceName}`, '/FO', 'LIST', '/V']);
     const output = result.stdout;
     return {
       backend,
@@ -417,7 +417,7 @@ async function performServiceAction(config: RelayRuntimeConfig, action: 'install
   const spec = buildRelayRuntimeServiceSpec(config, envText);
   const backend = resolveServiceBackend({ platform: config.platform, mode: config.mode });
   const definition = buildServiceDefinition({ backend, homeDir: paramsHomeDir(config), spec });
-  const taskName = backend.startsWith('schtasks') ? `Happier\\${config.serviceName}` : '';
+  const taskName = backend.startsWith('schtasks') ? `PiggerCode\\${config.serviceName}` : '';
   const plan = planServiceAction({
     backend,
     action,

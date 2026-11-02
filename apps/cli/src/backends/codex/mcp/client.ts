@@ -29,7 +29,7 @@ export function createCodexTransport(params: {
             throw new Error(buildProviderCliUnavailableMessage({
                 agentId: 'codex',
                 resolvedCommand: params.codexCommand,
-                alternativeCommandHint: ['Alternatively, use Claude:', '  happier claude'].join('\n'),
+                alternativeCommandHint: ['Alternatively, use Claude:', '  piggercode claude'].join('\n'),
             }));
         }
 

@@ -29,7 +29,7 @@ const validMediaItem = {
   mediaKind: 'image',
   mimeType: 'image/png',
   name: 'generated-image.png',
-  path: '.happier/uploads/generated/msg_1/media_1.png',
+  path: '.piggercode/uploads/generated/msg_1/media_1.png',
   sizeBytes: 42,
   sha256: 'a'.repeat(64),
   width: 1024,
@@ -148,8 +148,8 @@ describe('session media v1 schemas', () => {
       { ...validMediaItem, path: 'C:\\Users\\alice\\AppData\\Local\\provider\\generated.png' },
       { ...validMediaItem, path: 'https://provider.example/tmp/generated.png' },
       { ...validMediaItem, path: 'data:image/png;base64,iVBORw0KGgo=' },
-      { ...validMediaItem, path: '.happier/uploads/generated/../secret.png' },
-      { ...validMediaItem, path: '.happier\\uploads\\generated\\msg_1\\media_1.png' },
+      { ...validMediaItem, path: '.piggercode/uploads/generated/../secret.png' },
+      { ...validMediaItem, path: '.piggercode\\uploads\\generated\\msg_1\\media_1.png' },
     ];
 
     for (const item of invalidItems) {

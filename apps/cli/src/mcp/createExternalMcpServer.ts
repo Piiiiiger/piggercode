@@ -54,7 +54,7 @@ export function createExternalMcpServer(params: Readonly<{
   );
 
   const mcp = new McpServer({
-    name: 'Happier MCP',
+    name: 'PiggerCode MCP',
     version: '1.0.0',
   });
 

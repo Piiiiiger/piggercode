@@ -42,25 +42,25 @@ describe('collectSessionMediaHandoffPaths', () => {
     expect(collectSessionMediaHandoffPaths([
       {
         meta: {
-          happier: mediaEnvelope('.happier/uploads/generated/message-1/generated.png'),
+          happier: mediaEnvelope('.piggercode/uploads/generated/message-1/generated.png'),
         },
       },
       {
         raw: {
           meta: {
-            happierMedia: mediaEnvelope('.happier/uploads/artifacts/message-2/tool-output.png', 'tool-artifact'),
+            happierMedia: mediaEnvelope('.piggercode/uploads/artifacts/message-2/tool-output.png', 'tool-artifact'),
           },
         },
       },
       {
         meta: {
-          happierMedia: mediaEnvelope('.happier/uploads/messages/message-3/upload.png', 'attachment'),
+          happierMedia: mediaEnvelope('.piggercode/uploads/messages/message-3/upload.png', 'attachment'),
         },
       },
     ])).toEqual([
-      '.happier/uploads/artifacts/message-2/tool-output.png',
-      '.happier/uploads/generated/message-1/generated.png',
-      '.happier/uploads/messages/message-3/upload.png',
+      '.piggercode/uploads/artifacts/message-2/tool-output.png',
+      '.piggercode/uploads/generated/message-1/generated.png',
+      '.piggercode/uploads/messages/message-3/upload.png',
     ]);
   });
 
@@ -68,18 +68,18 @@ describe('collectSessionMediaHandoffPaths', () => {
     expect(collectSessionMediaHandoffPaths([
       {
         meta: {
-          happier: attachmentsEnvelope('.happier/uploads/messages/message-4/upload.png'),
+          happier: attachmentsEnvelope('.piggercode/uploads/messages/message-4/upload.png'),
         },
       },
       {
         meta: {
           happier: { kind: 'review_comments.v1', payload: {} },
-          happierAttachments: attachmentsEnvelope('.happier/uploads/messages/message-5/upload.png'),
+          happierAttachments: attachmentsEnvelope('.piggercode/uploads/messages/message-5/upload.png'),
         },
       },
     ])).toEqual([
-      '.happier/uploads/messages/message-4/upload.png',
-      '.happier/uploads/messages/message-5/upload.png',
+      '.piggercode/uploads/messages/message-4/upload.png',
+      '.piggercode/uploads/messages/message-5/upload.png',
     ]);
   });
 
@@ -88,11 +88,11 @@ describe('collectSessionMediaHandoffPaths', () => {
       { meta: { happier: mediaEnvelope('/tmp/generated.png') } },
       { meta: { happier: mediaEnvelope('file:///tmp/generated.png') } },
       { meta: { happier: mediaEnvelope('C:\\Users\\tester\\generated.png') } },
-      { meta: { happier: mediaEnvelope('.happier\\uploads\\generated\\message-1\\image.png') } },
-      { meta: { happier: mediaEnvelope('.happier/uploads/generated/message-1/../image.png') } },
+      { meta: { happier: mediaEnvelope('.piggercode\\uploads\\generated\\message-1\\image.png') } },
+      { meta: { happier: mediaEnvelope('.piggercode/uploads/generated/message-1/../image.png') } },
       { meta: { happier: mediaEnvelope('https://example.test/generated.png') } },
       { meta: { happier: mediaEnvelope('data:image/png;base64,abc') } },
-      { meta: { happier: mediaEnvelope('.happier/uploads/messages/../upload.png', 'attachment') } },
+      { meta: { happier: mediaEnvelope('.piggercode/uploads/messages/../upload.png', 'attachment') } },
       { meta: { happier: { kind: 'session_media.v1', payload: { media: 'invalid' } } } },
       { meta: { happierMedia: { kind: 'other.v1', payload: { media: [] } } } },
     ])).toEqual([]);
@@ -103,7 +103,7 @@ describe('collectSessionMediaHandoffPaths', () => {
       'not json',
       JSON.stringify({
         meta: {
-          happierMedia: mediaEnvelope('.happier/uploads/generated/message-1/from-provider.png'),
+          happierMedia: mediaEnvelope('.piggercode/uploads/generated/message-1/from-provider.png'),
         },
       }),
     ].join('\n');
@@ -112,6 +112,6 @@ describe('collectSessionMediaHandoffPaths', () => {
       providerId: 'claude',
       remoteSessionId: 'claude_session_1',
       transcriptBase64: Buffer.from(transcript, 'utf8').toString('base64'),
-    })).resolves.toEqual(['.happier/uploads/generated/message-1/from-provider.png']);
+    })).resolves.toEqual(['.piggercode/uploads/generated/message-1/from-provider.png']);
   });
 });

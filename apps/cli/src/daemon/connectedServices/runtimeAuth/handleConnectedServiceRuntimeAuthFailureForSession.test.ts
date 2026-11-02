@@ -1633,9 +1633,9 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
       happySessionMetadataFromLocalWebhook: {
         path: '/tmp/project',
         homeDir: '/tmp/home',
-        happyHomeDir: '/tmp/home/.happier',
-        happyLibDir: '/tmp/home/.happier/lib',
-        happyToolsDir: '/tmp/home/.happier/tools',
+        happyHomeDir: '/tmp/home/.piggercode',
+        happyLibDir: '/tmp/home/.piggercode/lib',
+        happyToolsDir: '/tmp/home/.piggercode/tools',
         host: 'test-host',
         flavor: 'codex',
         connectedServices: {
@@ -3868,9 +3868,9 @@ describe('handleConnectedServiceRuntimeAuthFailureForSession', () => {
         happySessionMetadataFromLocalWebhook: {
           path: '/tmp/project',
           homeDir: '/tmp/home',
-          happyHomeDir: '/tmp/home/.happier',
-          happyLibDir: '/tmp/home/.happier/lib',
-          happyToolsDir: '/tmp/home/.happier/tools',
+          happyHomeDir: '/tmp/home/.piggercode',
+          happyLibDir: '/tmp/home/.piggercode/lib',
+          happyToolsDir: '/tmp/home/.piggercode/tools',
           host: 'test-host',
           connectedServices: {
             v: 1,

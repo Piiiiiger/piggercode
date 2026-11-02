@@ -32,7 +32,7 @@ describe('DoctorSnapshotSchema', () => {
         happier: {
           activeInvocation: {
             path: '/Users/test/.local/bin/hdev',
-            realPath: '/Users/test/.happier/cli-dev/current/happier',
+            realPath: '/Users/test/.piggercode/cli-dev/current/happier',
             invokerName: 'hdev',
             ring: 'dev',
             version: '0.2.5-dev.7.1',
@@ -45,11 +45,11 @@ describe('DoctorSnapshotSchema', () => {
               components: ['happier-cli'],
               ring: 'dev',
               version: '0.2.5-dev.7.1',
-              path: '/Users/test/.happier/cli-dev/current/happier?token=abc',
-              realPath: '/Users/test/.happier/cli-dev/versions/0.2.5-dev.7.1/happier?token=abc',
+              path: '/Users/test/.piggercode/cli-dev/current/happier?token=abc',
+              realPath: '/Users/test/.piggercode/cli-dev/versions/0.2.5-dev.7.1/happier?token=abc',
               shimName: 'hdev',
               onPath: true,
-              managedRoot: '/Users/test/.happier/cli-dev',
+              managedRoot: '/Users/test/.piggercode/cli-dev',
             },
           ],
         },
@@ -62,13 +62,13 @@ describe('DoctorSnapshotSchema', () => {
               serviceType: 'daemon',
               platform: 'darwin',
               backend: 'launchd',
-              label: 'com.happier.cli.daemon.default',
+              label: 'com.piggercode.cli.daemon.default',
               verification: 'verified',
               targetMode: 'default-following',
               ring: 'dev',
               instanceId: 'default',
               scope: 'user',
-              definitionPath: '/Users/test/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+              definitionPath: '/Users/test/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
               executablePath: null,
               serverUrl: 'https://api.happier.dev/path?token=abc',
               publicServerUrl: 'https://relay.happier.dev/path?token=abc',
@@ -103,7 +103,7 @@ describe('DoctorSnapshotSchema', () => {
           code: 'backgroundServiceRepairRecommended',
           severity: 'warning',
           message: 'Background service repair is recommended.',
-          repairCommands: ['happier doctor repair --yes'],
+          repairCommands: ['piggercode doctor repair --yes'],
         },
       ],
       daemonStatus: {
@@ -123,7 +123,7 @@ describe('DoctorSnapshotSchema', () => {
           startedWithPublicReleaseChannel: 'preview',
           startupSource: 'background-service',
           serviceManaged: true,
-          serviceLabel: 'com.happier.cli.daemon.default',
+          serviceLabel: 'com.piggercode.cli.daemon.default',
         },
         service: {
           installed: true,
@@ -153,13 +153,13 @@ describe('DoctorSnapshotSchema', () => {
     expect(parsed.snapshot.daemonStatus?.daemon.startedWithPublicReleaseChannel).toBe('preview');
     expect(parsed.snapshot.daemonStatus?.daemon.startupSource).toBe('background-service');
     expect(parsed.snapshot.daemonStatus?.daemon.serviceManaged).toBe(true);
-    expect(parsed.snapshot.daemonStatus?.daemon.serviceLabel).toBe('com.happier.cli.daemon.default');
+    expect(parsed.snapshot.daemonStatus?.daemon.serviceLabel).toBe('com.piggercode.cli.daemon.default');
     expect(parsed.snapshot.installations?.happier?.activeInvocation?.ring).toBe('dev');
     expect(parsed.snapshot.services?.happier?.services[0]?.publicServerUrl).toBe('https://relay.happier.dev/path');
     expect(parsed.snapshot.services?.happier?.services[0]?.configuredCliVersion).toBe('0.2.5-dev.7.1');
     expect(parsed.snapshot.relays?.happier?.relays[0]?.relayUrl).toBe('http://127.0.0.1:4400');
     expect(parsed.snapshot.relays?.happier?.relays[0]?.warnings).toEqual(['Legacy relay install detected at http://127.0.0.1:4400']);
-    expect(parsed.snapshot.warnings?.[0]?.repairCommands).toEqual(['happier doctor repair --yes']);
+    expect(parsed.snapshot.warnings?.[0]?.repairCommands).toEqual(['piggercode doctor repair --yes']);
   });
 
   it('returns a stable error for invalid JSON', () => {

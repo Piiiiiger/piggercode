@@ -51,7 +51,7 @@ test('hstack stack install dry-run plans runtime, service, and desktop installat
     ['create-stack', 'build-runtime', 'set-runtime-mode', 'build-desktop', 'install-service', 'restart-service', 'install-desktop'],
   );
   assert.equal(payload.desktop.productName, 'Happier (local-prod)');
-  assert.equal(payload.desktop.identifier, 'com.happier.stack.local-prod');
+  assert.equal(payload.desktop.identifier, 'com.piggercode.stack.local-prod');
   assert.equal(payload.desktop.serverUrl, 'http://127.0.0.1:4305');
 });
 

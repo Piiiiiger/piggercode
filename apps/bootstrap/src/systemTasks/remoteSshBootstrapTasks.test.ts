@@ -240,7 +240,7 @@ describe('installRemoteCliDefault', () => {
             installRemoteFirstPartyComponent: async (params) => {
                 invocations.push(params as Record<string, unknown>);
                 return {
-                    binaryPath: '$HOME/.happier/cli/current/happier',
+                    binaryPath: '$HOME/.piggercode/cli/current/piggercode',
                     versionId: '1.2.3',
                     source: 'https://example.test/happier.tgz',
                 };
@@ -258,7 +258,7 @@ describe('installRemoteCliDefault', () => {
 });
 
 describe('approveLocalRemoteAuthRequestDefault', () => {
-    it('uses the managed local happier cli runner instead of depending on PATH resolution', async () => {
+    it('uses the managed local piggercode cli runner instead of depending on PATH resolution', async () => {
         const runLocalHappierJsonCommand = vi.fn(async (params: Readonly<{ args: readonly string[] }>) => {
             expect(params.args).toEqual([
                 'auth',
@@ -295,7 +295,7 @@ describe('approveLocalRemoteAuthRequestDefault', () => {
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-remote-approve-pin-'));
         const settingsPath = join(rootDir, 'settings.json');
         const logPath = join(rootDir, 'cli.log');
-        const cliPath = join(rootDir, 'happier');
+        const cliPath = join(rootDir, 'piggercode');
         writeFileSync(settingsPath, JSON.stringify({
             activeServerId: 'stack-x',
             servers: { 'stack-x': { serverUrl: 'https://relay-x.example.test' }, 'relay-r': { serverUrl: 'https://relay.example.test' } },
@@ -356,8 +356,8 @@ describe('runRemoteBootstrapCommandDefault', () => {
             });
 
             const remoteCommand = fakeSsh.readInvocations().at(-1)?.at(-1) ?? '';
-            expect(remoteCommand).toContain('$HOME/.happier/cli-preview/current/happier auth status --json');
-            expect(remoteCommand).not.toContain('$HOME/.happier/bin/happier');
+            expect(remoteCommand).toContain('$HOME/.piggercode/cli-preview/current/piggercode auth status --json');
+            expect(remoteCommand).not.toContain('$HOME/.piggercode/bin/piggercode');
         } finally {
             fakeSsh.cleanup();
         }

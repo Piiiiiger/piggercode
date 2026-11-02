@@ -4,7 +4,7 @@ import { buildTerminalConnectDeepLink, parseTerminalConnectUrl } from './termina
 
 describe('parseTerminalConnectUrl', () => {
     it('parses legacy terminal deeplink format', () => {
-        expect(parseTerminalConnectUrl('happier://terminal?abcDEF_123-zzz')).toEqual({
+        expect(parseTerminalConnectUrl('piggercode://terminal?abcDEF_123-zzz')).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
             serverUrl: null,
         });
@@ -13,7 +13,7 @@ describe('parseTerminalConnectUrl', () => {
     it('parses canonical terminal deeplink format with server URL', () => {
         expect(
             parseTerminalConnectUrl(
-                'happier://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test',
+                'piggercode://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test',
             ),
         ).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
@@ -24,7 +24,7 @@ describe('parseTerminalConnectUrl', () => {
     it('parses complete authenticated-pairing context', () => {
         expect(
             parseTerminalConnectUrl(
-                'happier://terminal?key=abc&pairingSecret=secret&createdAt=1000&expiresAt=61000',
+                'piggercode://terminal?key=abc&pairingSecret=secret&createdAt=1000&expiresAt=61000',
             ),
         ).toEqual({
             publicKeyB64Url: 'abc',
@@ -38,13 +38,13 @@ describe('parseTerminalConnectUrl', () => {
     });
 
     it('ignores incomplete or invalid authenticated-pairing context for compatibility', () => {
-        expect(parseTerminalConnectUrl('happier://terminal?key=abc&pairingSecret=secret')).toEqual({
+        expect(parseTerminalConnectUrl('piggercode://terminal?key=abc&pairingSecret=secret')).toEqual({
             publicKeyB64Url: 'abc',
             serverUrl: null,
         });
         expect(
             parseTerminalConnectUrl(
-                'happier://terminal?key=abc&pairingSecret=secret&createdAt=61000&expiresAt=1000',
+                'piggercode://terminal?key=abc&pairingSecret=secret&createdAt=61000&expiresAt=1000',
             ),
         ).toEqual({
             publicKeyB64Url: 'abc',
@@ -77,12 +77,12 @@ describe('parseTerminalConnectUrl', () => {
     });
 
     it('rejects non-terminal links', () => {
-        expect(parseTerminalConnectUrl('happier://server?url=https%3A%2F%2Fstack.example.test')).toBeNull();
+        expect(parseTerminalConnectUrl('piggercode://server?url=https%3A%2F%2Fstack.example.test')).toBeNull();
     });
 
     it('ignores unsafe server URL schemes', () => {
         expect(
-            parseTerminalConnectUrl('happier://terminal?key=abcDEF_123-zzz&server=javascript%3Aalert(1)'),
+            parseTerminalConnectUrl('piggercode://terminal?key=abcDEF_123-zzz&server=javascript%3Aalert(1)'),
         ).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
             serverUrl: null,
@@ -90,13 +90,13 @@ describe('parseTerminalConnectUrl', () => {
     });
 
     it('returns null for canonical format with missing key value', () => {
-        expect(parseTerminalConnectUrl('happier://terminal?key=&server=https%3A%2F%2Fstack.example.test')).toBeNull();
+        expect(parseTerminalConnectUrl('piggercode://terminal?key=&server=https%3A%2F%2Fstack.example.test')).toBeNull();
     });
 
     it('normalizes server URL by trimming trailing slashes', () => {
         expect(
             parseTerminalConnectUrl(
-                'happier://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test%2F%2F',
+                'piggercode://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test%2F%2F',
             ),
         ).toEqual({
             publicKeyB64Url: 'abcDEF_123-zzz',
@@ -113,7 +113,7 @@ describe('buildTerminalConnectDeepLink', () => {
                 serverUrl: 'https://stack.example.test/path?x=1',
             }),
         ).toBe(
-            'happier://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test%2Fpath%3Fx%3D1',
+            'piggercode://terminal?key=abcDEF_123-zzz&server=https%3A%2F%2Fstack.example.test%2Fpath%3Fx%3D1',
         );
     });
 
@@ -129,7 +129,7 @@ describe('buildTerminalConnectDeepLink', () => {
                 },
             }),
         ).toBe(
-            'happier://terminal?key=abc&pairingSecret=secret&createdAt=1000&expiresAt=61000',
+            'piggercode://terminal?key=abc&pairingSecret=secret&createdAt=1000&expiresAt=61000',
         );
     });
 
@@ -139,6 +139,6 @@ describe('buildTerminalConnectDeepLink', () => {
                 publicKeyB64Url: 'abcDEF_123-zzz',
                 serverUrl: null,
             }),
-        ).toBe('happier://terminal?abcDEF_123-zzz');
+        ).toBe('piggercode://terminal?abcDEF_123-zzz');
     });
 });

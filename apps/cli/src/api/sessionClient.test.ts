@@ -2202,7 +2202,7 @@ describe('ApiSessionClient connection handling', () => {
         expect(reportProbeResult).toHaveBeenCalledWith({
             status: 'auth_failed',
             statusCode: 426,
-            errorMessage: 'This Happier session runner must be upgraded before it can sync sessions.',
+            errorMessage: 'This PiggerCode session runner must be upgraded before it can sync sessions.',
         }, { generation: 1 });
     });
 

@@ -1,6 +1,6 @@
 # Isolated Linux VM (Apple Silicon) for `review-pr`
 
-If you want to validate `hstack review-pr` on a **fresh system** (no existing `~/.happier-stack`, no host tooling), the simplest repeatable approach on Apple Silicon is a Linux VM managed by **Lima** (it uses Apple’s Virtualization.framework).
+If you want to validate `hstack review-pr` on a **fresh system** (no existing `~/.piggercode-stack`, no host tooling), the simplest repeatable approach on Apple Silicon is a Linux VM managed by **Lima** (it uses Apple’s Virtualization.framework).
 
 This avoids Docker/container UX issues (browser opening, Expo networking, file watching) while still being truly “clean”.
 
@@ -62,7 +62,7 @@ LIMA_MEMORY=12GiB ./scripts/provision/macos-lima-vm.sh happy-test
 
 Port ranges note:
 - `review-pr` runs in a **fully isolated sandbox** (separate hstack home dir), so VM defaults written to
-  `~/.happier-stack/env.local` inside the VM won’t be read automatically.
+  `~/.piggercode-stack/env.local` inside the VM won’t be read automatically.
 - Prefer passing `--vm-ports` (or explicit `--stack-port-start=...`) to `review-pr` so the sandbox uses the forwarded ranges.
 
 ### 2b) Manual setup (if you prefer)
@@ -141,7 +141,7 @@ Inside the VM:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/happier-dev/happier/main/apps/stack/scripts/provision/linux-ubuntu-provision.sh -o /tmp/linux-ubuntu-provision.sh \
   && chmod +x /tmp/linux-ubuntu-provision.sh \
-  && /tmp/linux-ubuntu-provision.sh --profile=happier
+  && /tmp/linux-ubuntu-provision.sh --profile=piggercode
 ```
 
 ### 3b) (Optional) Run the hstack dev setup wizard
@@ -233,15 +233,15 @@ If you want a “clean-ish” rerun without recreating the VM, delete the hstack
 Inside the VM:
 
 ```bash
-rm -rf ~/.happier-stack ~/.happier ~/.happy
+rm -rf ~/.piggercode-stack ~/.piggercode ~/.happy
 ```
 
 Why these paths:
-- `~/.happier-stack`: stack runtime home (shims/runtime/cache/logs).
-- `~/.happier`: stack storage root (`~/.happier/stacks/<name>/...` env/state/data).
+- `~/.piggercode-stack`: stack runtime home (shims/runtime/cache/logs).
+- `~/.piggercode`: stack storage root (`~/.piggercode/stacks/<name>/...` env/state/data).
 - `~/.happy`: legacy pre-monorepo location that older migrations/import tooling may still reference.
 
-If you used `hstack setup-from-source --profile=dev` and picked a custom workspace directory (outside `~/.happier-stack/workspace`), delete that directory too.
+If you used `hstack setup-from-source --profile=dev` and picked a custom workspace directory (outside `~/.piggercode-stack/workspace`), delete that directory too.
 
 ---
 

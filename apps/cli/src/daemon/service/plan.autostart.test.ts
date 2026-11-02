@@ -5,7 +5,7 @@ import { planDaemonServiceInstall } from './plan';
 /**
  * The autostart dimension: users must be able to keep the background service
  * installed while stopping it from starting at login, so the daemon only runs
- * while something (the desktop app, or an explicit `happier service start`)
+ * while something (the desktop app, or an explicit `piggercode service start`)
  * asks for it.
  *
  * Every assertion here is plan-level: it inspects the definition file content
@@ -20,7 +20,7 @@ const DARWIN_BASE = {
   activeServerId: 'cloud',
   uid: 501,
   userHomeDir: '/Users/test',
-  happierHomeDir: '/Users/test/.happier',
+  happierHomeDir: '/Users/test/.piggercode',
   serverUrl: 'https://api.happier.dev',
   webappUrl: 'https://app.happier.dev',
   publicServerUrl: 'https://api.happier.dev',
@@ -35,7 +35,7 @@ const LINUX_BASE = {
   instanceId: 'cloud',
   activeServerId: 'cloud',
   userHomeDir: '/home/test',
-  happierHomeDir: '/home/test/.happier',
+  happierHomeDir: '/home/test/.piggercode',
   serverUrl: 'https://api.happier.dev',
   webappUrl: 'https://app.happier.dev',
   publicServerUrl: 'https://api.happier.dev',
@@ -49,11 +49,11 @@ const WIN32_BASE = {
   instanceId: 'cloud',
   activeServerId: 'cloud',
   userHomeDir: 'C:\\Users\\test',
-  happierHomeDir: 'C:\\Users\\test\\.happier',
+  happierHomeDir: 'C:\\Users\\test\\.piggercode',
   serverUrl: 'https://api.happier.dev',
   webappUrl: 'https://app.happier.dev',
   publicServerUrl: 'https://api.happier.dev',
-  nodePath: 'C:\\Users\\test\\.local\\bin\\happier.exe',
+  nodePath: 'C:\\Users\\test\\.local\\bin\\piggercode.exe',
   entryPath: '',
 } as const;
 
@@ -74,14 +74,14 @@ describe('daemon service install plan — autostart dimension', () => {
       // KeepAlive dict would re-arm the login start this mode exists to remove.
       expect(content).not.toMatch(/KeepAlive/);
       // Installed, and started right now — just not at the next login.
-      expect(commandLines(plan)).toContain('launchctl bootstrap gui/501 /Users/test/Library/LaunchAgents/com.happier.cli.daemon.cloud.plist');
-      expect(commandLines(plan)).toContain('launchctl kickstart -k gui/501/com.happier.cli.daemon.cloud');
+      expect(commandLines(plan)).toContain('launchctl bootstrap gui/501 /Users/test/Library/LaunchAgents/com.piggercode.cli.daemon.cloud.plist');
+      expect(commandLines(plan)).toContain('launchctl kickstart -k gui/501/com.piggercode.cli.daemon.cloud');
       // `launchctl enable` is retained on purpose: it is launchd's allow-flag,
       // not a login trigger. Uninstall runs `launchctl disable` (see
       // planDaemonServiceUninstall), so dropping `enable` here would make
       // reinstall-after-uninstall fail at `bootstrap` and would leave an
       // on-demand service unstartable. `RunAtLoad` above is the login trigger.
-      expect(commandLines(plan)).toContain('launchctl enable gui/501/com.happier.cli.daemon.cloud');
+      expect(commandLines(plan)).toContain('launchctl enable gui/501/com.piggercode.cli.daemon.cloud');
     });
 
     it('retains the login trigger by default', () => {
@@ -92,7 +92,7 @@ describe('daemon service install plan — autostart dimension', () => {
       // An at-login service is meant to be there whenever the user is logged in, so launchd
       // restarts it after a crash.
       expect(content).toMatch(/<key>KeepAlive<\/key>/);
-      expect(commandLines(plan)).toContain('launchctl enable gui/501/com.happier.cli.daemon.cloud');
+      expect(commandLines(plan)).toContain('launchctl enable gui/501/com.piggercode.cli.daemon.cloud');
     });
   });
 
@@ -101,19 +101,19 @@ describe('daemon service install plan — autostart dimension', () => {
       const plan = planDaemonServiceInstall({ ...LINUX_BASE, autostart: 'on-demand' });
       const lines = commandLines(plan);
 
-      expect(lines).not.toContain('systemctl --user enable happier-daemon.cloud.service');
-      expect(lines).toContain('systemctl --user disable happier-daemon.cloud.service');
+      expect(lines).not.toContain('systemctl --user enable piggercode-daemon.cloud.service');
+      expect(lines).toContain('systemctl --user disable piggercode-daemon.cloud.service');
       // Still running now: `disable` without `--now` leaves the unit alone.
-      expect(lines).toContain('systemctl --user restart happier-daemon.cloud.service');
-      expect(lines.indexOf('systemctl --user disable happier-daemon.cloud.service'))
-        .toBeLessThan(lines.indexOf('systemctl --user restart happier-daemon.cloud.service'));
+      expect(lines).toContain('systemctl --user restart piggercode-daemon.cloud.service');
+      expect(lines.indexOf('systemctl --user disable piggercode-daemon.cloud.service'))
+        .toBeLessThan(lines.indexOf('systemctl --user restart piggercode-daemon.cloud.service'));
     });
 
     it('enables the unit by default', () => {
       const lines = commandLines(planDaemonServiceInstall({ ...LINUX_BASE }));
 
-      expect(lines).toContain('systemctl --user enable happier-daemon.cloud.service');
-      expect(lines).not.toContain('systemctl --user disable happier-daemon.cloud.service');
+      expect(lines).toContain('systemctl --user enable piggercode-daemon.cloud.service');
+      expect(lines).not.toContain('systemctl --user disable piggercode-daemon.cloud.service');
     });
 
     it('does not enable a system-mode unit in on-demand mode', () => {
@@ -124,8 +124,8 @@ describe('daemon service install plan — autostart dimension', () => {
         autostart: 'on-demand',
       }));
 
-      expect(lines).not.toContain('systemctl enable happier-daemon.cloud.service');
-      expect(lines).toContain('systemctl disable happier-daemon.cloud.service');
+      expect(lines).not.toContain('systemctl enable piggercode-daemon.cloud.service');
+      expect(lines).toContain('systemctl disable piggercode-daemon.cloud.service');
     });
   });
 
@@ -139,7 +139,7 @@ describe('daemon service install plan — autostart dimension', () => {
       expect(registration).not.toContain('LogonTrigger');
       // Installed and started right now, just never by the scheduler.
       expect(commandLines(planDaemonServiceInstall({ ...WIN32_BASE, autostart: 'on-demand' })))
-        .toContain('schtasks /Run /TN Happier\\happier-daemon.cloud');
+        .toContain('schtasks /Run /TN PiggerCode\\piggercode-daemon.cloud');
     });
 
     it('registers a current-user logon trigger by default', () => {

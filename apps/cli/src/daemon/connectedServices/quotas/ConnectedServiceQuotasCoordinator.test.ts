@@ -10133,7 +10133,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       serviceId: 'claude-subscription',
       fetch: vi.fn(async () => {
         throw new ConnectedServiceQuotaFetchError(
-          'Claude subscription is missing Claude Code OAuth scope; reconnect Claude in Happier and retry.',
+          'Claude subscription is missing Claude Code OAuth scope; reconnect Claude in PiggerCode and retry.',
           {
             status: 403,
             quotaFetchErrorCode: 'auth_failure',
@@ -10697,7 +10697,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       serviceId: 'claude-subscription',
       fetch: vi.fn(async () => {
         throw new ConnectedServiceQuotaFetchError(
-          'Claude subscription is missing Claude Code OAuth scope; reconnect Claude in Happier and retry.',
+          'Claude subscription is missing Claude Code OAuth scope; reconnect Claude in PiggerCode and retry.',
           {
             status: 403,
             quotaFetchErrorCode: 'auth_failure',

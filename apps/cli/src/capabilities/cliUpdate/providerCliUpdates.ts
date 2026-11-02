@@ -168,7 +168,7 @@ export function withProviderCliUpdates(cap: Capability, agentId: AgentId, deps: 
         return {
           ok: false,
           error: {
-            message: `${held.version} is less than ${age} old; Happier installs it once it's ${age} old.`,
+            message: `${held.version} is less than ${age} old; PiggerCode installs it once it's ${age} old.`,
             code: 'update-held-by-release-age',
           },
           ...(result.logPath ? { logPath: result.logPath } : {}),

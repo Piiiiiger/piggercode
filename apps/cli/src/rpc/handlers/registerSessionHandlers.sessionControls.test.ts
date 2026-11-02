@@ -126,9 +126,9 @@ describe('registerSessionHandlers session controls', () => {
       path: process.cwd(),
       host: 'test-host',
       homeDir: '/tmp',
-      happyHomeDir: '/tmp/.happier',
-      happyLibDir: '/tmp/.happier/lib',
-      happyToolsDir: '/tmp/.happier/tools',
+      happyHomeDir: '/tmp/.piggercode',
+      happyLibDir: '/tmp/.piggercode/lib',
+      happyToolsDir: '/tmp/.piggercode/tools',
       sessionWorkStateV1: workState,
     };
 
@@ -424,9 +424,9 @@ describe('registerSessionHandlers session controls', () => {
       path: process.cwd(),
       host: 'test-host',
       homeDir: '/tmp',
-      happyHomeDir: '/tmp/.happier',
-      happyLibDir: '/tmp/.happier/lib',
-      happyToolsDir: '/tmp/.happier/tools',
+      happyHomeDir: '/tmp/.piggercode',
+      happyLibDir: '/tmp/.piggercode/lib',
+      happyToolsDir: '/tmp/.piggercode/tools',
       sessionUsageLimitRecoveryV1: {
         v: 1,
         status: 'waiting',
@@ -740,9 +740,9 @@ describe('registerSessionHandlers session controls', () => {
       path: process.cwd(),
       host: 'test-host',
       homeDir: '/tmp',
-      happyHomeDir: '/tmp/.happier',
-      happyLibDir: '/tmp/.happier/lib',
-      happyToolsDir: '/tmp/.happier/tools',
+      happyHomeDir: '/tmp/.piggercode',
+      happyLibDir: '/tmp/.piggercode/lib',
+      happyToolsDir: '/tmp/.piggercode/tools',
     };
     const updateSessionMetadata = vi.fn(async (handler: (metadata: Metadata) => Metadata) => {
       metadata = handler(metadata);
@@ -1147,10 +1147,10 @@ describe('registerSessionHandlers session controls', () => {
     const enqueueSessionUserMessage = vi.fn(async () => {});
 
     try {
-      const uploadedPath = '.happier/uploads/messages/m1/screen.png';
+      const uploadedPath = '.piggercode/uploads/messages/m1/screen.png';
       const uploadedContent = Buffer.from('fake image bytes');
       const sha256 = createHash('sha256').update(uploadedContent).digest('hex');
-      await mkdir(join(root, '.happier', 'uploads', 'messages', 'm1'), { recursive: true });
+      await mkdir(join(root, '.piggercode', 'uploads', 'messages', 'm1'), { recursive: true });
       await writeFile(join(root, uploadedPath), uploadedContent);
 
       registerSessionHandlers(registrar, root, {
@@ -1281,7 +1281,7 @@ describe('registerSessionHandlers session controls', () => {
           payload: {
             attachments: [
               {
-                path: '.happier/uploads/messages/m1/private.png',
+                path: '.piggercode/uploads/messages/m1/private.png',
                 mimeType: 'image/png',
                 sha256: '0'.repeat(64),
               },
@@ -1294,7 +1294,7 @@ describe('registerSessionHandlers session controls', () => {
             {
               kind: 'image',
               mimeType: 'image/png',
-              localPath: '.happier/uploads/messages/m1/private.png',
+              localPath: '.piggercode/uploads/messages/m1/private.png',
               sha256: '0'.repeat(64),
               provenance: { kind: 'sessionAttachmentUpload' },
             },
@@ -1358,9 +1358,9 @@ describe('registerSessionHandlers session controls', () => {
         path: process.cwd(),
         host: 'test-host',
         homeDir: '/tmp',
-        happyHomeDir: '/tmp/.happier',
-        happyLibDir: '/tmp/.happier/lib',
-        happyToolsDir: '/tmp/.happier/tools',
+        happyHomeDir: '/tmp/.piggercode',
+        happyLibDir: '/tmp/.piggercode/lib',
+        happyToolsDir: '/tmp/.piggercode/tools',
         sessionWorkStateV1: workState,
       } as Metadata & { sessionWorkStateV1: typeof workState }),
       sessionRuntimeControls: { setGoal },
@@ -1387,9 +1387,9 @@ describe('registerSessionHandlers session controls', () => {
         path: process.cwd(),
         host: 'test-host',
         homeDir: '/tmp',
-        happyHomeDir: '/tmp/.happier',
-        happyLibDir: '/tmp/.happier/lib',
-        happyToolsDir: '/tmp/.happier/tools',
+        happyHomeDir: '/tmp/.piggercode',
+        happyLibDir: '/tmp/.piggercode/lib',
+        happyToolsDir: '/tmp/.piggercode/tools',
       } as Metadata),
       sessionRuntimeControls: { setGoal },
     });
@@ -1407,9 +1407,9 @@ describe('registerSessionHandlers session controls', () => {
       path: process.cwd(),
       host: 'test-host',
       homeDir: '/tmp',
-      happyHomeDir: '/tmp/.happier',
-      happyLibDir: '/tmp/.happier/lib',
-      happyToolsDir: '/tmp/.happier/tools',
+      happyHomeDir: '/tmp/.piggercode',
+      happyLibDir: '/tmp/.piggercode/lib',
+      happyToolsDir: '/tmp/.piggercode/tools',
       sessionWorkStateV1: {
         v: 1,
         backendId: 'codex',

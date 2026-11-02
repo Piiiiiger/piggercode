@@ -136,7 +136,7 @@ function signMinisignMessage({ message, keyId, privateKey }) {
   const trustedSuffix = Buffer.from(trustedComment.slice('trusted comment: '.length), 'utf-8');
   const globalSignature = sign(null, Buffer.concat([signature, trustedSuffix]), privateKey);
   return [
-    'untrusted comment: signature from happier stack test',
+    'untrusted comment: signature from piggercode stack test',
     b64(sigLineBytes),
     trustedComment,
     b64(globalSignature),
@@ -1608,17 +1608,17 @@ test('renderServerServiceUnit references configured binary and env file', () => 
 
 test('resolveSelfHostDefaults uses user-mode paths by default', () => {
   const cfg = resolveSelfHostDefaults({ platform: 'linux', mode: 'user', homeDir: '/home/me' });
-  assert.equal(cfg.installRoot, '/home/me/.happier/self-host');
-  assert.equal(cfg.binDir, '/home/me/.happier/bin');
-  assert.equal(cfg.configDir, '/home/me/.happier/self-host/config');
+  assert.equal(cfg.installRoot, '/home/me/.piggercode/self-host');
+  assert.equal(cfg.binDir, '/home/me/.piggercode/bin');
+  assert.equal(cfg.configDir, '/home/me/.piggercode/self-host/config');
 });
 
 test('resolveSelfHostDefaults isolates publicdev into a side-by-side self-host root and service name', () => {
   const cfg = resolveSelfHostDefaults({ platform: 'linux', mode: 'user', channel: 'publicdev', homeDir: '/home/me' });
-  assert.equal(cfg.installRoot, '/home/me/.happier/self-host-dev');
-  assert.equal(cfg.configDir, '/home/me/.happier/self-host-dev/config');
-  assert.equal(cfg.dataDir, '/home/me/.happier/self-host-dev/data');
-  assert.equal(cfg.logDir, '/home/me/.happier/self-host-dev/logs');
+  assert.equal(cfg.installRoot, '/home/me/.piggercode/self-host-dev');
+  assert.equal(cfg.configDir, '/home/me/.piggercode/self-host-dev/config');
+  assert.equal(cfg.dataDir, '/home/me/.piggercode/self-host-dev/data');
+  assert.equal(cfg.logDir, '/home/me/.piggercode/self-host-dev/logs');
   assert.equal(cfg.serviceName, 'happier-server-dev');
 });
 
@@ -1803,15 +1803,15 @@ test('resolveSelfHostAutoUpdateIntervalMinutes provides a safe default and bound
 test('renderUpdaterSystemdUnit runs self-host update without restart loops', () => {
   const unit = renderUpdaterSystemdUnit({
     updaterLabel: 'happier-server-updater',
-    hstackPath: '/home/me/.happier/bin/hstack',
+    hstackPath: '/home/me/.piggercode/bin/hstack',
     channel: 'publicdev',
     mode: 'user',
-    workingDirectory: '/home/me/.happier/self-host',
-    stdoutPath: '/home/me/.happier/self-host/logs/updater.out.log',
-    stderrPath: '/home/me/.happier/self-host/logs/updater.err.log',
+    workingDirectory: '/home/me/.piggercode/self-host',
+    stdoutPath: '/home/me/.piggercode/self-host/logs/updater.out.log',
+    stderrPath: '/home/me/.piggercode/self-host/logs/updater.err.log',
     wantedBy: 'default.target',
   });
-  assert.match(unit, /ExecStart=\/home\/me\/\.happier\/bin\/hstack self-host update --channel=dev --mode=user --non-interactive/);
+  assert.match(unit, /ExecStart=\/home\/me\/\.piggercode\/bin\/hstack self-host update --channel=dev --mode=user --non-interactive/);
   assert.match(unit, /Restart=no/);
   assert.match(unit, /WantedBy=default\.target/);
 });
@@ -1819,13 +1819,13 @@ test('renderUpdaterSystemdUnit runs self-host update without restart loops', () 
 test('renderUpdaterLaunchdPlistXml runs self-host update without keepalive loops', () => {
   const plist = renderUpdaterLaunchdPlistXml({
     updaterLabel: 'happier-server-updater',
-    hstackPath: '/Users/me/.happier/bin/hstack',
+    hstackPath: '/Users/me/.piggercode/bin/hstack',
     channel: 'preview',
     mode: 'user',
     intervalMinutes: 60,
-    workingDirectory: '/Users/me/.happier/self-host',
-    stdoutPath: '/Users/me/.happier/self-host/logs/updater.out.log',
-    stderrPath: '/Users/me/.happier/self-host/logs/updater.err.log',
+    workingDirectory: '/Users/me/.piggercode/self-host',
+    stdoutPath: '/Users/me/.piggercode/self-host/logs/updater.out.log',
+    stderrPath: '/Users/me/.piggercode/self-host/logs/updater.err.log',
   });
 
   assert.match(plist, /<key>RunAtLoad<\/key>\s*<true\/>/);
@@ -1833,7 +1833,7 @@ test('renderUpdaterLaunchdPlistXml runs self-host update without keepalive loops
   assert.doesNotMatch(plist, /<key>StartCalendarInterval<\/key>/);
   assert.doesNotMatch(plist, /<key>KeepAlive<\/key>/);
   assert.match(plist, /<key>PATH<\/key>/);
-  assert.match(plist, /<string>\/Users\/me\/\.happier\/bin\/hstack<\/string>/);
+  assert.match(plist, /<string>\/Users\/me\/\.piggercode\/bin\/hstack<\/string>/);
   assert.match(plist, /<string>self-host<\/string>/);
   assert.match(plist, /<string>update<\/string>/);
   assert.match(plist, /<string>--channel=preview<\/string>/);
@@ -1844,13 +1844,13 @@ test('renderUpdaterLaunchdPlistXml runs self-host update without keepalive loops
 test('renderUpdaterLaunchdPlistXml supports daily time-of-day schedules', () => {
   const plist = renderUpdaterLaunchdPlistXml({
     updaterLabel: 'happier-server-updater',
-    hstackPath: '/Users/me/.happier/bin/hstack',
+    hstackPath: '/Users/me/.piggercode/bin/hstack',
     channel: 'stable',
     mode: 'user',
     at: '03:15',
-    workingDirectory: '/Users/me/.happier/self-host',
-    stdoutPath: '/Users/me/.happier/self-host/logs/updater.out.log',
-    stderrPath: '/Users/me/.happier/self-host/logs/updater.err.log',
+    workingDirectory: '/Users/me/.piggercode/self-host',
+    stdoutPath: '/Users/me/.piggercode/self-host/logs/updater.out.log',
+    stderrPath: '/Users/me/.piggercode/self-host/logs/updater.err.log',
   });
   assert.match(plist, /<key>StartCalendarInterval<\/key>/);
   assert.match(plist, /<key>Hour<\/key>\s*<integer>3<\/integer>/);
@@ -1882,12 +1882,12 @@ test('renderUpdaterSystemdTimerUnit supports daily time-of-day schedules', () =>
 test('renderUpdaterScheduledTaskWrapperPs1 runs self-host update without node dependencies', () => {
   const wrapper = renderUpdaterScheduledTaskWrapperPs1({
     updaterLabel: 'happier-server-updater',
-    hstackPath: 'C:\\\\Users\\\\me\\\\.happier\\\\bin\\\\hstack.exe',
+    hstackPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\bin\\\\hstack.exe',
     channel: 'publicdev',
     mode: 'user',
-    workingDirectory: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host',
-    stdoutPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\updater.out.log',
-    stderrPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\updater.err.log',
+    workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host',
+    stdoutPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\updater.out.log',
+    stderrPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\updater.err.log',
   });
 
   assert.match(
@@ -1936,7 +1936,7 @@ test('buildUpdaterScheduledTaskCreateArgs uses DAILY schedule when at is provide
   const args = buildUpdaterScheduledTaskCreateArgs({
     backend: 'schtasks-user',
     taskName: 'Happier\\\\happier-server-updater',
-    definitionPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\services\\\\happier-server-updater.ps1',
+    definitionPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\services\\\\happier-server-updater.ps1',
     at: '03:15',
   });
   assert.ok(args.includes('DAILY'));
@@ -1948,9 +1948,9 @@ test('buildUpdaterScheduledTaskCreateArgs uses hidden non-interactive PowerShell
   const args = buildUpdaterScheduledTaskCreateArgs({
     backend: 'schtasks-user',
     taskName: 'Happier\\\\happier-server-updater',
-    definitionPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\services\\\\happier-server-updater.ps1',
+    definitionPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\services\\\\happier-server-updater.ps1',
   });
-  assert.equal(args[args.indexOf('/TR') + 1], 'powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\services\\\\happier-server-updater.ps1"');
+  assert.equal(args[args.indexOf('/TR') + 1], 'powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\services\\\\happier-server-updater.ps1"');
 });
 
 test('mergeEnvTextWithDefaults preserves overrides while backfilling new default keys', () => {
@@ -2036,9 +2036,9 @@ test('buildSelfHostDoctorChecks does not require external minisign and includes 
     {
       platform: 'linux',
       mode: 'user',
-      serverBinaryPath: '/home/me/.happier/self-host/bin/happier-server',
-      configEnvPath: '/home/me/.happier/self-host/config/server.env',
-      uiWebCurrentDir: '/home/me/.happier/self-host/ui-web/current',
+      serverBinaryPath: '/home/me/.piggercode/self-host/bin/happier-server',
+      configEnvPath: '/home/me/.piggercode/self-host/config/server.env',
+      uiWebCurrentDir: '/home/me/.piggercode/self-host/ui-web/current',
     },
     {
       state: { uiWeb: { installed: true } },
@@ -2057,9 +2057,9 @@ test('buildSelfHostDoctorChecks flags missing ui-web bundle when state expects u
     {
       platform: 'linux',
       mode: 'user',
-      serverBinaryPath: '/home/me/.happier/self-host/bin/happier-server',
-      configEnvPath: '/home/me/.happier/self-host/config/server.env',
-      uiWebCurrentDir: '/home/me/.happier/self-host/ui-web/current',
+      serverBinaryPath: '/home/me/.piggercode/self-host/bin/happier-server',
+      configEnvPath: '/home/me/.piggercode/self-host/config/server.env',
+      uiWebCurrentDir: '/home/me/.piggercode/self-host/ui-web/current',
     },
     {
       state: { uiWeb: { installed: true } },

@@ -11,7 +11,7 @@ describe('resolveAttachmentTransferTarget', () => {
     expect(resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       },
@@ -21,11 +21,11 @@ describe('resolveAttachmentTransferTarget', () => {
       success: true,
       target: resolveAttachmentTransferTarget({
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       }, '/tmp/happier/uploads/session-1'),
-      uploadBasePath: '.happier/uploads/messages',
+      uploadBasePath: '.piggercode/uploads/messages',
     });
   });
 
@@ -33,7 +33,7 @@ describe('resolveAttachmentTransferTarget', () => {
     const result = resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       },
@@ -46,7 +46,7 @@ describe('resolveAttachmentTransferTarget', () => {
       success: false,
       target: resolveAttachmentTransferTarget({
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       }, '/tmp/happier/uploads/session-1'),
@@ -58,7 +58,7 @@ describe('resolveAttachmentTransferTarget', () => {
     const result = resolveConfiguredAttachmentTransferTarget({
       config: {
         uploadLocation: 'os_temp',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'none',
         vcsIgnoreWritesEnabled: false,
       },
@@ -82,7 +82,7 @@ describe('resolveAttachmentTransferTarget', () => {
       category: 'generated',
       config: {
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       },
@@ -91,11 +91,11 @@ describe('resolveAttachmentTransferTarget', () => {
     })).toEqual({
       success: true,
       target: {
-        uploadBasePath: '.happier/uploads/generated',
+        uploadBasePath: '.piggercode/uploads/generated',
         additionalAllowedReadDirs: [],
         additionalAllowedWriteDirs: [],
       },
-      uploadBasePath: '.happier/uploads/generated',
+      uploadBasePath: '.piggercode/uploads/generated',
     });
   });
 
@@ -104,7 +104,7 @@ describe('resolveAttachmentTransferTarget', () => {
       category: 'artifacts',
       config: {
         uploadLocation: 'workspace',
-        workspaceRelativeDir: ' .happier\\uploads ',
+        workspaceRelativeDir: ' .piggercode\\uploads ',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       },
@@ -113,11 +113,11 @@ describe('resolveAttachmentTransferTarget', () => {
     })).toEqual({
       success: true,
       target: {
-        uploadBasePath: '.happier/uploads/artifacts',
+        uploadBasePath: '.piggercode/uploads/artifacts',
         additionalAllowedReadDirs: [],
         additionalAllowedWriteDirs: [],
       },
-      uploadBasePath: '.happier/uploads/artifacts',
+      uploadBasePath: '.piggercode/uploads/artifacts',
     });
   });
 
@@ -126,7 +126,7 @@ describe('resolveAttachmentTransferTarget', () => {
       category: 'generated',
       config: {
         uploadLocation: 'workspace',
-        workspaceRelativeDir: 'C:\\Users\\alice\\.happier\\uploads',
+        workspaceRelativeDir: 'C:\\Users\\alice\\.piggercode\\uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       },
@@ -143,7 +143,7 @@ describe('resolveAttachmentTransferTarget', () => {
       category: 'generated',
       config: {
         uploadLocation: 'os_temp',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'none',
         vcsIgnoreWritesEnabled: false,
       },

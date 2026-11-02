@@ -20,8 +20,8 @@
 # SwiftBar runs with a minimal environment, so users often won't have
 # PIGGERCODE_STACK_HOME_DIR / PIGGERCODE_STACK_WORKSPACE_DIR exported.
 # Treat <canonicalHomeDir>/.env as the canonical pointer file (written by `hstack init`).
-# Default: ~/.happier-stack/.env
-CANONICAL_HOME_DIR="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
+# Default: ~/.piggercode-stack/.env
+CANONICAL_HOME_DIR="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.piggercode-stack}"
 CANONICAL_ENV_FILE="$CANONICAL_HOME_DIR/.env"
 
 _dotenv_get_quick() {
@@ -294,7 +294,7 @@ else
   else
     echo "--Setup (guided) | bash=$hstack_TERM param1=setup dir=$hstack_ROOT_DIR terminal=false refresh=true"
     echo "--Bootstrap (clone/install) | bash=$hstack_TERM param1=bootstrap dir=$hstack_ROOT_DIR terminal=false refresh=true"
-    echo "--CLI link (install happier wrapper) | bash=$hstack_TERM param1=cli:link dir=$hstack_ROOT_DIR terminal=false refresh=true"
+    echo "--CLI link (install piggercode wrapper) | bash=$hstack_TERM param1=cli:link dir=$hstack_ROOT_DIR terminal=false refresh=true"
     echo "--Mobile dev helper | bash=$hstack_TERM param1=mobile dir=$hstack_ROOT_DIR terminal=false"
   fi
 fi

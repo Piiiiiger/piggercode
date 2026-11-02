@@ -164,7 +164,7 @@ export async function quiesceInstalledCliWindowsPayloadOwners(params: Readonly<{
     }));
   if (remainingProcesses.length > 0) {
     throw new Error(
-      `Failed to stop running Happier runtime processes before payload promotion: ${remainingProcesses
+      `Failed to stop running PiggerCode runtime processes before payload promotion: ${remainingProcesses
         .map((processInfo) => `${processInfo.pid}:${processInfo.type}`)
         .join(', ')}`,
     );

@@ -33,7 +33,7 @@ describe('McpServersSettingsV1Schema', () => {
   });
 
   it('rejects reserved server names', () => {
-    for (const name of ['happier', '__proto__', 'prototype', 'constructor']) {
+    for (const name of ['piggercode', 'happier', '__proto__', 'prototype', 'constructor']) {
       const res = McpServersSettingsV1Schema.safeParse({
         v: 1,
         strictMode: false,

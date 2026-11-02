@@ -261,7 +261,7 @@ describe('Realtime voice modes', () => {
     });
   });
 
-  describe('happier voice lifecycle', () => {
+  describe('piggercode voice lifecycle', () => {
     it('records the session limit and announces when the server-minted lease is near expiry', async () => {
       const { registerVoiceSession, startRealtimeSession, stopRealtimeSession } = await import('./RealtimeSession');
       const { session } = makeVoiceSession('conv_0');

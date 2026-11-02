@@ -91,7 +91,7 @@ export type SetupPairingPromptPayload = Readonly<{
   cliCommand: string | null;
 }>;
 
-/** What `happier service install --dry-run --json` reported and needs a decision on (INV9). */
+/** What `piggercode service install --dry-run --json` reported and needs a decision on (INV9). */
 export type SetupServiceConsentPromptPayload = Readonly<{
   /** The CLI's takeover notice, or `null` when no takeover is involved. */
   takeover: string | null;
@@ -101,7 +101,7 @@ export type SetupServiceConsentPromptPayload = Readonly<{
   servicesToRemove: readonly string[];
   /**
    * The installed service runs another CLI than the desktop-managed one, and applying switches it:
-   * `current` is the command it runs now (a user's npm/Homebrew `happier`, say), `replacement` the
+   * `current` is the command it runs now (a user's npm/Homebrew `piggercode`, say), `replacement` the
    * managed shim it would run. `null` (parsed) or absent (an older executor) when the CLI the
    * service runs is unchanged.
    */
@@ -299,7 +299,7 @@ export function parseSetupAccountConsentPromptData(data: unknown): SetupAccountC
 }
 
 /**
- * Prompt kind for R12's one question: this computer already has a `happier` this app did not
+ * Prompt kind for R12's one question: this computer already has a `piggercode` this app did not
  * install. Asked before the executor writes anything, and only when no answer is recorded (or the
  * recorded CLI of the user's own disappeared or is too old for setup).
  */
@@ -314,7 +314,7 @@ export type SetupCliOrigin = 'npm' | 'brew' | 'unknown';
 export type SetupCliChoicePromptPayload = Readonly<{
   /** Where that CLI resolves; a local filesystem path. */
   command: string;
-  /** What `happier --version` answered; `null` when it answered nothing readable. */
+  /** What `piggercode --version` answered; `null` when it answered nothing readable. */
   version: string | null;
   origin: SetupCliOrigin;
   /** The command that removes that copy (shown, never run); `null` when its origin is unknown. */
@@ -329,7 +329,7 @@ export type SetupCliChoicePromptPayload = Readonly<{
    */
   missing: boolean;
   /**
-   * The managed `happier` a new terminal runs first through something Desktop did not create (the
+   * The managed `piggercode` a new terminal runs first through something Desktop did not create (the
    * official installer's `~/.local/bin` link or its Windows `Path` entry), so keeping `command`
    * could not make the terminal run it: "Keep my own" is not offered, and this path is what would
    * have to go first (RV3-1). `null` when keeping it works.

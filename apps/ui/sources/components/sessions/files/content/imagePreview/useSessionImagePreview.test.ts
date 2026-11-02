@@ -77,7 +77,7 @@ describe('useSessionImagePreview', () => {
         let revision = 'sha-1';
         const hook = await renderHook(() => useSessionImagePreview({
             sessionId: 'session-1',
-            filePath: '.happier/uploads/generated/message/image.png',
+            filePath: '.piggercode/uploads/generated/message/image.png',
             enabled: true,
             cacheKey: revision,
             mimeType: 'image/png',

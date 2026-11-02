@@ -18,7 +18,7 @@ describe('createAgentSessionMediaPersister', () => {
     try {
       const sourcePath = join(workingDirectory, 'generated.png');
       await writeFile(sourcePath, pngBytes);
-      await writeFile(join(workingDirectory, '.happier'), 'blocks the media directory', 'utf8');
+      await writeFile(join(workingDirectory, '.piggercode'), 'blocks the media directory', 'utf8');
       const diagnostics: unknown[] = [];
       const persister = createAgentSessionMediaPersister({
         workingDirectory,

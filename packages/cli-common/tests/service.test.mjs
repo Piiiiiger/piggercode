@@ -84,18 +84,18 @@ test('planServiceAction restarts systemd services after install instead of relyi
 
   const argsText = plan.commands.map((command) => `${command.cmd} ${command.args.join(' ')}`).join('\n');
   assert.match(argsText, /systemctl --user daemon-reload/);
-  assert.match(argsText, /systemctl --user enable dev\.happier\.test\.service/);
-  assert.match(argsText, /systemctl --user restart dev\.happier\.test\.service/);
+  assert.match(argsText, /systemctl --user enable dev\.piggercode\.test\.service/);
+  assert.match(argsText, /systemctl --user restart dev\.piggercode\.test\.service/);
   assert.doesNotMatch(argsText, /enable --now/);
 });
 
 test('renderWindowsScheduledTaskWrapperPs1 sets env and runs program args', () => {
   const ps1 = renderWindowsScheduledTaskWrapperPs1({
-    workingDirectory: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host',
-    programArgs: ['C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\bin\\\\happier-server.exe', '--port', '3005'],
+    workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host',
+    programArgs: ['C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\bin\\\\happier-server.exe', '--port', '3005'],
     env: { PORT: '3005' },
-    stdoutPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\out.log',
-    stderrPath: 'C:\\\\Users\\\\me\\\\.happier\\\\self-host\\\\logs\\\\err.log',
+    stdoutPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\out.log',
+    stderrPath: 'C:\\\\Users\\\\me\\\\.piggercode\\\\self-host\\\\logs\\\\err.log',
   });
   assert.match(ps1, /\$env:PORT = "3005"/);
   assert.match(ps1, /Set-Location -LiteralPath/);
@@ -166,8 +166,8 @@ test('buildServiceDefinition writes expected service definition paths', () => {
     spec: {
       label: 'dev.happier.test',
       description: 'Happier Test',
-      programArgs: ['/home/me/.happier/bin/happier'],
-      workingDirectory: '/home/me/.happier',
+      programArgs: ['/home/me/.piggercode/bin/happier'],
+      workingDirectory: '/home/me/.piggercode',
       env: { PORT: '3005' },
     },
   });
@@ -179,11 +179,11 @@ test('buildServiceDefinition writes expected service definition paths', () => {
     spec: {
       label: 'dev.happier.test',
       description: 'Happier Test',
-      programArgs: ['/Users/me/.happier/bin/happier'],
-      workingDirectory: '/Users/me/.happier',
+      programArgs: ['/Users/me/.piggercode/bin/happier'],
+      workingDirectory: '/Users/me/.piggercode',
       env: { PORT: '3005' },
-      stdoutPath: '/Users/me/.happier/logs/out.log',
-      stderrPath: '/Users/me/.happier/logs/err.log',
+      stdoutPath: '/Users/me/.piggercode/logs/out.log',
+      stderrPath: '/Users/me/.piggercode/logs/err.log',
     },
   });
   assert.equal(mac.path, '/Users/me/Library/LaunchAgents/dev.happier.test.plist');
@@ -195,12 +195,12 @@ test('buildServiceDefinition writes expected service definition paths', () => {
     spec: {
       label: 'dev.happier.test',
       description: 'Happier Test',
-      programArgs: ['C:\\\\Users\\\\me\\\\.happier\\\\bin\\\\happier.exe'],
-      workingDirectory: 'C:\\\\Users\\\\me\\\\.happier',
+      programArgs: ['C:\\\\Users\\\\me\\\\.piggercode\\\\bin\\\\piggercode.exe'],
+      workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode',
       env: { PORT: '3005' },
     },
   });
-  assert.match(win.path, /dev\.happier\.test\.ps1$/);
+  assert.match(win.path, /dev\.piggercode\.test\.ps1$/);
 });
 
 test('buildServiceDefinition injects PATH from the service target executable rather than the installer runtime', () => {
@@ -213,16 +213,16 @@ test('buildServiceDefinition injects PATH from the service target executable rat
       spec: {
         label: 'dev.happier.test',
         description: 'Happier Test',
-        programArgs: ['/Users/me/.happier-stack/bin/hstack', 'start'],
-        workingDirectory: '/Users/me/.happier',
+        programArgs: ['/Users/me/.piggercode-stack/bin/hstack', 'start'],
+        workingDirectory: '/Users/me/.piggercode',
         env: { PORT: '3005' },
-        stdoutPath: '/Users/me/.happier/logs/out.log',
-        stderrPath: '/Users/me/.happier/logs/err.log',
+        stdoutPath: '/Users/me/.piggercode/logs/out.log',
+        stderrPath: '/Users/me/.piggercode/logs/err.log',
       },
     });
 
     assert.match(def.contents, /<key>PATH<\/key>/);
-    assert.match(def.contents, /\/Users\/me\/\.happier-stack\/bin:\/custom\/tools:\/usr\/bin:\/bin/);
+    assert.match(def.contents, /\/Users\/me\/\.piggercode-stack\/bin:\/custom\/tools:\/usr\/bin:\/bin/);
   } finally {
     process.env.PATH = previousPath;
   }
@@ -238,12 +238,12 @@ test('buildServiceDefinition injects PATH into non-launchd service definitions w
       spec: {
         label: 'dev.happier.test',
         description: 'Happier Test',
-        programArgs: ['/home/me/.happier-stack/bin/hstack', 'start'],
-        workingDirectory: '/home/me/.happier',
+        programArgs: ['/home/me/.piggercode-stack/bin/hstack', 'start'],
+        workingDirectory: '/home/me/.piggercode',
         env: { PORT: '3005' },
       },
     });
-    assert.match(linux.contents, /Environment=PATH=\/home\/me\/\.happier-stack\/bin:\/custom\/tools:\/usr\/bin:\/bin/);
+    assert.match(linux.contents, /Environment=PATH=\/home\/me\/\.piggercode-stack\/bin:\/custom\/tools:\/usr\/bin:\/bin/);
 
     process.env.PATH = 'C:\\\\custom\\\\tools;C:\\\\Windows\\\\System32';
     const win = buildServiceDefinition({
@@ -252,12 +252,12 @@ test('buildServiceDefinition injects PATH into non-launchd service definitions w
       spec: {
         label: 'dev.happier.test',
         description: 'Happier Test',
-        programArgs: ['C:\\\\Users\\\\me\\\\.happier-stack\\\\bin\\\\hstack.cmd', 'start'],
-        workingDirectory: 'C:\\\\Users\\\\me\\\\.happier',
+        programArgs: ['C:\\\\Users\\\\me\\\\.piggercode-stack\\\\bin\\\\hstack.cmd', 'start'],
+        workingDirectory: 'C:\\\\Users\\\\me\\\\.piggercode',
         env: { PORT: '3005' },
       },
     });
-    assert.match(win.contents, /\$env:Path = "C:\\\\Users\\\\me\\\\\.happier-stack\\\\bin\\;C:\\\\custom\\\\tools;C:\\\\Windows\\\\System32/);
+    assert.match(win.contents, /\$env:Path = "C:\\\\Users\\\\me\\\\\.piggercode-stack\\\\bin\\;C:\\\\custom\\\\tools;C:\\\\Windows\\\\System32/);
   } finally {
     process.env.PATH = previousPath;
   }
@@ -273,11 +273,11 @@ test('buildServiceDefinition normalizes lowercase path env keys to PATH on posix
       spec: {
         label: 'dev.happier.test',
         description: 'Happier Test',
-        programArgs: ['/Users/me/.happier-stack/bin/hstack', 'start'],
-        workingDirectory: '/Users/me/.happier',
+        programArgs: ['/Users/me/.piggercode-stack/bin/hstack', 'start'],
+        workingDirectory: '/Users/me/.piggercode',
         env: { path: '/shadow/bin', PORT: '3005' },
-        stdoutPath: '/Users/me/.happier/logs/out.log',
-        stderrPath: '/Users/me/.happier/logs/err.log',
+        stdoutPath: '/Users/me/.piggercode/logs/out.log',
+        stderrPath: '/Users/me/.piggercode/logs/err.log',
       },
     });
     assert.match(mac.contents, /<key>PATH<\/key>/);
@@ -290,8 +290,8 @@ test('buildServiceDefinition normalizes lowercase path env keys to PATH on posix
       spec: {
         label: 'dev.happier.test',
         description: 'Happier Test',
-        programArgs: ['/home/me/.happier-stack/bin/hstack', 'start'],
-        workingDirectory: '/home/me/.happier',
+        programArgs: ['/home/me/.piggercode-stack/bin/hstack', 'start'],
+        workingDirectory: '/home/me/.piggercode',
         env: { path: '/shadow/bin', PORT: '3005' },
       },
     });
@@ -437,7 +437,7 @@ test('applyServicePlan falls back to launchctl load when bootstrap gui/uid fails
   }
 
   const trace = await readFile(tracePath, 'utf8').catch(() => '');
-  assert.match(trace, /^bootout\s+gui\/501\/dev\.happier\.test/m);
+  assert.match(trace, /^bootout\s+gui\/501\/dev\.piggercode\.test/m);
   assert.match(trace, /^bootstrap\s+gui\/501\s+/m);
   assert.match(trace, /^unload\s+-w\s+/m);
   assert.match(trace, /^load\s+-w\s+/m);

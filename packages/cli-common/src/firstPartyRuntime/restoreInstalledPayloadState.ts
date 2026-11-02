@@ -99,7 +99,7 @@ export async function captureInstalledPayloadStateForActivation(params: Readonly
       await rm(setAsideDir, { recursive: true, force: true }).catch(() => undefined);
       throw error;
     }
-    throw new AggregateError([error, ...putBackFailures], `Could not set the Happier commands aside, nor put them all back; the rest are in ${setAsideDir}.`);
+    throw new AggregateError([error, ...putBackFailures], `Could not set the PiggerCode commands aside, nor put them all back; the rest are in ${setAsideDir}.`);
   }
 
   return { layout, setAsideDir, currentVersionId, previousVersionId, shims, defaultReleaseChannelStatePath, defaultReleaseChannelState };
@@ -161,7 +161,7 @@ export async function restoreInstalledPayloadState(snapshot: InstalledPayloadSta
   });
 
   if (failures.length > 0) {
-    throw new AggregateError(failures, 'The previous Happier CLI install could not be completely restored.');
+    throw new AggregateError(failures, 'The previous PiggerCode CLI install could not be completely restored.');
   }
 }
 

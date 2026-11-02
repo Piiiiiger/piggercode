@@ -45,7 +45,7 @@ process.exit(0);
       await chmod(expoBin, 0o755);
     }
 
-    // Ensure stack storage stays within this tmp dir (avoid touching real ~/.happier paths).
+    // Ensure stack storage stays within this tmp dir (avoid touching real ~/.piggercode paths).
     await mkdir(join(storageDir, 'main'), { recursive: true });
 
     const env = {

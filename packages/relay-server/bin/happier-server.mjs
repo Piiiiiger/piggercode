@@ -11,8 +11,8 @@ import { parseRunnerInvocation } from '../src/runnerConfig.mjs';
 import { downloadVerifiedReleaseAssetBundle } from '@piggercode/release-runtime/verifiedDownload';
 import { fetchGitHubReleaseByTag } from '@piggercode/release-runtime/github';
 
-const OWNER = 'happier-dev';
-const REPO = 'happier';
+const OWNER = 'Piiiiiger';
+const REPO = 'piggercode';
 
 function fail(msg) {
   process.stderr.write(`[happier-server] ${msg}\n`);

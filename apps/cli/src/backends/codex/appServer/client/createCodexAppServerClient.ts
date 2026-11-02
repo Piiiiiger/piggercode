@@ -879,7 +879,7 @@ async function createUnlockedCodexAppServerClient(params: CreateCodexAppServerCl
         await request('initialize', {
             clientInfo: {
                 name: 'happier_cli',
-                title: 'Happier',
+                title: 'PiggerCode',
                 version: '0.1.0',
             },
             capabilities: {

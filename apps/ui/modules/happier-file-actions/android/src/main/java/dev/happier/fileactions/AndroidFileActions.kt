@@ -35,7 +35,7 @@ internal object AndroidFileActions {
   }
 
   fun contentUri(context: Context, file: File, name: String): Uri = FileProvider.getUriForFile(
-    context, context.packageName + ".happier-file-actions", file, name
+    context, context.packageName + ".piggercode-file-actions", file, name
   )
 
   fun documentIntent(name: String, mimeType: String): Intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {

@@ -14,9 +14,9 @@ describe('apps/cli package publish contract', () => {
     };
 
     expect(cliPackageJson.bin).toEqual({
-      happier: './bin/happier.mjs',
-      'happier-dev': './bin/happier-dev.mjs',
-      'happier-mcp': './bin/happier-mcp.mjs',
+      piggercode: './bin/piggercode.mjs',
+      'piggercode-dev': './bin/piggercode-dev.mjs',
+      'piggercode-mcp': './bin/piggercode-mcp.mjs',
     });
   });
 

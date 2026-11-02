@@ -46,7 +46,7 @@ test('dev-targets command adds, shows, diagnoses, lists, and removes stack-scope
         '--lima-instance=hslqa',
         '--lima-home=/tmp/lima-happier',
         '--repo-dir=/home/dev/happier',
-        '--cli-home-dir=/home/dev/.happier/linux',
+        '--cli-home-dir=/home/dev/.piggercode/linux',
       ],
       root,
     );

@@ -4662,11 +4662,11 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   spawnResourceCleanupOnFailure = null;
                   spawnResourceCleanupOnExit = null;
                 }
-                await cleanupSessionAttachResources(new Error('Failed to spawn Happier process - no PID returned'));
+                await cleanupSessionAttachResources(new Error('Failed to spawn PiggerCode process - no PID returned'));
                 return {
                   type: 'error',
                 errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_NO_PID,
-                  errorMessage: 'Failed to spawn Happier process - no PID returned'
+                  errorMessage: 'Failed to spawn PiggerCode process - no PID returned'
                 };
               }
 
@@ -7415,7 +7415,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
     }
 
     // Persist daemon.state.json after the control server is available so:
-    // - `happier daemon status` can reliably detect the running process, and
+    // - `piggercode daemon status` can reliably detect the running process, and
     // - callers can reach `/ping` even if machine registration is slow/unavailable.
     //
     // Note: the presence of daemon.state.json does NOT imply that machine sync is ready.

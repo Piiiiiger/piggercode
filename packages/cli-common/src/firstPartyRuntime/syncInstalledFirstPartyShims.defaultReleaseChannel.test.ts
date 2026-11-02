@@ -13,13 +13,13 @@ async function createStagedPayload(rootDir: string, versionId: string, contents:
   const stagedPayloadPath = join(rootDir, `stage-${versionId}`);
   await mkdir(stagedPayloadPath, { recursive: true });
   await mkdir(join(stagedPayloadPath, 'package-dist'), { recursive: true });
-  await writeFile(join(stagedPayloadPath, 'happier'), contents, 'utf8');
+  await writeFile(join(stagedPayloadPath, 'piggercode'), contents, 'utf8');
   await writeFile(join(stagedPayloadPath, 'package-dist', 'index.mjs'), `export default ${JSON.stringify(versionId)};\n`, 'utf8');
   return stagedPayloadPath;
 }
 
 describe('syncInstalledFirstPartyShims default release-channel handling', () => {
-  it('keeps the happier shim pointed at the selected default release-channel', async () => {
+  it('keeps the piggercode shim pointed at the selected default release-channel', async () => {
     const homeDir = await mkdtemp(join(tmpdir(), 'happier-first-party-runtime-'));
     const env = { ...process.env, PIGGERCODE_HOME_DIR: homeDir };
 
@@ -54,14 +54,14 @@ describe('syncInstalledFirstPartyShims default release-channel handling', () => 
         releaseRing: 'stable',
       });
 
-      const defaultShimPath = join(homeDir, 'bin', process.platform === 'win32' ? 'happier.exe' : 'happier');
+      const defaultShimPath = join(homeDir, 'bin', process.platform === 'win32' ? 'piggercode.exe' : 'piggercode');
       expect(existsSync(defaultShimPath)).toBe(true);
 
       if (process.platform === 'win32') {
         await expect(readFile(defaultShimPath, 'utf8')).resolves.toBe('preview-binary');
       } else {
         expect(lstatSync(defaultShimPath).isSymbolicLink()).toBe(true);
-        expect(readlinkSync(defaultShimPath)).toMatch(/cli-preview\/current\/happier|..\/cli-preview\/current\/happier/);
+        expect(readlinkSync(defaultShimPath)).toMatch(/cli-preview\/current\/piggercode|..\/cli-preview\/current\/piggercode/);
       }
     } finally {
       await rm(homeDir, { recursive: true, force: true });

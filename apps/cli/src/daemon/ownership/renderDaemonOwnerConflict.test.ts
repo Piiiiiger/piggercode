@@ -26,7 +26,7 @@ describe('renderDaemonOwnerConflict', () => {
         startupSource: 'background-service' as const,
         state: {
             ...legacyOwner.state,
-            serviceLabel: 'com.happier.cli.daemon.default',
+            serviceLabel: 'com.piggercode.cli.daemon.default',
         },
     };
 
@@ -37,7 +37,7 @@ describe('renderDaemonOwnerConflict', () => {
         });
 
         expect(rendered.title).toContain('could not determine how the current daemon was started');
-        expect(rendered.lines.join(' ')).toContain('Use `happier service stop` only if you know');
+        expect(rendered.lines.join(' ')).toContain('Use `piggercode service stop` only if you know');
     });
 
     it('suggests takeover for daemon start when the current owner source is unknown', () => {
@@ -74,8 +74,8 @@ describe('renderDaemonOwnerConflict', () => {
         });
 
         expect(rendered.title).toContain('background service');
-        expect(rendered.lines.join(' ')).toContain('Use `happier doctor repair`');
-        expect(rendered.lines.join(' ')).not.toContain('Use `happier service stop`');
+        expect(rendered.lines.join(' ')).toContain('Use `piggercode doctor repair`');
+        expect(rendered.lines.join(' ')).not.toContain('Use `piggercode service stop`');
     });
 
     it('mentions both legacy takeover and service restart guidance when daemon restart owner source is unknown', () => {

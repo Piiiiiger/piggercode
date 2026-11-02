@@ -1338,8 +1338,8 @@ export function makeAcpResumeLoadSessionScenario(params: {
   phase1TraceSentinel: string;
   phase2TraceSentinel: string;
 }): ProviderScenario {
-  const phase1MarkerFile = '.happier-resume-phase1.txt';
-  const phase2MarkerFile = '.happier-resume-phase2.txt';
+  const phase1MarkerFile = '.piggercode-resume-phase1.txt';
+  const phase2MarkerFile = '.piggercode-resume-phase2.txt';
   return {
     id: params.id ?? 'acp_resume_load_session',
     title: params.title ?? 'resume: second attach uses --resume from session metadata',

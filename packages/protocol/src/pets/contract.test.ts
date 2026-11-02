@@ -84,7 +84,7 @@ describe('pet protocol contract', () => {
     const manifest = pets.PetPackageManifestV1Schema.parse({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
     });
     expect(manifest.spritesheetPath).toBe('spritesheet.webp');
@@ -120,14 +120,14 @@ describe('pet protocol contract', () => {
     expect(pets.PetPackageManifestV1Schema.safeParse({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'nested/spritesheet.webp',
     }).success).toBe(false);
 
     expect(pets.PetPackageManifestV1Schema.safeParse({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
       script: 'postinstall.sh',
     }).success).toBe(false);
@@ -145,13 +145,13 @@ describe('pet protocol contract', () => {
       kind: 'detectedCodexHome',
       petId: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       originLabel: 'Codex pets',
       packageFormat: 'codex-compatible-atlas-v1',
       manifest: {
         id: 'blink',
         displayName: 'Blink',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.webp',
       },
       previewHandle: {
@@ -188,7 +188,7 @@ describe('pet protocol contract', () => {
       manifest: {
         id: 'blink',
         displayName: 'Blink',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.webp',
       },
       spritesheetAssetRef: {
@@ -367,7 +367,7 @@ describe('pet protocol contract', () => {
         manifest: {
           id: 'milo',
           displayName: 'Milo',
-          description: 'Happier companion pet',
+          description: 'PiggerCode companion pet',
           spritesheetPath: 'spritesheet.webp',
         },
       },
@@ -379,7 +379,7 @@ describe('pet protocol contract', () => {
       manifest: {
         id: 'milo',
         displayName: 'Milo',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.webp',
       },
       spritesheetPath: '/tmp/milo/spritesheet.webp',
@@ -395,7 +395,7 @@ describe('pet protocol contract', () => {
       kind: 'happierManagedLocal',
       petId: 'milo',
       displayName: 'Milo',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       originLabel: 'Managed local',
       digest: 'sha256:package',
       sizeBytes: 3,
@@ -407,7 +407,7 @@ describe('pet protocol contract', () => {
       manifest: {
         id: 'milo',
         displayName: 'Milo',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.webp',
       },
     }).success).toBe(false);

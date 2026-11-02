@@ -50,7 +50,7 @@ describe('resolveDaemonStartupSourceServiceManagedState', () => {
   });
 
   it('treats legacy daemon state with a service label as service-managed', () => {
-    expect(resolveDaemonStartupSourceServiceManagedState(undefined, 'com.happier.cli.daemon.default')).toBe(true);
-    expect(resolveDaemonStartupSourceServiceManagedState('unknown', 'com.happier.cli.daemon.default')).toBe(true);
+    expect(resolveDaemonStartupSourceServiceManagedState(undefined, 'com.piggercode.cli.daemon.default')).toBe(true);
+    expect(resolveDaemonStartupSourceServiceManagedState('unknown', 'com.piggercode.cli.daemon.default')).toBe(true);
   });
 });

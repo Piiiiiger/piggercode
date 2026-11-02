@@ -83,7 +83,7 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
     });
     reloadConfiguration();
     const installedPath = writeInstalledUnit('pinned');
-    expect(installedPath.endsWith('happier-daemon.company.service')).toBe(true);
+    expect(installedPath.endsWith('piggercode-daemon.company.service')).toBe(true);
 
     const { readDaemonStatusSnapshot } = await import('./statusSnapshot');
     const snapshot = await readDaemonStatusSnapshot();
@@ -104,7 +104,7 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
     });
     reloadConfiguration();
     const installedPath = writeInstalledUnit('pinned');
-    expect(installedPath.endsWith('happier-daemon.default.service')).toBe(true);
+    expect(installedPath.endsWith('piggercode-daemon.default.service')).toBe(true);
 
     const { readDaemonStatusSnapshot } = await import('./statusSnapshot');
     const snapshot = await readDaemonStatusSnapshot();
@@ -122,7 +122,7 @@ describe('readDaemonStatusSnapshot service.targetMode', () => {
   it('reports null when the file at the installed path is not a readable service definition', async () => {
     const snapshot = resolveDaemonServiceInstallationSnapshotFromEnv();
     mkdirSync(dirname(snapshot.installedPath), { recursive: true });
-    writeFileSync(snapshot.installedPath, 'not a happier service unit\n');
+    writeFileSync(snapshot.installedPath, 'not a piggercode service unit\n');
 
     const { readDaemonStatusSnapshot } = await import('./statusSnapshot');
     const result = await readDaemonStatusSnapshot();

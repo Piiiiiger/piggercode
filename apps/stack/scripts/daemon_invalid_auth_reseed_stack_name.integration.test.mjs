@@ -168,10 +168,10 @@ if (sub === 'start') {
   const { cliBinDir } = await writeStubHappierCliFiles(monoRoot, {
     packageJsonContent: '{}\n',
     distIndexScript: script.trimStart(),
-    // If daemon.mjs accidentally invokes bin/happier.mjs, fail loudly.
+    // If daemon.mjs accidentally invokes bin/piggercode.mjs, fail loudly.
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 test('invalid-auth auto-reseed uses resolved stack name instead of null placeholder', async () => {
@@ -464,10 +464,10 @@ if (sub === 'start') {
 
 	process.exit(0);
 	`;
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     await writeFile(join(cliDir, 'dist', 'index.mjs'), stub.trimStart(), 'utf-8');
     await writeStubDistManifest(cliDir);
-    // If daemon.mjs accidentally invokes bin/happier.mjs, fail loudly.
+    // If daemon.mjs accidentally invokes bin/piggercode.mjs, fail loudly.
     await writeFile(cliBin, 'process.exit(42);\n', 'utf-8');
 
     const targetCliHome = join(storageDir, 'dev', 'cli');
@@ -664,10 +664,10 @@ if (sub === 'start') {
 
 	process.exit(0);
 	`;
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     await writeFile(join(cliDir, 'dist', 'index.mjs'), stub.trimStart(), 'utf-8');
     await writeStubDistManifest(cliDir);
-    // If daemon.mjs accidentally invokes bin/happier.mjs, fail loudly.
+    // If daemon.mjs accidentally invokes bin/piggercode.mjs, fail loudly.
     await writeFile(cliBin, 'process.exit(42);\n', 'utf-8');
 
     const targetCliHome = join(storageDir, 'dev', 'cli');

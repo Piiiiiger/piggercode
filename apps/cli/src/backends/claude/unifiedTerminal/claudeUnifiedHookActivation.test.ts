@@ -7,7 +7,7 @@ import {
 } from './claudeUnifiedHookActivation';
 
 describe('assertClaudeUnifiedHookActivationBeforeTranscriptFallback', () => {
-  it('fails when a Happier-owned hook plugin reaches transcript acceptance without trusted hook evidence', () => {
+  it('fails when a PiggerCode-owned hook plugin reaches transcript acceptance without trusted hook evidence', () => {
     expect(() => assertClaudeUnifiedHookActivationBeforeTranscriptFallback({
       hookPluginDir: '/tmp/happier-session-hooks',
       hookSubscriptionConfigured: true,
@@ -34,7 +34,7 @@ describe('assertClaudeUnifiedHookActivationBeforeTranscriptFallback', () => {
     })).not.toThrow();
   });
 
-  it('retains hookless transcript fallback when Happier did not install a plugin', () => {
+  it('retains hookless transcript fallback when PiggerCode did not install a plugin', () => {
     expect(() => assertClaudeUnifiedHookActivationBeforeTranscriptFallback({
       hookPluginDir: null,
       hookSubscriptionConfigured: true,
@@ -42,7 +42,7 @@ describe('assertClaudeUnifiedHookActivationBeforeTranscriptFallback', () => {
     })).not.toThrow();
   });
 
-  it('retains transcript fallback when no Happier hook subscription is configured', () => {
+  it('retains transcript fallback when no PiggerCode hook subscription is configured', () => {
     expect(() => assertClaudeUnifiedHookActivationBeforeTranscriptFallback({
       hookPluginDir: '/tmp/external-or-unowned-plugin',
       hookSubscriptionConfigured: false,

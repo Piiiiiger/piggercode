@@ -14,7 +14,7 @@ vi.mock('@/cli/output/jsonEnvelope', () => ({
   printJsonEnvelope,
 }));
 
-describe('happier session run stop (action executor)', () => {
+describe('piggercode session run stop (action executor)', () => {
   it('routes through ActionExecutor with the expected action id and args', async () => {
     execute.mockResolvedValueOnce({
       ok: true,

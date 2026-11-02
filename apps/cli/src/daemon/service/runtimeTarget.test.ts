@@ -14,7 +14,7 @@ vi.mock('node:fs', async (importOriginal) => ({
 describe('resolveDaemonServiceRuntimeTarget', () => {
   const originalArgv = process.argv;
   beforeEach(() => {
-    process.argv = [process.execPath, join(projectPath(), 'bin', 'happier.mjs')];
+    process.argv = [process.execPath, join(projectPath(), 'bin', 'piggercode.mjs')];
     vi.mocked(fs.existsSync).mockImplementation((path) => String(path) === join(projectPath(), 'package-dist', 'index.mjs'));
   });
   afterEach(() => {
@@ -59,11 +59,11 @@ describe('resolveDaemonServiceRuntimeTarget', () => {
   it('prefers the bundled package-dist entrypoint for an explicit managed js runtime wrapper', () => {
     expect(
       resolveDaemonServiceRuntimeTarget({
-        currentExecPath: '/Applications/Happier.app/Contents/MacOS/happier',
-        explicitNodePath: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+        currentExecPath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
+        explicitNodePath: '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
       }),
     ).toEqual({
-      nodePath: '/Users/test/.happier/tools/js-runtime/current/bin/happier-js-runtime',
+      nodePath: '/Users/test/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
       entryPath: expect.stringContaining('/apps/cli/package-dist/index.mjs'),
     });
   });
@@ -71,10 +71,10 @@ describe('resolveDaemonServiceRuntimeTarget', () => {
   it('keeps an empty entrypoint for a self-contained binary with no explicit runtime override', () => {
     expect(
       resolveDaemonServiceRuntimeTarget({
-        currentExecPath: '/Applications/Happier.app/Contents/MacOS/happier',
+        currentExecPath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
       }),
     ).toEqual({
-      nodePath: '/Applications/Happier.app/Contents/MacOS/happier',
+      nodePath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
       entryPath: '',
     });
   });

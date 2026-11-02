@@ -1,302 +1,63 @@
-# Happier
+# PiggerCode CLI
 
-Code on the go — control AI coding agents from your mobile device.
+PiggerCode 的命令行和守护进程。它在你的服务器上启动并托管 Claude Code 和 Codex 会话，再通过你自己的中继把会话交给网页端。
 
-Free. Open source. Code anywhere.
+## 构建和安装
 
-## Installation
+需要 Node 22 和 Yarn 1.22。在仓库根目录执行：
 
 ```bash
-npm install -g @piggercode/cli
+yarn install --frozen-lockfile
+yarn workspace @piggercode/transfers build
+yarn workspace @piggercode/cli build
 ```
 
-## Testing
+命令入口是 `apps/cli/bin/piggercode.mjs`，把它链接到 `PATH` 里的目录即可：
+
+```bash
+ln -s "$PWD/apps/cli/bin/piggercode.mjs" ~/.local/bin/piggercode
+```
+
+## 连接中继
+
+```bash
+piggercode setup --relay https://<你的中继地址>
+```
+
+也可以在环境变量 `PIGGERCODE_BUILTIN_RELAY_URL` 里给出默认中继。中继地址不写在代码里。
+
+## 常用命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `piggercode` | 在当前目录开一个 Claude Code 会话 |
+| `piggercode codex` | 在当前目录开一个 Codex 会话 |
+| `piggercode auth login` | 登录，把这台机器连到你的账户 |
+| `piggercode service install` | 安装守护进程的 systemd 用户服务（macOS 上是 launchd） |
+| `piggercode daemon status` | 查看守护进程 |
+| `piggercode session list` | 列出会话 |
+| `piggercode attach <会话 id>` | 在终端里接上正在运行的会话 |
+| `piggercode resume <会话 id>` | 恢复已经停止的会话 |
+| `piggercode doctor` | 诊断 |
+
+`piggercode --help` 列出全部命令，每个子命令也都有 `--help`。
+
+开会话时可以带权限参数：`--auto` 自动批准读文件和改文件，`--yolo` 跳过所有权限确认，`--permission-mode read_only` 只读。
+
+## 目录和名字
+
+- `~/.piggercode`：配置、凭据、日志和守护进程状态。用 `PIGGERCODE_HOME_DIR` 可以换位置。
+- 守护进程的 systemd 用户服务叫 `piggercode-daemon.<实例>`，默认实例是 `default`；macOS 上的 launchd 标签是 `com.piggercode.cli.daemon.<实例>`。
+- 智能体看到的内置 MCP 服务叫 `piggercode`，工具名是 `mcp__piggercode__*`。旧会话里的 `mcp__happier__*` 工具调用照常显示。
+- 网页端上传的附件默认存到服务器上的 `~/Downloads`，可以在设置里改。
+
+## 测试
 
 ```bash
 yarn --cwd apps/cli test:unit
-```
-
-Integration (real process/fs/network style):
-
-```bash
 yarn --cwd apps/cli test:integration
-```
-
-Slow build+wiring validation suite:
-
-```bash
 yarn --cwd apps/cli test:slow
+yarn workspace @piggercode/cli typecheck
 ```
 
-## Usage
-
-### First-time authentication (recommended)
-
-```bash
-happier auth login
-```
-
-Recommended first run:
-1. Choose the mobile option (recommended).
-2. Scan the QR/deep link in the Happier mobile app.
-3. If you already use Happier on another device, sign in with that same account.
-4. If you are logged out, complete sign in/create account, then continue terminal approval (the app returns you automatically).
-
-### Claude (default)
-
-```bash
-happier
-```
-
-This will:
-1. Start a Claude Code session
-2. Display a QR code to connect from your mobile device
-3. Allow real-time session sharing between Claude Code and your mobile app
-
-### Multi-server quickstart
-
-```bash
-happier server add --name company --server-url https://api.company.example --webapp-url https://app.company.example --use
-happier --server company auth login
-```
-
-### Gemini
-
-```bash
-happier gemini
-```
-
-Start a Gemini CLI session with remote control capabilities.
-
-**First time setup:**
-```bash
-# Authenticate with Google
-happier connect gemini
-```
-
-## Commands
-
-### Agent Commands
-
-Each agent Happier ships has a subcommand named after its CLI. `happier` with no
-subcommand starts Claude Code.
-
-| Command | Agent | Status |
-| --- | --- | --- |
-| `happier` / `happier claude` | Claude | Stable |
-| `happier codex` | Codex | Stable |
-| `happier opencode` | OpenCode | Stable |
-| `happier gemini` | Gemini | Experimental |
-| `happier auggie` | Auggie | Experimental |
-| `happier qwen` | Qwen Code | Experimental |
-| `happier kimi` | Kimi | Experimental |
-| `happier kilo` | Kilo | Experimental |
-| `happier kiro` | Kiro | Experimental |
-| `happier cursor` | Cursor | Experimental |
-| `happier copilot` | Copilot | Experimental |
-| `happier grok` | Grok | Experimental |
-| `happier pi` | Pi | Experimental |
-| `happier devin` | Devin | Experimental |
-| `happier agy` | Antigravity | Experimental |
-| `happier fx` | FX | Experimental |
-| `happier droid` | Factory Droid | Experimental |
-| `happier codebuddy` | CodeBuddy | Experimental |
-
-Experimental agents are enabled per-account in the app and may change without a
-deprecation window. Each agent needs its own vendor CLI installed and
-authenticated on the machine running the session, except Antigravity, whose ACP server
-Happier installs and pins itself — the interactive `agy` CLI still has to be
-installed separately for the terminal surface. Per-agent install, auth, resume,
-model, mode and MCP behavior is documented at
-<https://docs.happier.dev/agents>.
-
-User-defined ACP backends are managed with `happier acp-catalog` rather than a
-per-agent subcommand.
-
-### Utility Commands
-
-- `happier auth` – Manage authentication
-- `happier connect` – Store AI vendor API keys in Happier cloud
-- `happier notify` – Send a push notification to your devices
-- `happier daemon` – Manage background service
-- `happier doctor` – System diagnostics & troubleshooting
-
-### Connect Subcommands
-
-```bash
-happier connect gemini     # Authenticate with Google for Gemini
-happier connect claude     # Authenticate with Anthropic
-happier connect codex      # Authenticate with OpenAI
-happier connect status     # Show connection status for all vendors
-```
-
-### Gemini Subcommands
-
-```bash
-happier gemini                      # Start Gemini session
-happier gemini model set <model>    # Set default model
-happier gemini model get            # Show current model
-happier gemini project set <id>     # Set Google Cloud Project ID (for Workspace accounts)
-happier gemini project get          # Show current Google Cloud Project ID
-```
-
-**Suggested models:** `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-lite`, `gemini-3-flash-preview`, `gemini-3-pro-preview`, `gemini-3.1-pro-preview` (freeform model ids are also supported)
-
-## Options
-
-### Claude Options
-
-- `-m, --model <model>` - Claude model to use (default: sonnet)
-- `-p, --permission-mode <mode>` - Permission intent: `read_only`, `default`, `auto`, or `yolo` (legacy aliases like `read-only`, `safe-yolo`, `workspace_write`, `accept-edits`, and `bypass-permissions` are accepted)
-- `--permission-mode-updated-at <unix-ms>` - Optional timestamp (ms) for ordering permission changes across devices
-- `--claude-arg ARG` - Pass additional argument to Claude CLI
-
-### Session Options (agent commands)
-
-These flags are accepted by every agent command in the table above (`codex`, `gemini`, `opencode`, `kimi`, `devin`, `agy`, `fx`, `droid`, `codebuddy` and the rest). Which of them actually take effect is capability-driven: `--agent-mode` and `--model` apply only where the provider advertises modes or models over ACP.
-
-- `--permission-mode <mode>` - Permission intent: `read_only`, `default`, `auto`, or `yolo` (compatible aliases accepted)
-- `--permission-mode-updated-at <unix-ms>` - Optional timestamp (ms) for ordering permission changes across devices
-- `--agent-mode <id>` - ACP session mode id (e.g. `plan`), when supported by the provider
-- `--agent-mode-updated-at <unix-ms>` - Optional timestamp (ms) for ordering ACP mode changes across devices
-- `--model <id>` - Session model override (capability-driven; may be best-effort depending on provider)
-- `--model-updated-at <unix-ms>` - Optional timestamp (ms) for ordering model changes across devices
-
-### Global Options
-
-- `-h, --help` - Show help
-- `-v, --version` - Show version
-
-## Permissions
-
-Happier uses **one permission vocabulary** across providers.
-
-You can set permissions either:
-- from the CLI when starting a session (`--permission-mode ...`), or
-- from the app UI (in-session picker and Session settings).
-
-The selected permission intent is normalized into compatible **session metadata** so it stays consistent across devices and when switching local ↔ remote.
-
-### Common examples
-
-```bash
-# Claude (default) in Auto
-happier --permission-mode auto
-
-# Codex in Read-only (deny write-like tools)
-happier codex --permission-mode read_only
-
-# Gemini in yolo (aliases accepted)
-happier gemini --permission-mode full-access
-
-# OpenCode in plan mode (ACP session mode)
-happier opencode --agent-mode plan
-
-# Kilo in plan mode (ACP session mode)
-happier kilo --agent-mode plan
-
-# Select a model when supported
-happier gemini --model gemini-2.5-pro
-
-# Older Happier and provider-native tokens remain compatible aliases
-happier --permission-mode workspace_write     # => Auto intent
-happier --permission-mode accept-edits        # => Auto intent
-happier --permission-mode bypass-permissions  # => YOLO intent
-
-# Legacy: some ACP agents used to accept plan as a permission. Happier still accepts it,
-# but will map it to `--agent-mode plan` (and warn) when the provider exposes ACP modes.
-happier opencode --permission-mode plan        # => --agent-mode plan (deprecated)
-happier kilo --permission-mode plan            # => --agent-mode plan (deprecated)
-```
-
-### What’s enforced where
-
-Depending on the provider, a permission mode can map to:
-- a provider-native “session mode” (when available), and/or
-- Happier’s tool approval gating (Read-only/Auto/YOLO behavior).
-
-Important provider constraints:
-- **Codex (ACP)**: provider session modes are policy presets (approval + sandbox), not generic “plan/build” agent modes. Happier keeps permissions as the primary user control and maps to the closest preset.
-- **Codex (MCP)**: approval behavior can change mid-session, but many sandbox/environment constraints are decided at session start.
-- **Claude**: `read-only` is best-effort (Claude does not have a strict read-only mode); Happier will map to the closest supported behavior.
-- **Pi**: Read-only uses a tool allowlist. Auto, Default, and YOLO preserve Pi's native tool catalog, including its platform shell tool and installed extension/custom tools such as subagents; they are not a workspace-confinement guarantee.
-- **ACP “Mode”** (`--agent-mode`): this is separate from permissions and is provider-defined (for example OpenCode “plan” vs “build”).
-
-Model selection behavior:
-- **Claude**: applies on the next prompt.
-- **Codex (MCP)**: model is start-session scoped.
-- **ACP agents**: Happier prefers live `session/set_model`, with config-option fallback when available.
-- **Gemini (ACP)**: model changes may recreate the underlying ACP process; Happier preserves context via replay/history.
-
-For the full user guide (UI behavior, defaults, apply timing), see the app docs:
-
-## Environment Variables
-
-### Happier Configuration
-
-- `PIGGERCODE_PUBLIC_SERVER_URL` - Canonical/share server URL (used in QR/deep links; should work from your phone)
-- `PIGGERCODE_LOCAL_SERVER_URL` - Optional local API URL optimization (only used for API calls, never embedded in links)
-- `PIGGERCODE_SERVER_URL` - Legacy/compat server URL
-  - If `PIGGERCODE_PUBLIC_SERVER_URL` is unset: treated as the canonical/share URL
-  - If `PIGGERCODE_PUBLIC_SERVER_URL` is set: treated as a local API URL override
-- `PIGGERCODE_WEBAPP_URL` - Custom web app URL (default: https://cloud.happier.dev)
-- `PIGGERCODE_HOME_DIR` - Custom home directory for Happier data (default: ~/.happier)
-- `PIGGERCODE_DISABLE_CAFFEINATE` - Disable macOS sleep prevention (set to `true`, `1`, or `yes`)
-- `PIGGERCODE_EXPERIMENTAL` - Enable experimental features (set to `true`, `1`, or `yes`)
-- `PIGGERCODE_ENCRYPTION_REQUIREMENT` - Set to `require_e2ee` to make the CLI/daemon refuse plaintext Account settings and sessions regardless of the server-advertised mode. The default is `follow_account`; invalid non-empty values stop startup.
-
-### Gemini Configuration
-
-- `GEMINI_MODEL` - Override default Gemini model
-- `GOOGLE_CLOUD_PROJECT` - Google Cloud Project ID (required for Workspace accounts)
-
-## Gemini Authentication
-
-### Personal Google Account
-
-Personal Gmail accounts work out of the box:
-
-```bash
-happier connect gemini
-happier gemini
-```
-
-### Google Workspace Account
-
-Google Workspace (organization) accounts require a Google Cloud Project:
-
-1. Create a project in [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable the Gemini API
-3. Set the project ID:
-
-```bash
-happier gemini project set your-project-id
-```
-
-Or use environment variable:
-```bash
-GOOGLE_CLOUD_PROJECT=your-project-id happier gemini
-```
-
-**Guide:** https://goo.gle/gemini-cli-auth-docs#workspace-gca
-
-## Contributing
-
-Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
-
-## Requirements
-
-- Node.js >= 20.0.0
-
-### For Claude
-
-- Claude CLI installed & logged in (`claude` command available in PATH)
-
-### For Gemini
-
-- Gemini CLI installed (`gemini` command available in PATH or installed via Happier provider settings)
-- Google account authenticated via `happier connect gemini`
-
-## License
-
-MIT
+只维护 Linux 和 macOS。

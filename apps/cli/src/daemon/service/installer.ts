@@ -83,7 +83,7 @@ export function describeDaemonServiceInstallConflict(params: Readonly<{
   if (params.conflictPlan.foreignHomeConflicts.length > 0) {
     return {
       blocking: true,
-      message: `Conflicting background services from another Happier home were detected: ${formatDaemonServiceLabels(params.conflictPlan.foreignHomeConflicts)}. Switch to that installation to manage its service or remove it manually before installing here.`,
+      message: `Conflicting background services from another PiggerCode home were detected: ${formatDaemonServiceLabels(params.conflictPlan.foreignHomeConflicts)}. Switch to that installation to manage its service or remove it manually before installing here.`,
     };
   }
 
@@ -126,7 +126,7 @@ export type DaemonServiceInstallPreview = Readonly<{
   plan: ReturnType<typeof planDaemonServiceInstall>;
   /**
    * The exact target is installed but launches another CLI than this install would write (for
-   * example a user's npm `happier` where the managed shim now exists). Installing switches it, so
+   * example a user's npm `piggercode` where the managed shim now exists). Installing switches it, so
    * a caller acting for the user must ask first; `null` when the launcher would not change.
    */
   exactTargetRuntimeReplacement: Readonly<{ current: string; replacement: string }> | null;

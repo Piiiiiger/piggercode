@@ -412,7 +412,7 @@ describe('codexLocalLauncher', () => {
     }
   });
 
-  it('passes provider-native Codex args after Happier wrapper args', async () => {
+  it('passes provider-native Codex args after PiggerCode wrapper args', async () => {
     const fixture = await createCodexBinaryFixture();
     const argsPath = join(fixture.binDir, 'argv.json');
     const sessionId = randomUUID();

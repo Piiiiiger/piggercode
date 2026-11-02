@@ -10,7 +10,7 @@ import { estimateJsonUtf8BytesBounded } from '@/transfers/shared/estimateJsonUtf
 import type { DownloadTransferSource } from '@/transfers/targets/downloadTransferSource';
 
 function createTempPromptRegistryPayloadPath(): string {
-  return join(tmpdir(), 'happier', 'prompt-registry-items', `${randomUUID()}.json`);
+  return join(tmpdir(), 'piggercode', 'prompt-registry-items', `${randomUUID()}.json`);
 }
 
 function normalizePromptRegistryPayloadName(title: string): string {
@@ -35,7 +35,7 @@ export async function writePromptRegistryTransferPayload(
     throw new Error('Prompt transfer payload exceeds size limit');
   }
 
-  await mkdir(join(tmpdir(), 'happier', 'prompt-registry-items'), { recursive: true });
+  await mkdir(join(tmpdir(), 'piggercode', 'prompt-registry-items'), { recursive: true });
   await writeFile(filePath, fileBody, 'utf8');
 
   return {

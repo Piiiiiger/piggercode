@@ -15,7 +15,7 @@ import {
  * The machine-local native-return record (`AM-24`, `AM-26`).
  *
  * The disk shape is a CROSS-TREE contract, not an implementation detail: one
- * machine's `~/.happier` is shared across a CLI upgrade in either direction, so
+ * machine's `~/.piggercode` is shared across a CLI upgrade in either direction, so
  * the fingerprint domain, the separators, the directory layout and the exact key
  * set are pinned here rather than left to whatever the writer happens to emit.
  *

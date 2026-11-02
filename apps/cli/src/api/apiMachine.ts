@@ -135,7 +135,7 @@ function classifyMachineTransportErrorToProbeResult(
     return {
         status: 'auth_failed',
         statusCode: 426,
-        errorMessage: 'This Happier daemon must be upgraded before it can sync sessions.',
+        errorMessage: 'This PiggerCode daemon must be upgraded before it can sync sessions.',
     };
 }
 

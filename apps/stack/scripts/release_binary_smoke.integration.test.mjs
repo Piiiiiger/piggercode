@@ -85,7 +85,7 @@ async function extractBinaryFromArtifact({ artifactPath, binaryName }) {
   };
 }
 
-test('compiled happier and server binaries execute from isolated cwd', async (t) => {
+test('compiled piggercode and server binaries execute from isolated cwd', async (t) => {
   if (!usesPreparedBinarySmokeArtifacts() && !commandExists('bun')) {
     t.skip('bun is required for compiled binary smoke tests');
     return;

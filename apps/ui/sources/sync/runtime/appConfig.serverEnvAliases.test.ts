@@ -59,7 +59,7 @@ describe('loadAppConfig (server env aliases)', () => {
         }
     });
 
-    it('uses EXPO_PUBLIC_SERVER_URL when both happier and happy aliases are missing', () => {
+    it('uses EXPO_PUBLIC_SERVER_URL when both piggercode and happy aliases are missing', () => {
         delete process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL;
         delete process.env.EXPO_PUBLIC_HAPPY_SERVER_URL;
         process.env.EXPO_PUBLIC_SERVER_URL = 'https://legacy-generic.example.test';

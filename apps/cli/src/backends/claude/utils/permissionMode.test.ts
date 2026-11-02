@@ -68,7 +68,7 @@ describe('resolveClaudeSdkPermissionModeFromEnhancedMode', () => {
 });
 
 describe('normalizeClaudeHappyCliSessionControlPermissionMode', () => {
-    it('keeps safe-yolo as a Happier CLI intent so Unified can launch Claude in auto mode', () => {
+    it('keeps safe-yolo as a PiggerCode CLI intent so Unified can launch Claude in auto mode', () => {
         expect(normalizeClaudeHappyCliSessionControlPermissionMode('safe-yolo')).toBe('safe-yolo');
     });
 });

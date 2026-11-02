@@ -63,6 +63,6 @@ export function resolveLinuxSystemUserPaths(params: Readonly<{
 
   return {
     userHomeDir,
-    happierHomeDir: happierHomeDirOverride || join(userHomeDir, '.happier'),
+    happierHomeDir: happierHomeDirOverride || join(userHomeDir, '.piggercode'),
   };
 }

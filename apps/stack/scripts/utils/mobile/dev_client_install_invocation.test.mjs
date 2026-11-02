@@ -53,7 +53,7 @@ test('buildMobileDevClientInstallInvocation selects public dev profile identitie
   assert.equal(invocation.identity.iosAppName, 'Happier (dev)');
   assert.equal(invocation.identity.iosBundleId, 'dev.happier.app.publicdev.devclient');
   assert.equal(invocation.identity.androidPackage, 'dev.happier.app.publicdev.devclient');
-  assert.equal(invocation.identity.scheme, 'happier-dev');
+  assert.equal(invocation.identity.scheme, 'piggercode-dev');
   assert.equal(invocation.env.EXPO_APP_BUNDLE_ID, 'dev.happier.app.publicdev.devclient');
   assert.equal(invocation.env.EXPO_ANDROID_PACKAGE, 'dev.happier.app.publicdev.devclient');
   assert.ok(invocation.nodeArgs.includes('--app-env=publicdev'), 'expected public dev profile app env');

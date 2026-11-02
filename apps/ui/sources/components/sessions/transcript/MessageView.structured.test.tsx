@@ -574,7 +574,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
         expect(bubbleViews).toHaveLength(0);
     });
 
-    it('renders an inline attachments row for user messages with happier meta attachments.v1', async () => {
+    it('renders an inline attachments row for user messages with piggercode meta attachments.v1', async () => {
         const { MessageView } = await import('./MessageView');
 
         const message: any = {
@@ -585,7 +585,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
                 '',
                 'Attachments: open and analyze these files before answering.',
                 '[attachments]',
-                '- .happier/uploads/messages/m1/file.png (file.png, image/png, 10 bytes)',
+                '- .piggercode/uploads/messages/m1/file.png (file.png, image/png, 10 bytes)',
                 '[/attachments]',
             ].join('\n'),
             displayText: 'hello',
@@ -594,7 +594,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
                     kind: 'attachments.v1',
                     payload: {
                         attachments: [
-                            { name: 'file.png', path: '.happier/uploads/messages/m1/file.png', mimeType: 'image/png', sizeBytes: 10, sha256: 'h1' },
+                            { name: 'file.png', path: '.piggercode/uploads/messages/m1/file.png', mimeType: 'image/png', sizeBytes: 10, sha256: 'h1' },
                         ],
                     },
                 },
@@ -611,10 +611,10 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
         expect(screen.findAllByTestId('message-attachments-row')).toHaveLength(0);
     });
 
-    it('renders inline session media images from primary happier session_media.v1 metadata', async () => {
+    it('renders inline session media images from primary piggercode session_media.v1 metadata', async () => {
         const { MessageView } = await import('./MessageView');
 
-        const path = '.happier/uploads/generated/m1/generated.png';
+        const path = '.piggercode/uploads/generated/m1/generated.png';
         const message: any = {
             kind: 'agent-text',
             id: 'agent-media-1',
@@ -654,7 +654,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
     it('renders inline session media images from secondary happierMedia metadata', async () => {
         const { MessageView } = await import('./MessageView');
 
-        const path = '.happier/uploads/generated/m2/secondary.webp';
+        const path = '.piggercode/uploads/generated/m2/secondary.webp';
         const message: any = {
             kind: 'agent-text',
             id: 'agent-media-2',
@@ -698,7 +698,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
     it('renders media-only assistant rows with empty text', async () => {
         const { MessageView } = await import('./MessageView');
 
-        const path = '.happier/uploads/generated/m3/media-only.png';
+        const path = '.piggercode/uploads/generated/m3/media-only.png';
         const message: any = {
             kind: 'agent-text',
             id: 'agent-media-only',
@@ -798,7 +798,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
                     kind: 'attachments.v1',
                     payload: {
                         attachments: [
-                            { name: 'note.txt', path: '.happier/uploads/messages/m1/note.txt', mimeType: 'text/plain', sizeBytes: 10, sha256: 'h1' },
+                            { name: 'note.txt', path: '.piggercode/uploads/messages/m1/note.txt', mimeType: 'text/plain', sizeBytes: 10, sha256: 'h1' },
                         ],
                     },
                 },
@@ -894,7 +894,7 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
 
         filesImagePreviewMaxBytes = 1;
 
-        const path = '.happier/uploads/messages/m2/file.png';
+        const path = '.piggercode/uploads/messages/m2/file.png';
         const message: any = {
             kind: 'user-text',
             localId: 'local-1',
@@ -929,8 +929,8 @@ describe('MessageView (structured meta)', { timeout: 60_000 }, () => {
     it('opens inline transcript images in the shared attachment preview modal', async () => {
         const { MessageView } = await import('./MessageView');
 
-        const firstPath = '.happier/uploads/messages/m3/one.png';
-        const secondPath = '.happier/uploads/messages/m3/two.png';
+        const firstPath = '.piggercode/uploads/messages/m3/one.png';
+        const secondPath = '.piggercode/uploads/messages/m3/two.png';
         const message: any = {
             kind: 'user-text',
             localId: 'local-1',

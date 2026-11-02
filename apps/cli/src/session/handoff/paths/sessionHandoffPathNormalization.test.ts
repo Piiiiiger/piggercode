@@ -31,23 +31,23 @@ describe('sessionHandoffPathNormalization', () => {
 
     it('expandHomeRelativePath expands ~/', () => {
         expect(expandHomeRelativePath({
-            path: '~/.happier/wsrepl-qa-fixtures/large-repo',
+            path: '~/.piggercode/wsrepl-qa-fixtures/large-repo',
             homeDir: '/home/guest',
-        })).toBe('/home/guest/.happier/wsrepl-qa-fixtures/large-repo');
+        })).toBe('/home/guest/.piggercode/wsrepl-qa-fixtures/large-repo');
     });
 
     it('expandHomeRelativePath expands Windows home-relative paths', () => {
         expect(expandHomeRelativePath({
-            path: '~\\.happier\\wsrepl-qa-fixtures\\large-repo',
+            path: '~\\.piggercode\\wsrepl-qa-fixtures\\large-repo',
             homeDir: 'C:\\Users\\guest\\',
-        })).toBe('C:\\Users\\guest/.happier/wsrepl-qa-fixtures/large-repo');
+        })).toBe('C:\\Users\\guest/.piggercode/wsrepl-qa-fixtures/large-repo');
     });
 
-    it('normalizeSessionHandoffTargetPathForLocalMachine rebases /.happier/ paths onto the local home', () => {
+    it('normalizeSessionHandoffTargetPathForLocalMachine rebases /.piggercode/ paths onto the local home', () => {
         expect(normalizeSessionHandoffTargetPathForLocalMachine({
-            requestedTargetPath: '/Users/leeroy/.happier/wsrepl-qa-fixtures/large-repo',
+            requestedTargetPath: '/Users/leeroy/.piggercode/wsrepl-qa-fixtures/large-repo',
             homeDir: '/home/leeroy.guest',
-        })).toBe('/home/leeroy.guest/.happier/wsrepl-qa-fixtures/large-repo');
+        })).toBe('/home/leeroy.guest/.piggercode/wsrepl-qa-fixtures/large-repo');
     });
 
     it('normalizeSessionHandoffTargetPathForLocalMachine rebases /Users/<user>/ paths onto the local home', () => {
@@ -67,16 +67,16 @@ describe('sessionHandoffPathNormalization', () => {
         })).toBe(requestedTargetPath);
     });
 
-    it('resolveSessionHandoffLocalHomeDir prefers the activeServerDir /.happier/ prefix over os homedir', () => {
+    it('resolveSessionHandoffLocalHomeDir prefers the activeServerDir /.piggercode/ prefix over os homedir', () => {
         expect(resolveSessionHandoffLocalHomeDir({
-            activeServerDir: '/home/leeroy.guest/.happier/wsrepl-qa/servers/stack_wsrepl__id_default',
+            activeServerDir: '/home/leeroy.guest/.piggercode/wsrepl-qa/servers/stack_wsrepl__id_default',
             fallbackHomeDir: '/Users/leeroy',
         })).toBe('/home/leeroy.guest');
     });
 
-    it('resolveSessionHandoffLocalHomeDir prefers the activeServerDir \\.happier\\ prefix over os homedir on Windows', () => {
+    it('resolveSessionHandoffLocalHomeDir prefers the activeServerDir \\.piggercode\\ prefix over os homedir on Windows', () => {
         expect(resolveSessionHandoffLocalHomeDir({
-            activeServerDir: 'C:\\Users\\leeroy.guest\\.happier\\wsrepl-qa\\servers\\stack_wsrepl__id_default',
+            activeServerDir: 'C:\\Users\\leeroy.guest\\.piggercode\\wsrepl-qa\\servers\\stack_wsrepl__id_default',
             fallbackHomeDir: 'C:\\Users\\leeroy\\',
         })).toBe('C:\\Users\\leeroy.guest');
     });

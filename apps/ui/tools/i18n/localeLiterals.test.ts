@@ -96,7 +96,7 @@ describe('locale literal extraction', () => {
 
     it('treats commands, paths, flags and URLs as do-not-translate', () => {
         for (const text of [
-            'happier attach <session-id>',
+            'piggercode attach <session-id>',
             'git push --force-with-lease',
             '/path/to/project',
             '--force',

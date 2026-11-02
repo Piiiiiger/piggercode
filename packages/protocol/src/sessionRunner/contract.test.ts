@@ -206,7 +206,7 @@ describe('session runner planned restart contract', () => {
       ok: true,
       status: 'restarted',
       sessionId: 'sess_123',
-      previous: { executablePath: '/Users/alice/.happier/cli-dev/versions/1.0.0/happier' },
+      previous: { executablePath: '/Users/alice/.piggercode/cli-dev/versions/1.0.0/happier' },
     }).success).toBe(false);
   });
 
@@ -274,11 +274,11 @@ describe('session runner planned restart contract', () => {
         entrypointSource: 'unknown',
         startedBy: 'unknown',
         startingMode: 'unknown',
-        processCommand: '/Users/alice/.happier/cli-dev/versions/1.0.0/happier',
+        processCommand: '/Users/alice/.piggercode/cli-dev/versions/1.0.0/happier',
       },
       daemon: {
         currentEntrypointSource: 'unknown',
-        currentEntrypointPath: '/Users/alice/.happier/cli-dev/versions/1.1.0/happier',
+        currentEntrypointPath: '/Users/alice/.piggercode/cli-dev/versions/1.1.0/happier',
       },
       versionState: 'unknown',
       statusSource: 'unknown',

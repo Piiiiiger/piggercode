@@ -19,7 +19,7 @@ vi.mock('@/agent/runtime/createHappierMcpBridge', () => ({
 import { resolveRunnerMcpServers } from './resolveRunnerMcpServers';
 
 describe('resolveRunnerMcpServers', () => {
-  it('passes runner credentials and account settings into the built-in Happier MCP bridge', async () => {
+  it('passes runner credentials and account settings into the built-in PiggerCode MCP bridge', async () => {
     const session = {} as any;
     const credentials = {
       token: 'token_1',

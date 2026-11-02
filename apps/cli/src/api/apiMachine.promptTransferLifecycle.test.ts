@@ -33,9 +33,9 @@ function git(cwd: string, args: readonly string[]): void {
     stdio: 'ignore',
     env: {
       ...process.env,
-      GIT_AUTHOR_NAME: 'Happier Bot',
+      GIT_AUTHOR_NAME: 'PiggerCode Bot',
       GIT_AUTHOR_EMAIL: 'bot@example.com',
-      GIT_COMMITTER_NAME: 'Happier Bot',
+      GIT_COMMITTER_NAME: 'PiggerCode Bot',
       GIT_COMMITTER_EMAIL: 'bot@example.com',
     },
   });

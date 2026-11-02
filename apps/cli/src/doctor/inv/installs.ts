@@ -61,7 +61,7 @@ function resolveBinaryPathForVersion(params: Readonly<{
     versionId: params.versionId,
     processEnv: process.env,
   });
-  return join(versionRoot, process.platform === 'win32' ? 'happier.exe' : 'happier');
+  return join(versionRoot, process.platform === 'win32' ? 'piggercode.exe' : 'piggercode');
 }
 
 function isPathDirectoryOnPath(path: string): boolean {

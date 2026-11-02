@@ -38,7 +38,7 @@ describe('daemonServiceInventory', () => {
             services: [],
         });
 
-        expect(rendered.lines.join(' ')).toContain('happier doctor repair');
+        expect(rendered.lines.join(' ')).toContain('piggercode doctor repair');
         expect(rendered.lines.join(' ')).toContain('restart the daemon manually');
     });
 
@@ -53,7 +53,7 @@ describe('daemonServiceInventory', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
@@ -102,8 +102,8 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 paths.installedPath,
                 renderSystemdServiceUnit({
-                    description: 'Happier Daemon',
-                    execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                    description: 'PiggerCode Daemon',
+                    execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
                         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -131,7 +131,7 @@ describe('daemonServiceInventory', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
@@ -147,8 +147,8 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 paths.installedPath,
                 renderSystemdServiceUnit({
-                    description: 'Happier Daemon',
-                    execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                    description: 'PiggerCode Daemon',
+                    execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
                         PIGGERCODE_HOME_DIR: runtime.happierHomeDir,
                         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -173,11 +173,11 @@ describe('daemonServiceInventory', () => {
         });
     });
 
-    it('ignores a default-following background service that belongs to a different Happier home', async () => {
+    it('ignores a default-following background service that belongs to a different PiggerCode home', async () => {
         await withTempDir('happier-daemon-service-inventory-foreign-home-', async (homeDir) => {
             const foreignHomeDir = join(homeDir, 'foreign-home');
             envScope.patch({
-                PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
                 PIGGERCODE_SERVER_URL: 'https://api.happier.dev',
                 PIGGERCODE_WEBAPP_URL: 'https://app.happier.dev',
@@ -185,7 +185,7 @@ describe('daemonServiceInventory', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
             });
             vi.resetModules();
@@ -237,8 +237,8 @@ describe('daemonServiceInventory', () => {
             writeFileSync(
                 paths.installedPath,
                 renderSystemdServiceUnit({
-                    description: 'Happier Daemon',
-                    execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                    description: 'PiggerCode Daemon',
+                    execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
                         PIGGERCODE_HOME_DIR: foreignHomeDir,
                         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -308,13 +308,13 @@ describe('daemonServiceInventory', () => {
             const servicesDir = join(userHomeDir, 'Library', 'LaunchAgents');
             mkdirSync(servicesDir, { recursive: true });
             writeFileSync(
-                join(servicesDir, 'com.happier.cli.daemon.default.plist'),
+                join(servicesDir, 'com.piggercode.cli.daemon.default.plist'),
                 `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.happier.cli.daemon.default</string>
+    <string>com.piggercode.cli.daemon.default</string>
     <key>ProgramArguments</key>
     <array>
       <string>/usr/local/bin/happier</string>
@@ -347,15 +347,15 @@ describe('daemonServiceInventory', () => {
 
     it('treats an installed service as current installation when service env home matches runtime home', async () => {
         await withTempDir('happier-daemon-service-conflict-current-home-', async (homeDir) => {
-            const runtimeHomeDir = join(homeDir, '.happier');
-            const foreignServicePath = join(homeDir, 'foreign-services', 'happier-daemon.default.ps1');
+            const runtimeHomeDir = join(homeDir, '.piggercode');
+            const foreignServicePath = join(homeDir, 'foreign-services', 'piggercode-daemon.default.ps1');
             mkdirSync(dirname(foreignServicePath), { recursive: true });
             writeFileSync(
                 foreignServicePath,
                 [
                     '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + runtimeHomeDir.replaceAll('\\', '\\\\') + '"',
                     '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
-                    '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
+                    '& "C:\\Users\\tester\\.piggercode\\bin\\piggercode.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',
             );
@@ -392,7 +392,7 @@ describe('daemonServiceInventory', () => {
                         path: foreignServicePath,
                         platform: 'win32',
                         releaseChannel: 'preview',
-                        label: 'Happier\\happier-daemon.default',
+                        label: 'PiggerCode\\piggercode-daemon.default',
                         targetMode: 'default-following',
                     },
                 ],
@@ -404,16 +404,16 @@ describe('daemonServiceInventory', () => {
 
     it('does not treat an installed service as current installation when service env home differs', async () => {
         await withTempDir('happier-daemon-service-conflict-foreign-home-', async (homeDir) => {
-            const runtimeHomeDir = join(homeDir, '.happier');
-            const foreignHomeDir = join(homeDir, '.happier-foreign');
-            const foreignServicePath = join(homeDir, 'foreign-services', 'happier-daemon.default.ps1');
+            const runtimeHomeDir = join(homeDir, '.piggercode');
+            const foreignHomeDir = join(homeDir, '.piggercode-foreign');
+            const foreignServicePath = join(homeDir, 'foreign-services', 'piggercode-daemon.default.ps1');
             mkdirSync(dirname(foreignServicePath), { recursive: true });
             writeFileSync(
                 foreignServicePath,
                 [
                     '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + foreignHomeDir.replaceAll('\\', '\\\\') + '"',
                     '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
-                    '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
+                    '& "C:\\Users\\tester\\.piggercode\\bin\\piggercode.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',
             );
@@ -450,7 +450,7 @@ describe('daemonServiceInventory', () => {
                         path: foreignServicePath,
                         platform: 'win32',
                         releaseChannel: 'preview',
-                        label: 'Happier\\happier-daemon.default',
+                        label: 'PiggerCode\\piggercode-daemon.default',
                         targetMode: 'default-following',
                     },
                 ],
@@ -462,16 +462,16 @@ describe('daemonServiceInventory', () => {
 
     it('treats POSIX-style runtime home and Windows-style service home as the same installation', async () => {
         await withTempDir('happier-daemon-service-conflict-msys-home-', async (homeDir) => {
-            const runtimeHomeDir = '/c/Users/test_qa/.happier';
-            const serviceHomeDir = 'C:\\Users\\test_qa\\.happier';
-            const foreignServicePath = join(homeDir, 'foreign-services', 'happier-daemon.default.ps1');
+            const runtimeHomeDir = '/c/Users/test_qa/.piggercode';
+            const serviceHomeDir = 'C:\\Users\\test_qa\\.piggercode';
+            const foreignServicePath = join(homeDir, 'foreign-services', 'piggercode-daemon.default.ps1');
             mkdirSync(dirname(foreignServicePath), { recursive: true });
             writeFileSync(
                 foreignServicePath,
                 [
                     '$env:PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = "' + serviceHomeDir.replaceAll('\\', '\\\\') + '"',
                     '$env:PIGGERCODE_DAEMON_STARTUP_SOURCE = "background-service"',
-                    '& "C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync"',
+                    '& "C:\\Users\\tester\\.piggercode\\bin\\piggercode.exe" "daemon" "start-sync"',
                 ].join('\n'),
                 'utf-8',
             );
@@ -493,8 +493,8 @@ describe('daemonServiceInventory', () => {
                 serverUrl: 'https://api.happier.dev',
                 webappUrl: 'https://app.happier.dev',
                 publicServerUrl: 'https://api.happier.dev',
-                nodePath: 'C:\\Users\\test_qa\\.happier\\tools\\js-runtime\\current\\runtime\\node.exe',
-                entryPath: 'C:\\Users\\test_qa\\.happier\\cli-preview\\current\\package-dist\\index.mjs',
+                nodePath: 'C:\\Users\\test_qa\\.piggercode\\tools\\js-runtime\\current\\runtime\\node.exe',
+                entryPath: 'C:\\Users\\test_qa\\.piggercode\\cli-preview\\current\\package-dist\\index.mjs',
             };
 
             const result = hasInstalledBackgroundServiceConflictForCurrentInstallation({
@@ -509,7 +509,7 @@ describe('daemonServiceInventory', () => {
                         platform: 'win32',
                         happierHomeDir: serviceHomeDir,
                         releaseChannel: 'preview',
-                        label: 'Happier\\happier-daemon.default',
+                        label: 'PiggerCode\\piggercode-daemon.default',
                         targetMode: 'default-following',
                     },
                 ],

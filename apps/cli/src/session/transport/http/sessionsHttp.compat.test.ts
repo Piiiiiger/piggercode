@@ -44,7 +44,7 @@ describe('sessionControl.sessionsHttp.fetchSessionByIdCompat', () => {
 
     expect(getSpy).toHaveBeenCalledWith(expect.stringContaining('/v2/sessions/s1'), expect.objectContaining({
       headers: expect.objectContaining({
-        'X-Happier-Request-Purpose': 'session-detail:prompt-dispatch-boundary',
+        'X-PiggerCode-Request-Purpose': 'session-detail:prompt-dispatch-boundary',
       }),
     }));
   });
@@ -60,7 +60,7 @@ describe('sessionControl.sessionsHttp.fetchSessionByIdCompat', () => {
 
     expect(getSpy).toHaveBeenCalledWith(expect.stringContaining('/v2/sessions/s1'), expect.objectContaining({
       headers: expect.objectContaining({
-        'X-Happier-Request-Purpose': 'session-detail:legacy-compat-proof',
+        'X-PiggerCode-Request-Purpose': 'session-detail:legacy-compat-proof',
       }),
     }));
   });

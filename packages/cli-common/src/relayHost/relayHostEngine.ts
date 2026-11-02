@@ -143,7 +143,7 @@ function resolveRemoteHomeDirForRuntime(): string {
 }
 
 function resolveRemoteHomeDirForComponents(): string {
-  return '$HOME/.happier';
+  return '$HOME/.piggercode';
 }
 
 function buildRelayRuntimeServiceSpec(params: Readonly<{
@@ -156,7 +156,7 @@ function buildRelayRuntimeServiceSpec(params: Readonly<{
 }>): ServiceSpec {
   return {
     label: params.label,
-    description: `Happier Relay Runtime (${params.label})`,
+    description: `PiggerCode Relay Runtime (${params.label})`,
     programArgs: [params.serverBinaryPath],
     workingDirectory: params.installRoot,
     env: params.env,
@@ -489,9 +489,9 @@ function resolveWindowsWrapperDefinitionPath(params: Readonly<{
   homeDir: string;
 }>): string {
   if (params.backend === 'schtasks-system') {
-    return `C:\\ProgramData\\happier\\services\\${params.label}.ps1`;
+    return `C:\\ProgramData\\piggercode\\services\\${params.label}.ps1`;
   }
-  return `${params.homeDir}\\.happier\\services\\${params.label}.ps1`;
+  return `${params.homeDir}\\.piggercode\\services\\${params.label}.ps1`;
 }
 
 function parseSystemdUnitWorkingDirectory(unitText: string): string | null {
@@ -869,7 +869,7 @@ export function createRelayHostEngine(deps: RelayHostEngineDeps): RelayHostEngin
   const resolveLocalWindowsScheduledTaskState = (params: Readonly<{
     label: string;
   }>): Readonly<{ loadState: string; activeState: string; enabledState: string }> => {
-    const result = runLocalText('schtasks', ['/Query', '/TN', `Happier\\${params.label}`, '/FO', 'LIST', '/V']);
+    const result = runLocalText('schtasks', ['/Query', '/TN', `PiggerCode\\${params.label}`, '/FO', 'LIST', '/V']);
     const powerShellStatus = runLocalText('powershell.exe', [
       '-NoProfile',
       '-Command',
@@ -1565,8 +1565,8 @@ export function createRelayHostEngine(deps: RelayHostEngineDeps): RelayHostEngin
 
       if (backend === 'schtasks-user' || backend === 'schtasks-system') {
         if (policy.runServiceCommands !== false) {
-          runLocalText('schtasks', ['/End', '/TN', `Happier\\${legacyUnitName}`]);
-          runLocalText('schtasks', ['/Delete', '/F', '/TN', `Happier\\${legacyUnitName}`]);
+          runLocalText('schtasks', ['/End', '/TN', `PiggerCode\\${legacyUnitName}`]);
+          runLocalText('schtasks', ['/Delete', '/F', '/TN', `PiggerCode\\${legacyUnitName}`]);
         }
         await rm(legacyDefinitionPath, { force: true }).catch(() => undefined);
         return undefined;
@@ -1925,7 +1925,7 @@ export function createRelayHostEngine(deps: RelayHostEngineDeps): RelayHostEngin
       throw new Error(
         remoteMessage
         || result.stderr.trim()
-        || 'Remote relay host uninstall did not report success. Ensure the installed Happier CLI is present and retry.',
+        || 'Remote relay host uninstall did not report success. Ensure the installed PiggerCode CLI is present and retry.',
       );
     }
   }
@@ -2058,7 +2058,7 @@ export function createRelayHostEngine(deps: RelayHostEngineDeps): RelayHostEngin
           await ensureLocalRelayHealthy();
           return;
         }
-        const taskName = `Happier\\${effectiveServiceName}`;
+        const taskName = `PiggerCode\\${effectiveServiceName}`;
         const args = parsed.action === 'stop'
           ? ['/End', '/TN', taskName]
           : ['/Run', '/TN', taskName];

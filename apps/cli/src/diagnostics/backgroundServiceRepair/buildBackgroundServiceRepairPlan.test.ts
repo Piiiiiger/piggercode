@@ -12,21 +12,21 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'company',
         name: 'Company',
         installed: true,
-        path: '/tmp/happier-daemon.preview.company.service',
+        path: '/tmp/piggercode-daemon.preview.company.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.company',
+        label: 'piggercode-daemon.preview.company',
         targetMode: 'pinned',
       }, {
         serverId: 'sidecar',
         name: 'Sidecar',
         installed: true,
-        path: '/tmp/happier-daemon.preview.sidecar.service',
+        path: '/tmp/piggercode-daemon.preview.sidecar.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.sidecar',
+        label: 'piggercode-daemon.preview.sidecar',
         targetMode: 'pinned',
       }],
     });
@@ -35,7 +35,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.preview.company',
+          label: 'piggercode-daemon.preview.company',
           mode: 'user',
           targetMode: 'pinned',
           releaseChannel: 'preview',
@@ -58,21 +58,21 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/happier-daemon.default.service',
+        path: '/tmp/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }, {
         serverId: 'company',
         name: 'Company',
         installed: true,
-        path: '/tmp/happier-daemon.company.service',
+        path: '/tmp/piggercode-daemon.company.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'happier-daemon.company',
+        label: 'piggercode-daemon.company',
         targetMode: 'pinned',
       }],
     });
@@ -89,12 +89,12 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/happier-daemon.default.service',
+        path: '/tmp/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
         installedDefinitionMatchesExpected: false,
       }],
@@ -110,7 +110,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
   });
 
   it('keeps same-home pinned services of other relays while removing pinned services of the current relay', () => {
-    const home = '/home/test/.happier';
+    const home = '/home/test/.piggercode';
     const unitDir = '/home/test/.config/systemd/user';
     const pinned = (serverId: string, relayUrl: string | null, releaseChannel: 'stable' | 'preview') => ({
       serverId,
@@ -118,12 +118,12 @@ describe('buildBackgroundServiceRepairPlan', () => {
       name: serverId,
       relayUrl,
       installed: true,
-      path: `${unitDir}/happier-daemon.${serverId}.service`,
+      path: `${unitDir}/piggercode-daemon.${serverId}.service`,
       platform: 'linux' as const,
       mode: 'user' as const,
       happierHomeDir: home,
       releaseChannel,
-      label: `happier-daemon.${serverId}`,
+      label: `piggercode-daemon.${serverId}`,
       targetMode: 'pinned' as const,
     });
     const plan = buildBackgroundServiceRepairPlan({
@@ -136,12 +136,12 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: `${unitDir}/happier-daemon.default.service`,
+        path: `${unitDir}/piggercode-daemon.default.service`,
         platform: 'linux',
         mode: 'user',
         happierHomeDir: home,
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
       // The 0.2.3 migration's target: a legacy unit pinned to the relay the default service serves.
@@ -154,7 +154,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
     });
 
     const removedLabels = plan.actions.flatMap((action) => action.kind === 'remove-service' ? [action.service.label] : []);
-    expect(removedLabels.sort()).toEqual(['happier-daemon.cloud', 'happier-daemon.cloud-alias']);
+    expect(removedLabels.sort()).toEqual(['piggercode-daemon.cloud', 'piggercode-daemon.cloud-alias']);
     expect(plan.actions.every((action) => action.kind === 'remove-service')).toBe(true);
   });
 
@@ -167,23 +167,23 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }, {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/etc/systemd/system/happier-daemon.default.service',
+        path: '/etc/systemd/system/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'system',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -192,7 +192,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           mode: 'system',
           targetMode: 'default-following',
           releaseChannel: 'stable',
@@ -210,23 +210,23 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default-copy',
         name: 'Default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default-copy.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default-copy.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default-copy',
+        label: 'piggercode-daemon.default-copy',
         targetMode: 'default-following',
       }, {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -235,7 +235,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.default-copy',
+          label: 'piggercode-daemon.default-copy',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',
@@ -253,23 +253,23 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Legacy preview default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.default',
+        label: 'piggercode-daemon.preview.default',
         targetMode: 'default-following',
       }, {
         serverId: 'default',
         name: 'Canonical default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -278,7 +278,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.preview.default',
+          label: 'piggercode-daemon.preview.default',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',
@@ -290,17 +290,17 @@ describe('buildBackgroundServiceRepairPlan', () => {
   it('migrates a raw legacy daemon service to the canonical default service', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'default',
       preferredMode: 'user',
       services: [{
         serverId: 'default',
         name: 'Legacy default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
         label: 'happier-daemon',
         targetMode: 'default-following',
@@ -313,7 +313,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
         kind: 'remove-service',
         service: expect.objectContaining({
           label: 'happier-daemon',
-          installedPath: '/home/test/.config/systemd/user/happier-daemon.service',
+          installedPath: '/home/test/.config/systemd/user/piggercode-daemon.service',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',
@@ -330,19 +330,19 @@ describe('buildBackgroundServiceRepairPlan', () => {
   it('migrates a stale default-following service from another release channel to the current default service', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'stack-a',
       preferredMode: 'user',
       services: [{
         serverId: 'stack-a',
         name: 'Preview background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -351,8 +351,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.default',
-          installedPath: '/home/test/.config/systemd/user/happier-daemon.default.service',
+          label: 'piggercode-daemon.default',
+          installedPath: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'stable',
@@ -369,30 +369,30 @@ describe('buildBackgroundServiceRepairPlan', () => {
   it('repairs a foreign-home default service while migrating current-server pinned services', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'stack-a',
       preferredMode: 'user',
       services: [{
         serverId: 'stack-a',
         name: 'Pinned current server',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.stack-a.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.stack-a.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.stack-a',
+        label: 'piggercode-daemon.preview.stack-a',
         targetMode: 'pinned',
       }, {
         serverId: 'default',
         name: 'Foreign default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/other/.happier',
+        happierHomeDir: '/home/other/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -402,8 +402,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.default',
-          installedPath: '/home/test/.config/systemd/user/happier-daemon.default.service',
+          label: 'piggercode-daemon.default',
+          installedPath: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',
@@ -412,7 +412,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.preview.stack-a',
+          label: 'piggercode-daemon.preview.stack-a',
           mode: 'user',
           targetMode: 'pinned',
           releaseChannel: 'preview',
@@ -426,22 +426,22 @@ describe('buildBackgroundServiceRepairPlan', () => {
     ]);
   });
 
-  it('repairs a same-mode default-following service from another Happier home', () => {
+  it('repairs a same-mode default-following service from another PiggerCode home', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'default',
       preferredMode: 'user',
       services: [{
         serverId: 'default',
         name: 'Foreign stale default background service',
         installed: true,
-        path: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+        path: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
         platform: 'darwin',
         mode: 'user',
-        happierHomeDir: '/Users/tester/.happier/stacks/repo-dev-old/cli',
+        happierHomeDir: '/Users/tester/.piggercode/stacks/repo-dev-old/cli',
         releaseChannel: 'stable',
-        label: 'com.happier.cli.daemon.default',
+        label: 'com.piggercode.cli.daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -451,8 +451,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'com.happier.cli.daemon.default',
-          installedPath: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+          label: 'com.piggercode.cli.daemon.default',
+          installedPath: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'stable',
@@ -466,21 +466,21 @@ describe('buildBackgroundServiceRepairPlan', () => {
     ]);
   });
 
-  it('repairs a same-mode default-following service with missing Happier home metadata', () => {
+  it('repairs a same-mode default-following service with missing PiggerCode home metadata', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'default',
       preferredMode: 'user',
       services: [{
         serverId: 'default',
         name: 'Legacy default background service',
         installed: true,
-        path: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+        path: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
         platform: 'darwin',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'com.happier.cli.daemon.default',
+        label: 'com.piggercode.cli.daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -490,8 +490,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'com.happier.cli.daemon.default',
-          installedPath: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+          label: 'com.piggercode.cli.daemon.default',
+          installedPath: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'stable',
@@ -505,70 +505,70 @@ describe('buildBackgroundServiceRepairPlan', () => {
     ]);
   });
 
-  it('does not remove or replace services from another Happier home when a foreign pinned service targets the current server', () => {
+  it('does not remove or replace services from another PiggerCode home when a foreign pinned service targets the current server', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'stack-a',
       preferredMode: 'user',
       services: [{
         serverId: 'stack-a',
         name: 'Pinned current server',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.stack-a.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.stack-a.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.stack-a',
+        label: 'piggercode-daemon.preview.stack-a',
         targetMode: 'pinned',
       }, {
         serverId: 'stack-a',
         name: 'Foreign pinned current server',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.stack-a.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.stack-a.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/other/.happier',
+        happierHomeDir: '/home/other/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.stack-a',
+        label: 'piggercode-daemon.preview.stack-a',
         targetMode: 'pinned',
       }],
     });
 
     expect(plan.actions).toEqual([]);
     expect(plan.manualWarnings).toEqual([
-      expect.stringContaining('/home/other/.happier'),
+      expect.stringContaining('/home/other/.piggercode'),
     ]);
   });
 
-  it('removes same-mode default-following services with unknown Happier home metadata when a compatible default exists', () => {
+  it('removes same-mode default-following services with unknown PiggerCode home metadata when a compatible default exists', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'default',
       preferredMode: 'user',
       services: [{
         serverId: 'default',
         name: 'Canonical default background service',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/test/.happier',
+        happierHomeDir: '/home/test/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }, {
         serverId: 'default',
         name: 'Legacy preview default background service (missing home)',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.default.service',
         platform: 'linux',
         mode: 'user',
         // happierHomeDir intentionally omitted (legacy services may not embed it)
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.default',
+        label: 'piggercode-daemon.preview.default',
         targetMode: 'default-following',
       }],
     });
@@ -578,8 +578,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.preview.default',
-          installedPath: '/home/test/.config/systemd/user/happier-daemon.preview.default.service',
+          label: 'piggercode-daemon.preview.default',
+          installedPath: '/home/test/.config/systemd/user/piggercode-daemon.preview.default.service',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',
@@ -588,21 +588,21 @@ describe('buildBackgroundServiceRepairPlan', () => {
     ]);
   });
 
-  it('repairs default-following services with missing Happier home metadata from another release channel', () => {
+  it('repairs default-following services with missing PiggerCode home metadata from another release channel', () => {
     const plan = buildBackgroundServiceRepairPlan({
       currentReleaseChannel: 'preview',
-      currentHappierHomeDir: '/home/test/.happier',
+      currentHappierHomeDir: '/home/test/.piggercode',
       currentServerId: 'default',
       preferredMode: 'user',
       services: [{
         serverId: 'default',
         name: 'Legacy stable default background service (missing home)',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -612,8 +612,8 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.default',
-          installedPath: '/home/test/.config/systemd/user/happier-daemon.default.service',
+          label: 'piggercode-daemon.default',
+          installedPath: '/home/test/.config/systemd/user/piggercode-daemon.default.service',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'stable',
@@ -636,11 +636,11 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'stack-a',
         name: 'Stack A',
         installed: true,
-        path: '/home/test/.config/systemd/user/happier-daemon.preview.stack-a.service',
+        path: '/home/test/.config/systemd/user/piggercode-daemon.preview.stack-a.service',
         platform: 'linux',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'happier-daemon.preview.stack-a',
+        label: 'piggercode-daemon.preview.stack-a',
         targetMode: 'pinned',
       }],
     });
@@ -649,7 +649,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'happier-daemon.preview.stack-a',
+          label: 'piggercode-daemon.preview.stack-a',
           mode: 'user',
           targetMode: 'pinned',
           releaseChannel: 'stable',
@@ -672,23 +672,23 @@ describe('buildBackgroundServiceRepairPlan', () => {
         serverId: 'default',
         name: 'Legacy preview default background service',
         installed: true,
-        path: 'C:\\Users\\tester\\.happier\\services\\happier-daemon.preview.default.ps1',
+        path: 'C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.preview.default.ps1',
         platform: 'win32',
         mode: 'user',
-        happierHomeDir: 'C:\\Users\\tester\\.happier',
+        happierHomeDir: 'C:\\Users\\tester\\.piggercode',
         releaseChannel: 'preview',
-        label: 'Happier\\happier-daemon.preview.default',
+        label: 'PiggerCode\\piggercode-daemon.preview.default',
         targetMode: 'default-following',
       }, {
         serverId: 'default',
         name: 'Canonical default background service',
         installed: true,
-        path: 'C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1',
+        path: 'C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.default.ps1',
         platform: 'win32',
         mode: 'user',
-        happierHomeDir: 'C:\\Users\\tester\\.happier',
+        happierHomeDir: 'C:\\Users\\tester\\.piggercode',
         releaseChannel: 'preview',
-        label: 'Happier\\happier-daemon.default',
+        label: 'PiggerCode\\piggercode-daemon.default',
         targetMode: 'default-following',
       }],
     });
@@ -697,7 +697,7 @@ describe('buildBackgroundServiceRepairPlan', () => {
       expect.objectContaining({
         kind: 'remove-service',
         service: expect.objectContaining({
-          label: 'Happier\\happier-daemon.preview.default',
+          label: 'PiggerCode\\piggercode-daemon.preview.default',
           mode: 'user',
           targetMode: 'default-following',
           releaseChannel: 'preview',

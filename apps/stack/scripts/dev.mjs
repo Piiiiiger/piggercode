@@ -219,7 +219,7 @@ async function main() {
 	  const uiDir = getComponentDir(rootDir, 'happier-ui');
 	  const cliDir = getComponentDir(rootDir, 'happier-cli');
 
-	  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+	  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const autostart = getDefaultAutostartPaths();
   const baseEnv = { ...process.env };
   const parentServerRestartPreflightAlreadyDone = String(

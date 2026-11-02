@@ -1062,7 +1062,7 @@ async function runSdkStreamUntilEof() {
         'subagents,',
         "there's",
         'a',
-        '`mcp__happier__subagents_delegate_start`',
+        '`mcp__piggercode__subagents_delegate_start`',
         'tool',
         '-',
         'we',

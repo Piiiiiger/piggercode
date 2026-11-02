@@ -48,7 +48,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     // rather than a stub "no diagnostics found" string the caller would
     // have to special-case.
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath: join(homeDir, 'logs', 'daemon-service.default.err.log'),
     });
@@ -64,13 +64,13 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     const stderrPath = join(homeDir, 'logs', 'daemon-service.default.err.log');
     await writeFile(stderrPath, [
       'node:internal/modules/cjs/loader:1459',
-      "Error: Cannot find module 'C:\\Users\\test_qa\\.happier\\cli\\current\\package-dist\\index.mjs'",
+      "Error: Cannot find module 'C:\\Users\\test_qa\\.piggercode\\cli\\current\\package-dist\\index.mjs'",
       "    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)",
       "code: 'MODULE_NOT_FOUND'",
     ].join('\n'), 'utf8');
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath,
     });
@@ -87,7 +87,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     await writeFile(stderrPath, lines.join('\n'), 'utf8');
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath,
     });
@@ -113,7 +113,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     ].join('\n'), 'utf8');
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath,
       stderrPath,
     });
@@ -137,7 +137,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
             stateValue: 3,
             lastRunTime: '2026-04-29T16:29:54.0000000+02:00',
             lastTaskResult: 267009,
-            taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test_qa\\.happier\\services\\happier-daemon.default.ps1',
+            taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test_qa\\.piggercode\\services\\piggercode-daemon.default.ps1',
           }),
           stderr: '',
         };
@@ -146,13 +146,13 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     });
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath: join(homeDir, 'logs', 'daemon-service.default.err.log'),
     });
 
     expect(result).not.toBeNull();
-    expect(result).toContain('Scheduled task Happier\\happier-daemon.default');
+    expect(result).toContain('Scheduled task PiggerCode\\piggercode-daemon.default');
     expect(result).toContain('Last result:   267009');
     expect(result).toContain('powershell.exe -NoProfile');
     expect(spawnSyncMock).toHaveBeenCalledWith(
@@ -173,7 +173,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     // separated" garbage. The collector must detect the BOM and decode as
     // UTF-16 so the diagnostic message stays readable to humans.
     const stderrPath = join(homeDir, 'logs', 'daemon-service.default.err.log');
-    const text = "Error: Cannot find module 'happier.exe'\nMODULE_NOT_FOUND";
+    const text = "Error: Cannot find module 'piggercode.exe'\nMODULE_NOT_FOUND";
     const utf16Buffer = Buffer.concat([
       Buffer.from([0xFF, 0xFE]), // UTF-16 LE BOM
       Buffer.from(text, 'utf16le'),
@@ -181,7 +181,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     await writeFile(stderrPath, utf16Buffer);
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath: join(homeDir, 'logs', 'daemon-service.default.out.log'),
       stderrPath,
     });
@@ -203,7 +203,7 @@ describe('collectWindowsServiceLaunchDiagnostics', () => {
     await writeFile(stderrPath, 'real failure', 'utf8');
 
     const result = collectWindowsServiceLaunchDiagnostics({
-      taskName: 'Happier\\happier-daemon.default',
+      taskName: 'PiggerCode\\piggercode-daemon.default',
       stdoutPath,
       stderrPath,
     });

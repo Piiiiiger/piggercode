@@ -31,7 +31,7 @@ describe('buildPowerShellStartWindowsTerminalInvocation', () => {
       windowId: 'window;one',
       title: 'title;two',
       workingDirectory: 'C:\\repo;three',
-      filePath: 'C:\\tools;four\\happier.exe',
+      filePath: 'C:\\tools;four\\piggercode.exe',
       args: ['arg;five'],
     });
 
@@ -55,14 +55,14 @@ describe('buildPowerShellStartWindowsTerminalInvocation', () => {
         'quote"inside',
       ],
       workingDirectory: 'C:\\Users\\test qa\\repo',
-      windowId: 'happier qa',
-      title: 'Happier Claude Session',
+      windowId: 'piggercode qa',
+      title: 'PiggerCode Claude Session',
     });
 
     const script = invocation.args.at(-1) ?? '';
 
     expect(script).toContain(
-      "-ArgumentList '-w \"happier qa\" new-tab --title \"Happier Claude Session\" --startingDirectory \"C:\\Users\\test qa\\repo\" \"C:\\Program Files\\nodejs\\node.exe\" apps\\cli\\package-dist\\index.mjs claude --prompt \"prompt with spaces\" \"quote\\\"inside\"'",
+      "-ArgumentList '-w \"piggercode qa\" new-tab --title \"PiggerCode Claude Session\" --startingDirectory \"C:\\Users\\test qa\\repo\" \"C:\\Program Files\\nodejs\\node.exe\" apps\\cli\\package-dist\\index.mjs claude --prompt \"prompt with spaces\" \"quote\\\"inside\"'",
     );
   });
 });
@@ -92,7 +92,7 @@ describe('startProcessInWindowsTerminal', () => {
       filePath: 'C:\\Tools\\zellij.exe',
       args: ['attach', '--create', 'happy-claude'],
       windowId: 'happier-zellij',
-      title: 'Happier Claude happy-claude',
+      title: 'PiggerCode Claude happy-claude',
       inheritParentEnv: false,
     };
     const pending = startProcessInWindowsTerminal(params);

@@ -27,7 +27,7 @@ async function main() {
     '',
     'defaults:',
     '  - If running under a stack wrapper (PIGGERCODE_STACK_ENV_FILE is set), edits that stack env file.',
-    '  - Otherwise, edits the main stack env file (~/.happier/stacks/main/env).',
+    '  - Otherwise, edits the main stack env file (~/.piggercode/stacks/main/env).',
     '',
     'notes:',
     '  - Changes take effect on next stack/daemon start (restart to apply).',

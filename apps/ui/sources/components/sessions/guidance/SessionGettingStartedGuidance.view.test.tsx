@@ -102,8 +102,8 @@ describe('SessionGettingStartedGuidanceView', () => {
     expect(screen.findByTestId('session-getting-started-setup-primary-card')).not.toBeNull();
     expect(screen.findByTestId('session-getting-started-cli-follow-up')).toBeNull();
     expect(screen.findByTestId('session-getting-started-show-manual')).not.toBeNull();
-    expect(content).not.toContain('happier server add');
-    expect(content).not.toContain('happier daemon install');
+    expect(content).not.toContain('piggercode server add');
+    expect(content).not.toContain('piggercode daemon install');
 
     expect(screen.findByTestId('session-getting-started-copy-all')).toBeNull();
     expect(screen.findByTestId('session-getting-started-scroll')).not.toBeNull();
@@ -122,7 +122,7 @@ describe('SessionGettingStartedGuidanceView', () => {
     expect(screen.findByTestId('session-getting-started-step-auth_login')).not.toBeNull();
     expect(screen.findByTestId('session-getting-started-step-daemon_install')).toBeNull();
     expect(screen.findByTestId('session-getting-started-step-create_session')).not.toBeNull();
-    expect(expandedContent).not.toContain('happier server add');
+    expect(expandedContent).not.toContain('piggercode server add');
     expect(expandedContent).toContain('https://api.company.example');
     expect(expandedContent).not.toContain('$ npm i -g @piggercode/cli');
     // Desktop already installed the command line on this computer, so the terminal path starts at
@@ -130,15 +130,15 @@ describe('SessionGettingStartedGuidanceView', () => {
     expect(screen.findByTestId('session-getting-started-step-install_cli')).toBeNull();
     expect(expandedContent).not.toContain('curl -fsSL https://happier.dev/install');
     expect(expandedContent).not.toContain('npm i -g @piggercode/cli');
-    expect(expandedContent).not.toContain('happier service install');
-    expect(expandedContent).toContain('happier setup --relay "https://api.company.example"');
-    expect(expandedContent).not.toContain('happier daemon install');
-    expect(expandedContent).toContain('happier codex');
+    expect(expandedContent).not.toContain('piggercode service install');
+    expect(expandedContent).toContain('piggercode setup --relay "https://api.company.example"');
+    expect(expandedContent).not.toContain('piggercode daemon install');
+    expect(expandedContent).toContain('piggercode codex');
 
     clipboardMocks.setStringAsync.mockClear();
     modalMocks.alert.mockClear();
     await screen.pressByTestIdAsync('session-getting-started-copy-auth_login');
-    expect(clipboardMocks.setStringAsync).toHaveBeenCalledWith('happier setup --relay "https://api.company.example"');
+    expect(clipboardMocks.setStringAsync).toHaveBeenCalledWith('piggercode setup --relay "https://api.company.example"');
     expect(modalMocks.alert).not.toHaveBeenCalledWith('common.copied', 'items.copiedToClipboard');
     expect(screen.findByTestId('session-getting-started-copy-auth_login-copied')).not.toBeNull();
   });
@@ -283,10 +283,10 @@ describe('SessionGettingStartedGuidanceView', () => {
     );
 
     const content = screen.getTextContent();
-    expect(content).toContain('happier service install');
-    expect(content).toContain('happier service start');
-    expect(content).not.toContain('happier daemon install');
-    expect(content).not.toContain('happier daemon start');
+    expect(content).toContain('piggercode service install');
+    expect(content).toContain('piggercode service start');
+    expect(content).not.toContain('piggercode daemon install');
+    expect(content).not.toContain('piggercode daemon start');
   });
 
   it('skips rerendering the guidance view when props are equal by value', async () => {

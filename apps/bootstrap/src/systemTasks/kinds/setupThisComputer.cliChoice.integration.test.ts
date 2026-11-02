@@ -26,7 +26,7 @@ import {
 } from './setupThisComputer.js';
 
 /**
- * R12's regression, composed: a user with an npm `happier` answers the one question, and the real
+ * R12's regression, composed: a user with an npm `piggercode` answers the one question, and the real
  * resolution, choice record, managed install, PATH exposure and service commands run against real
  * executables at the process boundary. Only the release download is replaced (by a local payload),
  * and the two CLIs are small scripts that answer the JSON commands setup issues and log who ran.
@@ -75,15 +75,15 @@ async function createComputer(options: Readonly<{ brokenNpmCli?: boolean; userOw
   if (userPinPath) {
     await writeFile(userPinPath, JSON.stringify({
       targetMode: 'pinned', releaseChannel: 'stable', serverId: 'custom', activeServerId: 'custom',
-      relayUrl: RELAY, happierHomeDir: join(home, '.happier'), managedBy: null,
+      relayUrl: RELAY, happierHomeDir: join(home, '.piggercode'), managedBy: null,
       command: '/user-owned/happier', autostart: 'at-login',
     }));
   }
 
-  // An npm global install: `<prefix>/bin/happier` → the package's own entry, with its package.json.
+  // An npm global install: `<prefix>/bin/piggercode` → the package's own entry, with its package.json.
   const packageRoot = join(root, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
   const npmBin = join(root, 'npm-global', 'bin');
-  const npmCli = join(npmBin, 'happier');
+  const npmCli = join(npmBin, 'piggercode');
   await mkdir(join(packageRoot, 'bin'), { recursive: true });
   await mkdir(npmBin, { recursive: true });
   await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli', version: NPM_VERSION }));
@@ -98,8 +98,8 @@ async function createComputer(options: Readonly<{ brokenNpmCli?: boolean; userOw
   const payloadRoot = join(root, 'payload');
   await mkdir(join(payloadRoot, 'package-dist'), { recursive: true });
   await writeFile(join(payloadRoot, 'package-dist', 'index.mjs'), 'export {};\n');
-  const managedShim = join(home, '.happier', 'bin', 'happier');
-  await writeFile(join(payloadRoot, 'happier'), fakeCliScript({
+  const managedShim = join(home, '.piggercode', 'bin', 'piggercode');
+  await writeFile(join(payloadRoot, 'piggercode'), fakeCliScript({
     version: MANAGED_VERSION,
     logPath,
     userPinPath,
@@ -115,7 +115,7 @@ async function createComputer(options: Readonly<{ brokenNpmCli?: boolean; userOw
       },
     },
   }));
-  await chmod(join(payloadRoot, 'happier'), 0o755);
+  await chmod(join(payloadRoot, 'piggercode'), 0o755);
 
   for (const name of ['PIGGERCODE_HOME_DIR', 'PIGGERCODE_BOOTSTRAP_CLI_PATH', 'PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', 'PIGGERCODE_ACTIVE_SERVER_ID', 'PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID', 'PIGGERCODE_NO_PATH_UPDATE']) {
     vi.stubEnv(name, undefined);
@@ -177,7 +177,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     const computer = await createComputer({ userOwnedPin: true });
     if (!computer.userPinPath) throw new Error('Expected the user-owned pin fixture.');
     const originalPin = await readFile(computer.userPinPath, 'utf8');
-    const happierHome = join(computer.home, '.happier');
+    const happierHome = join(computer.home, '.piggercode');
     await mkdir(join(happierHome, 'servers', 'custom'), { recursive: true });
     const identityFiles = [join(happierHome, 'settings.json'), join(happierHome, 'servers', 'custom', 'access.key')];
     for (const path of identityFiles) await writeFile(path, 'user-owned relay identity\n');
@@ -192,7 +192,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     });
     expect(readHappierCliChoiceSync({ processEnv: process.env })).toEqual({ mode: 'managed' });
     await vi.waitFor(async () => {
-      expect(await readFile(join(computer.home, '.bashrc'), 'utf8')).toContain('Added by Happier Desktop');
+      expect(await readFile(join(computer.home, '.bashrc'), 'utf8')).toContain('Added by PiggerCode Desktop');
     });
     vi.stubEnv('PATH', `${join(happierHome, 'bin')}:${computer.npmBin}`);
 
@@ -201,7 +201,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     expect(own.prompts).toEqual([SETUP_CLI_CHOICE_PROMPT_KIND]);
     expect(own.result).toMatchObject({ machineId: null, cliProvenance: 'override', serviceAction: 'none' });
     expect(readHappierCliChoiceSync({ processEnv: process.env })).toEqual({ mode: 'own', command: computer.npmCli });
-    expect(await readFile(join(computer.home, '.bashrc'), 'utf8')).not.toContain('Added by Happier Desktop');
+    expect(await readFile(join(computer.home, '.bashrc'), 'utf8')).not.toContain('Added by PiggerCode Desktop');
     expect(await readFile(computer.userPinPath, 'utf8')).toBe(originalPin);
     for (const path of identityFiles) expect(await readFile(path, 'utf8')).toBe('user-owned relay identity\n');
     // Only executable-version probes are allowed: no relay, auth, inventory or service command.
@@ -212,7 +212,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     'rejects an invalid CLI-only request before touching this computer: %j', async (taskParams) => {
       const computer = await createComputer({ userOwnedPin: true });
       await expect(computer.run('managed', 'stable', taskParams)).rejects.toMatchObject({ code: 'invalid_params' });
-      expect(existsSync(join(computer.home, '.happier', 'cli-choice.json'))).toBe(false);
+      expect(existsSync(join(computer.home, '.piggercode', 'cli-choice.json'))).toBe(false);
       expect(computer.preparePayload).not.toHaveBeenCalled();
     },
   );
@@ -225,7 +225,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     expect(prompts).toEqual([SETUP_CLI_CHOICE_PROMPT_KIND]);
     expect(result).toMatchObject({ cliProvenance: 'override', cliVersion: NPM_VERSION });
     expect(computer.preparePayload).not.toHaveBeenCalled();
-    expect(existsSync(join(computer.home, '.happier', 'cli'))).toBe(false);
+    expect(existsSync(join(computer.home, '.piggercode', 'cli'))).toBe(false);
     expect(existsSync(join(computer.home, '.bashrc'))).toBe(false);
     expect(existsSync(join(computer.home, '.profile'))).toBe(false);
 
@@ -253,7 +253,7 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
     expect(managedCommands).toContain('daemon service install --yes --replace-existing=all --json');
 
     // The PATH line lands even though the npm CLI resolves, and a new terminal then runs ours first.
-    const binDir = join(computer.home, '.happier', 'bin');
+    const binDir = join(computer.home, '.piggercode', 'bin');
     await vi.waitFor(async () => {
       expect(await readFile(join(computer.home, '.bashrc'), 'utf8')).toContain(`export PATH="${binDir}:$PATH"`);
     });
@@ -294,14 +294,14 @@ describe.skipIf(process.platform === 'win32')('one CLI per computer, composed (R
 
     const { result, prompts } = await computer.run('managed', 'preview');
 
-    // The user's `happier` (and its service) follow the default channel, stable here: its managed CLI
+    // The user's `piggercode` (and its service) follow the default channel, stable here: its managed CLI
     // replaces it, so the dry-run is the pure runtime switch the answer consents to — no other
     // ring's service to remove, and the default channel is not repointed.
     expect(prompts).toEqual([SETUP_CLI_CHOICE_PROMPT_KIND]);
     expect(computer.preparePayload).toHaveBeenCalledWith(expect.objectContaining({ channel: 'stable' }));
     expect(result).toMatchObject({ cliProvenance: 'managed', cliVersion: MANAGED_VERSION });
-    expect(existsSync(join(computer.home, '.happier', 'cli', 'current.version'))).toBe(true);
-    expect(existsSync(join(computer.home, '.happier', 'cli-preview'))).toBe(false);
+    expect(existsSync(join(computer.home, '.piggercode', 'cli', 'current.version'))).toBe(true);
+    expect(existsSync(join(computer.home, '.piggercode', 'cli-preview'))).toBe(false);
   });
 
   it('a kept CLI that disappeared is asked about before anything stands in for it: "own" names reinstalling, "manage" goes on (R13)', async () => {

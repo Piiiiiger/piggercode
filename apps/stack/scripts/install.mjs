@@ -21,7 +21,7 @@ import { createStepPrinter } from '@piggercode/cli-common/output';
  * Install/setup the local stack:
  * - ensure the Happier monorepo exists (optionally clone if missing)
  * - install dependencies where needed (yarn)
- * - build happier-cli (optional) and install `happier`/`hstack` shims under `<homeDir>/bin`
+ * - build happier-cli (optional) and install `piggercode`/`hstack` shims under `<homeDir>/bin`
  * - build the web UI bundle (so `run` can serve it)
  * - optional macOS autostart (LaunchAgent)
  */
@@ -32,7 +32,7 @@ import { createStepPrinter } from '@piggercode/cli-common/output';
 // Stack is Happier-first. Contributors typically:
 // - clone the canonical repo as `upstream`
 // - use their fork as `origin`
-const DEFAULT_MONOREPO_REPO_URL = 'https://github.com/happier-dev/happier.git';
+const DEFAULT_MONOREPO_REPO_URL = 'https://github.com/Piiiiiger/piggercode.git';
 
 const DEFAULT_FORK_REPOS = {
   monorepo: DEFAULT_MONOREPO_REPO_URL,

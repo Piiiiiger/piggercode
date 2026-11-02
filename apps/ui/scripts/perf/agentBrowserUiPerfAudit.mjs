@@ -602,7 +602,7 @@ export function selectPlanScenarios(plan, subset) {
 function buildArtifactDir(outDir) {
   if (outDir) return resolve(outDir);
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  return join(homedir(), '.happier', 'perf-audits', 'remote-dev-ui', stamp);
+  return join(homedir(), '.piggercode', 'perf-audits', 'remote-dev-ui', stamp);
 }
 
 function agentBrowserArgs(session, args) {

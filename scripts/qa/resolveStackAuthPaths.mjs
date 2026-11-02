@@ -44,7 +44,7 @@ export function resolveStackNameFromServerPort({ serverPort, homeDir }) {
   const port = Number(serverPort);
   if (!Number.isFinite(port) || port <= 0) return '';
 
-  const stacksRoot = join(String(homeDir ?? ''), '.happier', 'stacks');
+  const stacksRoot = join(String(homeDir ?? ''), '.piggercode', 'stacks');
   try {
     const dirents = readdirSync(stacksRoot, { withFileTypes: true });
     let best = { name: '', updatedAtMs: 0 };
@@ -77,7 +77,7 @@ export function resolveStackCliAccessKeyCandidates({ stackName, homeDir }) {
   const stack = String(stackName ?? '').trim();
   if (!stack) return [];
 
-  const cliRoot = join(String(homeDir ?? ''), '.happier', 'stacks', stack, 'cli');
+  const cliRoot = join(String(homeDir ?? ''), '.piggercode', 'stacks', stack, 'cli');
   const out = [join(cliRoot, 'access.key')];
   const serversDir = join(cliRoot, 'servers');
   try {

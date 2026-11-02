@@ -3408,7 +3408,7 @@ describe('createZellijTerminalHostAdapter', () => {
     };
     const adapter = createZellijTerminalHostAdapter({
       zellijBinary: '/tools/zellij',
-      happyHomeDir: '/Users/leeroy/.happier/stacks/repo-remote-dev-d72117acdb/cli',
+      happyHomeDir: '/Users/leeroy/.piggercode/stacks/repo-remote-dev-d72117acdb/cli',
       actions,
     });
 
@@ -3421,7 +3421,7 @@ describe('createZellijTerminalHostAdapter', () => {
     });
 
     if (process.platform === 'win32') {
-      const expectedSocketDir = join('/Users/leeroy/.happier/stacks/repo-remote-dev-d72117acdb/cli', 'zellij-sock');
+      const expectedSocketDir = join('/Users/leeroy/.piggercode/stacks/repo-remote-dev-d72117acdb/cli', 'zellij-sock');
       expect(socketDirs).toEqual([expectedSocketDir, expectedSocketDir]);
     } else {
       expect(socketDirs).toEqual([

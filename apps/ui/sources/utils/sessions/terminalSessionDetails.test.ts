@@ -7,11 +7,11 @@ describe('terminalSessionDetails', () => {
         expect(getAttachCommandForSession({
             sessionId: 's-herdr',
             terminal: { mode: 'herdr', herdr: { sessionName: 'default', socketPath: '/tmp/herdr.sock', terminalId: 'term_1' } },
-        })).toBe('happier attach s-herdr');
+        })).toBe('piggercode attach s-herdr');
         expect(getAttachCommandForSession({
             sessionId: 's-zellij',
             terminal: { mode: 'zellij', zellij: { sessionName: 'happy', paneId: 'terminal_1' } },
-        })).toBe('happier attach s-zellij');
+        })).toBe('piggercode attach s-zellij');
     });
 
     it('returns an attach command when tmux target exists', () => {
@@ -21,7 +21,7 @@ describe('terminalSessionDetails', () => {
                 mode: 'tmux',
                 tmux: { target: 'happy:win-1' },
             },
-        } as any)).toBe('happier attach s1');
+        } as any)).toBe('piggercode attach s1');
     });
 
     it('returns null attach command when terminal is not tmux', () => {
@@ -41,7 +41,7 @@ describe('terminalSessionDetails', () => {
                 mode: 'windows_terminal',
                 windows: { host: 'windows_terminal', windowId: 'happy-session-1' },
             },
-        } as any)).toBe('happier attach s1');
+        } as any)).toBe('piggercode attach s1');
     });
 
     it('returns an attach command for windows console sessions even when the remote metadata does not include a pid', () => {
@@ -51,7 +51,7 @@ describe('terminalSessionDetails', () => {
                 mode: 'windows_console',
                 windows: { host: 'console' },
             },
-        } as any)).toBe('happier attach s1');
+        } as any)).toBe('piggercode attach s1');
     });
 
     it('returns tmux target when present', () => {

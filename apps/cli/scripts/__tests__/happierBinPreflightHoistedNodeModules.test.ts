@@ -11,7 +11,7 @@ import {
   writeProtocolBundleStub,
 } from './testkit/cliBinPreflightSandbox';
 
-describe('apps/cli bin/happier.mjs preflight', () => {
+describe('apps/cli bin/piggercode.mjs preflight', () => {
   it('runs from packaged package-dist entrypoints when dist is absent', () => {
     const { rootDir: tmp, cleanup } = createCliBinPreflightSandbox('happier-bin-preflight-');
     try {

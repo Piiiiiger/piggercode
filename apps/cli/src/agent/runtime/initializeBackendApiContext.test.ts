@@ -32,8 +32,8 @@ describe('initializeBackendApiContext', () => {
     platform: 'darwin',
     happyCliVersion: '0.0.0-test',
     homeDir: '/tmp/home',
-    happyHomeDir: '/tmp/home/.happier',
-    happyLibDir: '/tmp/home/.happier/lib',
+    happyHomeDir: '/tmp/home/.piggercode',
+    happyLibDir: '/tmp/home/.piggercode/lib',
   };
 
   beforeEach(() => {

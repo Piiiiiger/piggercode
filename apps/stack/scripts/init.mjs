@@ -131,22 +131,22 @@ async function main() {
     console.log(
       [
         '',
-        banner('init', { subtitle: 'Initialize ~/.happier-stack (runtime + shims).' }),
+        banner('init', { subtitle: 'Initialize ~/.piggercode-stack (runtime + shims).' }),
         '',
         sectionTitle('usage:'),
         `  ${cyan('hstack init')} [--canonical-home-dir=/path] [--home-dir=/path] [--workspace-dir=/path] [--runtime-dir=/path] [--storage-dir=/path] [--cli-root-dir=/path] [--tailscale-bin=/path] [--tailscale-cmd-timeout-ms=MS] [--tailscale-enable-timeout-ms=MS] [--tailscale-enable-timeout-ms-auto=MS] [--tailscale-reset-timeout-ms=MS] [--install-path] [--no-runtime] [--force-runtime] [--no-bootstrap] [--] [bootstrap args...]`,
         '',
         sectionTitle('what it does:'),
         bullets([
-          `${cyan('home')} — stores runtime, shims, caches (default: ${cyan('~/.happier-stack')})`,
-          `${cyan('workspace')} — where component checkouts live (default: ${cyan('~/.happier-stack/workspace')})`,
-          `${cyan('runtime')} — stable install used by services/SwiftBar (default: ${cyan('~/.happier-stack/runtime')})`,
-          `${cyan('shims')} — installs ${cyan('hstack')} / ${cyan('happier')} under ${cyan('~/.happier-stack/bin')}`,
+          `${cyan('home')} — stores runtime, shims, caches (default: ${cyan('~/.piggercode-stack')})`,
+          `${cyan('workspace')} — where component checkouts live (default: ${cyan('~/.piggercode-stack/workspace')})`,
+          `${cyan('runtime')} — stable install used by services/SwiftBar (default: ${cyan('~/.piggercode-stack/runtime')})`,
+          `${cyan('shims')} — installs ${cyan('hstack')} / ${cyan('piggercode')} under ${cyan('~/.piggercode-stack/bin')}`,
         ]),
         '',
         sectionTitle('notes:'),
         bullets([
-          `Writes ${cyan('~/.happier-stack/.env')} as a stable pointer file (helps launchd/SwiftBar find the install).`,
+          `Writes ${cyan('~/.piggercode-stack/.env')} as a stable pointer file (helps launchd/SwiftBar find the install).`,
           `Runtime install is skipped if the same version is already installed (use ${cyan('--force-runtime')} to reinstall).`,
           `Set ${cyan('PIGGERCODE_STACK_INIT_NO_RUNTIME=1')} to persist skipping runtime installs on this machine.`,
           `Optional: ${cyan('--install-path')} adds shims to your shell PATH (idempotent).`,
@@ -166,7 +166,7 @@ async function main() {
   // anything else (or directly from a repo checkout). So we load it here too.
   const canonicalHomeDirRaw = parseArgValue(argv, 'canonical-home-dir');
   const canonicalHomeDir = expandHome(
-    firstNonEmpty(canonicalHomeDirRaw, process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR, join(homedir(), '.happier-stack'))
+    firstNonEmpty(canonicalHomeDirRaw, process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR, join(homedir(), '.piggercode-stack'))
   );
   process.env.PIGGERCODE_STACK_CANONICAL_HOME_DIR = canonicalHomeDir;
 
@@ -177,7 +177,7 @@ async function main() {
   }
 
   const homeDirRaw = parseArgValue(argv, 'home-dir');
-  const homeDir = expandHome(firstNonEmpty(homeDirRaw, process.env.PIGGERCODE_STACK_HOME_DIR, join(homedir(), '.happier-stack')));
+  const homeDir = expandHome(firstNonEmpty(homeDirRaw, process.env.PIGGERCODE_STACK_HOME_DIR, join(homedir(), '.piggercode-stack')));
   process.env.PIGGERCODE_STACK_HOME_DIR = homeDir;
 
   const workspaceDirRaw = parseArgValue(argv, 'workspace-dir');
@@ -268,7 +268,7 @@ async function main() {
     pointerUpdates.push({ key: 'PIGGERCODE_STACK_CLI_ROOT_DIR', value: cliRootDirOverride });
   }
 
-  // Write the "real" home env (used by runtime + scripts), AND a stable pointer at ~/.happier-stack/.env.
+  // Write the "real" home env (used by runtime + scripts), AND a stable pointer at ~/.piggercode-stack/.env.
   // The pointer file allows launchd/SwiftBar/minimal shells to discover the actual install location
   // even when no env vars are exported.
   await ensureHomeEnvUpdated({ updates: pointerUpdates });
@@ -327,7 +327,7 @@ async function main() {
   }
 
   const hstackShimPath = join(homeDir, 'bin', 'hstack');
-  const happierShimPath = join(homeDir, 'bin', 'happier');
+  const happierShimPath = join(homeDir, 'bin', 'piggercode');
   const legacyHappyShimPath = join(homeDir, 'bin', 'happy');
   const shim = [
     '#!/bin/bash',
@@ -415,7 +415,7 @@ async function main() {
   // Convenience shim for the Happier CLI (avoid clashing with Happy stacks' `happy`).
   await writeExecutable(
     happierShimPath,
-    `#!/bin/bash\nset -euo pipefail\nexec "${hstackShimPath}" happier "$@"\n`
+    `#!/bin/bash\nset -euo pipefail\nexec "${hstackShimPath}" piggercode "$@"\n`
   );
 
   // Remove legacy `happy` shim if it exists (it conflicts with Happy stacks installs).
@@ -446,7 +446,7 @@ async function main() {
 
   if (!argv.includes('--install-path') || !didInstallPath) {
     console.log(sectionTitle('PATH'));
-    console.log(dim('To use `hstack` / `happier` from any terminal, add shims to PATH:'));
+    console.log(dim('To use `hstack` / `piggercode` from any terminal, add shims to PATH:'));
     console.log(cmd(`export PATH="${join(homeDir, 'bin')}:$PATH"`));
     console.log(dim(`(or re-run: ${cmd('hstack init --install-path')})`));
     console.log('');

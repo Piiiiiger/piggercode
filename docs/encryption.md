@@ -690,7 +690,7 @@ Users who want to opt into enforcement during the expansion phase can require th
 authenticated protocol locally:
 
 ```bash
-PIGGERCODE_TERMINAL_PAIRING_REQUIRE=v3 happier auth login
+PIGGERCODE_TERMINAL_PAIRING_REQUIRE=v3 piggercode auth login
 ```
 
 `v3` is a minimum accepted pairing-protocol requirement: legacy v1/v2 responses are rejected, and

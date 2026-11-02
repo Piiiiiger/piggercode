@@ -177,7 +177,7 @@ async function preparePublishedCliSourceSnapshot(params: {
     await mkdir(assetsDir, { recursive: true });
     await mkdir(binDir, { recursive: true });
 
-    const repo = String(params.env.GITHUB_REPOSITORY ?? 'happier-dev/happier').trim();
+    const repo = String(params.env.GITHUB_REPOSITORY ?? 'Piiiiiger/piggercode').trim();
     if (!repo.includes('/')) {
         throw new Error(`Invalid GITHUB_REPOSITORY for cli-update release validation: ${repo}`);
     }

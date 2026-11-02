@@ -7,8 +7,8 @@ import { expandHome } from './canonical_home.mjs';
 
 const PRIMARY_APP_SLUG = 'happier-stack';
 const PRIMARY_LABEL_BASE = 'dev.happier.stack';
-const PRIMARY_STORAGE_ROOT = join(homedir(), '.happier', 'stacks');
-const PRIMARY_HOME_DIR = join(homedir(), '.happier-stack');
+const PRIMARY_STORAGE_ROOT = join(homedir(), '.piggercode', 'stacks');
+const PRIMARY_HOME_DIR = join(homedir(), '.piggercode-stack');
 
 // Happier monorepo layouts (historical + in-flight refactors):
 //

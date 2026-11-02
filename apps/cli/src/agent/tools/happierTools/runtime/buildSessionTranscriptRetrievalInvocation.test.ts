@@ -39,7 +39,7 @@ describe('buildSessionTranscriptRetrievalInvocation', () => {
     expect(payload.input.cursor).toBeNull();
   });
 
-  it('renders nothing for an Agent the catalog does not hand Happier tools', () => {
+  it('renders nothing for an Agent the catalog does not hand PiggerCode tools', () => {
     expect(buildSessionTranscriptRetrievalInvocation({ ...base, agentId: 'not-an-agent' })).toBeNull();
   });
 

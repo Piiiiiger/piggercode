@@ -152,14 +152,14 @@ function buildCurrentCliInfo(
     ?? (String(configuration.currentCliVersion ?? '').trim() || '(unknown)');
 
   const shim: CurrentCliInfo['shim'] = releaseChannel === 'stable'
-    ? 'happier'
+    ? 'piggercode'
     : releaseChannel === 'preview'
       ? 'hprev'
       : 'hdev';
   // Prefer the actual invocation name (matches the binary the user ran) so
   // repair copy can suggest commands the user can copy-paste verbatim.
-  // Fall back to the channel-derived shim, then the canonical `happier`.
-  const invoker = resolveInvokerName() ?? shim ?? 'happier';
+  // Fall back to the channel-derived shim, then the canonical `piggercode`.
+  const invoker = resolveInvokerName() ?? shim ?? 'piggercode';
   return {
     releaseChannel,
     ringId,
@@ -179,20 +179,20 @@ function buildCurrentCliInfo(
  * code path for "ask the installed CLI which version it is", no parallel
  * package.json / symlink parsers to keep in sync.
  *
- * Why this matters: in local-dev invocations (`node apps/cli/bin/happier.mjs`),
+ * Why this matters: in local-dev invocations (`node apps/cli/bin/piggercode.mjs`),
  * `configuration.currentCliVersion` is the REPO package.json's version (e.g.
- * `0.2.5`), but the INSTALLED CLI at `~/.happier/cli-dev/current/...` can be
+ * `0.2.5`), but the INSTALLED CLI at `~/.piggercode/cli-dev/current/...` can be
  * something like `0.2.5-dev.15.1`. For "did the user install a new CLI?" we
  * want the installed version, not the loaded-from-repo bundled constant.
  *
  * `entryPath` is the Node entrypoint path (`<installRoot>/current/package-dist/index.mjs`).
- * The shim we invoke sits two directories up: `<installRoot>/current/happier`
- * on unix, `<installRoot>\current\happier.exe` on Windows.
+ * The shim we invoke sits two directories up: `<installRoot>/current/piggercode`
+ * on unix, `<installRoot>\current\piggercode.exe` on Windows.
  */
 function readInstalledCliVersion(entryPath: string | null, platform: NodeJS.Platform): string | null {
   if (!entryPath) return null;
   const currentDir = dirname(dirname(entryPath));
-  const shim = platform === 'win32' ? 'happier.exe' : 'happier';
+  const shim = platform === 'win32' ? 'piggercode.exe' : 'piggercode';
   return resolveCliVersionFromBinary({ binaryPath: join(currentDir, shim), platform });
 }
 
@@ -221,15 +221,15 @@ function buildAutomaticStartupEntries(params: Readonly<{
         const label = String(s.label ?? '').trim().toLowerCase();
         const filename = String(s.path ?? '').toLowerCase().split(/[\\/]+/).pop() ?? '';
         const canonicalLabels = new Set([
-          'happier-daemon.default',
-          'com.happier.cli.daemon.default',
-          'happier\\happier-daemon.default',
+          'piggercode-daemon.default',
+          'com.piggercode.cli.daemon.default',
+          'piggercode\\piggercode-daemon.default',
         ]);
         const canonicalFiles = new Set([
-          'happier-daemon.default.service',
-          'com.happier.cli.daemon.default.plist',
-          'com.happier.cli.daemon.default',
-          'happier-daemon.default.ps1',
+          'piggercode-daemon.default.service',
+          'com.piggercode.cli.daemon.default.plist',
+          'com.piggercode.cli.daemon.default',
+          'piggercode-daemon.default.ps1',
         ]);
         if (canonicalLabels.has(label) || canonicalFiles.has(filename)) return false;
         if (s.targetMode !== 'default-following') return false;

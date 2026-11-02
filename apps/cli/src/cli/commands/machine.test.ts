@@ -38,7 +38,7 @@ describe('handleMachineCommand', () => {
       tsMs: 1,
       type: 'progress',
       stepId: 'ssh.installCli',
-      message: 'Installing Happier on the remote machine',
+      message: 'Installing PiggerCode on the remote machine',
     };
     const result: SystemTaskResult = {
       protocolVersion: SYSTEM_TASK_PROTOCOL_VERSION,
@@ -323,7 +323,7 @@ describe('handleMachineCommand', () => {
                   targetServerUrl: 'https://relay.example.test',
                   targetReleaseChannel: 'preview',
                   services: [
-                    { label: 'happier-daemon.stable', releaseChannel: 'stable', targetMode: 'pinned', running: true },
+                    { label: 'piggercode-daemon.stable', releaseChannel: 'stable', targetMode: 'pinned', running: true },
                   ],
                 },
               },
@@ -378,13 +378,13 @@ describe('handleMachineCommand', () => {
                 tsMs: 1,
                 type: 'prompt',
                 stepId: 'daemon.service.preflight',
-                message: 'Remote machine already has Happier background services. Replace them with the selected release channel?',
+                message: 'Remote machine already has PiggerCode background services. Replace them with the selected release channel?',
                 data: {
                   kind: 'daemon.replaceRemoteBackgroundServices',
                   targetServerUrl: 'https://relay.example.test',
                   targetReleaseChannel: 'preview',
                   services: [
-                    { label: 'happier-daemon.stable', releaseChannel: 'stable', targetMode: 'pinned', running: true },
+                    { label: 'piggercode-daemon.stable', releaseChannel: 'stable', targetMode: 'pinned', running: true },
                   ],
                 },
               }],
@@ -444,7 +444,7 @@ describe('handleMachineCommand', () => {
                   targetServerUrl: 'https://relay.example.test',
                   targetReleaseChannel: 'preview',
                   services: [
-                    { label: 'happier-daemon.stable', releaseChannel: 'stable', targetMode: null, running: false },
+                    { label: 'piggercode-daemon.stable', releaseChannel: 'stable', targetMode: null, running: false },
                   ],
                 },
               },
@@ -472,7 +472,7 @@ describe('handleMachineCommand', () => {
       },
     );
 
-    expect(promptInputMock).toHaveBeenCalledWith(expect.stringContaining('happier-daemon.stable (stable)'));
+    expect(promptInputMock).toHaveBeenCalledWith(expect.stringContaining('piggercode-daemon.stable (stable)'));
     expect(promptInputMock).not.toHaveBeenCalledWith(expect.stringContaining('legacy pinned background service'));
     expect(promptInputMock).not.toHaveBeenCalledWith(expect.stringContaining('— stopped'));
     expect(respond).toHaveBeenCalledWith({

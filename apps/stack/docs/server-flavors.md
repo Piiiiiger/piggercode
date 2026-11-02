@@ -16,9 +16,9 @@ Both presets use the **same server codebase**. An explicit `PIGGERCODE_DB_PROVID
 Light stacks are isolated by default:
 
 ```
-~/.happier/stacks/<stack>/server-light/files
-~/.happier/stacks/<stack>/server-light/pglite
-~/.happier/stacks/<stack>/server-light/happier-server-light.sqlite
+~/.piggercode/stacks/<stack>/server-light/files
+~/.piggercode/stacks/<stack>/server-light/pglite
+~/.piggercode/stacks/<stack>/server-light/happier-server-light.sqlite
 ```
 
 Key env vars (stored in the stack env file):
@@ -94,7 +94,7 @@ Important: for a given run (`hstack start` / `hstack dev`) you choose **one** fl
 
 ## How to switch (main stack)
 
-Use the `srv` helper (persisted in `~/.happier/stacks/main/env` by default, or in your stack env file when using `hstack stack ...`):
+Use the `srv` helper (persisted in `~/.piggercode/stacks/main/env` by default, or in your stack env file when using `hstack stack ...`):
 
 ```bash
 hstack srv status
@@ -116,7 +116,7 @@ hstack stack srv exp1 -- use happier-server
 hstack stack srv exp1 -- use --interactive
 ```
 
-This updates the stack env file (typically `~/.happier/stacks/<name>/env`).
+This updates the stack env file (typically `~/.piggercode/stacks/<name>/env`).
 
 ## One-off overrides (do not persist)
 

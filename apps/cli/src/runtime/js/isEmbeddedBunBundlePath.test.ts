@@ -15,7 +15,7 @@ describe('isEmbeddedBunBundlePath', () => {
 
   it('does not treat ordinary files with similar names as embedded Bun bundle paths', () => {
     expect(isEmbeddedBunBundlePath('/Users/test/~bundle/root/happier')).toBe(false);
-    expect(isEmbeddedBunBundlePath('C:\\Users\\test\\happier-v0.2.10-windows-x64\\happier.exe')).toBe(false);
+    expect(isEmbeddedBunBundlePath('C:\\Users\\test\\happier-v0.2.10-windows-x64\\piggercode.exe')).toBe(false);
     expect(isEmbeddedBunBundlePath('/B:/Users/test/%7EBUN/root/happier.exe')).toBe(false);
   });
 });

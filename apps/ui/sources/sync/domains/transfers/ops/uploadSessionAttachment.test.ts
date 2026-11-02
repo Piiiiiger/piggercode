@@ -273,7 +273,7 @@ describe('uploadSessionAttachment', () => {
                     sizeBytes: 5,
                     uploadLocation: 'workspace',
                     workspaceRootPath: '/tmp',
-                    workspaceRelativeDir: '.happier/uploads',
+                    workspaceRelativeDir: '.piggercode/uploads',
                     vcsIgnoreStrategy: 'git_info_exclude',
                     vcsIgnoreWritesEnabled: true,
                 });
@@ -283,7 +283,7 @@ describe('uploadSessionAttachment', () => {
             if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_FINALIZE) {
                 return {
                     success: true,
-                    path: '.happier/uploads/messages/m1/12345678-hello.txt',
+                    path: '.piggercode/uploads/messages/m1/12345678-hello.txt',
                     sizeBytes: 5,
                     sha256: 'h1',
                 };
@@ -301,7 +301,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -316,7 +316,7 @@ describe('uploadSessionAttachment', () => {
                 fileName: 'hello.txt',
                 sizeBytes: 5,
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
             }),
@@ -330,7 +330,7 @@ describe('uploadSessionAttachment', () => {
                 fileName: 'hello.txt',
                 sizeBytes: 5,
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
             }),
@@ -338,7 +338,7 @@ describe('uploadSessionAttachment', () => {
         expect(sessionRPCSpy).toHaveBeenCalled();
         expect(uploadBulkPayloadFromFileSpy).toHaveBeenCalledTimes(1);
         expect(res).toMatchObject({ success: true });
-        expect((res as any).path).toBe('.happier/uploads/messages/m1/12345678-hello.txt');
+        expect((res as any).path).toBe('.piggercode/uploads/messages/m1/12345678-hello.txt');
 
         const calls = sessionRPCSpy.mock.calls.map((c) => ({ method: c[1], payload: c[2] }));
         expect(calls.map((call) => call.method)).toContain(RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_INIT);
@@ -354,7 +354,7 @@ describe('uploadSessionAttachment', () => {
             }
             if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_CHUNK) return { success: true };
             if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_FINALIZE) {
-                return { success: true, path: '.happier/uploads/messages/m1/12345678-hello.txt', sizeBytes: 5, sha256: 'h1' };
+                return { success: true, path: '.piggercode/uploads/messages/m1/12345678-hello.txt', sizeBytes: 5, sha256: 'h1' };
             }
             return { success: false, error: `unexpected method ${method}` };
         });
@@ -371,7 +371,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -413,7 +413,7 @@ describe('uploadSessionAttachment', () => {
             config: {
                 uploadLocation: 'shared_folder',
                 sharedFolderPath: '~/Downloads',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -440,7 +440,7 @@ describe('uploadSessionAttachment', () => {
             }
             if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_CHUNK) return { success: true };
             if (method === RPC_METHODS.DAEMON_BULK_TRANSFER_UPLOAD_FINALIZE) {
-                return { success: true, path: '.happier/uploads/messages/m1/12345678-hello.txt', sizeBytes: 5, sha256: 'h1' };
+                return { success: true, path: '.piggercode/uploads/messages/m1/12345678-hello.txt', sizeBytes: 5, sha256: 'h1' };
             }
             return { success: false, error: `unexpected method ${method}` };
         });
@@ -451,7 +451,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -459,7 +459,7 @@ describe('uploadSessionAttachment', () => {
         });
 
         expect(res).toMatchObject({ success: true });
-        expect((res as any).path).toBe('.happier/uploads/messages/m1/12345678-hello.txt');
+        expect((res as any).path).toBe('.piggercode/uploads/messages/m1/12345678-hello.txt');
         expect(nativeOpenSpy).toHaveBeenCalledTimes(1);
         expect(nativeCloseSpy).toHaveBeenCalledTimes(1);
 
@@ -472,7 +472,7 @@ describe('uploadSessionAttachment', () => {
             fileName: 'hello.txt',
             sizeBytes: 5,
             uploadLocation: 'workspace',
-            workspaceRelativeDir: '.happier/uploads',
+            workspaceRelativeDir: '.piggercode/uploads',
             vcsIgnoreStrategy: 'git_info_exclude',
             vcsIgnoreWritesEnabled: true,
             }),
@@ -488,7 +488,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -513,7 +513,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -547,7 +547,7 @@ describe('uploadSessionAttachment', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 4,

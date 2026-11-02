@@ -376,7 +376,7 @@ describe('zellij actions', () => {
 
   it('reclaims a shared zellij action slot whose owner process is gone', async () => {
     const socketDir = await mkdtemp(join(tmpdir(), 'happier-zellij-dead-owner-'));
-    const slotDir = join(socketDir, '.happier-action-slots', 'slot-0');
+    const slotDir = join(socketDir, '.piggercode-action-slots', 'slot-0');
     process.env.PIGGERCODE_ZELLIJ_ACTION_MAX_CONCURRENCY = '1';
     await mkdir(slotDir, { recursive: true });
     await writeFile(join(slotDir, 'owner.json'), JSON.stringify({

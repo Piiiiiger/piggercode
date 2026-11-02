@@ -71,7 +71,7 @@ describe('SessionMediaInlineImages', () => {
             {
                 id: 'media-1',
                 name: 'first.png',
-                path: '.happier/uploads/generated/message-1/first.png',
+                path: '.piggercode/uploads/generated/message-1/first.png',
                 mimeType: 'image/png',
                 sizeBytes: 10,
                 category: 'generated' as const,
@@ -80,7 +80,7 @@ describe('SessionMediaInlineImages', () => {
             {
                 id: 'media-2',
                 name: 'second.png',
-                path: '.happier/uploads/generated/message-1/second.png',
+                path: '.piggercode/uploads/generated/message-1/second.png',
                 mimeType: 'image/png',
                 sizeBytes: 10,
                 category: 'generated' as const,
@@ -110,7 +110,7 @@ describe('SessionMediaInlineImages', () => {
         const media = {
             id: 'media-1',
             name: 'cat.png',
-            path: '.happier/uploads/generated/message-1/cat.png',
+            path: '.piggercode/uploads/generated/message-1/cat.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'generated' as const,
@@ -139,7 +139,7 @@ describe('SessionMediaInlineImages', () => {
             id: 'media-description',
             name: 'diagram.png',
             description: 'Architecture diagram',
-            path: '.happier/uploads/generated/message-1/diagram.png',
+            path: '.piggercode/uploads/generated/message-1/diagram.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'generated' as const,
@@ -166,7 +166,7 @@ describe('SessionMediaInlineImages', () => {
             id: 'media-long-description',
             name: 'diagram.png',
             description: 'a'.repeat(2_000),
-            path: '.happier/uploads/generated/message-1/long.png',
+            path: '.piggercode/uploads/generated/message-1/long.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'generated' as const,
@@ -192,7 +192,7 @@ describe('SessionMediaInlineImages', () => {
         const media = {
             id: 'media-2',
             name: 'upload.png',
-            path: '.happier/uploads/messages/message-1/upload.png',
+            path: '.piggercode/uploads/messages/message-1/upload.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'attachment' as const,
@@ -221,7 +221,7 @@ describe('SessionMediaInlineImages', () => {
         const media = {
             id: 'media-3',
             name: 'wide.png',
-            path: '.happier/uploads/generated/message-1/wide.png',
+            path: '.piggercode/uploads/generated/message-1/wide.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             width: 1600,
@@ -256,7 +256,7 @@ describe('SessionMediaInlineImages', () => {
         const media = {
             id: 'media-4',
             name: 'tall.png',
-            path: '.happier/uploads/messages/message-1/tall.png',
+            path: '.piggercode/uploads/messages/message-1/tall.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'attachment' as const,
@@ -300,7 +300,7 @@ describe('SessionMediaInlineImages', () => {
         const media = {
             id: 'media-public',
             name: 'public.png',
-            path: '.happier/uploads/generated/message-1/public.png',
+            path: '.piggercode/uploads/generated/message-1/public.png',
             mimeType: 'image/png',
             sizeBytes: 10,
             category: 'generated' as const,

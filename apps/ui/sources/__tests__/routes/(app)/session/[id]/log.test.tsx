@@ -22,14 +22,14 @@ type MachineReadSessionLogTailMockResponse =
 const machineReadSessionLogTailMock = vi.fn(
     async (_machineId?: string, _params?: unknown, _options?: unknown): Promise<MachineReadSessionLogTailMockResponse> => ({
         success: true,
-        path: '/tmp/.happier/logs/session.log',
+        path: '/tmp/.piggercode/logs/session.log',
         tail: 'tail line',
     }),
 );
 
 const machineGetBugReportLogTailMock = vi.fn(async (_machineId?: string, _params?: unknown, _options?: unknown) => ({
     ok: false,
-    path: '/tmp/.happier/logs/session.log',
+    path: '/tmp/.piggercode/logs/session.log',
     tail: 'tail line',
 }));
 
@@ -180,7 +180,7 @@ describe('Session log screen', () => {
     it('does not fetch log tail until session hydration is ready', async () => {
         sessionHydrated = false;
         mockServerId = 'server-b';
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-1');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-1');
         setCanonicalMachineTarget({ machineId: 'machine-1', basePath: '/repo' });
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');
 
@@ -200,7 +200,7 @@ describe('Session log screen', () => {
     });
 
     it('fetches session log tail when log path exists', async () => {
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-1');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-1');
         setCanonicalMachineTarget({ machineId: 'machine-1', basePath: '/repo' });
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');
 
@@ -210,7 +210,7 @@ describe('Session log screen', () => {
     });
 
     it('does not target stale metadata when canonical reachability is unavailable', async () => {
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-stale');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-stale');
         setCanonicalMachineTarget(null);
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');
 
@@ -220,7 +220,7 @@ describe('Session log screen', () => {
     });
 
     it('does not call bug report log tail RPC for session logs', async () => {
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-1');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-1');
         setCanonicalMachineTarget({ machineId: 'machine-1', basePath: '/repo' });
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');
 
@@ -230,7 +230,7 @@ describe('Session log screen', () => {
     });
 
     it('wires copy rows through item-local copy feedback', async () => {
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-1');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-1');
         setCanonicalMachineTarget({ machineId: 'machine-1', basePath: '/repo' });
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');
 
@@ -238,13 +238,13 @@ describe('Session log screen', () => {
         const itemByTitle = (title: string) =>
             screen.findAllByType('Item' as any).find((node: any) => node.props?.title === title);
 
-        expect(itemByTitle('sessionLog.logPathTitle')?.props.copy).toBe('/tmp/.happier/logs/session.log');
+        expect(itemByTitle('sessionLog.logPathTitle')?.props.copy).toBe('/tmp/.piggercode/logs/session.log');
         expect(itemByTitle('sessionLog.logPathTitle')?.props.onPress).toBeUndefined();
         expect(itemByTitle('sessionLog.copyVisibleTitle')?.props.onPress).toBeUndefined();
     });
 
     it('fetches when only the machine record hydrates and the session identity stays stable', async () => {
-        setRouteSession('/tmp/.happier/logs/session.log', 'machine-1');
+        setRouteSession('/tmp/.piggercode/logs/session.log', 'machine-1');
         setCanonicalMachineTarget(null);
         const stableSession = machineTargetStorage.getState().sessions['session-1'];
         const { default: SessionLogScreen } = await import('@/app/(app)/session/[id]/log');

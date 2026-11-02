@@ -81,7 +81,7 @@ describe('coreTerminalTools.Bash.title', () => {
                 name: 'Bash',
                 state: 'completed',
                 input: {
-                    command: `happier tools call --source playwright --tool open_page --args-json '{"url":"https://example.com"}' --json`,
+                    command: `piggercode tools call --source playwright --tool open_page --args-json '{"url":"https://example.com"}' --json`,
                 },
                 result: { stdout: '' },
                 createdAt: Date.now(),
@@ -99,7 +99,7 @@ describe('coreTerminalTools.Bash.title', () => {
                     name: 'Bash',
                     state: 'completed',
                     input: {
-                        command: `happier tools call --source playwright --tool open_page --args-json '{"url":"https://example.com"}' --json`,
+                        command: `piggercode tools call --source playwright --tool open_page --args-json '{"url":"https://example.com"}' --json`,
                     },
                     result: { stdout: '' },
                     createdAt: Date.now(),

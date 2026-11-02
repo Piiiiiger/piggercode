@@ -24,7 +24,7 @@ vi.mock('socket.io-client', () => ({
   io: mockIo,
 }));
 
-describe('happier session create (integration)', () => {
+describe('piggercode session create (integration)', () => {
   function expectSpawnFirstInput(
     body: Record<string, unknown> | null,
     backendTarget: Readonly<{ kind: 'builtInAgent'; agentId: string }>,

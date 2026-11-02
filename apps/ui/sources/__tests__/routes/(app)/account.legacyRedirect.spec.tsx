@@ -97,7 +97,7 @@ describe('Legacy /account route', () => {
         try {
             tree = (await renderScreen(<Screen />)).tree;
 
-            expect(processAuthUrlSpy).toHaveBeenCalledWith('happier:///account?abc+123/=');
+            expect(processAuthUrlSpy).toHaveBeenCalledWith('piggercode:///account?abc+123/=');
             expect(routerReplaceSpy).toHaveBeenCalledWith('/settings/account');
         } finally {
             act(() => {

@@ -9,8 +9,8 @@ describe('cli-common/output help formatter', () => {
     noColorChalk.level = 0;
     const help = createHelpFormatter(noColorChalk);
     const out = help.renderRows([
-      { label: 'happier auth', description: 'Authenticate' },
-      { label: 'happier relay', description: 'Relay management' },
+      { label: 'piggercode auth', description: 'Authenticate' },
+      { label: 'piggercode relay', description: 'Relay management' },
     ]);
     expect(out).not.toMatch(/\u001b\[/u);
   });
@@ -36,8 +36,8 @@ describe('cli-common/output help formatter', () => {
   it('colours command labels with the brand accent, not cyan', () => {
     const colorChalk = Object.create(chalk) as typeof chalk;
     colorChalk.level = 3;
-    const out = createHelpFormatter(colorChalk).renderRows([{ label: 'happier auth', description: 'Authenticate' }]);
-    expect(out).toContain(colorChalk.hex('#d6a24a')('happier auth'));
+    const out = createHelpFormatter(colorChalk).renderRows([{ label: 'piggercode auth', description: 'Authenticate' }]);
+    expect(out).toContain(colorChalk.hex('#d6a24a')('piggercode auth'));
     expect(out).not.toContain('\u001b[36m');
   });
 

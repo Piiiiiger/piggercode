@@ -34,7 +34,7 @@ export function resolveInteractiveTerminal(params: Readonly<{
   hasControllingTty: () => boolean;
   /**
    * A caller has stated that nobody is watching this run, whatever the terminal
-   * looks like. Installers set this for their whole run, and `happier setup
+   * looks like. Installers set this for their whole run, and `piggercode setup
    * --yes` sets it for the commands it spawns — a controlling terminal is still
    * attached in both cases, so nothing below can tell.
    */

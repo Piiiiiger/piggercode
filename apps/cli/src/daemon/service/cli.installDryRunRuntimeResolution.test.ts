@@ -59,7 +59,7 @@ describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => 
         envScope.patch({
             PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
             PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
-            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.happier',
+            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.piggercode',
         });
 
         const output = captureStdoutJsonOutput<{ ok: boolean }>();
@@ -97,7 +97,7 @@ describe('runDaemonServiceCliCommand install dry-run runtime resolution', () => 
         envScope.patch({
             PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
             PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/test',
-            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.happier',
+            PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/test/.piggercode',
             PIGGERCODE_ACTIVE_SERVER_ID: 'company-profile',
         });
         const previewDaemonServiceInstallMock = vi.fn(async () => ({

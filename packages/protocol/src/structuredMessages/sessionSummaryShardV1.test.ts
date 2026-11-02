@@ -13,7 +13,7 @@ describe('session_summary_shard.v1 schema', () => {
       createdAtToMs: now + 1,
       summary: 'We discussed memory search and shard indexing.',
       keywords: ['memory', 'search'],
-      entities: ['Happier'],
+      entities: ['PiggerCode'],
       decisions: ['Use execution runs for summarization.'],
     });
     expect(parsed.seqFrom).toBe(10);

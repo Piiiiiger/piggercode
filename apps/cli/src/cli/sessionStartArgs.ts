@@ -14,7 +14,7 @@ export type ParsedSessionStartArgs = {
 
 export function parseSessionStartArgs(args: string[]): ParsedSessionStartArgs {
   const parsed = partitionProviderSessionArgs({
-    args: args[0] === 'happier' ? args.slice(1) : args,
+    args: args[0] === 'piggercode' ? args.slice(1) : args,
   });
 
   return {

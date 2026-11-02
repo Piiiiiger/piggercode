@@ -13,7 +13,7 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-describe('happier bin preflight', () => {
+describe('piggercode bin preflight', () => {
   it('works when protocol deps are vendored under protocol/node_modules (not hoisted to the CLI root)', () => {
     const repoRoot = resolve(__dirname, '..', '..', '..', '..');
     const { rootDir: tempRoot, cleanup } = createCliBinPreflightSandbox('happier-bin-preflight-');

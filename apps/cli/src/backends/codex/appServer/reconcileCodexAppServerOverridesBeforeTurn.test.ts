@@ -46,9 +46,9 @@ function createCodexAppServerModeMetadata(modeId: string, updatedAt: number): Me
         path: '/tmp/workspace',
         host: 'test-host',
         homeDir: '/home/tester',
-        happyHomeDir: '/home/tester/.happier',
-        happyLibDir: '/home/tester/.happier/lib',
-        happyToolsDir: '/home/tester/.happier/tools',
+        happyHomeDir: '/home/tester/.piggercode',
+        happyLibDir: '/home/tester/.piggercode/lib',
+        happyToolsDir: '/home/tester/.piggercode/tools',
         sessionModeOverrideV1: {
             v: 1,
             modeId,

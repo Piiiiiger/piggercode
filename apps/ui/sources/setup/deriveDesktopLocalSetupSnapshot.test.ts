@@ -22,7 +22,7 @@ function readyFacts(overrides: Partial<{
     runtimeConvergence: Partial<NonNullable<DesktopLocalReadinessFacts['runtimeConvergence']>> | null;
 }> = {}): DesktopLocalReadinessFacts {
     return {
-        acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed', version: null, channel: null },
+        acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed', version: null, channel: null },
         server: {
             serverUrl: RELAY_URL,
             publicServerUrl: RELAY_URL,

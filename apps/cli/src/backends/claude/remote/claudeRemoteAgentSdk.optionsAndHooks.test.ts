@@ -1504,7 +1504,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         expect(capturedOptions?.resumeSessionAt).toBe('asst_uuid_99');
     });
 
-    it('injects Happier MCP servers when provided', async () => {
+    it('injects PiggerCode MCP servers when provided', async () => {
         let capturedOptions: any = null;
 
         const createQuery = vi.fn((_params: any) => {
@@ -1530,7 +1530,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         });
 
         const happierMcpServers = {
-            happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] },
+            happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] },
         };
 
             await claudeRemoteAgentSdk({
@@ -1579,7 +1579,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         });
 
         const happierMcpServers = {
-            happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] },
+            happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] },
         };
         const userMcpConfig = JSON.stringify({
             mcpServers: {
@@ -2578,7 +2578,7 @@ describe('claudeRemoteAgentSdk options and hooks', () => {
         expect((await runOnce({ permissionMode: 'default', agentModeId: 'plan' }))?.allowDangerouslySkipPermissions).toBe(true);
     });
 
-    it('uses the Agent SDK omit sentinel when Happier resolves to default, but passes non-default modes', async () => {
+    it('uses the Agent SDK omit sentinel when PiggerCode resolves to default, but passes non-default modes', async () => {
         let capturedOptions: any = null;
 
         const createQuery = vi.fn((_params: any) => {

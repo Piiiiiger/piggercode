@@ -64,7 +64,7 @@ function isHappierHomebrewFormula(formula: string): boolean {
 /**
  * The package manager (npm, Homebrew) that owns the running CLI, or `null`. Both the invoked path
  * and the executable are read: a Bun-compiled `happier` reports `argv[1]` as its embedded bundle
- * (`/$bunfs/root/happier`), so only `execPath` — the resolved executable inside a Homebrew keg —
+ * (`/$bunfs/root/piggercode`), so only `execPath` — the resolved executable inside a Homebrew keg —
  * names where it was installed, while an npm install is named by the script node runs.
  */
 export function resolveRunningCliPackageManagerOrigin(params: Readonly<{

@@ -4,7 +4,7 @@ import type { CommandContext } from '@/cli/commandRegistry';
 import { captureConsoleText } from '@/testkit/logger/captureOutput';
 
 /**
- * `happier setup` orchestration, tested where it actually goes wrong.
+ * `piggercode setup` orchestration, tested where it actually goes wrong.
  *
  * The planner has been tested since it was written; the handler had not been,
  * and every defect that shipped lived here — a relay choice that emitted no
@@ -179,14 +179,14 @@ afterEach(() => {
   process.exitCode = previousExitCode;
 });
 
-describe('happier setup — choosing a relay', () => {
+describe('piggercode setup — choosing a relay', () => {
   it('explains the three device-connection choices before selecting one', async () => {
     await handleSetupCliCommand(context([]));
 
     const prompt = multipleChoicePrompts.join('\n');
     expect(prompt).toContain('How would you like to connect your devices?');
     expect(prompt).toContain('https://relay.example.test');
-    expect(prompt).toContain('Happier app or your administrator');
+    expect(prompt).toContain('PiggerCode app or your administrator');
     expect(prompt).toContain('additional server');
     expect(prompt).toContain('reachable network route');
   });
@@ -245,7 +245,7 @@ describe('happier setup — choosing a relay', () => {
   });
 });
 
-describe('happier setup — readiness', () => {
+describe('piggercode setup — readiness', () => {
   it('re-enters the idempotent auth owner so a fully configured machine can reconcile its service', async () => {
     activeProfile = { serverUrl: 'https://api.happier.dev' };
     readiness = { authenticated: true, machineRegistered: true, credentialState: 'valid' };
@@ -298,7 +298,7 @@ describe('happier setup — readiness', () => {
 
     expect(commandsRun()).toEqual([]);
     expect(output.text()).toContain('temporarily-unavailable.example.com');
-    expect(output.text()).toContain('happier setup --cloud');
+    expect(output.text()).toContain('piggercode setup --cloud');
     expect(process.exitCode).toBe(1);
   });
 
@@ -320,10 +320,10 @@ describe('happier setup — readiness', () => {
     await handleSetupCliCommand(context(['--cloud']));
 
     expect(installInvocations).toEqual(['codex']);
-    expect(multipleSelectionOptions.find((option) => option.id === 'codex')?.description).toContain('Happier-managed');
+    expect(multipleSelectionOptions.find((option) => option.id === 'codex')?.description).toContain('PiggerCode-managed');
     expect(output.text()).toContain('Installed OpenAI Codex CLI');
     expect(output.text()).toContain('New session');
-    expect(output.text()).toContain('happier codex');
+    expect(output.text()).toContain('piggercode codex');
     expect(output.text()).not.toContain('still need a coding agent');
   });
 
@@ -331,7 +331,7 @@ describe('happier setup — readiness', () => {
     await handleSetupCliCommand(context(['--cloud']));
 
     expect(multipleSelectionPromptCount).toBe(0);
-    expect(output.text()).toContain('happier claude');
+    expect(output.text()).toContain('piggercode claude');
     expect(output.text()).toContain('Agent installation and sign-in are separate');
   });
 
@@ -363,7 +363,7 @@ describe('happier setup — readiness', () => {
   });
 });
 
-describe('happier setup — a relay only this computer can reach', () => {
+describe('piggercode setup — a relay only this computer can reach', () => {
   it('reports the address the install actually selected instead of assuming a running tailnet was published', async () => {
     relayInstallResultUrl = 'http://127.0.0.1:3005';
     tailscaleStatus = {
@@ -406,7 +406,7 @@ describe('happier setup — a relay only this computer can reach', () => {
   });
 });
 
-describe('happier setup — handing the terminal back', () => {
+describe('piggercode setup — handing the terminal back', () => {
   it('bounds the sign-in wait so setup cannot own the terminal forever', async () => {
     await handleSetupCliCommand(context(['--cloud']));
 
@@ -434,14 +434,14 @@ describe('happier setup — handing the terminal back', () => {
   });
 });
 
-describe('happier setup — unattended runs (--yes)', () => {
+describe('piggercode setup — unattended runs (--yes)', () => {
   it('does the relay work it can and stops at the sign-in a person has to approve', async () => {
     activeProfile = { serverUrl: 'https://relay.example.com' };
 
     await handleSetupCliCommand(context(['--cloud', '--yes']));
 
     expect(commandsRun()).toEqual(['server use cloud']);
-    expect(output.text()).toContain('happier auth login');
+    expect(output.text()).toContain('piggercode auth login');
     // Setup did not finish, and the installer reads a zero exit as "you're ready".
     expect(process.exitCode).toBe(1);
   });
@@ -468,7 +468,7 @@ describe('happier setup — unattended runs (--yes)', () => {
   });
 
   it('never spawns a child that could stop on a question', async () => {
-    // A script that runs `happier setup --yes` from a shell still has a
+    // A script that runs `piggercode setup --yes` from a shell still has a
     // controlling terminal, so a child asked to decide for itself will happily
     // prompt into a terminal nobody is watching.
     await handleSetupCliCommand(context(['--relay', 'https://relay.example.com', '--yes']));
@@ -504,12 +504,12 @@ describe('happier setup — unattended runs (--yes)', () => {
     await handleSetupCliCommand(context(['--cloud', '--yes']));
 
     expect(commandsRun()).toEqual([]);
-    expect(output.text()).toContain('happier auth login');
+    expect(output.text()).toContain('piggercode auth login');
     expect(process.exitCode).toBe(1);
   });
 });
 
-describe('happier setup — unattended and malformed invocations', () => {
+describe('piggercode setup — unattended and malformed invocations', () => {
   it('creates nothing when there is no terminal to ask in', async () => {
     interactive = false;
 

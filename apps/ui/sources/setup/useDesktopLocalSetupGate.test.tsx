@@ -1239,12 +1239,12 @@ describe('useDesktopLocalSetupGate — override-CLI approval is attended, never 
         await renderGate();
         expect(observedGate?.snapshot.presentation).toBe('panel');
 
-        await emitSetupPrompt(pairingPrompt('override', '/repo/apps/cli/bin/happier.mjs'));
+        await emitSetupPrompt(pairingPrompt('override', '/repo/apps/cli/bin/piggercode.mjs'));
 
         expect(bridge.responses.map((response) => response.answer)).toEqual([{ approved: false, reason: 'cli_not_approved' }]);
         const asked = modal.calls.filter((call) => call.title === 'setupSurface.cliTrustTitle');
         expect(asked).toHaveLength(1);
-        expect(asked[0]?.body).toContain('/repo/apps/cli/bin/happier.mjs');
+        expect(asked[0]?.body).toContain('/repo/apps/cli/bin/piggercode.mjs');
         // Setup is deferred, not retried: the panel steps aside and the drift banner carries it.
         expect(observedGate?.snapshot.presentation).toBe('hidden');
     });
@@ -1280,7 +1280,7 @@ describe('useDesktopLocalSetupGate — override-CLI approval is attended, never 
         modal.confirm['setupSurface.cliTrustTitle'] = true;
 
         await renderGate();
-        await emitSetupPrompt(pairingPrompt('override', '/repo/apps/cli/bin/happier.mjs'));
+        await emitSetupPrompt(pairingPrompt('override', '/repo/apps/cli/bin/piggercode.mjs'));
 
         // Approved past the human question: the pairing went on to the credentials.
         expect(bridge.responses.map((response) => response.answer)).toEqual([{ approved: false, reason: 'credentials_unavailable' }]);

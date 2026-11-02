@@ -609,7 +609,7 @@ test('ensureDevExpoServer stops prior stack-owned Expo process for automatic Tai
       devClientEnabled: true,
       host: 'localhost',
       apiServerUrl: 'http://127.0.0.1:3016',
-      scheme: 'happier-dev',
+      scheme: 'piggercode-dev',
       tailscaleEnabled: false,
     });
 

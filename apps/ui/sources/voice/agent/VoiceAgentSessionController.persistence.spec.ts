@@ -1089,7 +1089,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
       metadata: {
         flavor: 'claude',
         machineId: 'm_old',
-        path: '/old/.happier/voice-agent',
+        path: '/old/.piggercode/voice-agent',
         systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
       },
     };
@@ -1119,7 +1119,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         active: true,
         activeAt: 1,
         revokedAt: null,
-        metadata: { host: 'old-box', happyHomeDir: '/old/.happier', homeDir: '/Users/old' },
+        metadata: { host: 'old-box', happyHomeDir: '/old/.piggercode', homeDir: '/Users/old' },
         metadataVersion: 0,
         daemonState: null,
         daemonStateVersion: 0,
@@ -1132,7 +1132,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         active: true,
         activeAt: Date.now(),
         revokedAt: null,
-        metadata: { host: 'new-box', happyHomeDir: '/new/.happier', homeDir: '/Users/new' },
+        metadata: { host: 'new-box', happyHomeDir: '/new/.piggercode', homeDir: '/Users/new' },
         metadataVersion: 0,
         daemonState: null,
         daemonStateVersion: 0,
@@ -1161,7 +1161,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         metadata: {
           flavor: 'claude',
           machineId: 'm_new',
-          path: '/new/.happier/voice-agent',
+          path: '/new/.piggercode/voice-agent',
           systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
         },
       };
@@ -1178,7 +1178,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
     }));
     expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'm_new',
-      directory: '/new/.happier/voice-agent',
+      directory: '/new/.piggercode/voice-agent',
     }));
     expect(start).toHaveBeenNthCalledWith(2, expect.objectContaining({
       sessionId: 'sys_voice_new',
@@ -1200,7 +1200,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
       metadata: {
         flavor: 'claude',
         machineId: 'm_old',
-        path: '/old/.happier/voice-agent',
+        path: '/old/.piggercode/voice-agent',
         systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
       },
     };
@@ -1224,7 +1224,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         active: false,
         activeAt: 0,
         revokedAt: null,
-        metadata: { host: 'old-box', happyHomeDir: '/old/.happier', homeDir: '/Users/old' },
+        metadata: { host: 'old-box', happyHomeDir: '/old/.piggercode', homeDir: '/Users/old' },
         metadataVersion: 0,
         daemonState: null,
         daemonStateVersion: 0,
@@ -1237,7 +1237,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         active: true,
         activeAt: Date.now(),
         revokedAt: null,
-        metadata: { host: 'new-box', happyHomeDir: '/new/.happier', homeDir: '/Users/new' },
+        metadata: { host: 'new-box', happyHomeDir: '/new/.piggercode', homeDir: '/Users/new' },
         metadataVersion: 0,
         daemonState: null,
         daemonStateVersion: 0,
@@ -1265,7 +1265,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
         metadata: {
           flavor: 'claude',
           machineId: 'm_new',
-          path: '/new/.happier/voice-agent',
+          path: '/new/.piggercode/voice-agent',
           systemSessionV1: { v: 1, key: 'voice_conversation', hidden: true },
         },
       };
@@ -1280,7 +1280,7 @@ describe('VoiceAgentSessionController (persistence)', () => {
     expect(modalConfirm).toHaveBeenCalledTimes(2);
     expect(spawnSession).toHaveBeenCalledWith(expect.objectContaining({
       machineId: 'm_new',
-      directory: '/new/.happier/voice-agent',
+      directory: '/new/.piggercode/voice-agent',
     }));
     expect(state.settings.voice.adapters.local_conversation.agent.autoTargetMachineId).toBe('m_new');
   });

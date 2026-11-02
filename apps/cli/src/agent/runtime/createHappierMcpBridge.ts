@@ -86,7 +86,7 @@ export async function createHappierMcpBridgeWithOptions(
   })
   const commandMode = opts.commandMode ?? 'direct-script'
   const mcpServers: Record<string, McpServerConfig> = {
-    happier: await resolveHappierMcpServerConfig(happierMcpServer.url, commandMode, opts.accountSettings ?? null),
+    piggercode: await resolveHappierMcpServerConfig(happierMcpServer.url, commandMode, opts.accountSettings ?? null),
   }
 
   return {

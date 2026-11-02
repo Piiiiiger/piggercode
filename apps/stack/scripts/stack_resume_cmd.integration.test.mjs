@@ -23,10 +23,10 @@ function buildStubHappyCliScript() {
     '',
     'if (args[0] === \'daemon\' && args[1] === \'--help\') {',
     '  if (supportsDaemonResume) {',
-    "    console.log('Usage:\\n  happier daemon resume <sessionId...>');",
+    "    console.log('Usage:\\n  piggercode daemon resume <sessionId...>');",
     '  } else {',
-    "    console.log('happier daemon - Daemon management');",
-    "    console.log('Usage: happier daemon start|stop|status|list');",
+    "    console.log('piggercode daemon - Daemon management');",
+    "    console.log('Usage: piggercode daemon start|stop|status|list');",
     '  }',
     '  process.exit(0);',
     '}',
@@ -58,7 +58,7 @@ async function createResumeFixture(t, { stackName = 'exp-test', serverPort = 410
   };
 }
 
-test('hstack stack resume fails closed when happier daemon does not support resume', async (t) => {
+test('hstack stack resume fails closed when piggercode daemon does not support resume', async (t) => {
   const fixture = await createResumeFixture(t);
   const res = await runNodeCapture(
     [join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'resume', fixture.stackName, 'session-1', '--json'],
@@ -76,7 +76,7 @@ test('hstack stack resume fails closed when happier daemon does not support resu
   assert.equal(existsSync(invocationLog), false, 'expected daemon resume not to be invoked');
 });
 
-test('hstack stack resume invokes happier daemon resume when supported', async (t) => {
+test('hstack stack resume invokes piggercode daemon resume when supported', async (t) => {
   const fixture = await createResumeFixture(t);
   const res = await runNodeCapture(
     [join(rootDir, 'bin', 'hstack.mjs'), 'stack', 'resume', fixture.stackName, 'session-a', 'session-b', '--json'],

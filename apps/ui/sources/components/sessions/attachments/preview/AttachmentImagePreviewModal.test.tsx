@@ -12,7 +12,7 @@ type PreviewState =
     | { status: 'error'; uri: null; svgXml: null; error: string };
 
 const previewState = vi.hoisted(() => ({
-    value: { status: 'loaded', uri: 'data:image/png;base64,.happier/uploads/messages/m1/file.png', svgXml: null, error: null } as PreviewState,
+    value: { status: 'loaded', uri: 'data:image/png;base64,.piggercode/uploads/messages/m1/file.png', svgXml: null, error: null } as PreviewState,
 }));
 
 installSessionAttachmentCommonModuleMocks({
@@ -136,7 +136,7 @@ describe('AttachmentImagePreviewModal', () => {
                     kind: 'session-image',
                     title: 'from-transcript.png',
                     sessionId: 's1',
-                    filePath: '.happier/uploads/messages/m1/file.png',
+                    filePath: '.piggercode/uploads/messages/m1/file.png',
                     mimeType: 'image/png',
                     sizeBytes: 10,
                     cacheKey: 'hash',
@@ -146,7 +146,7 @@ describe('AttachmentImagePreviewModal', () => {
         />);
 
         expect(screen.findByType('Image').props.source).toEqual({
-            uri: 'data:image/png;base64,.happier/uploads/messages/m1/file.png',
+            uri: 'data:image/png;base64,.piggercode/uploads/messages/m1/file.png',
         });
     });
 
@@ -163,7 +163,7 @@ describe('AttachmentImagePreviewModal', () => {
                     kind: 'session-image',
                     title: 'broken.png',
                     sessionId: 's1',
-                    filePath: '.happier/uploads/messages/m1/file.png',
+                    filePath: '.piggercode/uploads/messages/m1/file.png',
                     mimeType: 'image/png',
                     sizeBytes: 10,
                     cacheKey: 'hash',

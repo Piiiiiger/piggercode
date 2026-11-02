@@ -35,7 +35,7 @@ describe('parseSessionMediaMessageMeta', () => {
     });
 
     it('preserves a bounded generated description for generic presentation', () => {
-        const meta = buildSessionMediaMeta('.happier/uploads/generated/message-1/generated.png') as {
+        const meta = buildSessionMediaMeta('.piggercode/uploads/generated/message-1/generated.png') as {
             happier: { payload: { media: Array<Record<string, unknown>> } };
         };
         meta.happier.payload.media[0]!.description = 'Architecture diagram';
@@ -57,7 +57,7 @@ describe('parseSessionMediaMessageMeta', () => {
                             category: 'generated',
                             mediaKind: 'image',
                             name: 'wide.png',
-                            path: '.happier/uploads/generated/message-1/wide.png',
+                            path: '.piggercode/uploads/generated/message-1/wide.png',
                             mimeType: 'image/png',
                             sizeBytes: 10,
                             width: 1600,
@@ -87,11 +87,11 @@ describe('parseSessionMediaMessageMeta', () => {
     });
 
     it('uses the canonical session-media schema for paths, MIME, size, and identifier bounds', () => {
-        const validPath = '.happier/uploads/generated/message-1/generated.png';
+        const validPath = '.piggercode/uploads/generated/message-1/generated.png';
         const mutations: Array<(item: Record<string, unknown>) => void> = [
-            (item) => { item.path = '.happier\\uploads\\generated\\message-1\\generated.png'; },
-            (item) => { item.path = '.happier/uploads//generated.png'; },
-            (item) => { item.path = '.happier/uploads/./generated.png'; },
+            (item) => { item.path = '.piggercode\\uploads\\generated\\message-1\\generated.png'; },
+            (item) => { item.path = '.piggercode/uploads//generated.png'; },
+            (item) => { item.path = '.piggercode/uploads/./generated.png'; },
             (item) => { item.mimeType = 'image/html'; },
             (item) => { item.sizeBytes = 0; },
             (item) => { item.id = 'x'.repeat(513); },
@@ -108,7 +108,7 @@ describe('parseSessionMediaMessageMeta', () => {
     });
 
     it('rejects an oversized durable media envelope before iterating render items', () => {
-        const meta = buildSessionMediaMeta('.happier/uploads/generated/message-1/generated.png') as {
+        const meta = buildSessionMediaMeta('.piggercode/uploads/generated/message-1/generated.png') as {
             happier: { payload: { media: Array<Record<string, unknown>> } };
         };
         const item = meta.happier.payload.media[0]!;

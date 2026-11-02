@@ -82,7 +82,7 @@ describe('rpcHandlers.mcpServers (preview)', () => {
     expect(out.ok).toBe(true);
     expect(out.builtIn).toEqual([
       expect.objectContaining({
-        name: 'happier',
+        name: 'piggercode',
         sourceKind: 'builtIn',
       }),
     ]);

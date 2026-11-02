@@ -367,7 +367,7 @@ describe('initializeBackendRunSession', () => {
       path: '/srv/target-workspace',
       host: 'target-host',
       homeDir: '/Users/target',
-      happyHomeDir: '/Users/target/.happier',
+      happyHomeDir: '/Users/target/.piggercode',
       machineId: 'machine_target',
       hostPid: 654,
     } as unknown as Metadata
@@ -377,7 +377,7 @@ describe('initializeBackendRunSession', () => {
         path: '/srv/source-workspace',
         host: 'source-host',
         homeDir: '/Users/source',
-        happyHomeDir: '/Users/source/.happier',
+        happyHomeDir: '/Users/source/.piggercode',
         machineId: 'machine_source',
       } as unknown as Metadata),
     })
@@ -419,7 +419,7 @@ describe('initializeBackendRunSession', () => {
       path: '/srv/target-workspace',
       host: 'target-host',
       homeDir: '/Users/target',
-      happyHomeDir: '/Users/target/.happier',
+      happyHomeDir: '/Users/target/.piggercode',
       machineId: 'machine_target',
       hostPid: 654,
       lifecycleState: 'running',

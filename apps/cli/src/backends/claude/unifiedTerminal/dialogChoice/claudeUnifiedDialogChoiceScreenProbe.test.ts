@@ -198,7 +198,7 @@ describe('createClaudeUnifiedDialogChoiceScreenProbe', () => {
     });
   });
 
-  it('leaves a Happier-initiated effort dialog to its slash-controls owner', async () => {
+  it('leaves a PiggerCode-initiated effort dialog to its slash-controls owner', async () => {
     const { client, port, probe } = createHarness({
       captures: [EFFORT_DIALOG],
       ownsDialog: (dialogId) => dialogId === 'effort_change',

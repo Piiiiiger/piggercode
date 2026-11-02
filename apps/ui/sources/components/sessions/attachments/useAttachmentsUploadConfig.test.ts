@@ -5,7 +5,7 @@ import { resolveAttachmentsUploadConfig } from './useAttachmentsUploadConfig';
 const baseSettings = {
     uploadLocation: 'shared_folder',
     sharedFolderPath: '~/Downloads',
-    workspaceRelativeDir: '.happier/uploads',
+    workspaceRelativeDir: '.piggercode/uploads',
     vcsIgnoreStrategy: 'git_info_exclude',
     vcsIgnoreWritesEnabled: true,
     maxFileBytes: 25 * 1024 * 1024,

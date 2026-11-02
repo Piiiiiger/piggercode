@@ -16,7 +16,7 @@ describe('isSafeBadgeUrl', () => {
 
     it('rejects non-http protocols and malformed URLs', () => {
         expect(isSafeBadgeUrl('javascript:alert(1)')).toBe(false);
-        expect(isSafeBadgeUrl('happier://deep-link')).toBe(false);
+        expect(isSafeBadgeUrl('piggercode://deep-link')).toBe(false);
         expect(isSafeBadgeUrl('not-a-url')).toBe(false);
     });
 });

@@ -44,7 +44,7 @@ const AMBIENT_STATUS_JSON = {
     httpPort: 7777,
     startedWithCliVersion: '0.2.11',
     serviceManaged: true,
-    serviceLabel: 'com.happier.cli.daemon.default',
+    serviceLabel: 'com.piggercode.cli.daemon.default',
   },
   service: { installed: true, running: true, targetMode: 'default-following' },
   auth: {
@@ -154,7 +154,7 @@ describe('daemonService system task handlers', () => {
         running: true,
         startedWithCliVersion: '0.2.11',
         serviceManaged: true,
-        serviceLabel: 'com.happier.cli.daemon.default',
+        serviceLabel: 'com.piggercode.cli.daemon.default',
       },
       runtimeConvergence: {
         controlReachable: true,
@@ -181,11 +181,11 @@ describe('daemonService system task handlers', () => {
     const packageRoot = join(home, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
     writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
-    writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '#!/bin/sh\n', 'utf8');
-    chmodSync(join(packageRoot, 'bin', 'happier.mjs'), 0o755);
+    writeFileSync(join(packageRoot, 'bin', 'piggercode.mjs'), '#!/bin/sh\n', 'utf8');
+    chmodSync(join(packageRoot, 'bin', 'piggercode.mjs'), 0o755);
     mkdirSync(npmBin, { recursive: true });
-    symlinkSync(join(packageRoot, 'bin', 'happier.mjs'), join(npmBin, 'happier'));
-    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'happier'));
+    symlinkSync(join(packageRoot, 'bin', 'piggercode.mjs'), join(npmBin, 'piggercode'));
+    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'piggercode'));
     vi.stubEnv('PATH', npmBin);
     await installManagedCliFixture({ processEnv: process.env });
     onTestFinished(() => {
@@ -193,7 +193,7 @@ describe('daemonService system task handlers', () => {
       rmSync(home, { recursive: true, force: true });
     });
     const otherCli = {
-      command: join(npmBin, 'happier'),
+      command: join(npmBin, 'piggercode'),
       origin: 'npm',
       removalCommand: 'npm uninstall -g @piggercode/cli',
       updateCommand: 'npm install -g @piggercode/cli@latest',
@@ -204,7 +204,7 @@ describe('daemonService system task handlers', () => {
     const { result: managed } = await collectResult(createDaemonServiceStatusHandler(), { target: { kind: 'local' } });
     expect(managed).toMatchObject({ cli: { choice: { mode: 'managed', otherCli } } });
 
-    await writeHappierCliChoice({ choice: { mode: 'own', command: join(npmBin, 'happier') }, processEnv: process.env });
+    await writeHappierCliChoice({ choice: { mode: 'own', command: join(npmBin, 'piggercode') }, processEnv: process.env });
     cliJsonResponseMock.mockResolvedValueOnce(AMBIENT_STATUS_JSON);
     const { result: own } = await collectResult(createDaemonServiceStatusHandler(), { target: { kind: 'local' } });
     expect(own).toMatchObject({ cli: { choice: { mode: 'own', otherCli } } });
@@ -245,9 +245,9 @@ describe('daemonService system task handlers', () => {
     const home = mkdtempSync(join(tmpdir(), 'hsetup-status-cli-choice-required-'));
     const npmBin = join(home, 'npm-global', 'bin');
     mkdirSync(npmBin, { recursive: true });
-    writeFileSync(join(npmBin, 'happier'), '#!/bin/sh\n', 'utf8');
-    chmodSync(join(npmBin, 'happier'), 0o755);
-    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'happier'));
+    writeFileSync(join(npmBin, 'piggercode'), '#!/bin/sh\n', 'utf8');
+    chmodSync(join(npmBin, 'piggercode'), 0o755);
+    vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, 'piggercode'));
     vi.stubEnv('PIGGERCODE_STACK_REPO_DIR', join(home, 'elsewhere'));
     vi.stubEnv('PIGGERCODE_BOOTSTRAP_CLI_PATH', '');
     vi.stubEnv('PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH', '');

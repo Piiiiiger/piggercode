@@ -82,7 +82,7 @@ vi.mock('@/sync/domains/server/activeServerSwitch', () => ({
 }));
 
 vi.mock('@/auth/pairing/pairingUrl', () => ({
-    buildPairingDeepLink: () => 'happier:///pair?v=1&pairId=p&secret=s',
+    buildPairingDeepLink: () => 'piggercode:///pair?v=1&pairId=p&secret=s',
     parsePairingDeepLink: () => null,
 }));
 
@@ -129,7 +129,7 @@ describe('RestoreScanComputerQrView (web phone)', () => {
         await renderScreen(<RestoreScanComputerQrView />);
 
         await act(async () => {
-            await lastScannerProps?.onScan('happier:///account?abc123');
+            await lastScannerProps?.onScan('piggercode:///account?abc123');
         });
 
         expect(modalAlertSpy).toHaveBeenCalledWith(

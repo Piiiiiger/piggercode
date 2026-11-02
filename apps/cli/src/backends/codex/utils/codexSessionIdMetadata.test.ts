@@ -319,7 +319,7 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
       backendMode: 'appServer',
       transcriptStorage: 'direct',
       codexHome: '/Users/test/.codex',
-      activeServerDir: '/Users/test/.happier/servers/cloud',
+      activeServerDir: '/Users/test/.piggercode/servers/cloud',
       processEnv: { HOME: '/Users/test', CODEX_SQLITE_HOME: '/Users/test/.codex' },
       updateHappySessionMetadata: (updater: (metadata: Metadata) => Metadata) => {
         updates.push(updater(createTestMetadata({ machineId: 'machine-1', path: '/repo' })));
@@ -420,8 +420,8 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
     maybeUpdateCodexSessionIdMetadata({
       getCodexThreadId: () => 'thread-connected',
       backendMode: 'appServer',
-      codexHome: '/Users/test/.happier/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
-      activeServerDir: '/Users/test/.happier/servers/cloud',
+      codexHome: '/Users/test/.piggercode/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
+      activeServerDir: '/Users/test/.piggercode/servers/cloud',
       processEnv: { CODEX_SQLITE_HOME: '/Users/test/.codex-state' },
       updateHappySessionMetadata: (updater: (metadata: Metadata) => Metadata) => {
         updates.push(updater(createTestMetadata({ path: '/repo' })));
@@ -442,7 +442,7 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
             home: 'connectedService',
             connectedServiceId: 'openai-codex',
             connectedServiceProfileId: 'profile-1',
-            homePath: '/Users/test/.happier/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
+            homePath: '/Users/test/.piggercode/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
               providerExtra: {
                 owner: 'codex',
                 schemaId: 'codex.agentRuntimeDescriptorExtra',
@@ -453,7 +453,7 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
                 home: 'connectedService',
                 connectedServiceId: 'openai-codex',
                 connectedServiceProfileId: 'profile-1',
-                homePath: '/Users/test/.happier/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
+                homePath: '/Users/test/.piggercode/servers/cloud/daemon/connected-services/homes/openai-codex/profile-1/codex/codex-home',
                 sqliteHomePath: '/Users/test/.codex-state',
               },
             },
@@ -466,13 +466,13 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
   it('publishes connected-service Codex source affinity from child selection env for isolated materialized homes', () => {
     const lastPublished = { value: null as string | null };
     const updates: Metadata[] = [];
-    const codexHome = '/Users/test/.happier/servers/cloud/daemon/connected-services/materialized/csm_session_1/codex/codex-home';
+    const codexHome = '/Users/test/.piggercode/servers/cloud/daemon/connected-services/materialized/csm_session_1/codex/codex-home';
 
     maybeUpdateCodexSessionIdMetadata({
       getCodexThreadId: () => 'thread-materialized-connected',
       backendMode: 'appServer',
       codexHome,
-      activeServerDir: '/Users/test/.happier/servers/cloud',
+      activeServerDir: '/Users/test/.piggercode/servers/cloud',
       processEnv: {
         CODEX_SQLITE_HOME: '/Users/test/.codex-state',
         [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([{
@@ -517,8 +517,8 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
       getCodexThreadId: () => 'thread-group',
       backendMode: 'appServer',
       transcriptStorage: 'direct',
-      codexHome: '/Users/test/.happier/servers/cloud/daemon/connected-services/homes/openai-codex/__groups/main/codex/codex-home',
-      activeServerDir: '/Users/test/.happier/servers/cloud',
+      codexHome: '/Users/test/.piggercode/servers/cloud/daemon/connected-services/homes/openai-codex/__groups/main/codex/codex-home',
+      activeServerDir: '/Users/test/.piggercode/servers/cloud',
       updateHappySessionMetadata: (updater: (metadata: Metadata) => Metadata) => {
         updates.push(updater(createTestMetadata({ machineId: 'machine-1', path: '/repo' })));
       },
@@ -776,7 +776,7 @@ describe('maybeUpdateCodexSessionIdMetadata', () => {
       backendMode: 'acp' as const,
       transcriptStorage: 'direct' as const,
       codexHome: '/Users/test/.codex',
-      activeServerDir: '/Users/test/.happier/servers/cloud',
+      activeServerDir: '/Users/test/.piggercode/servers/cloud',
       processEnv: TEST_CODEX_HOME_ENV,
     };
     await publishCodexSessionIdMetadata({

@@ -122,10 +122,10 @@ process.exit(0);
   const { cliBinDir } = await writeStubHappierCliFiles(monoRoot, {
     packageJsonContent: '{}\n',
     distIndexScript: distScript.trimStart(),
-    // If daemon.mjs accidentally invokes bin/happier.mjs, fail loudly.
+    // If daemon.mjs accidentally invokes bin/piggercode.mjs, fail loudly.
     binHappierScript: 'process.exit(42);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 function createTestJwt({ sub, jti }) {
@@ -260,7 +260,7 @@ test('startLocalDaemonWithAuth fails fast when stack-scoped auth is stale and on
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     const cliHomeDir = join(tmp, 'stack', 'cli');
     await mkdir(cliHomeDir, { recursive: true });
     await writeFile(join(cliHomeDir, 'settings.json'), JSON.stringify({ machineId: 'test-machine' }) + '\n', 'utf-8');
@@ -310,7 +310,7 @@ test('startLocalDaemonWithAuth does not backfill legacy access.key from main whe
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     const storageDir = join(tmp, 'storage');
     const stackName = 'dev';
     const cliHomeDir = join(storageDir, stackName, 'cli');
@@ -379,7 +379,7 @@ test('startLocalDaemonWithAuth streams daemon start output in TUI mode', async (
     await writeStubHappyCli({ cliDir });
 
     // Overwrite the stub to print a deterministic line on daemon start.
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     await writeFile(
       join(cliDir, 'dist', 'index.mjs'),
       `
@@ -450,7 +450,7 @@ test('startLocalDaemonWithAuth keeps TUI alive when daemon start reports an inst
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
 
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     await writeFile(
       join(cliDir, 'dist', 'index.mjs'),
       `
@@ -458,7 +458,7 @@ const args = process.argv.slice(2);
 ${buildStubHappierServerSetSource()}
 if (args[0] === 'daemon' && args[1] === 'start') {
   console.error('A background service is already installed for this relay.');
-  console.error('Use \`happier service start\` to start the installed background service instead of starting a new relay runtime.');
+  console.error('Use \`piggercode service start\` to start the installed background service instead of starting a new relay runtime.');
   console.error('If you want to start a manual relay runtime, stop or replace the installed background service first.');
   process.exit(1);
 }
@@ -517,7 +517,7 @@ test('startLocalDaemonWithAuth keeps TUI alive when the daemon start wrapper exi
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     const cliEntrypoint = join(cliDir, 'dist', 'index.mjs');
     await writeFile(
       cliEntrypoint,
@@ -638,7 +638,7 @@ test('startLocalDaemonWithAuth surfaces already-running daemon in TUI mode', asy
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
 
     const cliHomeDir = join(tmp, 'stack', 'cli');
     await mkdir(cliHomeDir, { recursive: true });
@@ -936,7 +936,7 @@ test('startLocalDaemonWithAuth preserves an existing running daemon when request
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     await writeStubHappyCli({ cliDir });
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
 
     const cliHomeDir = join(tmp, 'stack', 'cli');
     await mkdir(cliHomeDir, { recursive: true });
@@ -1415,7 +1415,7 @@ if (sub === 'start') {
 process.exit(0);
       `.trimStart(),
     });
-    const cliBin = join(cliBinDir, 'happier.mjs');
+    const cliBin = join(cliBinDir, 'piggercode.mjs');
 
     await mkdir(cliHomeDir, { recursive: true });
     await writeFile(join(cliHomeDir, 'access.key'), 'seed-access-key\n', 'utf-8');

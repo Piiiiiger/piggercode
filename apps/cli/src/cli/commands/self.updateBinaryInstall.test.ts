@@ -72,7 +72,7 @@ async function runSelfUpdate(params: Readonly<{ invokedPath: string; rawArgv: st
   }
 }
 
-describe('happier self update for binary installs', () => {
+describe('piggercode self update for binary installs', () => {
   const envScope = createEnvKeyScope([...STANDARD_MANAGED_CLI_RELEASE_CHANNEL_ENV_KEYS, 'PIGGERCODE_HOME_DIR']);
   let homeDir = '';
 
@@ -106,12 +106,12 @@ describe('happier self update for binary installs', () => {
     expect(params.processEnv?.PIGGERCODE_HOME_DIR).toBe(homeDir);
     // The Windows quiesce is a pre-activation step only on Windows.
     expect(params.beforeActivate === undefined).toBe(process.platform !== 'win32');
-    expect(logs).toContain('Updated happier to 9.9.10');
+    expect(logs).toContain('Updated piggercode to 9.9.10');
     expect(maybeRunVersionGatedRuntimeMigrationMock).toHaveBeenCalledWith({
       fromVersion: '9.9.9',
       toVersion: '9.9.10',
       argv: ['repair'],
-      commandPath: 'happier doctor',
+      commandPath: 'piggercode doctor',
     });
     expect(maybeRunDoctorRepairMock).toHaveBeenCalledWith({ migrationRan: false });
   });
@@ -132,15 +132,15 @@ describe('happier self update for binary installs', () => {
     expect(logs).toContain('Updated hdev to');
   });
 
-  it('uses the persisted default channel for the unsuffixed happier invoker', async () => {
+  it('uses the persisted default channel for the unsuffixed piggercode invoker', async () => {
     writeFileSync(join(homeDir, 'default-cli-release-channel.json'), `${JSON.stringify({ releaseChannel: 'publicdev' })}\n`, 'utf8');
-    const { logs } = await runSelfUpdate({ invokedPath: 'self', rawArgv: ['happier', 'self', 'update'] });
+    const { logs } = await runSelfUpdate({ invokedPath: 'self', rawArgv: ['piggercode', 'self', 'update'] });
     expect(runManagedCliUpdateMock.mock.calls[0]![0]).toMatchObject({ channel: 'publicdev' });
     expect(logs).toContain('Updated hdev to');
   });
 
   it('defaults binary self update to the publicdev ring when invoked from the managed cli-dev current path', async () => {
-    await runSelfUpdate({ invokedPath: '/Users/test/.happier/cli-dev/current/happier', rawArgv: ['hdev', 'self', 'update'] });
+    await runSelfUpdate({ invokedPath: '/Users/test/.piggercode/cli-dev/current/happier', rawArgv: ['hdev', 'self', 'update'] });
     expect(runManagedCliUpdateMock.mock.calls[0]![0]).toMatchObject({ channel: 'publicdev' });
   });
 
@@ -160,7 +160,7 @@ describe('happier self update for binary installs', () => {
       outcome: 'rolledBack',
       previousVersion: '9.9.9',
       targetVersion: '9.9.10',
-      message: 'Happier CLI 9.9.10 did not start on this machine (boom); 9.9.9 was restored.',
+      message: 'PiggerCode CLI 9.9.10 did not start on this machine (boom); 9.9.9 was restored.',
     }));
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
       throw new Error(`exit ${code}`);

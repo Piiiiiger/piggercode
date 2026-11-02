@@ -70,7 +70,7 @@ describe('buildScpCommand', () => {
   it('builds a strict scp command that mirrors the ssh transport auth and host-key isolation', () => {
     const invocation = buildScpCommand({
       target: 'dev@example.test',
-      remotePath: '$HOME/.happier/bootstrap-staging',
+      remotePath: '$HOME/.piggercode/bootstrap-staging',
       localPath: '/tmp/payload',
       port: 2222,
       auth: {
@@ -108,14 +108,14 @@ describe('buildScpCommand', () => {
       '/tmp/id_happier',
       '-r',
       '/tmp/payload',
-      'dev@example.test:$HOME/.happier/bootstrap-staging',
+      'dev@example.test:$HOME/.piggercode/bootstrap-staging',
     ]);
   });
 
   it('keeps strict host-key checking enabled for scp when using system known_hosts', () => {
     const invocation = buildScpCommand({
       target: 'dev@example.test',
-      remotePath: '$HOME/.happier/bootstrap-staging',
+      remotePath: '$HOME/.piggercode/bootstrap-staging',
       localPath: '/tmp/payload',
       auth: {
         kind: 'agent',

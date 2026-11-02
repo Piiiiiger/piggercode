@@ -6,12 +6,12 @@ import { fail } from '@piggercode/cli-common/output';
 
 function usage(): string {
   return [
-    `${chalk.bold('happier plugins')} - Plugin compatibility commands`,
+    `${chalk.bold('piggercode plugins')} - Plugin compatibility commands`,
     '',
     `${chalk.bold('Usage:')}`,
-    '  happier plugins list [--json]',
+    '  piggercode plugins list [--json]',
     '',
-    'This Happier version does not support installing plugins.',
+    'This PiggerCode version does not support installing plugins.',
   ].join('\n');
 }
 
@@ -40,13 +40,13 @@ export async function handlePluginsCompatibilityCliCommand(context: CommandConte
       kind: 'plugins_unsupported',
       error: {
         code: 'unsupported_in_this_version',
-        message: `Plugin command '${subcommand}' is not supported by this Happier version`,
+        message: `Plugin command '${subcommand}' is not supported by this PiggerCode version`,
       },
     });
     return;
   }
 
-  console.error(fail(`Plugin command '${subcommand}' is not supported by this Happier version`));
+  console.error(fail(`Plugin command '${subcommand}' is not supported by this PiggerCode version`));
   console.log(usage());
   process.exitCode = 1;
 }

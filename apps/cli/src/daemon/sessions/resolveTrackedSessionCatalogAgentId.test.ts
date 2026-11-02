@@ -17,9 +17,9 @@ function metadata(overrides: Partial<Metadata>): Metadata {
     path: '/repo',
     host: 'test',
     homeDir: '/home/test',
-    happyHomeDir: '/home/test/.happier',
-    happyLibDir: '/home/test/.happier/lib',
-    happyToolsDir: '/home/test/.happier/tools',
+    happyHomeDir: '/home/test/.piggercode',
+    happyLibDir: '/home/test/.piggercode/lib',
+    happyToolsDir: '/home/test/.piggercode/tools',
     ...overrides,
   };
 }

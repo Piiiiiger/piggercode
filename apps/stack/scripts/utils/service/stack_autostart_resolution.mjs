@@ -17,7 +17,7 @@ export function resolveAutostartEnvFilePath({
   const m = String(mode ?? '').trim().toLowerCase() === 'system' ? 'system' : 'user';
   const home = String(systemUserHomeDir ?? '').trim();
   if (m === 'system' && home) {
-    return join(home, '.happier', 'stacks', 'main', 'env');
+    return join(home, '.piggercode', 'stacks', 'main', 'env');
   }
 
   return String(defaultMainEnvFilePath ?? '').trim();
@@ -62,7 +62,7 @@ export function resolveAutostartLogPaths({
   const name = String(stackName ?? '').trim() || 'main';
 
   if (m === 'system' && !override && home) {
-    const baseDir = join(home, '.happier', 'stacks', name);
+    const baseDir = join(home, '.piggercode', 'stacks', name);
     const logsDir = join(baseDir, 'logs');
     const stdoutFile = basename(String(defaultStdoutPath ?? '').trim() || 'happier-stack.out.log');
     const stderrFile = basename(String(defaultStderrPath ?? '').trim() || 'happier-stack.err.log');

@@ -1828,7 +1828,7 @@ describe('claudeUnifiedTerminalLauncher', () => {
     expect(observedPrompts).toEqual(['run pwd', 'run pwd']);
   });
 
-  it('imports CLI positional prompt transcript rows because Happier has no submitted-message echo to suppress', async () => {
+  it('imports CLI positional prompt transcript rows because PiggerCode has no submitted-message echo to suppress', async () => {
     setProcessTty(false);
     const session = createSession();
     session.claudeArgs = ['--model', 'opus', 'source cli prompt'];
@@ -2744,7 +2744,7 @@ describe('claudeUnifiedTerminalLauncher', () => {
     }));
     expect(session.client.sendSessionEvent).not.toHaveBeenCalledWith(expect.objectContaining({
       type: 'message',
-      message: expect.stringContaining('before Happier could send your prompt'),
+      message: expect.stringContaining('before PiggerCode could send your prompt'),
     }));
     expect(session.client.flush).toHaveBeenCalled();
     expect(readFirstInvocationOrder(vi.mocked(session.client.flush), 'flush')).toBeGreaterThan(

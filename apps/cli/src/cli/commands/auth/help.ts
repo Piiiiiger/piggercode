@@ -2,17 +2,17 @@ import chalk from 'chalk';
 
 export function showAuthHelp(): void {
   console.log(`
-${chalk.bold('happier auth')} - Authentication management
+${chalk.bold('piggercode auth')} - Authentication management
 
 ${chalk.bold('Usage:')}
-  happier auth login [--no-open] [--force] [--method web|mobile] [--wait-timeout <seconds>] [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]    Authenticate with Happier
-  happier auth request --json [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]                                    Create a claim-gated auth request (headless-friendly)
-  happier auth approve --public-key <base64> --json [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]              Approve an auth request using your local credentials
-  happier auth wait --public-key <base64> --json [--replace-existing] [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]                Wait for approval and write credentials for this machine
-  happier auth pair-remote --ssh <user@host> [--json] [--no-post-check] [--server-url-for-remote <url> [--remote-webapp-url <url>]]                              Fully automated remote pairing over SSH
-  happier auth logout [--all]     Log out (active relay by default)
-  happier auth status             Show authentication status
-  happier auth help               Show this help message
+  piggercode auth login [--no-open] [--force] [--method web|mobile] [--wait-timeout <seconds>] [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]    Authenticate with PiggerCode
+  piggercode auth request --json [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]                                    Create a claim-gated auth request (headless-friendly)
+  piggercode auth approve --public-key <base64> --json [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]              Approve an auth request using your local credentials
+  piggercode auth wait --public-key <base64> --json [--replace-existing] [--server <name-or-id> | --server-url <url> [--webapp-url <url>] [--persist|--no-persist]]                Wait for approval and write credentials for this machine
+  piggercode auth pair-remote --ssh <user@host> [--json] [--no-post-check] [--server-url-for-remote <url> [--remote-webapp-url <url>]]                              Fully automated remote pairing over SSH
+  piggercode auth logout [--all]     Log out (active relay by default)
+  piggercode auth status             Show authentication status
+  piggercode auth help               Show this help message
 
 ${chalk.bold('Options:')}
   --no-open  Do not attempt to open a browser (prints URL instead)
@@ -26,7 +26,7 @@ ${chalk.bold('Options:')}
   --replace-existing  Used with wait; claim the approved request even when this machine already has credentials (switches account, keeps other account machine mappings)
   --ssh        Used with pair-remote; ssh target (e.g. user@host)
   --no-post-check  Skip the post-pair 'doctor repair' handoff on the remote host (defaults to running it)
-  --remote-command       Happier command to run on the remote host (default: happier)
+  --remote-command       PiggerCode command to run on the remote host (default: happier)
   --server-url-for-remote  Address the remote host should use to reach this computer's relay
   --remote-server-url    Legacy alias for --server-url-for-remote
   --remote-local-server-url  Remote-local API URL paired with --remote-server-url

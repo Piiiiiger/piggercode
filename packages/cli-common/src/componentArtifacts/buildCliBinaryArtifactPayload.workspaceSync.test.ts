@@ -96,7 +96,7 @@ async function unpackTools(options = {}) {
     if (!options.tools || options.tools.includes('difftastic')) {
         fs.writeFileSync(path.join(unpackedPath, 'difft'), 'difftastic optional runtime\\n');
     }
-    fs.writeFileSync(path.join(unpackedPath, '.happier-tools-manifest.json'), JSON.stringify({
+    fs.writeFileSync(path.join(unpackedPath, '.piggercode-tools-manifest.json'), JSON.stringify({
         platformDir,
         tools: { zellij: { version: '0.44.3' } },
     }, null, 2) + '\\n');
@@ -287,7 +287,7 @@ describe('buildCliBinaryArtifactPayload bundled workspace sync', () => {
             await expect(readFile(join(payloadDir, 'scripts', ...segments), 'utf8'))
                 .resolves.toBe('placeholder\n');
         }
-        await expect(readFile(join(payloadDir, 'tools', 'unpacked', '.happier-tools-manifest.json'), 'utf8'))
+        await expect(readFile(join(payloadDir, 'tools', 'unpacked', '.piggercode-tools-manifest.json'), 'utf8'))
             .resolves.toContain('"zellij"');
         await expect(readFile(join(payloadDir, 'tools', 'unpacked', 'rg'), 'utf8'))
             .resolves.toContain('ripgrep');

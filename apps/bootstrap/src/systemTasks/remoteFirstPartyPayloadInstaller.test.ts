@@ -13,7 +13,7 @@ function createPayloadRootFixture(): Readonly<{
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-remote-first-party-fixture-'));
     const payloadRoot = join(rootDir, 'payload-root');
     mkdirSync(payloadRoot, { recursive: true });
-    writeFileSync(join(payloadRoot, 'happier'), '#!/usr/bin/env bash\nexit 0\n', 'utf8');
+    writeFileSync(join(payloadRoot, 'piggercode'), '#!/usr/bin/env bash\nexit 0\n', 'utf8');
     return {
         payloadRoot,
         cleanup: () => {
@@ -67,14 +67,14 @@ describe('installRemoteFirstPartyComponent', () => {
             expect(copiedPaths).toEqual([
                 {
                     localPath: expect.stringContaining('/happier-first-party-scp-'),
-                    remotePath: '.happier/bootstrap-staging/happier-cli-1.2.3-1700000000000',
+                    remotePath: '.piggercode/bootstrap-staging/happier-cli-1.2.3-1700000000000',
                 },
             ]);
             expect(remoteCommands.join('\n')).not.toContain('curl -fsSL https://happier.dev/install');
             expect(remoteCommands.join('\n')).toContain('tar -xf');
             expect(remoteCommands.join('\n')).toContain('ln -sfn');
             expect(result).toEqual({
-                binaryPath: '$HOME/.happier/cli-preview/current/happier',
+                binaryPath: '$HOME/.piggercode/cli-preview/current/piggercode',
                 versionId: '1.2.3',
                 source: 'https://example.test/happier.tgz',
             });

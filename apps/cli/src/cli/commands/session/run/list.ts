@@ -19,7 +19,7 @@ import { cmd, fail } from '@piggercode/cli-common/output';
 
 const EXECUTION_RUN_STATUS_USAGE = formatProtocolEnumUsage(ExecutionRunStatusSchema);
 
-export const SESSION_RUN_LIST_USAGE = `happier session run list <session-id-or-prefix-or-tag> [--backend <backend-target>] [--status <${EXECUTION_RUN_STATUS_USAGE}>] [--limit <count>] [--json]`;
+export const SESSION_RUN_LIST_USAGE = `piggercode session run list <session-id-or-prefix-or-tag> [--backend <backend-target>] [--status <${EXECUTION_RUN_STATUS_USAGE}>] [--limit <count>] [--json]`;
 
 export async function cmdSessionRunList(
   argv: string[],
@@ -50,7 +50,7 @@ export async function cmdSessionRunList(
       await printJsonEnvelope({ ok: false, kind: 'session_run_list', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

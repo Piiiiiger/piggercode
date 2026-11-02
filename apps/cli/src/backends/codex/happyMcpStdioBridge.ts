@@ -45,7 +45,7 @@ async function main() {
   if (!baseUrl) {
     // Write to stderr; never stdout.
     process.stderr.write(
-      '[happier-mcp] Missing target URL. Set PIGGERCODE_HTTP_MCP_URL or pass --url <http://127.0.0.1:PORT>\n'
+      '[piggercode-mcp] Missing target URL. Set PIGGERCODE_HTTP_MCP_URL or pass --url <http://127.0.0.1:PORT>\n'
     );
     process.exit(2);
   }
@@ -75,7 +75,7 @@ async function main() {
 
   // Create STDIO MCP server
   const server = new McpServer({
-    name: 'Happier MCP Bridge',
+    name: 'PiggerCode MCP Bridge',
     version: '1.0.0',
   });
 
@@ -93,7 +93,7 @@ async function main() {
           requestMetadata: requestExtra._meta,
           sendNotification: requestExtra.sendNotification,
           onError: (err) => {
-            logger.debug('[happier-mcp] Failed to forward progress', err);
+            logger.debug('[piggercode-mcp] Failed to forward progress', err);
           },
         })
         : null;
@@ -127,7 +127,7 @@ async function main() {
 if (process.env.PIGGERCODE_CLI_DIST_INTEGRITY_PROBE !== '1') {
   main().catch((err) => {
     try {
-      process.stderr.write(`[happier-mcp] Fatal: ${err instanceof Error ? err.message : String(err)}\n`);
+      process.stderr.write(`[piggercode-mcp] Fatal: ${err instanceof Error ? err.message : String(err)}\n`);
     } finally {
       process.exit(1);
     }

@@ -713,7 +713,7 @@ describe('startHappyServer (MCP integration)', () => {
     }
   });
 
-  it('lists and reads Happier MCP resources over HTTP transport', async () => {
+  it('lists and reads PiggerCode MCP resources over HTTP transport', async () => {
     const rpcHandlerManager = new RpcHandlerManager({
       scopePrefix: 'sess_mcp_resources_1',
       encryptionKey: new Uint8Array([1, 2, 3, 4]),

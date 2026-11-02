@@ -94,7 +94,7 @@ describe('runDaemonServiceCliCommand install conflict preflight', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/tester',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
       PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'default',
       PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'publicdev',
       PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS: '10',
@@ -106,10 +106,10 @@ describe('runDaemonServiceCliCommand install conflict preflight', () => {
     try {
       const { runDaemonServiceCliCommand } = await import('./cli.js');
       installDaemonServiceMock.mockRejectedValueOnce(Object.assign(
-        new Error('Competing background services detected: happier-daemon.default. Re-run with --yes or --replace-existing=ring|all.'),
+        new Error('Competing background services detected: piggercode-daemon.default. Re-run with --yes or --replace-existing=ring|all.'),
         {
           code: 'daemon_service_conflict',
-          conflicts: [{ label: 'happier-daemon.default' }],
+          conflicts: [{ label: 'piggercode-daemon.default' }],
         },
       ));
 
@@ -135,7 +135,7 @@ describe('runDaemonServiceCliCommand install conflict preflight', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/tester',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
       PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'default',
       PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'publicdev',
       PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS: '10',
@@ -168,7 +168,7 @@ describe('runDaemonServiceCliCommand install conflict preflight', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/tester',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
       PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'default',
       PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'publicdev',
       PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS: '10',
@@ -201,7 +201,7 @@ describe('runDaemonServiceCliCommand install conflict preflight', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/home/tester',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
       PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'default',
       PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'publicdev',
       PIGGERCODE_DAEMON_SERVICE_OWNERSHIP_WAIT_TIMEOUT_MS: '10',

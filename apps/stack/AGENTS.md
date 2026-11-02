@@ -7,11 +7,11 @@ Package-specific instructions for `apps/stack` (`@piggercode/stack`). These supp
 `@piggercode/stack` provides local stack/worktree/dev orchestration for the Happier monorepo.
 
 - `scripts/*.mjs` — setup/bootstrap, run/dev/build, stacks, worktrees, service, tailscale, mobile, tools.
-- Default home: `~/.happier-stack`.
-- Default workspace: `~/.happier-stack/workspace`.
+- Default home: `~/.piggercode-stack`.
+- Default workspace: `~/.piggercode-stack/workspace`.
 - Main checkout: `<workspace>/main` (stable launcher/default state).
 - Dev checkout/worktrees: `<workspace>/dev`, `<workspace>/pr/**`, `<workspace>/local/**`, `<workspace>/tmp/**`.
-- Stack storage: `~/.happier/stacks/<stack>/**`.
+- Stack storage: `~/.piggercode/stacks/<stack>/**`.
 
 ## Command discipline
 

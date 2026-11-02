@@ -9,7 +9,7 @@ import {
   sealEncryptedDataKeyEnvelopeV1,
 } from '@piggercode/protocol';
 
-describe('happier session history (integration)', () => {
+describe('piggercode session history (integration)', () => {
   const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;
@@ -386,7 +386,7 @@ describe('happier session history (integration)', () => {
   });
 });
 
-describe('happier session history (plaintext integration)', () => {
+describe('piggercode session history (plaintext integration)', () => {
   const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;

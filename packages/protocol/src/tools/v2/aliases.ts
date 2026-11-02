@@ -18,14 +18,18 @@ export const CHANGE_TITLE_TOOL_NAME_ALIASES = [
   'change-title',
   'session-title-set',
   // Preferred MCP naming
+  'mcp__piggercode__change_title',
+  'mcp__piggercode__session_title_set',
+  // Legacy MCP naming (upstream Happier and Happy builds), still present in older transcripts
   'mcp__happier__change_title',
   'mcp__happier__session_title_set',
-  // Legacy MCP naming during migration
   'mcp__happy__change_title',
   'mcp__happy__session_title_set',
   // Non-MCP-prefixed variants seen in some transports/providers
+  'piggercode__change_title',
   'happier__change_title',
   'happy__change_title',
+  'piggercode__session_title_set',
   'happier__session_title_set',
   'happy__session_title_set',
 ] as const;

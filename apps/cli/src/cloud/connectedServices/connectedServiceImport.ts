@@ -10,7 +10,7 @@ import { ConnectedServiceCredentialIdentityConflictError, ConnectedServiceCreden
 export type ConnectedServiceImportAccount = Readonly<{ api: ConnectedServiceCredentialStorageApi; credentials: Credentials }>;
 type ImportFailureCode = Extract<ConnectedServiceImportResponseV1, { ok: false }>['errorCode'];
 const safeMessages: Record<ImportFailureCode, string> = {
-  invalid_parameters: 'Invalid import parameters.', authentication_required: 'Authenticate this machine with Happier first.',
+  invalid_parameters: 'Invalid import parameters.', authentication_required: 'Authenticate this machine with PiggerCode first.',
   unsupported: 'This machine does not support native credential import for this service.', unsupported_source: 'Choose a declared native credential source.',
   credentials_unavailable: 'No supported native login is available on this machine.', reauthorization_required: 'This native login requires reauthorization. Connect in your browser.',
   provider_error: 'The provider could not validate this native login.', profile_conflict: 'This profile belongs to a different or unverified account. Choose a new profile.',

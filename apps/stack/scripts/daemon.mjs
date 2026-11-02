@@ -958,7 +958,7 @@ function excerptIndicatesInstalledServiceConflict(excerpt) {
   if (!excerpt) return false;
   return (
     excerpt.includes('A background service is already installed for this relay.') ||
-    excerpt.includes('Use `happier service start` to start the installed background service instead of starting a new relay runtime.') ||
+    excerpt.includes('Use `piggercode service start` to start the installed background service instead of starting a new relay runtime.') ||
     excerpt.includes('If you want to start a manual relay runtime')
   );
 }

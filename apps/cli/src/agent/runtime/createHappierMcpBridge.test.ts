@@ -71,7 +71,7 @@ describe('createHappierMcpBridge', () => {
     const session = {} as any
     const { mcpServers } = await createHappierMcpBridge(session)
 
-    expect(mcpServers.happier).toEqual({
+    expect(mcpServers.piggercode).toEqual({
       command: process.execPath,
       args: [
         '--no-warnings',
@@ -92,7 +92,7 @@ describe('createHappierMcpBridge', () => {
     const session = {} as any
     const { mcpServers } = await createHappierMcpBridge(session, { commandMode: 'current-process' })
 
-    expect(mcpServers.happier).toEqual({
+    expect(mcpServers.piggercode).toEqual({
       command: process.execPath,
       args: [
         '--no-warnings',
@@ -122,7 +122,7 @@ describe('createHappierMcpBridge', () => {
       const session = {} as any
       const { mcpServers } = await createHappierMcpBridge(session)
 
-      expect(mcpServers.happier.env).toEqual({
+      expect(mcpServers.piggercode.env).toEqual({
         PIGGERCODE_ACTIONS_SETTINGS_V1: process.env.PIGGERCODE_ACTIONS_SETTINGS_V1,
       })
     } finally {
@@ -156,7 +156,7 @@ describe('createHappierMcpBridge', () => {
       credentials: null,
       accountSettings,
     })
-    expect(mcpServers.happier.env).toEqual({
+    expect(mcpServers.piggercode.env).toEqual({
       PIGGERCODE_ACTIONS_SETTINGS_V1: JSON.stringify(accountSettings.actionsSettingsV1),
     })
   })
@@ -175,7 +175,7 @@ describe('createHappierMcpBridge', () => {
       const session = {} as any
       const { mcpServers } = await createHappierMcpBridge(session)
 
-      expect(mcpServers.happier).toEqual({
+      expect(mcpServers.piggercode).toEqual({
         command: process.execPath,
         args: [
           '--no-warnings',
@@ -208,7 +208,7 @@ describe('createHappierMcpBridge', () => {
     const session = {} as any
     const { mcpServers } = await createHappierMcpBridge(session)
 
-    expect(mcpServers.happier).toEqual({
+    expect(mcpServers.piggercode).toEqual({
       command: process.execPath,
       args: [
         '--no-warnings',
@@ -233,7 +233,7 @@ describe('createHappierMcpBridge', () => {
     const session = {} as any
     const { mcpServers } = await createHappierMcpBridge(session)
 
-    expect(mcpServers.happier).toEqual({
+    expect(mcpServers.piggercode).toEqual({
       command: '/managed/js-runtime',
       args: [
         '--no-warnings',
@@ -258,7 +258,7 @@ describe('createHappierMcpBridge', () => {
     await expect(createHappierMcpBridge(session)).rejects.toThrow(/PIGGERCODE_JS_RUNTIME_PATH/)
   })
 
-  it('forwards credentials to the in-session Happier MCP server when provided', async () => {
+  it('forwards credentials to the in-session PiggerCode MCP server when provided', async () => {
     vi.mocked(existsSync).mockImplementation((pathLike) => {
       const path = String(pathLike)
       return path.endsWith('/package-dist/backends/codex/happyMcpStdioBridge.mjs')

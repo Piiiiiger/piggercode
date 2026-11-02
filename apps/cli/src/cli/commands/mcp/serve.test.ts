@@ -6,7 +6,7 @@ import { disableMcpStdioConsolePatch } from '@/mcp/server/mcpStdioConsolePatch';
 
 const env = process.env;
 
-describe('happier mcp serve (env hardening)', () => {
+describe('piggercode mcp serve (env hardening)', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     process.env = { ...env };

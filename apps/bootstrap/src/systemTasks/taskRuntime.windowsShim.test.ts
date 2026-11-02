@@ -48,7 +48,7 @@ describe('runCommandCapture on Windows (R12)', () => {
     Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
     spawnMock.mockImplementation(() => fakeChild('{"ok":true}'));
 
-    const result = await runCommandCapture({ command: 'C:\\happier\\happier.exe', args: ['daemon', 'service', 'status', '--json'] });
+    const result = await runCommandCapture({ command: 'C:\\happier\\piggercode.exe', args: ['daemon', 'service', 'status', '--json'] });
     expect(spawnMock.mock.calls[0]?.[2]).toMatchObject({ windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
     expect(result.status).toBe(0);
     expect(result.stdout).toBe('{"ok":true}');

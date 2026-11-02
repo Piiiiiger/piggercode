@@ -5,7 +5,7 @@ import { createAcpTestTransportHandler, writeAcpTestAgentScript } from '../testk
 import { withTempDir } from '@/testkit/fs/tempDir';
 
 function writeFakePermissionAgentScript(params: { dir: string }): string {
-  const commandRequestText = `Requesting approval to perform: Run command \`node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{"title":"Get QA Marker"}' --json\``;
+  const commandRequestText = `Requesting approval to perform: Run command \`node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{"title":"Get QA Marker"}' --json\``;
   const src = `
     const decoder = new TextDecoder();
     let buf = '';

@@ -52,14 +52,14 @@ const SHELL_INSTALLER_EXPORT_LINE_TEMPLATE = 'export PATH="${BIN_DIR}:$PATH"';
 
 posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
     it('emits the byte-identical export line the shell installer wrote', () => {
-        const binDir = '/Users/example/.happier/bin';
+        const binDir = '/Users/example/.piggercode/bin';
 
         expect(renderHappierCliPathExportLine(binDir)).toBe(SHELL_INSTALLER_EXPORT_LINE_TEMPLATE.replace('${BIN_DIR}', binDir));
     });
 
     it('appends the marked export line once and treats a second call as a no-op', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh' };
         const zshrcPath = join(homeDir, '.zshrc');
         await writeFile(zshrcPath, 'alias ll="ls -l"\n', 'utf8');
@@ -83,7 +83,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('neither marks nor removes a pre-existing installer-owned line', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh' };
         const installerOwned = `# shell installer\n\n${renderHappierCliPathExportLine(binDir)}\nalias ll="ls -l"\n`;
         await writeFile(join(homeDir, '.zshrc'), installerOwned, 'utf8');
@@ -101,7 +101,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('removes only Desktop-created entries and leaves everything else byte-identical', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/bin/bash' };
         const bashrcOriginal = 'export EDITOR=vim\n# comment\nalias ll="ls -l"\n';
         const profileOriginal = `# installer-owned\n\n${renderHappierCliPathExportLine(binDir)}\n`;
@@ -123,7 +123,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('removes profiles written under a previous shell and keeps an unmarked identical line', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const exportLine = renderHappierCliPathExportLine(binDir);
         // Desktop exposed the CLI while the login shell was zsh.
         await ensureHappierCliPathExposure({ binDir, processEnv: { HOME: homeDir, SHELL: '/bin/zsh' } });
@@ -138,12 +138,12 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         expect(await readFile(join(homeDir, '.bashrc'), 'utf8')).toBe(`${exportLine}\n`);
     });
 
-    it('leaves PATH alone when another happier already resolves, and names it', async () => {
+    it('leaves PATH alone when another piggercode already resolves, and names it', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const userBinDir = join(homeDir, 'npm-global', 'bin');
         await mkdir(userBinDir, { recursive: true });
-        const userHappier = join(userBinDir, 'happier');
+        const userHappier = join(userBinDir, 'piggercode');
         await writeFile(userHappier, '#!/bin/sh\n', 'utf8');
         await chmod(userHappier, 0o755);
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PATH: `/usr/bin:${userBinDir}` };
@@ -154,12 +154,12 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         expect(await readOptional(join(homeDir, '.zshrc'))).toBeNull();
     });
 
-    it('puts the managed CLI first even though another happier resolves, once this computer chose "Let Happier manage it" (R12/INV5)', async () => {
+    it('puts the managed CLI first even though another piggercode resolves, once this computer chose "Let PiggerCode manage it" (R12/INV5)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const userBinDir = join(homeDir, 'npm-global', 'bin');
         await mkdir(userBinDir, { recursive: true });
-        const userHappier = join(userBinDir, 'happier');
+        const userHappier = join(userBinDir, 'piggercode');
         await writeFile(userHappier, '#!/bin/sh\n', 'utf8');
         await chmod(userHappier, 0o755);
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PATH: `/usr/bin:${userBinDir}` };
@@ -179,10 +179,10 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('writes no line once this computer chose "Keep my own" (R12/INV5)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const userBinDir = join(homeDir, 'npm-global', 'bin');
         await mkdir(userBinDir, { recursive: true });
-        const userHappier = join(userBinDir, 'happier');
+        const userHappier = join(userBinDir, 'piggercode');
         await writeFile(userHappier, '#!/bin/sh\n', 'utf8');
         await chmod(userHappier, 0o755);
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PATH: '/usr/bin' };
@@ -200,11 +200,11 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
         try {
             const homeDir = await createHome();
-            const binDir = join(homeDir, '.happier', 'bin');
+            const binDir = join(homeDir, '.piggercode', 'bin');
             // A CLI the user installed into the per-user bin the service PATH owner lists.
             const userBinDir = join(homeDir, '.local', 'bin');
             await mkdir(userBinDir, { recursive: true });
-            const userHappier = join(userBinDir, 'happier');
+            const userHappier = join(userBinDir, 'piggercode');
             await writeFile(userHappier, '#!/bin/sh\n', 'utf8');
             await chmod(userHappier, 0o755);
             // What launchd gives an app opened from the Dock or Finder.
@@ -219,18 +219,18 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
         }
     });
 
-    it('adds nothing when the happier on PATH already is the managed shim (installer ~/.local/bin link)', async () => {
+    it('adds nothing when the piggercode on PATH already is the managed shim (installer ~/.local/bin link)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
-        const versionDir = join(homeDir, '.happier', 'cli', 'versions', '1.0.0');
+        const binDir = join(homeDir, '.piggercode', 'bin');
+        const versionDir = join(homeDir, '.piggercode', 'cli', 'versions', '1.0.0');
         await mkdir(versionDir, { recursive: true });
         await mkdir(binDir, { recursive: true });
-        await writeFile(join(versionDir, 'happier'), '#!/bin/sh\n', 'utf8');
-        await chmod(join(versionDir, 'happier'), 0o755);
-        await symlink(join(versionDir, 'happier'), join(binDir, 'happier'));
+        await writeFile(join(versionDir, 'piggercode'), '#!/bin/sh\n', 'utf8');
+        await chmod(join(versionDir, 'piggercode'), 0o755);
+        await symlink(join(versionDir, 'piggercode'), join(binDir, 'piggercode'));
         const localBin = join(homeDir, '.local', 'bin');
         await mkdir(localBin, { recursive: true });
-        await symlink(join(binDir, 'happier'), join(localBin, 'happier'));
+        await symlink(join(binDir, 'piggercode'), join(localBin, 'piggercode'));
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PATH: `${localBin}:/usr/bin` };
 
         const result = await ensureHappierCliPathExposure({ binDir, processEnv });
@@ -241,7 +241,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('honours PIGGERCODE_NO_PATH_UPDATE=1 without writing anything', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/bin/zsh', PIGGERCODE_NO_PATH_UPDATE: '1' };
 
         const result = await ensureHappierCliPathExposure({ binDir, processEnv });
@@ -256,7 +256,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
             return;
         }
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/bin/fish' };
         const profilePath = join(homeDir, '.profile');
         const original = '# locked down\n';
@@ -303,7 +303,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 
     it('creates a missing rc file the same way the installer does', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const processEnv = { HOME: homeDir, SHELL: '/usr/bin/fish' };
 
         const result = await ensureHappierCliPathExposure({ binDir, processEnv });
@@ -317,7 +317,7 @@ posixOnly('ensureHappierCliPathExposure (POSIX shell profiles)', () => {
 });
 
 describe('Windows user PATH exposure planning', () => {
-    const binDir = 'C:\\Users\\example\\.happier\\bin';
+    const binDir = 'C:\\Users\\example\\.piggercode\\bin';
     const npmDir = 'C:\\Users\\example\\AppData\\Roaming\\npm';
 
     it('prepends the bin dir once and records it as Desktop-created', () => {
@@ -343,7 +343,7 @@ describe('Windows user PATH exposure planning', () => {
         expect(second).toEqual({ changed: false, userPath: first.userPath, provenance: first.provenance, moves: null });
     });
 
-    it('after "Let Happier manage it" moves an entry that sits behind npm to the front, once, recording the move without claiming the entry (R12/R13)', () => {
+    it('after "Let PiggerCode manage it" moves an entry that sits behind npm to the front, once, recording the move without claiming the entry (R12/R13)', () => {
         // The installer added the managed dir earlier; npm's global dir now precedes it.
         const behindNpm = `${npmDir};C:\\Tools;${binDir.toUpperCase()}`;
 
@@ -365,7 +365,7 @@ describe('Windows user PATH exposure planning', () => {
         const behindNpm = `${npmDir};C:\\Tools;${binDir}`;
         const moved = planWindowsUserPathExposure({ userPath: behindNpm, provenance: null, moves: null, binDir, putFirst: true });
 
-        // Round trip: the terminal gets npm's happier first again, and the record is gone.
+        // Round trip: the terminal gets npm's piggercode first again, and the record is gone.
         expect(planWindowsUserPathRemoval({ userPath: moved.userPath, provenance: null, moves: moved.moves }))
             .toEqual({ removed: true, userPath: behindNpm, provenance: null, moves: null });
 
@@ -427,7 +427,7 @@ describe('Windows user PATH transport', () => {
 
     it('carries the whole user PATH through the child environment, never as -Command argv', async () => {
         setPlatform('win32');
-        const binDir = 'C:\\Users\\example\\.happier\\bin';
+        const binDir = 'C:\\Users\\example\\.piggercode\\bin';
         // Three entries, so the value contains PowerShell's statement separator twice, plus a
         // space, parentheses and a %VAR% that the parser would mangle if it reached the command.
         const userPath = 'C:\\Program Files (x86)\\Tools;%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\example\\bin';
@@ -439,7 +439,7 @@ describe('Windows user PATH transport', () => {
 
         const result = await ensureHappierCliPathExposure({ binDir, processEnv });
 
-        expect(result).toEqual({ changed: true, shellReloadHint: 'Open a new terminal to use happier.', failure: null, existingCommand: null });
+        expect(result).toEqual({ changed: true, shellReloadHint: 'Open a new terminal to use piggercode.', failure: null, existingCommand: null });
         expect(execFileMock).toHaveBeenCalledTimes(2);
         for (const [command, args, options] of execFileMock.mock.calls) {
             expect(command).toBe('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe');
@@ -468,7 +468,7 @@ describe('Windows user PATH transport', () => {
 
     it('"Keep my own" on Windows puts the moved managed dir back and clears the move record (R13)', async () => {
         setPlatform('win32');
-        const binDir = 'C:\\Users\\example\\.happier\\bin';
+        const binDir = 'C:\\Users\\example\\.piggercode\\bin';
         const npmDir = 'C:\\Users\\example\\AppData\\Roaming\\npm';
         const processEnv = { SystemRoot: 'C:\\Windows' };
         execFileMock.mockImplementation((_command, _args, _options, callback) => {

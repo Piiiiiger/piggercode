@@ -7,12 +7,12 @@ import { resolveHappyHomeDirFromEnvironment } from '../providers/resolveHappyHom
 
 /**
  * Which Happier CLI this computer runs (plan R12): the one this app installs and keeps first on
- * PATH (`managed`), or a `happier` the user installed themselves (`own`, with the path of that CLI).
+ * PATH (`managed`), or a `piggercode` the user installed themselves (`own`, with the path of that CLI).
  *
  * One answer per Happier home, recorded beside the managed layout's other records
  * (`current.version`, `default-cli-release-channel.json`), so every Happier app on this computer and
  * every bootstrap task resolves the same CLI. No record means nobody was asked: a computer with no
- * other `happier` keeps the managed default without a question.
+ * other `piggercode` keeps the managed default without a question.
  */
 export type HappierCliChoice =
   | Readonly<{ mode: 'managed' }>

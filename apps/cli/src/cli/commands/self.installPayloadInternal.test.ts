@@ -23,13 +23,13 @@ const {
   }),
   quiesceInstalledCliWindowsPayloadOwnersMock: vi.fn(async (_params: unknown) => undefined),
   resolveInstalledFirstPartyComponentPathsMock: vi.fn(() => ({
-    installRoot: '/home/test/.happier/cli-preview',
-    currentPath: '/home/test/.happier/cli-preview/current',
-    previousPath: '/home/test/.happier/cli-preview/previous',
-    versionsDir: '/home/test/.happier/cli-preview/versions',
-    binaryPath: '/home/test/.happier/cli-preview/current/happier',
-    nodeEntrypointPath: '/home/test/.happier/cli-preview/current/package-dist/index.mjs',
-    shimPaths: ['/home/test/.happier/bin/hprev'],
+    installRoot: '/home/test/.piggercode/cli-preview',
+    currentPath: '/home/test/.piggercode/cli-preview/current',
+    previousPath: '/home/test/.piggercode/cli-preview/previous',
+    versionsDir: '/home/test/.piggercode/cli-preview/versions',
+    binaryPath: '/home/test/.piggercode/cli-preview/current/happier',
+    nodeEntrypointPath: '/home/test/.piggercode/cli-preview/current/package-dist/index.mjs',
+    shimPaths: ['/home/test/.piggercode/bin/hprev'],
   })),
   migrationEnvSnapshots: [] as Array<Record<string, string | undefined>>,
 }));
@@ -51,7 +51,7 @@ vi.mock('@/cli/runtime/update/quiesceInstalledCliWindowsPayloadOwners', () => ({
   quiesceInstalledCliWindowsPayloadOwners: (params: unknown) => quiesceInstalledCliWindowsPayloadOwnersMock(params),
 }));
 
-describe('happier self __install-payload', () => {
+describe('piggercode self __install-payload', () => {
   afterEach(() => {
     maybeRunVersionGatedRuntimeMigrationMock.mockReset();
     maybeRunVersionGatedRuntimeMigrationMock.mockImplementation(async (_params: unknown) => {
@@ -67,13 +67,13 @@ describe('happier self __install-payload', () => {
     quiesceInstalledCliWindowsPayloadOwnersMock.mockImplementation(async (_params: unknown) => undefined);
     resolveInstalledFirstPartyComponentPathsMock.mockReset();
     resolveInstalledFirstPartyComponentPathsMock.mockReturnValue({
-      installRoot: '/home/test/.happier/cli-preview',
-      currentPath: '/home/test/.happier/cli-preview/current',
-      previousPath: '/home/test/.happier/cli-preview/previous',
-      versionsDir: '/home/test/.happier/cli-preview/versions',
-      binaryPath: '/home/test/.happier/cli-preview/current/happier',
-      nodeEntrypointPath: '/home/test/.happier/cli-preview/current/package-dist/index.mjs',
-      shimPaths: ['/home/test/.happier/bin/hprev'],
+      installRoot: '/home/test/.piggercode/cli-preview',
+      currentPath: '/home/test/.piggercode/cli-preview/current',
+      previousPath: '/home/test/.piggercode/cli-preview/previous',
+      versionsDir: '/home/test/.piggercode/cli-preview/versions',
+      binaryPath: '/home/test/.piggercode/cli-preview/current/happier',
+      nodeEntrypointPath: '/home/test/.piggercode/cli-preview/current/package-dist/index.mjs',
+      shimPaths: ['/home/test/.piggercode/bin/hprev'],
     });
     migrationEnvSnapshots.length = 0;
     vi.restoreAllMocks();
@@ -109,7 +109,7 @@ describe('happier self __install-payload', () => {
         toVersion: '1.2.3',
         hadLegacyCurrentInstallWithoutVersionMarkers: false,
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
         forceNonInteractive: true,
       });
     } finally {
@@ -169,7 +169,7 @@ describe('happier self __install-payload', () => {
       expect(migrationEnvSnapshots).toContainEqual({
         PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'preview',
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
-        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/home/test/.happier/cli-preview/current/happier',
+        PIGGERCODE_DAEMON_SERVICE_NODE_PATH: '/home/test/.piggercode/cli-preview/current/happier',
         PIGGERCODE_DAEMON_SERVICE_ENTRY_PATH: '',
       });
       expect(process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL).toBe('stable');

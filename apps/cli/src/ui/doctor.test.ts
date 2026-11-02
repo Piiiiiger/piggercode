@@ -78,14 +78,14 @@ describe('doctor daemon owner formatting', () => {
             startedWithPublicReleaseChannel: 'preview',
             startedWithCliVersion: '1.2.3',
             serviceManaged: true,
-            serviceLabel: 'com.happier.cli.daemon.default',
+            serviceLabel: 'com.piggercode.cli.daemon.default',
         })).toContain('background service');
         expect(formatDaemonOwnerLabel({
             startedWithPublicReleaseChannel: 'preview',
             startedWithCliVersion: '1.2.3',
             serviceManaged: true,
-            serviceLabel: 'com.happier.cli.daemon.default',
-        })).toContain('com.happier.cli.daemon.default');
+            serviceLabel: 'com.piggercode.cli.daemon.default',
+        })).toContain('com.piggercode.cli.daemon.default');
     });
 
     it('keeps legacy owner wording neutral when startup metadata is missing', () => {

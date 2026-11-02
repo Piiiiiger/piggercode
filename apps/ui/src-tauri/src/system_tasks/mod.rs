@@ -463,7 +463,7 @@ fn normalize_system_task_log_path(path: &str) -> Result<PathBuf, String> {
 }
 
 fn resolve_happier_log_root_dir() -> Option<PathBuf> {
-    resolve_home_dir().map(|home_dir| home_dir.join(".happier"))
+    resolve_home_dir().map(|home_dir| home_dir.join(".piggercode"))
 }
 
 fn resolve_home_dir() -> Option<PathBuf> {
@@ -884,7 +884,7 @@ mod tests {
         let _env_guard = env_lock();
         let temp_dir = create_temp_dir("system-task-log-path");
         let home_dir = temp_dir.join("home");
-        let allowed_root = home_dir.join(".happier");
+        let allowed_root = home_dir.join(".piggercode");
         let log_dir = allowed_root.join("logs");
         fs::create_dir_all(&log_dir).expect("log dir should create");
         let log_path = log_dir.join("daemon.log");
@@ -913,7 +913,7 @@ mod tests {
         let _env_guard = env_lock();
         let temp_dir = create_temp_dir("system-task-log-path-outside");
         let home_dir = temp_dir.join("home");
-        let allowed_root = home_dir.join(".happier");
+        let allowed_root = home_dir.join(".piggercode");
         fs::create_dir_all(&allowed_root).expect("allowed root should create");
         let outside_path = temp_dir.join("outside.log");
         fs::write(&outside_path, "log").expect("outside log file should write");

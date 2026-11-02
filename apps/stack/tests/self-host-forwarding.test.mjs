@@ -32,7 +32,7 @@ function runHstack(repoRoot, args, extraEnv = {}) {
 async function writeHappierStub({ dir, logPath }) {
   const binDir = join(dir, 'bin');
   await mkdir(binDir, { recursive: true });
-  const stubPath = join(binDir, 'happier');
+  const stubPath = join(binDir, 'piggercode');
 
   const stubSource = [
     '#!/usr/bin/env node',
@@ -65,7 +65,7 @@ async function writeHappierStub({ dir, logPath }) {
   return { binDir, stubPath };
 }
 
-test('hstack self-host forwards to happier relay host when supported', async (t) => {
+test('hstack self-host forwards to piggercode relay host when supported', async (t) => {
   const repoRoot = resolveRepoRoot();
   const tempRoot = await mkdtemp(join(tmpdir(), 'hstack-self-host-forward-'));
   t.after(async () => {

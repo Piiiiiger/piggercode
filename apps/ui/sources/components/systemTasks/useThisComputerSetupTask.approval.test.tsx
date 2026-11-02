@@ -305,7 +305,7 @@ describe('useThisComputerSetupTask service consent (UD5 / C6)', () => {
                         // The shared wire contract the executor builds through, so this fixture
                         // cannot drift from the live prompt.
                         data: createSetupServiceConsentPromptData({
-                            takeover: 'Taking over happier-daemon.',
+                            takeover: 'Taking over piggercode-daemon.',
                             message: 'A pinned service already exists.',
                             competingServices: ['pinned'],
                             servicesToRemove: [],

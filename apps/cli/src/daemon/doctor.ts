@@ -21,7 +21,7 @@ const DAEMON_OWNERSHIP_ENVIRONMENT_VARIABLE_KEYS = [
   'PIGGERCODE_WEBAPP_URL',
   'PIGGERCODE_PUBLIC_SERVER_URL',
 ] as const;
-const WINDOWS_HAPPY_HOST_PROCESS_NAMES = new Set(['happier', 'happier.exe', 'node', 'node.exe', 'bun', 'bun.exe', 'mainthread']);
+const WINDOWS_HAPPY_HOST_PROCESS_NAMES = new Set(['piggercode', 'piggercode.exe', 'node', 'node.exe', 'bun', 'bun.exe', 'mainthread']);
 
 export type DaemonOwnershipEnvironmentVariables = Partial<Record<
   typeof DAEMON_OWNERSHIP_ENVIRONMENT_VARIABLE_KEYS[number],
@@ -316,7 +316,7 @@ export function classifyHappyProcess(proc: RawProcessInfo): HappyProcessInfo | n
       (normalizedCommand.includes('@piggercode/cli') ||
         normalizedCommand.includes('dist/index.mjs') ||
         normalizedCommand.includes('package-dist/index.mjs') ||
-        normalizedCommand.includes('bin/happier.mjs') ||
+        normalizedCommand.includes('bin/piggercode.mjs') ||
         isRunnerSnapshotCommand ||
         // Some runtime handoff paths execute snapshot `src/index.ts` directly under `node`
         // (without the tsx import hook), so keep this as a first-class Happy process shape.
@@ -326,11 +326,11 @@ export function classifyHappyProcess(proc: RawProcessInfo): HappyProcessInfo | n
           (normalizedCommand.includes('apps/cli') ||
             normalizedCommand.includes('@piggercode/cli') ||
             isCliSourceSnapshotCommand)))) ||
-    normalizedCommand.includes('happier.mjs') ||
+    normalizedCommand.includes('piggercode.mjs') ||
     normalizedCommand.includes('@piggercode/cli') ||
     normalizedCommand.includes('package-dist/index.mjs') ||
-    normalizedName === 'happier' ||
-    normalizedName === 'happier.exe';
+    normalizedName === 'piggercode' ||
+    normalizedName === 'piggercode.exe';
 
   if (!isHappy) return null;
 

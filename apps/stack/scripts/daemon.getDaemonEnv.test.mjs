@@ -144,7 +144,7 @@ test('getDaemonEnv preserves an explicit daemon service label', async () => {
 
   const env = getDaemonEnv({
     baseEnv: {
-      PIGGERCODE_DAEMON_SERVICE_LABEL: 'happier-daemon.preview.example.service',
+      PIGGERCODE_DAEMON_SERVICE_LABEL: 'piggercode-daemon.preview.example.service',
     },
     cliHomeDir: dir,
     internalServerUrl: 'http://127.0.0.1:3009',
@@ -153,5 +153,5 @@ test('getDaemonEnv preserves an explicit daemon service label', async () => {
     cliIdentity: 'default',
   });
 
-  assert.equal(env.PIGGERCODE_DAEMON_SERVICE_LABEL, 'happier-daemon.preview.example.service');
+  assert.equal(env.PIGGERCODE_DAEMON_SERVICE_LABEL, 'piggercode-daemon.preview.example.service');
 });

@@ -117,7 +117,7 @@ function buildStacks(params: Readonly<{
 /**
  * Pick the stack that's "currently active" on this machine — the one the user
  * would be interacting with if they opened a terminal right now and ran
- * `happier`. Preference order: running daemon > configured service > local relay.
+ * `piggercode`. Preference order: running daemon > configured service > local relay.
  */
 function pickActiveStack(
   stacks: readonly StackEntry[],
@@ -166,7 +166,7 @@ export function classifyStacks(params: Readonly<{
         kind: 'channel_switch_recommended',
         severity: 'info',
         // The 0.2.3 installer-migration hook broadens auto-apply so a
-        // `happier self update` across the boundary can converge stacks
+        // `piggercode self update` across the boundary can converge stacks
         // non-interactively. In normal interactive use this stays false so
         // channel switches are always explicit.
         autoApplyWithoutPrompt: params.onMigration === true,

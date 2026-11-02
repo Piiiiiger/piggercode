@@ -12,7 +12,7 @@ test('first-party runtime catalog exposes the expected component identities', ()
   assert.deepEqual(ids, ['happier-cli', 'happier-daemon', 'happier-server', 'hstack', 'happier-memory-runtime', 'happier-difftastic']);
 });
 
-test('happier daemon shares the cli install root but uses node-runtime-payload', () => {
+test('piggercode daemon shares the cli install root but uses node-runtime-payload', () => {
   const cli = getFirstPartyComponentCatalogEntry('happier-cli');
   const daemon = getFirstPartyComponentCatalogEntry('happier-daemon');
 

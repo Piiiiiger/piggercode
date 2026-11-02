@@ -98,7 +98,7 @@ export function resolveRuntimeRootFromPackagedBinaryPath(pathLike: string | null
     return null;
   }
   const fileName = basename(normalized).toLowerCase();
-  if (!['happier', 'happier.exe', 'happier-dev', 'happier-dev.exe'].includes(fileName)) {
+  if (!['piggercode', 'piggercode.exe', 'piggercode-dev', 'piggercode-dev.exe'].includes(fileName)) {
     return null;
   }
   return dirname(normalized);

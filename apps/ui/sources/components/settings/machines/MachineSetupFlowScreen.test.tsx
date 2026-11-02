@@ -237,7 +237,7 @@ function convergedAmbientResult(taskId: string, overrides: Record<string, unknow
             daemonRunning: true,
             needsAuth: false,
             machineId: 'machine-local-1',
-            acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' },
+            acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' },
             server: {
                 serverUrl: 'https://relay.example.test',
                 publicServerUrl: 'https://relay.example.test',

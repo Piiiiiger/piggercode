@@ -19,8 +19,8 @@ function makeService(overrides: Partial<AutomaticStartupEntry> = {}): AutomaticS
     running: false,
     configuredCliVersion: '0.12.3',
     runningCliVersion: null,
-    path: '/Users/me/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
-    happierHomeDir: '/Users/me/.happier',
+    path: '/Users/me/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
+    happierHomeDir: '/Users/me/.piggercode',
     isForeignHome: false,
     installedDefinitionMatchesExpected: true,
     isLegacyChannelScoped: false,
@@ -53,7 +53,7 @@ function makeRelay(overrides: Partial<LocalRelayEntry> = {}): LocalRelayEntry {
     healthy: true,
     relayUrl: 'http://localhost:41872',
     port: 41872,
-    installRoot: '/Users/me/.happier/relay-host-dev',
+    installRoot: '/Users/me/.piggercode/relay-host-dev',
     ...overrides,
   };
 }

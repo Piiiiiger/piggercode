@@ -4,7 +4,7 @@ import { isDoNotTranslate } from './localeLiterals';
 
 /**
  * `isDoNotTranslate` decides what is never offered for translation. Withholding a real command is
- * essential — a localised `happier connect <code>` is a command that does not run. But the rule
+ * essential — a localised `piggercode connect <code>` is a command that does not run. But the rule
  * that recognises a command line used to accept any run of lowercase word-ish tokens, which is
  * exactly the shape of the prose fragments that sit either side of a `${...}` hole: "ready for
  * review", "just now", "m ago", " configured in Happier". Those were withheld from every locale and
@@ -18,14 +18,14 @@ describe('isDoNotTranslate', () => {
     it('withholds real commands and code', () => {
         for (const command of [
             'npx -y @modelcontextprotocol/server-playwright',
-            'happier connect ',
-            'happier daemon status',
+            'piggercode connect ',
+            'piggercode daemon status',
             'claude setup-token',
             'git rebase --continue',
             'ssh user@host',
             '--force',
             'https://example.com/docs',
-            '~/.happier/uploads',
+            '~/.piggercode/uploads',
             'src/new-file.ts',
         ]) {
             expect(isDoNotTranslate(command), command).toBe(true);

@@ -83,14 +83,14 @@ describe('installRemoteFirstPartyComponent', () => {
       );
 
       expect(copiedRemotePaths).toEqual([
-        '.happier/bootstrap-staging/happier-cli-preview-1-123',
+        '.piggercode/bootstrap-staging/happier-cli-preview-1-123',
       ]);
-      expect(remoteTextCommands.some((command) => command.includes('mkdir -p $HOME/.happier'))).toBe(true);
+      expect(remoteTextCommands.some((command) => command.includes('mkdir -p $HOME/.piggercode'))).toBe(true);
       expect(remoteTextCommands.some((command) => command.includes('/versions/'))).toBe(true);
       expect(remoteTextCommands.some((command) => command.includes('tar -xf'))).toBe(true);
       expect(remoteTextCommands.some((command) => command.includes('ln -sfn'))).toBe(true);
       expect(remoteTextCommands.some((command) => command.includes('chmod +x'))).toBe(true);
-      expect(remoteTextCommands.some((command) => command.includes('bash $HOME/.happier'))).toBe(false);
+      expect(remoteTextCommands.some((command) => command.includes('bash $HOME/.piggercode'))).toBe(false);
       expect(remoteTextCommands.some((command) => command.includes('pipefail'))).toBe(false);
     } finally {
       await fixture.cleanup();
@@ -165,7 +165,7 @@ describe('installRemoteFirstPartyComponent', () => {
             target: 'dev@example.test',
             auth: 'agent',
           },
-          remoteHomeDir: '$HOME/.happier; rm -rf /',
+          remoteHomeDir: '$HOME/.piggercode; rm -rf /',
         },
         {
           resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),

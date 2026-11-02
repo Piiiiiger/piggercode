@@ -226,7 +226,7 @@ export function findEscapeNormalisations(literals: readonly LocaleLiteral[]): Ro
 
 /**
  * Literals that must survive byte-identical: interpolation glue, code, flags, paths, URLs and
- * whole CLI invocations. Sending these to a translator is how `happier attach <session-id>`
+ * whole CLI invocations. Sending these to a translator is how `piggercode attach <session-id>`
  * becomes a command that does not run.
  *
  * This is a HEURISTIC for deciding what to *offer* a translator, never a licence to skip a string
@@ -247,7 +247,7 @@ export function isDoNotTranslate(text: string): boolean {
 
 /** Executables this app actually names in user-facing copy. */
 const COMMAND_EXECUTABLE =
-    /^(happier|npx|npm|yarn|pnpm|bunx|node|claude|codex|gh|git|tmux|zellij|ssh|scp|curl|brew|winget|choco|docker|systemctl|launchctl)$/;
+    /^(piggercode|happier|npx|npm|yarn|pnpm|bunx|node|claude|codex|gh|git|tmux|zellij|ssh|scp|curl|brew|winget|choco|docker|systemctl|launchctl)$/;
 
 /** A token no sentence contains: a flag, a <placeholder>, a scoped package. */
 const NOT_PROSE_TOKEN = /^(--?[\w-]+|<[\w-]+>|@[\w.-]+\/[\w.-]+)$/;

@@ -16,7 +16,7 @@ import type { HsetupLaunch } from './desktopSystemTaskHost';
 /**
  * A computer the desktop app can set up for real, without touching the machine running the test.
  *
- * - its own HOME (`~/.happier`, shell profiles, `~/.config/systemd/user`) in the OS temp dir;
+ * - its own HOME (`~/.piggercode`, shell profiles, `~/.config/systemd/user`) in the OS temp dir;
  * - a PATH holding only the Node runtime, the system tool dirs and a `systemctl` test double of
  *   the systemd user manager (`fakeSystemdUser.mjs`) — the one OS boundary a CI runner lacks;
  * - the Happier CLI built from this checkout, installed as the desktop-managed CLI through the
@@ -124,7 +124,7 @@ async function resolveLocalCliBuild(testDir: string): Promise<CliTestLaunchSpec>
 /**
  * A release-shaped payload for the local CLI build: `happier` plus the `package-dist/index.mjs`
  * node entry of a release payload. The entry loads the local build, so once the desktop's managed
- * install owner promotes the payload into `~/.happier/<channel root>/versions/<version>` (writing
+ * install owner promotes the payload into `~/.piggercode/<channel root>/versions/<version>` (writing
  * the `current.version` record and shims, as for a verified download) the CLI runs from inside its
  * install root — `argv[1]` carries the channel path hint the CLI derives its release ring from.
  */
@@ -148,7 +148,7 @@ function writeLocalCliPayload(params: Readonly<{ payloadRoot: string; launch: Cl
     writeExecutable(join(params.payloadRoot, 'happier'), [
         '#!/bin/sh',
         ...envLines,
-        // The managed shims (`~/.happier/bin/*`) link here; resolve them like a real binary would.
+        // The managed shims (`~/.piggercode/bin/*`) link here; resolve them like a real binary would.
         'self="$(readlink -f "$0")"',
         // A compiled release binary is argv[0]/argv[1] itself; this launcher's argv[1] is the entry
         // script, so name the command the way the binary would be named (`happier`, `hdev`, ...).
@@ -164,7 +164,7 @@ const FOREIGN_CLI_PACKAGE = '@piggercode/cli';
  * The local CLI build laid out as a global npm install: the package under
  * `<prefix>/lib/node_modules/@piggercode/cli` and a `<prefix>/bin/happier` link to its bin, so
  * the CLI's origin owner names it `npm` with its removal and update commands. The node entry is
- * `bin/happier.mjs`, the package's `bin.happier`: like a real install, the CLI's `argv[1]` is
+ * `bin/piggercode.mjs`, the package's `bin.happier`: like a real install, the CLI's `argv[1]` is
  * `happier`-named, so it derives its release ring from the invoker name and the default-channel
  * record, never from a release payload's layout. (The small `bin/happier` shell launcher only adds
  * the node flags a source-entry build needs; npm links straight to the `.mjs`.)
@@ -175,7 +175,7 @@ function writeForeignCli(params: Readonly<{ npmPrefixDir: string; launch: CliTes
         throw new Error(`Unexpected CLI launch spec (no entry script): ${JSON.stringify(params.launch)}`);
     }
     const packageDir = join(params.npmPrefixDir, 'lib', 'node_modules', FOREIGN_CLI_PACKAGE);
-    const binEntry = join(packageDir, 'bin', 'happier.mjs');
+    const binEntry = join(packageDir, 'bin', 'piggercode.mjs');
     mkdirSync(dirname(binEntry), { recursive: true });
     writeFileSync(binEntry, `import ${JSON.stringify(pathToFileURL(entry).href)};\n`, 'utf8');
     const envLines = Object.entries({
@@ -186,7 +186,7 @@ function writeForeignCli(params: Readonly<{ npmPrefixDir: string; launch: CliTes
         .map(([key, value]) => `export ${key}=${shellQuote(String(value))}`);
     const node = [params.launch.command, ...params.launch.args.slice(0, -1)].map(shellQuote).join(' ');
     writeExecutable(join(packageDir, 'bin', 'happier'), ['#!/bin/sh', ...envLines, `exec ${node} ${shellQuote(binEntry)} "$@"`, ''].join('\n'));
-    writeFileSync(join(packageDir, 'package.json'), `${JSON.stringify({ name: FOREIGN_CLI_PACKAGE, version: readCliPackageVersion(), bin: { happier: './bin/happier.mjs' } })}\n`, 'utf8');
+    writeFileSync(join(packageDir, 'package.json'), `${JSON.stringify({ name: FOREIGN_CLI_PACKAGE, version: readCliPackageVersion(), bin: { happier: './bin/piggercode.mjs' } })}\n`, 'utf8');
     mkdirSync(join(params.npmPrefixDir, 'bin'), { recursive: true });
     symlinkSync(join(packageDir, 'bin', 'happier'), join(params.npmPrefixDir, 'bin', 'happier'));
 }
@@ -212,7 +212,7 @@ export async function createHermeticDesktopComputer(params: Readonly<{
     await ensureHsetupSharedDepsBuilt();
     const cliBuild = await resolveLocalCliBuild(params.testDir);
     const homeDir = await mkdtemp(join(tmpdir(), `hdesk-${params.label}-`));
-    const happierHomeDir = join(homeDir, '.happier');
+    const happierHomeDir = join(homeDir, '.piggercode');
     const logDir = resolve(params.testDir, `computer-${params.label}`);
     const binDir = join(homeDir, '.hermetic-bin');
     const fakeSystemdStateDir = join(homeDir, '.hermetic-systemd');
@@ -307,10 +307,10 @@ export async function createHermeticDesktopComputer(params: Readonly<{
             child.on('error', reject);
             child.on('close', (status) => {
                 clearTimeout(timer);
-                writeFileSync(join(logDir, `cli-${Date.now()}-${args.slice(0, 3).join('-')}.log`), `$ happier ${args.join(' ')}\n[status ${String(status)}]\n--- stdout\n${stdout}\n--- stderr\n${stderr}\n`);
+                writeFileSync(join(logDir, `cli-${Date.now()}-${args.slice(0, 3).join('-')}.log`), `$ piggercode ${args.join(' ')}\n[status ${String(status)}]\n--- stdout\n${stdout}\n--- stderr\n${stderr}\n`);
                 const result = { status: status ?? 1, stdout, stderr };
                 if (result.status !== 0 && !options.allowFailure) {
-                    reject(new Error(`happier ${args.join(' ')} failed (status=${result.status}):\n${stdout}\n${stderr}`));
+                    reject(new Error(`piggercode ${args.join(' ')} failed (status=${result.status}):\n${stdout}\n${stderr}`));
                     return;
                 }
                 resolvePromise(result);

@@ -35,7 +35,7 @@ process.exit(0);
     // Ensure stopLocalDaemon launches via dist entrypoint (preferred).
     binHappierScript: 'process.exit(0);\n',
   });
-  return join(cliBinDir, 'happier.mjs');
+  return join(cliBinDir, 'piggercode.mjs');
 }
 
 async function spawnDaemonLikeProcess({ cliHomeDir, internalServerUrl, stackName = 'main' }) {
@@ -124,7 +124,7 @@ setInterval(() => {}, 1000);
 `.trimStart(),
       binHappierScript: 'process.exit(0);\n',
     });
-    const cliBin = join(cliBinDir, 'happier.mjs');
+    const cliBin = join(cliBinDir, 'piggercode.mjs');
     const internalServerUrl = 'http://127.0.0.1:3005';
     const env = {
       ...sanitizeStackTestRunnerEnv(process.env),
@@ -237,7 +237,7 @@ test('stopLocalDaemon stops a live daemon from daemon.state.json when cli dist i
   try {
     const cliDir = join(tmp, 'apps', 'cli');
     const cliHomeDir = join(tmp, 'cli-home');
-    const cliBin = join(cliDir, 'bin', 'happier.mjs');
+    const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
     const internalServerUrl = 'http://127.0.0.1:3005';
     const env = sanitizeStackTestRunnerEnv(process.env);
 
@@ -277,7 +277,7 @@ test('stopLocalDaemon routes daemon.state cleanup through canonical owned termin
 
   const cliDir = join(tmp, 'apps', 'cli');
   const cliHomeDir = join(tmp, 'cli-home');
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const runtimeStatePath = join(tmp, 'stack.runtime.json');
   const internalServerUrl = 'http://127.0.0.1:3005';
   const env = sanitizeStackTestRunnerEnv(process.env);
@@ -338,7 +338,7 @@ test('stopLocalDaemon does not promote fresh process identity for old Windows da
 
       const cliDir = join(tmp, 'apps', 'cli');
       const cliHomeDir = join(tmp, 'cli-home');
-      const cliBin = join(cliDir, 'bin', 'happier.mjs');
+      const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
       const runtimeStatePath = join(tmp, 'old-stack.runtime.json');
       const internalServerUrl = 'http://127.0.0.1:3005';
       const env = sanitizeStackTestRunnerEnv(process.env);

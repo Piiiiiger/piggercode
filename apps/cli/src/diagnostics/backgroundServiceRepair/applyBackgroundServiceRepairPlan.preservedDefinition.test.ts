@@ -22,7 +22,7 @@ vi.mock('node:child_process', async (importOriginal) => ({
   ...await importOriginal<typeof import('node:child_process')>(),
   spawnSync: vi.fn((command: string, args: readonly string[] = []) => ({
     status: 0,
-    stdout: Buffer.from(command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\Happier")')) ? '[]' : ''),
+    stdout: Buffer.from(command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\PiggerCode")')) ? '[]' : ''),
     stderr: Buffer.from(''),
   })),
 }));
@@ -53,7 +53,7 @@ function definition(params: Readonly<{
     activeServerId: 'company',
     uid: 501,
     userHomeDir: params.homeDir,
-    happierHomeDir: `${params.homeDir}/.happier`,
+    happierHomeDir: `${params.homeDir}/.piggercode`,
     nodePath: '/usr/local/bin/happier',
     entryPath: '',
     serverUrl: 'https://company.example.test',
@@ -67,7 +67,7 @@ function definition(params: Readonly<{
 
 function installFixture(params: Parameters<typeof definition>[0], legacy: boolean): DaemonServiceListEntry {
   const file = definition(params);
-  const canonicalLabel = params.platform === 'darwin' ? 'com.happier.cli.daemon.default' : 'happier-daemon.default';
+  const canonicalLabel = params.platform === 'darwin' ? 'com.piggercode.cli.daemon.default' : 'piggercode-daemon.default';
   const legacyLabel = canonicalLabel.replace('.default', '.preview.default');
   const path = legacy ? file.path.replace(canonicalLabel, legacyLabel) : file.path;
   mkdirSync(dirname(path), { recursive: true });
@@ -80,7 +80,7 @@ function installFixture(params: Parameters<typeof definition>[0], legacy: boolea
     path,
     platform: params.platform,
     mode: 'user',
-    happierHomeDir: `${params.homeDir}/.happier`,
+    happierHomeDir: `${params.homeDir}/.piggercode`,
     releaseChannel: 'preview',
     label: legacy ? legacyLabel : 'company',
     targetMode: params.targetMode ?? 'default-following',
@@ -105,9 +105,9 @@ function runtime(platform: 'darwin' | 'linux' | 'win32', homeDir: string) {
     }
   }
   vi.stubEnv('PATH', commandDir);
-  vi.stubEnv('PIGGERCODE_HOME_DIR', `${homeDir}/.happier`);
+  vi.stubEnv('PIGGERCODE_HOME_DIR', `${homeDir}/.piggercode`);
   reloadConfiguration();
-  return { platform, systemUser: '', uid: 501, userHomeDir: homeDir, happierHomeDir: `${homeDir}/.happier` };
+  return { platform, systemUser: '', uid: 501, userHomeDir: homeDir, happierHomeDir: `${homeDir}/.piggercode` };
 }
 
 describe('repair preserves the previous definition through real reinstall', () => {
@@ -119,7 +119,7 @@ describe('repair preserves the previous definition through real reinstall', () =
       const expected = settings(platform, previous.path);
       expect(expected).toEqual({ autostart: 'on-demand', managedBy: 'desktop', bundleId: params.bundleId });
       const plan = buildBackgroundServiceRepairPlan({
-        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.happier`,
+        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.piggercode`,
         currentServerId: 'company', preferredMode: 'user', services: [previousPin, previous],
       });
 
@@ -140,7 +140,7 @@ describe('repair preserves the previous definition through real reinstall', () =
       const params = { platform, homeDir, targetMode: 'pinned', managedBy: 'desktop', autostart: 'on-demand', bundleId: 'dev.happier.app.preview' } as const;
       const previous = installFixture(params, false);
       const plan = buildBackgroundServiceRepairPlan({
-        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.happier`,
+        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.piggercode`,
         currentServerId: 'company', preferredMode: 'user', services: [previous],
       });
       const expected = settings(platform, previous.path);
@@ -159,7 +159,7 @@ describe('repair preserves the previous definition through real reinstall', () =
       const previousPinned = installFixture({ platform, homeDir, targetMode: 'pinned', managedBy: 'desktop', autostart: 'on-demand', bundleId: 'dev.happier.app.preview' }, false);
       const expected = settings(platform, previousDefault.path);
       const plan = buildBackgroundServiceRepairPlan({
-        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.happier`,
+        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.piggercode`,
         currentServerId: 'company', preferredMode: 'user', services: [previousPinned, previousDefault],
       });
 
@@ -179,7 +179,7 @@ describe('repair preserves the previous definition through real reinstall', () =
       const expectedDefault = settings(platform, previousDefault.path);
       const expectedPinned = settings(platform, previousPinned.path);
       const plan = buildBackgroundServiceRepairPlan({
-        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.happier`,
+        currentReleaseChannel: 'preview', currentHappierHomeDir: `${homeDir}/.piggercode`,
         currentServerId: 'company', preferredMode: 'user', services: [previousDefault, previousPinned],
       });
       const failure = new Error('replacement write failed');

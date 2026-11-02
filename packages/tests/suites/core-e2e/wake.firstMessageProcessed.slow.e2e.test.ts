@@ -555,7 +555,7 @@ describe('wake/resume: first message processed', () => {
       ...filler,
       '',
       '[attachments]',
-      `- .happier/uploads/messages/${sentinel}/parallax_block.png (parallax_block.png, image/png, 262290 bytes)`,
+      `- .piggercode/uploads/messages/${sentinel}/parallax_block.png (parallax_block.png, image/png, 262290 bytes)`,
       '[/attachments]',
     ].join('\n');
     expect(wakePrompt.length).toBeGreaterThan(2_000);

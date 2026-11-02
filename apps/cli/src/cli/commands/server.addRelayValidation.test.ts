@@ -105,7 +105,7 @@ afterEach(() => {
   resolveInstalledDaemonServiceInventoryForCurrentRelayMock.mockResolvedValue([]);
 });
 
-describe('happier server add validates the relay before persisting it', () => {
+describe('piggercode server add validates the relay before persisting it', () => {
   it('refuses to persist an unreachable relay in non-interactive mode', async () => {
     const restoreTty = setTtyMode(false);
     probeServerVersionMock.mockResolvedValue({ ok: false, url: `${UNREACHABLE_URL}/v1/version`, status: null, error: 'getaddrinfo ENOTFOUND typo.example.test' });

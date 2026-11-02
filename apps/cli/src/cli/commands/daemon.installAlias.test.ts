@@ -6,7 +6,7 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { captureStdoutJsonOutput } from '@/testkit/logger/captureOutput';
 import { handleDaemonCliCommand } from './daemon';
 
-describe('happier daemon install/uninstall', () => {
+describe('piggercode daemon install/uninstall', () => {
   it('aliases daemon install to daemon service install (supports --dry-run --json)', async () => {
     const envScope = createEnvKeyScope([
       'PIGGERCODE_DAEMON_SERVICE_PLATFORM',
@@ -21,7 +21,7 @@ describe('happier daemon install/uninstall', () => {
       envScope.patch({
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.piggercode'),
         PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
         HOME: tmp,
         PATH: join(tmp, 'bin'),
@@ -37,7 +37,7 @@ describe('happier daemon install/uninstall', () => {
 
         const parsed = output.json();
         expect(parsed.ok).toBe(true);
-        expect(parsed.plan?.files?.[0]?.path).toContain('happier-daemon.default.service');
+        expect(parsed.plan?.files?.[0]?.path).toContain('piggercode-daemon.default.service');
       } finally {
         output.restore();
         envScope.restore();
@@ -59,7 +59,7 @@ describe('happier daemon install/uninstall', () => {
       envScope.patch({
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
         PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: tmp,
-        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.happier'),
+        PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(tmp, '.piggercode'),
         PIGGERCODE_DAEMON_SERVICE_INSTANCE_ID: 'cloud',
         HOME: tmp,
         PATH: join(tmp, 'bin'),
@@ -75,7 +75,7 @@ describe('happier daemon install/uninstall', () => {
 
         const parsed = output.json();
         expect(parsed.ok).toBe(true);
-        expect(parsed.plan?.filesToRemove?.some((p) => p.includes('happier-daemon.default.service'))).toBe(true);
+        expect(parsed.plan?.filesToRemove?.some((p) => p.includes('piggercode-daemon.default.service'))).toBe(true);
       } finally {
         output.restore();
         envScope.restore();

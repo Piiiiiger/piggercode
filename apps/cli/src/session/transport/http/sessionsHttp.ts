@@ -103,7 +103,7 @@ async function getSessionByIdResponse(params: Readonly<{
     headers: {
       Authorization: `Bearer ${params.token}`,
       'Content-Type': 'application/json',
-      'X-Happier-Request-Purpose': requestPurpose,
+      'X-PiggerCode-Request-Purpose': requestPurpose,
     },
     timeout: configuration.sessionControlHttpTimeoutMs,
     validateStatus: () => true,

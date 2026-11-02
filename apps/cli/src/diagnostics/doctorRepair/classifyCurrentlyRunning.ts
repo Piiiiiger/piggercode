@@ -17,7 +17,7 @@ import type {
  *
  * When an auto-starting background service owns the same relay profile as the
  * running daemon AND it targets the current CLI's channel, the correct fix is
- * `happier service restart` — the service install layer refuses
+ * `piggercode service restart` — the service install layer refuses
  * `daemon restart --takeover` against a profile it already manages.
  *
  * Only when there's no matching managing service do we fall back to a direct

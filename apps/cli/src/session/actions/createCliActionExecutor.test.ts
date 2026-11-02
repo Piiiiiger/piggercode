@@ -1179,7 +1179,7 @@ describe('createCliActionExecutor', () => {
         },
         windowsRemoteSessionLaunchMode: 'hidden',
         windowsRemoteSessionConsole: 'hidden',
-        windowsTerminalWindowName: 'Happier QA',
+        windowsTerminalWindowName: 'PiggerCode QA',
       },
       { surface: 'cli', defaultSessionId: 'sess-1' },
     );
@@ -1207,7 +1207,7 @@ describe('createCliActionExecutor', () => {
       },
       windowsRemoteSessionLaunchMode: 'hidden',
       windowsRemoteSessionConsole: 'hidden',
-      windowsTerminalWindowName: 'Happier QA',
+      windowsTerminalWindowName: 'PiggerCode QA',
     }));
     expectSingleSpawnWithPendingFirstInput('Use public prompt alias');
   });

@@ -34,7 +34,7 @@ function parseCliUpdateParams(params: unknown) {
  *
  * One daemon per relay: each pinned service of this home and ring runs the same managed CLI, so
  * each one whose daemon runs is restarted and proven the same way, addressed to that service —
- * through `planServiceDaemonsRestartAfterCliUpdate`, the rule `happier self update` also uses. Every
+ * through `planServiceDaemonsRestartAfterCliUpdate`, the rule `piggercode self update` also uses. Every
  * daemon is attempted before a failure is reported. A CLI that cannot list its services leaves
  * only the default-following service in the plan.
  */

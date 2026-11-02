@@ -81,11 +81,11 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+        path: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
         platform: 'darwin',
-        happierHomeDir: '/Users/tester/.happier',
+        happierHomeDir: '/Users/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'com.happier.cli.daemon.default',
+        label: 'com.piggercode.cli.daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -96,7 +96,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'darwin',
       uid: 501,
       userHomeDir: '/Users/tester',
-      happierHomeDir: '/Users/tester/.happier',
+      happierHomeDir: '/Users/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -114,11 +114,11 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -129,7 +129,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       instanceId: 'default',
       runCommands: false,
     });
@@ -139,7 +139,7 @@ describe('installDaemonService conflict handling', () => {
   });
 
   it('treats trailing slashes in happierHomeDir as the same home when checking installed definition match', async () => {
-    const installedPath = '/tmp/happier-daemon.default.service';
+    const installedPath = '/tmp/piggercode-daemon.default.service';
     mkdirSync(dirname(installedPath), { recursive: true });
     writeFileSync(installedPath, 'expected', 'utf8');
 
@@ -155,9 +155,9 @@ describe('installDaemonService conflict handling', () => {
         installed: true,
         path: installedPath,
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier/',
+        happierHomeDir: '/home/tester/.piggercode/',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -168,7 +168,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -185,22 +185,22 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
       {
         serverId: 'default',
         name: 'Default background service duplicate',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.duplicate.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.duplicate.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default.duplicate',
+        label: 'piggercode-daemon.default.duplicate',
         targetMode: 'default-following',
       },
     ]);
@@ -211,7 +211,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -225,7 +225,7 @@ describe('installDaemonService conflict handling', () => {
   });
 
   it('rewrites an exact target service when the installed definition does not match the expected plan', async () => {
-    const installedPath = '/tmp/happier-installer-mismatch/happier-daemon.default.service';
+    const installedPath = '/tmp/happier-installer-mismatch/piggercode-daemon.default.service';
     mkdirSync(dirname(installedPath), { recursive: true });
     writeFileSync(installedPath, '[Unit]\nDescription=stale\n', 'utf8');
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
@@ -235,9 +235,9 @@ describe('installDaemonService conflict handling', () => {
         installed: true,
         path: installedPath,
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -253,7 +253,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       instanceId: 'default',
       runCommands: true,
       commandFailureMode: 'strict',
@@ -263,17 +263,17 @@ describe('installDaemonService conflict handling', () => {
     expect(applyDaemonServiceInstallPlanMock).toHaveBeenCalledTimes(1);
   });
 
-  it('does not treat a same-lane default-following service from another Happier home as the exact target', async () => {
+  it('does not treat a same-lane default-following service from another PiggerCode home as the exact target', async () => {
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
       {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier-old',
+        happierHomeDir: '/home/tester/.piggercode-old',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -284,7 +284,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       instanceId: 'default',
       strategy: 'add',
       runCommands: true,
@@ -297,17 +297,17 @@ describe('installDaemonService conflict handling', () => {
     expect(applyDaemonServiceInstallPlanMock).not.toHaveBeenCalled();
   });
 
-  it('blocks replacing a default-following service from another Happier home', async () => {
+  it('blocks replacing a default-following service from another PiggerCode home', async () => {
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
       {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier-other',
+        happierHomeDir: '/home/tester/.piggercode-other',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -318,7 +318,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -333,18 +333,18 @@ describe('installDaemonService conflict handling', () => {
     expect(applyDaemonServiceInstallPlanMock).not.toHaveBeenCalled();
   });
 
-  it('replaces a same-mode default-following service from another Happier home with replace-all', async () => {
+  it('replaces a same-mode default-following service from another PiggerCode home with replace-all', async () => {
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
       {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+        path: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
         platform: 'darwin',
         mode: 'user',
-        happierHomeDir: '/Users/tester/.happier/stacks/repo-dev-old/cli',
+        happierHomeDir: '/Users/tester/.piggercode/stacks/repo-dev-old/cli',
         releaseChannel: 'stable',
-        label: 'com.happier.cli.daemon.default',
+        label: 'com.piggercode.cli.daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -355,7 +355,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'darwin',
       uid: 501,
       userHomeDir: '/Users/tester',
-      happierHomeDir: '/Users/tester/.happier',
+      happierHomeDir: '/Users/tester/.piggercode',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -370,21 +370,21 @@ describe('installDaemonService conflict handling', () => {
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
-      installedPath: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+      installedPath: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
     }));
     expect(applyDaemonServiceInstallPlanMock).toHaveBeenCalledTimes(1);
   });
 
-  it('blocks replacing a default-following service with missing Happier home metadata', async () => {
+  it('blocks replacing a default-following service with missing PiggerCode home metadata', async () => {
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
       {
         serverId: 'default',
         name: 'Legacy default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -395,7 +395,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -411,17 +411,17 @@ describe('installDaemonService conflict handling', () => {
     expect(applyDaemonServiceInstallPlanMock).not.toHaveBeenCalled();
   });
 
-  it('replaces a same-mode default-following service with missing Happier home metadata with replace-all', async () => {
+  it('replaces a same-mode default-following service with missing PiggerCode home metadata with replace-all', async () => {
     discoverInstalledDaemonServiceEntriesMock.mockResolvedValueOnce([
       {
         serverId: 'default',
         name: 'Legacy default background service',
         installed: true,
-        path: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+        path: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
         platform: 'darwin',
         mode: 'user',
         releaseChannel: 'stable',
-        label: 'com.happier.cli.daemon.default',
+        label: 'com.piggercode.cli.daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -432,7 +432,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'darwin',
       uid: 501,
       userHomeDir: '/Users/tester',
-      happierHomeDir: '/Users/tester/.happier',
+      happierHomeDir: '/Users/tester/.piggercode',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -447,7 +447,7 @@ describe('installDaemonService conflict handling', () => {
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
-      installedPath: '/Users/tester/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+      installedPath: '/Users/tester/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
     }));
     expect(applyDaemonServiceInstallPlanMock).toHaveBeenCalledTimes(1);
   });
@@ -458,11 +458,11 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
     ]);
@@ -473,7 +473,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -492,12 +492,12 @@ describe('installDaemonService conflict handling', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+          path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'user',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         },
       ])
@@ -509,7 +509,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 0,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'system',
       systemUser: 'happier',
       channel: 'preview',
@@ -540,7 +540,7 @@ describe('installDaemonService conflict handling', () => {
         ...actual,
         resolveLinuxSystemUserPaths: vi.fn(({ systemUser }: { systemUser: string }) => ({
           userHomeDir: systemUser === 'happier' ? '/srv/happier' : '/home/sudo-user',
-          happierHomeDir: systemUser === 'happier' ? '/srv/happier/.happier' : '/home/sudo-user/.happier',
+          happierHomeDir: systemUser === 'happier' ? '/srv/happier/.piggercode' : '/home/sudo-user/.piggercode',
         })),
       };
     });
@@ -554,7 +554,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 0,
       userHomeDir: '/srv/happier',
-      happierHomeDir: '/srv/happier/.happier',
+      happierHomeDir: '/srv/happier/.piggercode',
       mode: 'system',
       systemUser: 'happier',
       channel: 'preview',
@@ -568,13 +568,13 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       mode: 'user',
       userHomeDir: '/home/sudo-user',
-      happierHomeDir: '/home/sudo-user/.happier',
+      happierHomeDir: '/home/sudo-user/.piggercode',
     }));
     expect(discoverInstalledDaemonServiceEntriesMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
       platform: 'linux',
       mode: 'system',
       userHomeDir: '/srv/happier',
-      happierHomeDir: '/srv/happier/.happier',
+      happierHomeDir: '/srv/happier/.piggercode',
     }));
   });
 
@@ -584,21 +584,21 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'publicdev',
-        label: 'happier-daemon.dev.default',
+        label: 'piggercode-daemon.dev.default',
         targetMode: 'default-following',
       },
       {
         serverId: 'company',
         name: 'Company',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.company.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.company.service',
         platform: 'linux',
         releaseChannel: 'stable',
-        label: 'happier-daemon.company',
+        label: 'piggercode-daemon.company',
         targetMode: 'pinned',
       },
     ]);
@@ -609,7 +609,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -631,12 +631,12 @@ describe('installDaemonService conflict handling', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+          path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'user',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         },
       ])
@@ -648,7 +648,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 0,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'system',
       systemUser: 'happier',
       channel: 'preview',
@@ -673,20 +673,20 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'company',
         name: 'Company',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.company.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.company.service',
         platform: 'linux',
         releaseChannel: 'stable',
-        label: 'happier-daemon.company',
+        label: 'piggercode-daemon.company',
         targetMode: 'pinned',
       },
       {
         serverId: 'preview-company',
         name: 'Preview Company',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.preview.preview-company.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.preview.preview-company.service',
         platform: 'linux',
         releaseChannel: 'preview',
-        label: 'happier-daemon.preview.preview-company',
+        label: 'piggercode-daemon.preview.preview-company',
         targetMode: 'pinned',
       },
     ]);
@@ -697,7 +697,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'default-following',
       instanceId: 'default',
@@ -717,12 +717,12 @@ describe('installDaemonService conflict handling', () => {
         name: 'Personal',
         relayUrl: 'https://personal.example.test',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.personal.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.personal.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.personal',
+        label: 'piggercode-daemon.personal',
         targetMode: 'pinned',
       },
     ]);
@@ -733,7 +733,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'stable',
       targetMode: 'pinned',
       instanceId: 'company',
@@ -754,12 +754,12 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'stack-a',
         name: 'Stack A stable',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.stable.stack-a.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.stable.stack-a.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.stable.stack-a',
+        label: 'piggercode-daemon.stable.stack-a',
         targetMode: 'pinned',
       },
     ]);
@@ -770,7 +770,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'preview',
       targetMode: 'pinned',
       instanceId: 'stack-a',
@@ -789,24 +789,24 @@ describe('installDaemonService conflict handling', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       },
       {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+        path: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/home/tester/.happier',
+        happierHomeDir: '/home/tester/.piggercode',
         releaseChannel: 'publicdev',
-        label: 'happier-daemon.dev.default',
+        label: 'piggercode-daemon.dev.default',
         targetMode: 'default-following',
       },
     ]);
@@ -817,7 +817,7 @@ describe('installDaemonService conflict handling', () => {
       platform: 'linux',
       uid: 123,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       channel: 'preview',
       targetMode: 'default-following',
       instanceId: 'default',

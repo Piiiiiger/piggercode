@@ -39,7 +39,7 @@ export type ServiceDaemonsRestartAfterCliUpdatePlan = Readonly<{
  * addresses the default-following service).
  */
 export function formatPinnedDaemonServiceRestartCommand(params: Readonly<{
-  /** The ring's managed CLI command (`happier`, `hprev`, `hdev`). */
+  /** The ring's managed CLI command (`piggercode`, `hprev`, `hdev`). */
   toolName: string;
   serverId: string;
   instanceId: string;
@@ -64,7 +64,7 @@ function describeError(error: unknown): string {
 /**
  * The one rule for which daemons a managed CLI update restarts (plan R13 f; one daemon per relay):
  * the default-following service and every pinned service of this Happier home and ring whose own
- * service was running its daemon before the update. `happier self update` (terminal or remote) and
+ * service was running its daemon before the update. `piggercode self update` (terminal or remote) and
  * the desktop's `cli.update.v1` both build their restart step here; only how they observe the
  * services differs (in-process vs through the CLI's JSON).
  *

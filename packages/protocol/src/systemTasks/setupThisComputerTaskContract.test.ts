@@ -21,7 +21,7 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       accountId: 'acct_app',
       pairingRequirement: 'compatible',
       cliProvenance: 'override',
-      cliCommand: '/repo/apps/cli/bin/happier.mjs',
+      cliCommand: '/repo/apps/cli/bin/piggercode.mjs',
     });
 
     expect(data.kind).toBe(SETUP_PAIRING_PROMPT_KIND);
@@ -32,7 +32,7 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       accountId: 'acct_app',
       pairingRequirement: 'compatible',
       cliProvenance: 'override',
-      cliCommand: '/repo/apps/cli/bin/happier.mjs',
+      cliCommand: '/repo/apps/cli/bin/piggercode.mjs',
     });
 
     // A requirement this contract does not know must reach the reader as `unsupported`, never as
@@ -44,7 +44,7 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       accountId: 'acct_app',
       pairingRequirement: 'v9',
       cliProvenance: 'managed',
-      cliCommand: '/home/u/.happier/cli/current/happier',
+      cliCommand: '/home/u/.piggercode/cli/current/happier',
     }))?.pairingRequirement).toBe('unsupported');
   });
 
@@ -59,7 +59,7 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       accountId: 'acct_app',
       pairingRequirement: 'compatible',
       cliProvenance: 'managed',
-      cliCommand: '/home/u/.happier/cli/current/happier',
+      cliCommand: '/home/u/.piggercode/cli/current/happier',
     });
 
     expect(parseSetupPairingPromptData(data)?.relayUrl).toBe('https://relay.example.test/base');
@@ -75,7 +75,7 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       accountId: 'acct_app',
       pairingRequirement: 'compatible',
       cliProvenance: 'managed',
-      cliCommand: '/home/u/.happier/cli/current/happier',
+      cliCommand: '/home/u/.piggercode/cli/current/happier',
     });
 
     expect(parseSetupPairingPromptData({ ...complete, kind: 'authRequest' })).toBeNull();
@@ -127,12 +127,12 @@ describe('setup.thisComputer.v1 prompt contract', () => {
       message: 'The background service runs /usr/local/bin/happier.',
       competingServices: [],
       servicesToRemove: [],
-      runtimeReplacement: { current: '/usr/local/bin/happier', replacement: '/Users/me/.happier/bin/happier' },
+      runtimeReplacement: { current: '/usr/local/bin/happier', replacement: '/Users/me/.piggercode/bin/happier' },
     });
 
     expect(parseSetupServiceConsentPromptData(data)?.runtimeReplacement).toEqual({
       current: '/usr/local/bin/happier',
-      replacement: '/Users/me/.happier/bin/happier',
+      replacement: '/Users/me/.piggercode/bin/happier',
     });
     // An older executor sends no replacement; a malformed one is not guessed at.
     expect(parseSetupServiceConsentPromptData({ ...data, runtimeReplacement: undefined })?.runtimeReplacement).toBeNull();

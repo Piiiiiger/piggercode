@@ -84,7 +84,7 @@ class AndroidFileActionsTest {
     assertEquals(download.canonicalFile, AndroidFileActions.checkedDownloadFile(context, Uri.fromFile(download).toString()))
     val contentUri = AndroidFileActions.contentUri(context, download, "clip.mp4")
     assertEquals("content", contentUri.scheme)
-    assertEquals(context.packageName + ".happier-file-actions", contentUri.authority)
+    assertEquals(context.packageName + ".piggercode-file-actions", contentUri.authority)
     context.contentResolver.openInputStream(contentUri).use { input ->
       assertArrayEquals(byteArrayOf(1, 2, 3), input!!.readBytes())
     }

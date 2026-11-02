@@ -81,7 +81,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
             renameFailureTargets.add(destinationPath);
 
             await mkdir(join(sourcePath, 'package-dist'), { recursive: true });
-            await writeFile(join(sourcePath, 'happier.exe'), 'runtime-binary', 'utf8');
+            await writeFile(join(sourcePath, 'piggercode.exe'), 'runtime-binary', 'utf8');
             await writeFile(join(sourcePath, 'package-dist', 'index.mjs'), 'export default "ok";\n', 'utf8');
 
             try {
@@ -91,7 +91,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
                     destinationPath,
                 });
 
-                expect(await readFile(join(destinationPath, 'happier.exe'), 'utf8')).toBe('runtime-binary');
+                expect(await readFile(join(destinationPath, 'piggercode.exe'), 'utf8')).toBe('runtime-binary');
                 expect(await readFile(join(destinationPath, 'package-dist', 'index.mjs'), 'utf8')).toContain('ok');
                 expect(existsSync(sourcePath)).toBe(true);
             } finally {
@@ -114,7 +114,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
             rmMock.mockImplementation((target, options) => rmDelegate.current!(target, options));
 
             await mkdir(join(sourcePath, 'package-dist'), { recursive: true });
-            await writeFile(join(sourcePath, 'happier.exe'), 'runtime-binary', 'utf8');
+            await writeFile(join(sourcePath, 'piggercode.exe'), 'runtime-binary', 'utf8');
             await writeFile(join(sourcePath, 'package-dist', 'index.mjs'), 'export default "ok";\n', 'utf8');
 
             try {
@@ -125,7 +125,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
                     consumeSourcePath: true,
                 });
 
-                expect(await readFile(join(destinationPath, 'happier.exe'), 'utf8')).toBe('runtime-binary');
+                expect(await readFile(join(destinationPath, 'piggercode.exe'), 'utf8')).toBe('runtime-binary');
                 expect(await readFile(join(destinationPath, 'package-dist', 'index.mjs'), 'utf8')).toContain('ok');
                 expect(existsSync(sourcePath)).toBe(false);
             } finally {
@@ -150,7 +150,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
 
             await mkdir(join(sourcePath, 'package-dist'), { recursive: true });
             await mkdir(join(sourcePath, 'node_modules', 'large-package', 'nested'), { recursive: true });
-            await writeFile(join(sourcePath, 'happier.exe'), 'runtime-binary', 'utf8');
+            await writeFile(join(sourcePath, 'piggercode.exe'), 'runtime-binary', 'utf8');
             await writeFile(join(sourcePath, 'package-dist', 'index.mjs'), 'export default "ok";\n', 'utf8');
             await writeFile(join(sourcePath, 'node_modules', 'large-package', 'nested', 'index.js'), 'module.exports = 1;\n', 'utf8');
 
@@ -163,7 +163,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
                     sourcePathAlreadyFiltered: true,
                 });
 
-                expect(await readFile(join(destinationPath, 'happier.exe'), 'utf8')).toBe('runtime-binary');
+                expect(await readFile(join(destinationPath, 'piggercode.exe'), 'utf8')).toBe('runtime-binary');
                 expect(existsSync(sourcePath)).toBe(false);
                 expect(readdirMock).not.toHaveBeenCalled();
             } finally {
@@ -199,10 +199,10 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
             });
 
             await mkdir(join(sourcePath, 'package-dist'), { recursive: true });
-            await writeFile(join(sourcePath, 'happier.exe'), 'runtime-binary', 'utf8');
+            await writeFile(join(sourcePath, 'piggercode.exe'), 'runtime-binary', 'utf8');
             await writeFile(join(sourcePath, 'package-dist', 'index.mjs'), 'export default "ok";\n', 'utf8');
             await mkdir(destinationPath, { recursive: true });
-            await writeFile(join(destinationPath, 'happier.exe'), 'old-runtime-binary', 'utf8');
+            await writeFile(join(destinationPath, 'piggercode.exe'), 'old-runtime-binary', 'utf8');
 
             try {
                 const { replaceRuntimePayloadTree } = await import('./copyRuntimePayloadTree');
@@ -213,7 +213,7 @@ describe('replaceRuntimePayloadTree Windows rename fallback', () => {
                     }),
                 ).resolves.toBeUndefined();
 
-                expect(await readFile(join(destinationPath, 'happier.exe'), 'utf8')).toBe('runtime-binary');
+                expect(await readFile(join(destinationPath, 'piggercode.exe'), 'utf8')).toBe('runtime-binary');
                 expect(await readFile(join(destinationPath, 'package-dist', 'index.mjs'), 'utf8')).toContain('ok');
                 expect(existsSync(sourcePath)).toBe(true);
             } finally {

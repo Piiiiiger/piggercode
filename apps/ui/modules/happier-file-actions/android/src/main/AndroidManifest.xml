@@ -2,7 +2,7 @@
   <application>
     <provider
       android:name="dev.happier.fileactions.HappierDownloadFileProvider"
-      android:authorities="${applicationId}.happier-file-actions"
+      android:authorities="${applicationId}.piggercode-file-actions"
       android:exported="false"
       android:grantUriPermissions="true">
       <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/happier_download_paths" />

@@ -79,7 +79,7 @@ describe('runDaemonServiceCommands', () => {
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'launchctl',
-        args: ['bootout', 'gui/501/com.happier.cli.daemon.default'],
+        args: ['bootout', 'gui/501/com.piggercode.cli.daemon.default'],
       },
     ], { failureMode: 'strict' })).not.toThrow();
   });
@@ -90,13 +90,13 @@ describe('runDaemonServiceCommands', () => {
     spawnSyncMock.mockReturnValue({
       status: 1,
       stdout: Buffer.from(''),
-      stderr: Buffer.from('Failed to disable unit: Unit file happier-daemon.service does not exist.'),
+      stderr: Buffer.from('Failed to disable unit: Unit file piggercode-daemon.service does not exist.'),
     });
 
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'systemctl',
-        args: ['--user', 'disable', '--now', 'happier-daemon.service'],
+        args: ['--user', 'disable', '--now', 'piggercode-daemon.service'],
       },
     ], { failureMode: 'strict' })).not.toThrow();
   });
@@ -107,13 +107,13 @@ describe('runDaemonServiceCommands', () => {
     spawnSyncMock.mockReturnValue({
       status: 1,
       stdout: Buffer.from(''),
-      stderr: Buffer.from('Failed to disable unit: Unit file happier-daemon.preview.default.service does not exist.'),
+      stderr: Buffer.from('Failed to disable unit: Unit file piggercode-daemon.preview.default.service does not exist.'),
     });
 
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'systemctl',
-        args: ['--user', 'disable', '--now', 'happier-daemon.preview.default.service'],
+        args: ['--user', 'disable', '--now', 'piggercode-daemon.preview.default.service'],
       },
     ], { failureMode: 'strict' })).not.toThrow();
   });
@@ -124,13 +124,13 @@ describe('runDaemonServiceCommands', () => {
     spawnSyncMock.mockReturnValue({
       status: 113,
       stdout: Buffer.from(''),
-      stderr: Buffer.from('Could not find service "com.happier.cli.daemon.default" in domain for user gui: 501'),
+      stderr: Buffer.from('Could not find service "com.piggercode.cli.daemon.default" in domain for user gui: 501'),
     });
 
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'launchctl',
-        args: ['kickstart', '-k', 'gui/501/com.happier.cli.daemon.default'],
+        args: ['kickstart', '-k', 'gui/501/com.piggercode.cli.daemon.default'],
       },
     ], { failureMode: 'strict' })).not.toThrow();
   });
@@ -147,7 +147,7 @@ describe('runDaemonServiceCommands', () => {
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'launchctl',
-        args: ['bootstrap', 'gui/501', '/tmp/com.happier.cli.daemon.default.plist'],
+        args: ['bootstrap', 'gui/501', '/tmp/com.piggercode.cli.daemon.default.plist'],
       },
     ], { failureMode: 'strict' })).toThrow(/Background service command failed/);
   });
@@ -158,13 +158,13 @@ describe('runDaemonServiceCommands', () => {
     spawnSyncMock.mockReturnValue({
       status: 1,
       stdout: Buffer.from(''),
-      stderr: Buffer.from('Failed to disable unit: Unit file happier-daemon.service does not exist.'),
+      stderr: Buffer.from('Failed to disable unit: Unit file piggercode-daemon.service does not exist.'),
     });
 
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'systemctl',
-        args: ['--user', 'disable', '--now', 'happier-daemon.service'],
+        args: ['--user', 'disable', '--now', 'piggercode-daemon.service'],
         ignoreFailure: true,
       },
     ], { failureMode: 'strict' })).not.toThrow();
@@ -207,13 +207,13 @@ describe('runDaemonServiceCommands', () => {
     runDaemonServiceCommands([
       {
         cmd: 'systemctl',
-        args: ['--user', 'start', 'happier-daemon.default.service'],
+        args: ['--user', 'start', 'piggercode-daemon.default.service'],
       },
     ], { failureMode: 'strict' });
 
     expect(spawnSyncMock).toHaveBeenCalledWith(
       'systemctl',
-      ['--user', 'start', 'happier-daemon.default.service'],
+      ['--user', 'start', 'piggercode-daemon.default.service'],
       expect.objectContaining({ timeout: 42000 }),
     );
   });
@@ -222,7 +222,7 @@ describe('runDaemonServiceCommands', () => {
     const { runDaemonServiceCommands } = await import('./apply');
 
     const dir = mkdtempSync(join(tmpdir(), 'happier-daemon-service-apply-'));
-    const plistPath = join(dir, 'com.happier.cli.daemon.default.plist');
+    const plistPath = join(dir, 'com.piggercode.cli.daemon.default.plist');
     writeFileSync(plistPath, '<plist version="1.0"></plist>', 'utf-8');
     const initialMtimeMs = statSync(plistPath).mtimeMs;
 
@@ -251,7 +251,7 @@ describe('runDaemonServiceCommands', () => {
       if (args[0] === 'bootstrap') {
         return { status: 1, stdout: Buffer.from(''), stderr: Buffer.from('Bootstrap failed: 5: Input/output error') };
       }
-      if (args[0] === 'print' && args[1] === 'gui/501/com.happier.cli.daemon.default') {
+      if (args[0] === 'print' && args[1] === 'gui/501/com.piggercode.cli.daemon.default') {
         return { status: 0, stdout: Buffer.from('state = running'), stderr: Buffer.from('') };
       }
       return { status: 0, stdout: Buffer.from(''), stderr: Buffer.from('') };
@@ -260,13 +260,13 @@ describe('runDaemonServiceCommands', () => {
     expect(() => runDaemonServiceCommands([
       {
         cmd: 'launchctl',
-        args: ['bootstrap', 'gui/501', '/tmp/com.happier.cli.daemon.default.plist'],
+        args: ['bootstrap', 'gui/501', '/tmp/com.piggercode.cli.daemon.default.plist'],
       },
     ], { failureMode: 'strict' })).not.toThrow();
 
     expect(spawnSyncMock).toHaveBeenCalledWith(
       'launchctl',
-      ['print', 'gui/501/com.happier.cli.daemon.default'],
+      ['print', 'gui/501/com.piggercode.cli.daemon.default'],
       expect.objectContaining({
         env: expect.any(Object),
         stdio: ['ignore', 'pipe', 'pipe'],

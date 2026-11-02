@@ -12,7 +12,7 @@ describe('launchd install reloads a changed CLI definition', () => {
 
   it('reloads a CLI choice change even when the existing service is running', async () => {
     await withTempDir('happier-service-launchd-reload-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
       vi.stubEnv('PIGGERCODE_HOME_DIR', happierHomeDir);
       const managedLauncher = resolveInstalledFirstPartyComponentPaths({
         componentId: 'happier-cli', channel: 'stable', processEnv: process.env,

@@ -12,7 +12,7 @@ const targets = [
     ssh: 'happier-stack-linux',
     sshConfigFile: '/tmp/linux-ssh.config',
     repoDir: '/home/dev/happier',
-    cliHomeDir: '/home/dev/.happier/linux',
+    cliHomeDir: '/home/dev/.piggercode/linux',
     remoteServerPort: null,
   },
   {
@@ -20,7 +20,7 @@ const targets = [
     platform: 'windows',
     ssh: 'happier-stack-windows',
     repoDir: 'C:/Users/test_qa/happier',
-    cliHomeDir: 'C:/Users/test_qa/.happier/windows',
+    cliHomeDir: 'C:/Users/test_qa/.piggercode/windows',
     remoteServerPort: null,
   },
 ];

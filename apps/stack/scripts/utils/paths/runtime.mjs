@@ -22,7 +22,7 @@ export function getRuntimeDir() {
   }
   const homeDir = (process.env.PIGGERCODE_STACK_HOME_DIR ?? '').trim()
     ? expandHome(process.env.PIGGERCODE_STACK_HOME_DIR.trim())
-    : join(homedir(), '.happier-stack');
+    : join(homedir(), '.piggercode-stack');
   return join(homeDir, 'runtime');
 }
 

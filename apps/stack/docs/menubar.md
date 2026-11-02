@@ -60,7 +60,7 @@ hstack menubar mode dev
 If you create additional stacks (see `docs/stacks.md`), the plugin shows:
 
 - **Main stack** (the default, stack name `main`)
-- **Stacks** section listing each stack found under `~/.happier/stacks/<name>/env`
+- **Stacks** section listing each stack found under `~/.piggercode/stacks/<name>/env`
 
 Each stack row renders the same “mini control panel” (server/daemon/autostart/logs + a few actions) with stack-specific ports, dirs, and LaunchAgent label.
 
@@ -155,7 +155,7 @@ You can also change the interval directly from the menu via **Refresh interval**
 Git/worktree inspection is the most expensive part of the menu when you have many stacks.
 By default, the plugin runs in **cached mode**:
 
-- It renders git/worktree info from an on-disk cache under `~/.happier-stack/cache/swiftbar/git`.
+- It renders git/worktree info from an on-disk cache under `~/.piggercode-stack/cache/swiftbar/git`.
 - Normal menu refreshes do **not** run git commands (so refresh stays snappy).
 - The cache is refreshed explicitly (via menu actions), and can optionally refresh on TTL expiry.
 
@@ -178,7 +178,7 @@ Notes:
 
 In **selfhost** mode, the menu includes a **Maintenance** section that can:
 
-- show whether a `hstack` update is available (from cached `~/.happier-stack/cache/update.json`)
+- show whether a `hstack` update is available (from cached `~/.piggercode-stack/cache/update.json`)
 - run:
   - `hstack self check`
   - `hstack self update`
@@ -220,7 +220,7 @@ stack-specific CLI home directory.
 
 - The daemon stores credentials in `access.key` under the CLI home directory.
 - For stacks (including main), that’s typically:
-  - `~/.happier/stacks/<name>/cli/access.key`
+  - `~/.piggercode/stacks/<name>/cli/access.key`
 - When `access.key` is missing, `happy-cli daemon start` enters an interactive auth flow and won’t become a “machine” until it completes.
   - Under `launchd` (autostart), this shows up as **no machine** and the daemon may appear “stopped”.
 

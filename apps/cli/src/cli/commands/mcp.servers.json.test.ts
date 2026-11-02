@@ -73,7 +73,7 @@ async function runJsonMcpCommand(
   }
 }
 
-describe.sequential('happier mcp servers --json', () => {
+describe.sequential('piggercode mcp servers --json', () => {
   it('prints a mcp_servers_list JSON envelope', async () => {
     const bootstrapCalls: unknown[] = [];
     const mcpSettings = McpServersSettingsV1Schema.parse({

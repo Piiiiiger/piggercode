@@ -86,7 +86,7 @@ function resolveHomeDir() {
   // Stable pointer file: even if the real home dir is elsewhere, `hstack init` writes the pointer here.
   const canonicalEnv = getCanonicalHomeEnvPathFromEnv(process.env);
   const v = dotenvGetQuick(canonicalEnv, 'PIGGERCODE_STACK_HOME_DIR') || '';
-  return v ? expandHome(v) : join(homedir(), '.happier-stack');
+  return v ? expandHome(v) : join(homedir(), '.piggercode-stack');
 }
 
 function stripGlobalOpt(argv, { name, aliases = [] }) {

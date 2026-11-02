@@ -20,7 +20,7 @@ describe('buildServiceCommandEnv', () => {
 
     const env = buildServiceCommandEnv({
       cmd: 'systemctl',
-      args: ['--user', 'status', 'happier-daemon.default.service'],
+      args: ['--user', 'status', 'piggercode-daemon.default.service'],
       env: {},
     });
 

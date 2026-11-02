@@ -167,7 +167,7 @@ export function buildReadWindowsScheduledTaskStatusPowerShellCommand(params: Rea
   taskPath?: string;
 }>): string {
   const taskName = String(params.taskName ?? '').trim();
-  const taskPath = String(params.taskPath ?? '\\Happier\\').trim() || '\\Happier\\';
+  const taskPath = String(params.taskPath ?? '\\PiggerCode\\').trim() || '\\PiggerCode\\';
   return [
     '$ErrorActionPreference = "Stop"',
     `$taskPath = ${psQuoted(taskPath)}`,

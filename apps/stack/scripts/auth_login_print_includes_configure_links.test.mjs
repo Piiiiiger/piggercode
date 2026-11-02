@@ -57,7 +57,7 @@ test('hstack auth login --print --json includes configure-server links and publi
   assert.equal(configureUrl.searchParams.get('server'), parsed.publicServerUrl);
   assert.equal(
     parsed.configureServer.mobileUrl,
-    `happier://server`
+    `piggercode://server`
   );
 });
 

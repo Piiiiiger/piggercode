@@ -1108,8 +1108,8 @@ async function updateInstalledProviderCli(
     ok: false,
     errorCode: 'update-not-available',
     errorMessage: facts.updateCommand
-      ? `Happier does not update this ${runtimeSpec.title} install. Run: ${facts.updateCommand}`
-      : `Happier cannot update this ${runtimeSpec.title} install at ${target.command}.`,
+      ? `PiggerCode does not update this ${runtimeSpec.title} install. Run: ${facts.updateCommand}`
+      : `PiggerCode cannot update this ${runtimeSpec.title} install at ${target.command}.`,
     plan: basePlan,
     logPath: null,
   };

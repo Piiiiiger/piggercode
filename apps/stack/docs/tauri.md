@@ -40,7 +40,7 @@ hstack bootstrap --tauri
 hstack start
 ```
 
-2) Launch the built app bundle (location is under `~/.happier/stacks/main/tauri-target/`).
+2) Launch the built app bundle (location is under `~/.piggercode/stacks/main/tauri-target/`).
 
 ## “Portable” Tauri builds (send to another computer)
 
@@ -53,7 +53,7 @@ Requirements:
 
 ## Configuration (high-signal)
 
-- `PIGGERCODE_STACK_TAURI_IDENTIFIER` (default `com.happier.stack`)
+- `PIGGERCODE_STACK_TAURI_IDENTIFIER` (default `com.piggercode.stack`)
 - `PIGGERCODE_STACK_TAURI_PRODUCT_NAME` (default `Happier`)
 - `PIGGERCODE_STACK_TAURI_DEBUG=0` (build release-like without devtools)
 - `PIGGERCODE_STACK_TAURI_SERVER_URL` (force the embedded API URL)

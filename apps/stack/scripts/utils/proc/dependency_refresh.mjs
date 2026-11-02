@@ -10,7 +10,7 @@ import { collectWorkspacePackageJsonPaths } from './workspace_package_manifests.
 import { resolveCliDistBuildLockPath, withCliDistBuildLock } from './cliDistBuildLock.mjs';
 
 const REFRESH_STATE_VERSION = 5;
-const REFRESH_MARKER = '.happier-stack-dependencies-ready';
+const REFRESH_MARKER = '.piggercode-stack-dependencies-ready';
 const DEPENDENCY_INSTALL_MODE = 'development-full-v1';
 
 function installDirLockKey(installDir) {

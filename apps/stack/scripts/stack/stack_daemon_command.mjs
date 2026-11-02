@@ -28,7 +28,7 @@ export async function resolveStackDaemonCommandContext({ rootDir, stackName, env
   const runtimeSnapshot = runtimeLaunchContext.snapshot;
   const cliLaunchSpec = runtimeSnapshot ? resolveCliRuntimeLaunchSpec({ snapshot: runtimeSnapshot }) : null;
   const cliDir = cliLaunchSpec?.cliDir ?? getComponentDir(rootDir, 'happier-cli', env);
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const cliEntrypoint = cliLaunchSpec?.entrypoint ?? '';
   const cliNodeEntrypoint = cliLaunchSpec?.nodeEntrypoint ?? '';
   const cliCommand = cliLaunchSpec?.command ?? '';

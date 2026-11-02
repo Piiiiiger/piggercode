@@ -61,7 +61,7 @@ describe('another machine — Happier CLI row (K5)', () => {
         latestVersion: '0.2.11',
         channel: 'stable' as const,
         installSource: 'managed' as const,
-        updateCommand: 'happier self update',
+        updateCommand: 'piggercode self update',
         canUpdateRemotely: true,
         lastUpdate: null,
     };
@@ -77,7 +77,7 @@ describe('another machine — Happier CLI row (K5)', () => {
             machineId: 'm2', title: 'Happier CLI', online: true, platform: 'darwin', happyCliVersion: '0.2.9',
             facts: k5, remoteUpdateAdvertised: false, task: IDLE_TASK,
         });
-        expect(notAdvertised).toMatchObject({ state: 'available', action: { kind: 'manual', command: 'happier self update' } });
+        expect(notAdvertised).toMatchObject({ state: 'available', action: { kind: 'manual', command: 'piggercode self update' } });
         expect(isUpdateItemActionable(notAdvertised)).toBe(false);
     });
 
@@ -86,7 +86,7 @@ describe('another machine — Happier CLI row (K5)', () => {
             machineId: 'm2', title: 'Happier CLI', online: true, platform: 'linux', happyCliVersion: '0.2.12',
             facts: null, remoteUpdateAdvertised: false, task: IDLE_TASK,
         });
-        expect(old).toMatchObject({ state: 'unknown', currentVersion: '0.2.12', action: { kind: 'manual', command: 'happier self update' } });
+        expect(old).toMatchObject({ state: 'unknown', currentVersion: '0.2.12', action: { kind: 'manual', command: 'piggercode self update' } });
 
         const windows = buildRemoteCliUpdateItem({
             machineId: 'm3', title: 'Happier CLI', online: true, platform: 'win32', happyCliVersion: '0.2.12',
@@ -205,10 +205,10 @@ describe('failed rows keep the executor\'s log', () => {
     it('carries the install log path of a failed run so the screen can offer View log', () => {
         const failed = buildAgentCliUpdateItem({
             machineId: 'm1', agentId: 'claude', title: 'Claude Code', online: true,
-            task: { running: false, step: null, errorMessage: 'The update didn’t finish. Try again.', logPath: '/h/.happier/logs/provider-installs/claude.log' },
+            task: { running: false, step: null, errorMessage: 'The update didn’t finish. Try again.', logPath: '/h/.piggercode/logs/provider-installs/claude.log' },
             data: { available: true, version: '2.1.3', latestVersion: '2.1.4', installSource: 'managed', updateSupported: true, updateCommand: null },
         });
-        expect(failed).toMatchObject({ state: 'failed', logPath: '/h/.happier/logs/provider-installs/claude.log' });
+        expect(failed).toMatchObject({ state: 'failed', logPath: '/h/.piggercode/logs/provider-installs/claude.log' });
     });
 });
 

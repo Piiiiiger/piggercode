@@ -48,13 +48,13 @@ test('installRemoteFirstPartyComponent uploads a verified payload and promotes i
     assert.match(scpCopies[0]?.localPath ?? '', /hstack-linux-x64\.tar$/);
     assert.match(
       scpCopies[0]?.remoteTarget ?? '',
-      /^dev@example\.test:(\$HOME\/)?\.?happier\/bootstrap-staging\/hstack-1\.2\.3-1700000000000\/hstack-linux-x64\.tar$/,
+      /^dev@example\.test:(\$HOME\/)?\.?piggercode\/bootstrap-staging\/hstack-1\.2\.3-1700000000000\/hstack-linux-x64\.tar$/,
     );
     assert.ok(!remoteCommands.join('\n').includes('curl -fsSL https://happier.dev/install'));
     assert.match(remoteCommands.at(-1) ?? '', /tar -xf/);
     assert.doesNotMatch(remoteCommands.at(-1) ?? '', /self __install-payload/);
     assert.deepEqual(result, {
-      binaryPath: '$HOME/.happier/stack-preview/current/hstack',
+      binaryPath: '$HOME/.piggercode/stack-preview/current/hstack',
       versionId: '1.2.3',
       source: 'https://example.test/hstack.tgz',
     });
@@ -69,6 +69,6 @@ test('resolveRemoteInstalledFirstPartyBinaryPath uses the verified install root 
       componentId: 'hstack',
       channel: 'publicdev',
     }),
-    '$HOME/.happier/stack-dev/current/hstack',
+    '$HOME/.piggercode/stack-dev/current/hstack',
   );
 });

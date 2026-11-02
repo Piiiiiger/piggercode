@@ -45,7 +45,7 @@ describe('inspectZellijSessionSocketPresence', () => {
 
   it('ignores the action-slot sibling directory when searching for the session socket', async () => {
     const socketDir = await makeSocketDir();
-    await mkdir(join(socketDir, '.happier-action-slots'), { recursive: true });
+    await mkdir(join(socketDir, '.piggercode-action-slots'), { recursive: true });
     await mkdir(join(socketDir, 'contract_version_1'), { recursive: true });
     await writeFile(join(socketDir, 'contract_version_1', 'happier-present'), '');
     expect(await inspectZellijSessionSocketPresence({ socketDir, sessionName: 'happier-present' })).toBe('present');

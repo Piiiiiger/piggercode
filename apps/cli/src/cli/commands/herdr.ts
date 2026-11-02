@@ -8,10 +8,10 @@ import type { CommandContext } from '../commandRegistry';
 export async function handleHerdrCliCommand(context: CommandContext): Promise<void> {
   const args = context.args.slice(1);
   if (args.length > 0 && !(args.length === 1 && (args[0] === '--help' || args[0] === '-h'))) {
-    throw new Error('Usage: happier herdr');
+    throw new Error('Usage: piggercode herdr');
   }
   if (args.length === 1) {
-    console.log('Usage: happier herdr');
+    console.log('Usage: piggercode herdr');
     return;
   }
   if (process.env.HERDR_ENV === '1') {

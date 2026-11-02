@@ -23,7 +23,7 @@ function printMigrationBanner(params: Readonly<{ report: DoctorRepairReport }>):
   const serverUrl = activeProfile?.serverUrl ?? null;
   const channel = params.report.currentCli.releaseChannel;
   console.log('');
-  console.log(bold('Migrating Happier to the new background-service model'));
+  console.log(bold('Migrating PiggerCode to the new background-service model'));
   if (serverUrl) {
     console.log(muted(`Current default server: ${serverUrl} · CLI channel: ${channel}`));
   } else {
@@ -49,7 +49,7 @@ function parseRepairInvocation(argv: readonly string[]): Readonly<{
    * `--server <selector>` / `--server=<selector>`: scope all findings to a
    * specific server profile. The selector is resolved using the same profile
    * lookup as other CLI server selectors (id, name, or relay URL). When set,
-   * the report behaves as if the user had `happier server use <id>` first —
+   * the report behaves as if the user had `piggercode server use <id>` first —
    * without mutating settings — so the absence of a profile, auth, machine
    * registration, automatic startup, or running daemon for that server all
    * surface as findings.
@@ -346,13 +346,13 @@ export async function handleServiceRepairCliCommand(params: Readonly<{
   // need the user to be prompted but couldn't be (because --yes applies
   // only `autoApplyWithoutPrompt=true` findings). In interactive mode the
   // user just walked through every finding via the guided walk, so this
-  // message would lie ("run `happier doctor repair`" — they just did).
+  // message would lie ("run `piggercode doctor repair`" — they just did).
   if (parsed.execute) {
     const unappliedFindings = report.findings.filter((f) => f.autoApplyWithoutPrompt === false);
     if (unappliedFindings.length > 0) {
       console.log('');
       const noun = unappliedFindings.length === 1 ? 'finding needs' : 'findings need';
-      console.log(chalk.yellow(`${unappliedFindings.length} ${noun} interactive confirmation — run \`happier doctor repair\` to address ${unappliedFindings.length === 1 ? 'it' : 'them'}.`));
+      console.log(chalk.yellow(`${unappliedFindings.length} ${noun} interactive confirmation — run \`piggercode doctor repair\` to address ${unappliedFindings.length === 1 ? 'it' : 'them'}.`));
     }
   }
 }

@@ -75,7 +75,7 @@ The canonical request helpers live in `scripts/release/installers/install.sh` an
 ## Installer state home
 
 Both shell installers resolve the data home from an explicit `PIGGERCODE_HOME_DIR`,
-otherwise following `PIGGERCODE_INSTALL_DIR` or the default `.happier` directory.
+otherwise following `PIGGERCODE_INSTALL_DIR` or the default `.piggercode` directory.
 In current development source, the POSIX installer uses that same resolved home
 for daemon commands and shell startup-file exports, preserving an explicit data
 home when the binary install directory differs.
@@ -84,7 +84,7 @@ In current development source, `install.ps1` persists its resolved state home as
 the user-scoped `PIGGERCODE_HOME_DIR` and applies it to the installer process before
 post-install CLI commands. The background service and new terminals therefore
 read the same credentials. An explicit `PIGGERCODE_HOME_DIR` selects the data home;
-otherwise it follows `PIGGERCODE_INSTALL_DIR`, falling back to `%USERPROFILE%\.happier`.
+otherwise it follows `PIGGERCODE_INSTALL_DIR`, falling back to `%USERPROFILE%\.piggercode`.
 The binary install directory can remain separate from an explicit data home.
 On Windows, `PIGGERCODE_NO_PATH_UPDATE` skips PATH changes only, not state-home persistence.
 This does not copy or migrate credentials from a previous data home.
@@ -183,10 +183,10 @@ Resolution order and provenance (`systemTasks/localFirstPartyCommand.ts`):
 | Source | Provenance | Notes |
 | --- | --- | --- |
 | `PIGGERCODE_BOOTSTRAP_CLI_PATH` / `PIGGERCODE_BOOTSTRAP_PIGGERCODE_PATH` | `override` | Development only. |
-| This computer chose **Keep my own** (`<happier home>/cli-choice.json` `{ mode: 'own', command }`) and that CLI exists | `override` | Wins over a managed copy still on disk (plan R12). |
+| This computer chose **Keep my own** (`<piggercode home>/cli-choice.json` `{ mode: 'own', command }`) and that CLI exists | `override` | Wins over a managed copy still on disk (plan R12). |
 | **Keep my own** is recorded but that CLI is gone | — | Fails `cli_choice_required`: no leftover managed copy and no acquisition stands in for it; setup asks first (R13 b). |
 | Installed managed payload for the caller's release ring | `managed` | The desktop-managed install layout recorded it. |
-| Repo-local `apps/cli/bin/happier.mjs` | `override` | Accepted on path existence alone. |
+| Repo-local `apps/cli/bin/piggercode.mjs` | `override` | Accepted on path existence alone. |
 | No recorded **Let Happier manage it**, and a `happier` this layout did not place resolves on PATH | `override` | Until the one question is answered, no read acquires a second CLI beside the user's (R12). |
 | Nothing resolvable | — | Acquire through the managed path, then `managed`. |
 
@@ -197,7 +197,7 @@ exposure uses, including the macOS `buildServicePath` list and Windows `PATHEXT`
 the managed layout did not place (npm, Homebrew, a manual copy), and this computer has not answered
 yet, the setup executor asks once, before it writes anything: **Let Happier manage it**
 or **Keep my own** (prompt `setup.cliChoice`, naming the version from that CLI's `--version`, its
-path, and where it came from). The answer is recorded in `<happier home>/cli-choice.json`
+path, and where it came from). The answer is recorded in `<piggercode home>/cli-choice.json`
 (`happierCliChoice.ts`, beside `current.version` and `default-cli-release-channel.json`), so every
 Happier app sharing that home and every bootstrap task resolves the same CLI. A computer with no
 other `happier` is never asked and keeps the managed default; a developer override is never asked
@@ -328,8 +328,8 @@ stable release's real assets and its signed `checksums-*.txt`.
   `package-dist`, `node_modules`, `tools` and `scripts`; `skip_clean` keeps Homebrew's cleaner out
   of it) and links `bin/happier` to it. The runtime root comes from `process.execPath`, which Bun
   resolves through the links to the real file in the keg, so the payload is found without the
-  managed `~/.happier/cli` layout. Optional runtimes (difftastic, local embeddings) are still
-  acquired on first use into `<happier home>`, as for any install.
+  managed `~/.piggercode/cli` layout. Optional runtimes (difftastic, local embeddings) are still
+  acquired on first use into `<piggercode home>`, as for any install.
 - **Origin.** `describeHappierCliOrigin` recognises Homebrew from the `Cellar/<formula>/` segment of
   the resolved path. A compiled `happier` reports `argv[1]` as its embedded bundle
   (`/$bunfs/root/happier`), so the running CLI's package-manager origin
@@ -339,7 +339,7 @@ stable release's real assets and its signed `checksums-*.txt`.
   and remote `cli.update.v1` refuses with `cli_not_managed`.
 - **Desktop.** A Homebrew `happier` is a CLI the managed layout did not place, so desktop setup asks
   **Let Happier manage it** / **Keep my own** once ([One CLI per computer](#one-cli-per-computer-plan-r12)).
-- **No `brew services`.** The CLI owns its background service (`happier service install`).
+- **No `brew services`.** The CLI owns its background service (`piggercode service install`).
   The running executable resolves into the versioned keg (`Cellar/<formula>/<version>/…`), which
   `brew upgrade` cleans up by default, so the service runtime owner
   (`resolveDaemonServiceInstallRuntimeTarget`) records the same file through Homebrew's opt prefix
@@ -408,7 +408,7 @@ What it guarantees:
 
 - **Never shadows another `happier` unasked, never duplicates the managed one.** Before writing
   anything the owner resolves `happier` on the process PATH. If it already is the managed shim (for
-  example the POSIX installer's `~/.local/bin/happier` link to `<happier home>/bin/happier`), nothing
+  example the POSIX installer's `~/.local/bin/happier` link to `<piggercode home>/bin/happier`), nothing
   is added. If it is another CLI (npm, Homebrew, a checkout), what happens follows this computer's
   R12 answer: with no answer nothing is added — prepending the managed directory would silently
   change which CLI the user's terminal runs; after **Let Happier manage it** the line is written so
@@ -420,7 +420,7 @@ What it guarantees:
   of the shell installer (`install.sh`), so if it already wrote that exact line the
   desktop writes nothing. Deduplication is exact-line equality, and on Windows a case-insensitive
   entry comparison against the user `Path`. On POSIX the installer writes its line for its own
-  `BIN_DIR` (`~/.local/bin`), not `<happier home>/bin`, so the two lines are not byte-identical;
+  `BIN_DIR` (`~/.local/bin`), not `<piggercode home>/bin`, so the two lines are not byte-identical;
   the PATH check above, not line equality, is what keeps the desktop from adding a second one.
 - **Provenance, in both directions.** A Desktop-written POSIX line is preceded by
   `# Added by Happier Desktop`; on Windows the entries Desktop added are listed in the user
@@ -457,7 +457,7 @@ Limits, stated so they are not assumed away:
   and dragging the app to the Trash cannot run app code, so PATH cleanup happens only when the
   user asks for it in machine settings.
 - The installer's default POSIX `BIN_DIR` (`~/.local/bin`) differs from the Desktop-managed shim
-  directory (`<happier home>/bin`). When a `happier` already resolves the desktop adds nothing
+  directory (`<piggercode home>/bin`). When a `happier` already resolves the desktop adds nothing
   (INV5). On macOS, where an app opened from the Dock gets launchd's PATH, that check also searches
   the service PATH owner's locations (`buildServicePath`: `~/.local/bin`, `~/bin`, Homebrew's
   `/opt/homebrew/bin` and `/usr/local/bin`), so the installer link and an npm or Homebrew `happier`
@@ -469,7 +469,7 @@ Limits, stated so they are not assumed away:
   `~/.profile`, and the desktop transcribes that table verbatim (INV5), so a fish user gets a
   `~/.profile` line fish never reads and a reload hint that is not fish syntax. Changing this means
   changing `install.sh` first — it owns the policy — and the desktop following it; until then fish
-  users invoke the CLI by path or add `<happier home>/bin` to `fish_user_paths` themselves.
+  users invoke the CLI by path or add `<piggercode home>/bin` to `fish_user_paths` themselves.
 - On Windows the two PowerShell helpers receive their inputs (the new `Path` value, its registry
   value kind, the provenance variable name and value) through the child process environment, read
   back as `$env:PIGGERCODE_PATH_*`. Nothing is passed as an argument after `-Command`: PowerShell

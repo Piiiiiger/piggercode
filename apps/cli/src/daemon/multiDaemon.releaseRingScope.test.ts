@@ -456,7 +456,7 @@ describe('multiDaemon release ring scoping', () => {
   });
   it('reports for each relay the background service that serves it: its pinned service, or the default one for the selected relay', async () => {
     homeDir = join(tmpdir(), `happier-multi-daemon-service-per-relay-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    const happierHomeDir = join(homeDir, '.happier');
+    const happierHomeDir = join(homeDir, '.piggercode');
     envScope.patch({
       PIGGERCODE_HOME_DIR: happierHomeDir,
       PIGGERCODE_ACTIVE_SERVER_ID: undefined,

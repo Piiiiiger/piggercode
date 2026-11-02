@@ -120,7 +120,7 @@ async function createStackLaunchedComputer() {
     vi.stubEnv(name, undefined);
   }
   vi.stubEnv('HOME', home);
-  vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, '.happier'));
+  vi.stubEnv('PIGGERCODE_HOME_DIR', join(home, '.piggercode'));
   vi.stubEnv('PATH', bin);
   vi.stubEnv('PIGGERCODE_ACTIVE_SERVER_ID', 'stack-x');
   vi.stubEnv('PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID', 'stack-x');

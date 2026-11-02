@@ -23,9 +23,9 @@ describe('planServiceAction restart policy (Windows)', () => {
   const install = (restartPolicy?: 'always' | 'on-failure' | 'no') => planServiceAction({
     backend: 'schtasks-user',
     action: 'install',
-    label: 'happier-daemon.default',
-    taskName: 'Happier\\happier-daemon.default',
-    definitionPath: 'C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+    label: 'piggercode-daemon.default',
+    taskName: 'PiggerCode\\piggercode-daemon.default',
+    definitionPath: 'C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
     definitionContents: '$ErrorActionPreference = "Stop"',
     persistent: true,
     ...(restartPolicy ? { restartPolicy } : {}),

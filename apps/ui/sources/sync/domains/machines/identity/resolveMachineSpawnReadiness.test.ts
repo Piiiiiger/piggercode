@@ -14,7 +14,7 @@ const onlineMachine: Machine = {
         host: 'machine-1.local',
         platform: 'darwin',
         happyCliVersion: '1.0.0',
-        happyHomeDir: '/Users/test/.happier',
+        happyHomeDir: '/Users/test/.piggercode',
         homeDir: '/Users/test',
     },
     metadataVersion: 1,

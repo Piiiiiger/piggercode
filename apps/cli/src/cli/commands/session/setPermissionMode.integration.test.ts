@@ -17,7 +17,7 @@ vi.mock('socket.io-client', () => ({
   io: mockIo,
 }));
 
-describe('happier session set-permission-mode (integration)', () => {
+describe('piggercode session set-permission-mode (integration)', () => {
   const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;

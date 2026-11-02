@@ -18,7 +18,7 @@ vi.mock('socket.io-client', () => ({
   io: mockIo,
 }));
 
-describe('happier session wait (integration)', () => {
+describe('piggercode session wait (integration)', () => {
   let server: Server | null = null;
   let happyHomeDir = '';
   let envScope = createEnvKeyScope(['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR']);

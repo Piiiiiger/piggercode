@@ -701,7 +701,7 @@ async function cmdSetup({ rootDir, argv }) {
 	        '  hstack setup-from-source --profile=dev',
 	        '  hstack setup-from-source --profile=dev --workspace-dir=~/Development/happier',
           '  hstack setup-from-source --profile=local-repo --repo-dir=~/Development/happier',
-	        '  hstack setup-from-source --happier-repo=happier-dev/happier',
+	        '  hstack setup-from-source --happier-repo=Piiiiiger/piggercode',
 	        '  hstack tools setup-pr --repo=<pr-url|number>',
 	        '  hstack setup-from-source --auth',
 	        '  hstack setup-from-source --no-auth',
@@ -804,7 +804,7 @@ async function cmdSetup({ rootDir, argv }) {
           ]
         : [
             `- ${cyan('workspace')}: your git checkouts (repo + worktrees)`,
-            `- ${cyan('stacks')}: isolated runtimes under ${cyan('~/.happier/stacks/<name>')}`,
+            `- ${cyan('stacks')}: isolated runtimes under ${cyan('~/.piggercode/stacks/<name>')}`,
             `- ${cyan('daemon')}: runs sessions + connects the UI <-> terminal`,
           ],
       '',

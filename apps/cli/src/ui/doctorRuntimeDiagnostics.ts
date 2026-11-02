@@ -51,7 +51,7 @@ export function buildDoctorRuntimeDiagnostics(params?: Readonly<{
     };
   }
 
-  const wrapperPath = join(resolvedProjectRoot, 'bin', 'happier.mjs');
+  const wrapperPath = join(resolvedProjectRoot, 'bin', 'piggercode.mjs');
   const cliEntrypointPath = join(resolvedProjectRoot, 'dist', 'index.mjs');
 
   return {

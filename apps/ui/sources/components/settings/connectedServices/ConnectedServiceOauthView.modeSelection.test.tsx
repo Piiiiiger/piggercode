@@ -58,7 +58,7 @@ vi.mock('@/auth/context/AuthContext', () => ({
 vi.mock('@/sync/domains/connectedServices/connectedServiceRegistry', () => ({
     getConnectedServiceRegistryEntry: (serviceId: string) => ({
         serviceId,
-        connectCommand: `happier connect ${serviceId}`,
+        connectCommand: `piggercode connect ${serviceId}`,
         supportsOauth: serviceId !== 'anthropic',
         oauthAddActionModes:
             serviceId === 'openai-codex'

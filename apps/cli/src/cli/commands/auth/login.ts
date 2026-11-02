@@ -18,7 +18,7 @@ import { resolveAuthMethodFlag } from './methodFlag';
  * `--wait-timeout <seconds>`: how long to keep this terminal waiting for the
  * sign-in to be approved.
  *
- * For callers that have to give the terminal back — `happier setup` runs this
+ * For callers that have to give the terminal back — `piggercode setup` runs this
  * command with inherited stdio — an unbounded wait is a terminal nobody can
  * reclaim. Omitted, the wait stays unbounded, which is right for someone sitting
  * in front of a QR code.
@@ -119,7 +119,7 @@ export async function handleAuthLogin(args: string[]): Promise<void> {
         { label: 'Machine ID', value: String(readiness.machineId) },
         { label: 'Host', value: os.hostname() },
       ], { indent: '  ' }));
-      console.log(chalk.gray(`  Use ${cmd('happier auth login --force')} to sign in again.`));
+      console.log(chalk.gray(`  Use ${cmd('piggercode auth login --force')} to sign in again.`));
       return;
     }
 

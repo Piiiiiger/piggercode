@@ -26,7 +26,7 @@ import type { PublicReleaseRingId } from '@piggercode/release-runtime/releaseRin
  * publisher provenance.
  *
  * `managed` means this machine's managed install layout claims it: `installVersionedPayload`
- * promoted a payload under `~/.happier` and recorded `current.version` next to it at
+ * promoted a payload under `~/.piggercode` and recorded `current.version` next to it at
  * `versions/<versionId>/`, and both that record and the binary it names are present. The marker is
  * a plain text file in the user's own home, so `managed` states "this app's install path put it
  * there", never "this binary was cryptographically proven to be official Happier" — any process
@@ -110,7 +110,7 @@ export function resolveExplicitOrInstalledLocalFirstPartyCommand(
     return { command: repoLocalPath, provenance: 'override' };
   }
 
-  // Until this computer answers R12's question, a `happier` the user installed is the CLI here:
+  // Until this computer answers R12's question, a `piggercode` the user installed is the CLI here:
   // acquiring a managed one beside it — which any read would otherwise do — is exactly the second
   // CLI the question exists to prevent. "Let Happier manage it" is what lets acquisition run.
   if (params.componentId === 'happier-cli' && choice?.mode !== 'managed') {
@@ -124,7 +124,7 @@ export function resolveExplicitOrInstalledLocalFirstPartyCommand(
 }
 
 /**
- * A `happier` on the search path that this Happier home's managed layout did not place, found past
+ * A `piggercode` on the search path that this Happier home's managed layout did not place, found past
  * the managed shim (R12/R13 b) — every other copy, for Settings to name and offer to remove.
  */
 export function resolveForeignLocalHappierCli(processEnv: NodeJS.ProcessEnv): string | null {
@@ -134,7 +134,7 @@ export function resolveForeignLocalHappierCli(processEnv: NodeJS.ProcessEnv): st
   });
 }
 
-/** The `happier` a new terminal runs first — what the R12 question is about (RV3-1). */
+/** The `piggercode` a new terminal runs first — what the R12 question is about (RV3-1). */
 export function resolveTerminalLocalHappierCli(processEnv: NodeJS.ProcessEnv): TerminalHappierCli | null {
   return resolveTerminalHappierCli({
     binDir: resolveFirstPartyInstallLayout({ componentId: 'happier-cli', processEnv }).shimDir,
@@ -143,7 +143,7 @@ export function resolveTerminalLocalHappierCli(processEnv: NodeJS.ProcessEnv): T
 }
 
 /**
- * The installed command under `~/.happier`, classified by whether an install actually recorded it.
+ * The installed command under `~/.piggercode`, classified by whether an install actually recorded it.
  *
  * `promoteVersionedPayload` writes the payload to `versions/<versionId>` and only then writes the
  * `current.version` marker, so a marker naming a version whose binary is present is the install
@@ -193,8 +193,8 @@ function resolveRepoLocalFirstPartyCommandPath(params: Readonly<{
         ]
       : params.componentId === 'happier-cli'
         ? [
-            join(repoRoot, 'apps', 'cli', 'bin', 'happier.mjs'),
-            join(repoRoot, 'packages', 'cli', 'bin', 'happier.mjs'),
+            join(repoRoot, 'apps', 'cli', 'bin', 'piggercode.mjs'),
+            join(repoRoot, 'packages', 'cli', 'bin', 'piggercode.mjs'),
           ]
         : [];
 
@@ -217,7 +217,7 @@ function resolveRepoRootForFirstPartyComponent(processEnv: NodeJS.ProcessEnv): s
   let cursor = resolve(startDir);
   while (true) {
     const stackBin = join(cursor, 'apps', 'stack', 'bin', 'hstack.mjs');
-    const cliBin = join(cursor, 'apps', 'cli', 'bin', 'happier.mjs');
+    const cliBin = join(cursor, 'apps', 'cli', 'bin', 'piggercode.mjs');
     if (existsSync(stackBin) || existsSync(cliBin)) {
       return cursor;
     }

@@ -66,7 +66,7 @@ describe('machineSpawnNewSession error mapping', () => {
             host: 'test-machine',
             platform: 'darwin',
             happyCliVersion: '0.2.0',
-            happyHomeDir: '/Users/alice/.happier',
+            happyHomeDir: '/Users/alice/.piggercode',
             homeDir: '/Users/alice',
           },
           metadataVersion: 1,
@@ -1277,7 +1277,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'legacy-machine', platform: 'darwin', happyCliVersion: '0.0.99',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: {
@@ -1320,7 +1320,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'legacy-first-input-machine', platform: 'darwin', happyCliVersion: '0.2.10-dev.40',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: {
@@ -1359,7 +1359,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'modern-first-input-machine', platform: 'darwin', happyCliVersion: '0.2.10-dev.80',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: {
@@ -1402,7 +1402,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'dev-machine', platform: 'darwin', happyCliVersion: '0.1.0-dev',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: {
@@ -1444,7 +1444,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'legacy-machine', platform: 'darwin', happyCliVersion: '0.0.99',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: {
@@ -1490,7 +1490,7 @@ describe('machineSpawnNewSession error mapping', () => {
         activeAt: 1,
         metadata: {
           host: 'legacy-machine', platform: 'darwin', happyCliVersion: '0.0.99',
-          happyHomeDir: '/Users/alice/.happier', homeDir: '/Users/alice',
+          happyHomeDir: '/Users/alice/.piggercode', homeDir: '/Users/alice',
         },
         metadataVersion: 0,
         daemonState: { startedWithCliVersion: '0.0.99' },

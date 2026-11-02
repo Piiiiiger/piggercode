@@ -6,7 +6,7 @@ import { createTempDirSync, removeTempDirSync } from '../../../src/testkit/fs/te
 import { ensureDirectorySync, writeTextFileSync } from '../../../src/testkit/fs/fileHelpers';
 
 const runtimeBinFiles = [
-  'happier.mjs',
+  'piggercode.mjs',
   '_resolveRuntimeEntrypoint.mjs',
   '_prepareRuntimeEntrypoint.mjs',
   '_importRuntimeEntrypoint.mjs',
@@ -61,7 +61,7 @@ export function copyCliBinRuntimeFiles(options: {
     files: {
       'workspaceBundleLock.mjs': [
         "import { resolve } from 'node:path';",
-        "export const resolveWorkspaceBundleLockPath = (repoRoot) => resolve(repoRoot, '.happier-workspace-bundle.lock');",
+        "export const resolveWorkspaceBundleLockPath = (repoRoot) => resolve(repoRoot, '.piggercode-workspace-bundle.lock');",
         'export const withWorkspaceBundleLock = async (fn) => await fn();',
         'export const withWorkspaceBundleLockSync = (fn) => fn();',
         '',
@@ -77,7 +77,7 @@ export function runHappierBin(options: {
   env?: NodeJS.ProcessEnv;
   timeoutMs?: number;
 }): SpawnSyncReturns<string> {
-  return spawnSync(process.execPath, [join(options.binDir, 'happier.mjs'), ...(options.args ?? [])], {
+  return spawnSync(process.execPath, [join(options.binDir, 'piggercode.mjs'), ...(options.args ?? [])], {
     cwd: options.cwd,
     encoding: 'utf8',
     env: options.env,

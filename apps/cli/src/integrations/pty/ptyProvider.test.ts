@@ -100,9 +100,9 @@ describe('createNodePtyProvider', () => {
     expect(
       resolvePtyProviderRequireBase({
         importMetaUrl: 'file:///$bunfs/root/happier',
-        currentExecPath: '/Applications/Happier.app/Contents/MacOS/happier',
+        currentExecPath: '/Applications/PiggerCode.app/Contents/MacOS/happier',
       }),
-    ).toBe('/Applications/Happier.app/Contents/MacOS/happier');
+    ).toBe('/Applications/PiggerCode.app/Contents/MacOS/happier');
   });
 
   it('keeps the module url as the require base for source-mode runs', async () => {
@@ -361,9 +361,9 @@ describe('createNodePtyProvider', () => {
     const { provider, requireCalls } = await loadProviderWithModules({
       [packageDir]: nodePty,
     }, {
-      currentExecPath: 'C:\\Users\\test\\happier-v0.2.10-windows-x64\\happier.exe',
+      currentExecPath: 'C:\\Users\\test\\happier-v0.2.10-windows-x64\\piggercode.exe',
       argv: [
-        'C:\\Users\\test\\happier-v0.2.10-windows-x64\\happier.exe',
+        'C:\\Users\\test\\happier-v0.2.10-windows-x64\\piggercode.exe',
         'claude',
         '--happy-starting-mode',
         'remote',
@@ -430,7 +430,7 @@ describe('createNodePtyProvider', () => {
     const provider = createNodePtyProvider({
       platform: 'win32',
       env: { PATH: 'C:\\Windows\\System32' },
-      currentExecPath: 'C:\\happier\\happier.exe',
+      currentExecPath: 'C:\\happier\\piggercode.exe',
     });
 
     const spawned = provider.spawn({ file: 'cmd.exe', args: ['/c', 'echo ok'], options: {} });
@@ -438,7 +438,7 @@ describe('createNodePtyProvider', () => {
     expect(spawned).toBe(relayProcess);
     expect(createNodePtyRelayProvider).toHaveBeenCalledWith(expect.objectContaining({
       platform: 'win32',
-      currentExecPath: 'C:\\happier\\happier.exe',
+      currentExecPath: 'C:\\happier\\piggercode.exe',
     }));
     expect(relayProvider.spawn).toHaveBeenCalledWith({ file: 'cmd.exe', args: ['/c', 'echo ok'], options: {} });
   });

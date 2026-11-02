@@ -39,25 +39,25 @@ describe('Windows background CLI process consoles', () => {
 
   it('hides scheduler lifecycle, inventory and installed-version probes', async () => {
     await withTempDir('happier-cli-console-', async (directory) => {
-      for (const name of ['powershell.exe', 'schtasks.exe', 'happier.exe']) writeFileSync(join(directory, name), '');
-      mkdirSync(join(directory, '.happier', 'services'), { recursive: true });
+      for (const name of ['powershell.exe', 'schtasks.exe', 'piggercode.exe']) writeFileSync(join(directory, name), '');
+      mkdirSync(join(directory, '.piggercode', 'services'), { recursive: true });
       Object.defineProperty(process, 'platform', { configurable: true, value: 'win32' });
       vi.stubEnv('PATH', directory);
       spawnSyncMock.mockImplementation((command: string, args: readonly string[] = []) => ({
         status: 0,
-        stdout: command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\Happier")')) ? '[]' : '',
+        stdout: command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\PiggerCode")')) ? '[]' : '',
         stderr: '',
       }));
       runDaemonServiceCommands([
         { cmd: 'powershell.exe', args: ['-NoProfile', '-NonInteractive', '-Command', 'Stop-ScheduledTask'] },
-        { cmd: 'schtasks', args: ['/Run', '/TN', 'Happier\\happier-daemon.default'] },
+        { cmd: 'schtasks', args: ['/Run', '/TN', 'PiggerCode\\piggercode-daemon.default'] },
       ], { failureMode: 'strict' });
       expect(await discoverInstalledDaemonServiceEntries({
         platform: 'win32', mode: 'user', userHomeDir: directory,
-        happierHomeDir: join(directory, '.happier'), serversById: {},
+        happierHomeDir: join(directory, '.piggercode'), serversById: {},
       })).toEqual([]);
       spawnSyncMock.mockReturnValue({ status: 0, stdout: '0.2.15\n', stderr: '' });
-      expect(resolveCliVersionFromBinary({ binaryPath: join(directory, 'happier.exe'), platform: 'win32' })).toBe('0.2.15');
+      expect(resolveCliVersionFromBinary({ binaryPath: join(directory, 'piggercode.exe'), platform: 'win32' })).toBe('0.2.15');
       expect(spawnSyncMock.mock.calls.some(([command]) => command === 'schtasks')).toBe(true);
       for (const [, , options] of spawnSyncMock.mock.calls) expect(options.windowsHide).toBe(true);
     });
@@ -85,7 +85,7 @@ describe('Windows background CLI process consoles', () => {
       mkdirSync(join(homeDir, 'services'), { recursive: true });
       spawnSyncMock.mockImplementation((command: string, args: readonly string[] = []) => ({
         status: 0,
-        stdout: command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\Happier")')) ? '[]' : '',
+        stdout: command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\PiggerCode")')) ? '[]' : '',
         stderr: '',
       }));
       const { runDaemonServiceCliCommand } = await import('./cli');

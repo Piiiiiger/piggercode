@@ -22,7 +22,7 @@ async function createPlacementFixture(t) {
       platform: 'posix',
       ssh: 'mac-target',
       repoDir: '/Users/test/happier-0.2',
-      cliHomeDir: '/Users/test/.happier/dev-targets/mac',
+      cliHomeDir: '/Users/test/.piggercode/dev-targets/mac',
     }],
     runtimePlacement: {
       server: { mode: 'prefer-target', target: 'mac-host' },
@@ -73,7 +73,7 @@ test('hstack dev projects an authoritative Mac server without suppressing Linux 
       platform: 'posix',
       ssh: 'mac-target',
       repoDir: '/Users/test/happier-0.2',
-      cliHomeDir: '/Users/test/.happier/dev-targets/mac',
+      cliHomeDir: '/Users/test/.piggercode/dev-targets/mac',
       remoteServerPort: null,
     },
     services: { server: true, expo: false, daemon: true },

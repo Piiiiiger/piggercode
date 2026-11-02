@@ -178,7 +178,7 @@ export function shouldShowGlobalProcessInventory(filter: 'all' | 'daemon'): bool
 
 /**
  * Which relay this computer's daemon is for and which account it is signed in as, in the same
- * words `happier auth status` uses, so a person can compare them with the app (plan R17).
+ * words `piggercode auth status` uses, so a person can compare them with the app (plan R17).
  */
 export function formatDaemonIdentityLines(status: NonNullable<DoctorSnapshot['daemonStatus']>): string[] {
     const account = formatAccountIdentity({
@@ -197,7 +197,7 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
         filter = 'all';
     }
 
-    console.log(`\n${banner(filter === 'daemon' ? 'Happier daemon' : 'Happier CLI doctor')}\n`);
+    console.log(`\n${banner(filter === 'daemon' ? 'PiggerCode daemon' : 'PiggerCode CLI doctor')}\n`);
 
     let snapshot: DoctorSnapshot | null = null;
     try {
@@ -213,7 +213,7 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
 
         // Version and basic info
         console.log(sectionTitle('Basic information'));
-        console.log(`Happier CLI Version: ${String(packageJson.version)}`);
+        console.log(`PiggerCode CLI Version: ${String(packageJson.version)}`);
         console.log(`Platform: ${String(process.platform)} ${process.arch}`);
         const runtimeDiagnostics = buildDoctorRuntimeDiagnostics();
         console.log(`Runtime: ${String(formatDoctorRuntimeLabel(runtimeDiagnostics))}`);
@@ -237,7 +237,7 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
 
 		        // Configuration
 		        console.log(sectionTitle('Configuration'));
-		        console.log(`Happier Home: ${String(configuration.happyHomeDir)}`);
+		        console.log(`PiggerCode Home: ${String(configuration.happyHomeDir)}`);
 		        console.log(`Relay URL: ${String(configuration.serverUrl)}`);
 		        console.log(`Logs Dir: ${String(configuration.logsDir)}`);
 
@@ -363,9 +363,9 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
                     console.log(chalk.yellow('  Warning: Current CLI differs from the running daemon.'));
                     console.log(chalk.gray(
                         serviceManaged === true
-                            ? '  Use `happier doctor repair` if you want automatic startup to switch to this installation.'
+                            ? '  Use `piggercode doctor repair` if you want automatic startup to switch to this installation.'
                             : serviceManaged === false
-                                ? '  Use `happier daemon restart` if you want the manual start to switch to this installation.'
+                                ? '  Use `piggercode daemon restart` if you want the manual start to switch to this installation.'
                                 : '  Restart the running daemon before trying to switch this installation.',
                     ));
                 }
@@ -402,9 +402,9 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
                 console.log(chalk.yellow('  Warning: Current CLI differs from the running daemon.'));
                 console.log(chalk.gray(
                     resolveDaemonStartupSourceServiceManagedState(state.startupSource, state.serviceLabel) === true
-                        ? '  Use `happier doctor repair` if you want automatic startup to switch to this installation.'
+                        ? '  Use `piggercode doctor repair` if you want automatic startup to switch to this installation.'
                         : resolveDaemonStartupSourceServiceManagedState(state.startupSource, state.serviceLabel) === false
-                            ? '  Use `happier daemon restart` if you want the manual start to switch to this installation.'
+                            ? '  Use `piggercode daemon restart` if you want the manual start to switch to this installation.'
                             : '  Restart the running daemon before trying to switch this installation.',
                 ));
             }
@@ -435,7 +435,7 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
             // All Happier processes
             const allProcesses = await findAllHappyProcesses();
             if (allProcesses.length > 0) {
-                console.log(`\n${sectionTitle('All Happier CLI processes')}`);
+                console.log(`\n${sectionTitle('All PiggerCode CLI processes')}`);
 
                 // Group by type
                 const grouped = allProcesses.reduce((groups, process) => {
@@ -467,12 +467,12 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
                     });
                 });
             } else {
-                console.log(fail('No happier processes found'));
+                console.log(fail('No piggercode processes found'));
             }
 
             if (allProcesses.length > 1) { // More than just current process
                 console.log(`\n${sectionTitle('Process management')}`);
-                console.log(chalk.gray('To clean up runaway processes: happier doctor clean'));
+                console.log(chalk.gray('To clean up runaway processes: piggercode doctor clean'));
             }
 
             const cleanupSummary = cleanupOwnershipSummary;
@@ -544,8 +544,8 @@ export async function runDoctorCommand(filter?: 'all' | 'daemon'): Promise<void>
 
         // Support and bug reports
         console.log(`\n${sectionTitle('Support and bug reports')}`);
-        console.log(`Report issues: ${String('https://github.com/happier-dev/happier/issues')}`);
-        console.log(`Documentation: ${String('https://cloud.happier.dev')}`);
+        console.log(`Report issues: ${String('https://github.com/Piiiiiger/piggercode/issues')}`);
+        console.log(`Documentation: ${String('https://github.com/Piiiiiger/piggercode#readme')}`);
     }
 
     if (filter === 'all') console.log(`\n${ok('Diagnosis complete')}\n`);

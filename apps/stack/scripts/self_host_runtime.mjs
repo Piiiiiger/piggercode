@@ -70,7 +70,7 @@ import { listVersionedDirectoryIdsNewestFirst, pruneVersionedDirectories } from 
 
 const SUPPORTED_CHANNELS = new Set(PUBLIC_RELEASE_RING_IDS);
 const DEFAULTS = Object.freeze({
-  githubRepo: 'happier-dev/happier',
+  githubRepo: 'Piiiiiger/piggercode',
   installRoot: '/opt/happier',
   binDir: '/usr/local/bin',
   configDir: '/etc/happier',
@@ -115,7 +115,7 @@ export function resolveSelfHostDefaults({ platform = process.platform, mode = 'u
     };
   }
 
-  const happierHome = p === 'win32' ? `${home}\\.happier` : join(home, '.happier');
+  const happierHome = p === 'win32' ? `${home}\\.piggercode` : join(home, '.piggercode');
   const installRootBase = p === 'win32' ? `${happierHome}\\self-host` : join(happierHome, 'self-host');
   const installRoot = appendSelfHostReleaseSuffix(installRootBase, normalizedChannel);
   return {
@@ -2633,7 +2633,7 @@ function resolveRelayHostForwardSupport(env = process.env) {
   }
 
   try {
-    const probe = spawnSync('happier', ['relay', 'host', '--help'], {
+    const probe = spawnSync('piggercode', ['relay', 'host', '--help'], {
       env,
       stdio: 'ignore',
       encoding: 'utf-8',
@@ -2653,7 +2653,7 @@ export async function runSelfHostCli(argv = process.argv.slice(2), { configOutpu
     && shouldAttemptRelayHostForward(process.env)
     && resolveRelayHostForwardSupport(process.env)
   ) {
-    const forwarded = spawnSync('happier', ['relay', 'host', ...resolveRelayHostForwardedArgv(argv)], {
+    const forwarded = spawnSync('piggercode', ['relay', 'host', ...resolveRelayHostForwardedArgv(argv)], {
       env: process.env,
       stdio: 'inherit',
       encoding: 'utf-8',

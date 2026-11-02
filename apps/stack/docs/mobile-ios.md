@@ -176,7 +176,7 @@ PIGGERCODE_STACK_IOS_APP_NAME="hstack" hstack mobile --prebuild --run-ios --no-m
 
 ## Suggested env (recommended)
 
-Add these to your main stack env file (`~/.happier/stacks/main/env`) (or `~/.happier-stack/env.local` for global overrides) so you don’t have to prefix every command:
+Add these to your main stack env file (`~/.piggercode/stacks/main/env`) (or `~/.piggercode-stack/env.local` for global overrides) so you don’t have to prefix every command:
 
 ```bash
 # How the phone reaches Metro:
@@ -218,13 +218,13 @@ Example stack name: `happier`.
 Create a `happy` monorepo worktree from your fork branch (example):
 
 ```bash
-hstack wt new happy happier --from=origin --base=origin/happier
+hstack wt new happy piggercode --from=origin --base=origin/happier
 ```
 
 Pin the `happier` stack to that worktree:
 
 ```bash
-hstack stack wt happier -- use happier-dev/happier
+hstack stack wt piggercode -- use happier-dev/happier
 ```
 
 ### 2) Set the app identity in the stack env (local + build-time config)
@@ -232,7 +232,7 @@ hstack stack wt happier -- use happier-dev/happier
 These are evaluated by `apps/ui/app.config.js` when building:
 
 ```bash
-hstack stack env happier set \
+hstack stack env piggercode set \
   APP_ENV=production \
   EXPO_APP_NAME="Happier" \
   EXPO_APP_BUNDLE_ID="dev.happier.app" \
@@ -251,9 +251,9 @@ Notes:
 When changing bundle IDs / schemes / config plugins, you should run a clean prebuild so native projects match the config:
 
 ```bash
-hstack stack mobile happier --prebuild --platform=ios --clean --no-metro
+hstack stack mobile piggercode --prebuild --platform=ios --clean --no-metro
 # or:
-hstack stack mobile happier --prebuild --platform=all --clean --no-metro
+hstack stack mobile piggercode --prebuild --platform=all --clean --no-metro
 ```
 
 ### 4) Make sure the cloud builder sees your env vars (EAS Environment Variables)
@@ -270,14 +270,14 @@ With hstack helpers (stack-scoped):
 
 ```bash
 # Inspect:
-hstack stack eas happier env:list --environment production
+hstack stack eas piggercode env:list --environment production
 
 # Create (use env:update if it already exists):
-hstack stack eas happier env:create --name EXPO_APP_NAME --value "Happier" --environment production --visibility plainText
-hstack stack eas happier env:create --name EXPO_APP_BUNDLE_ID --value "dev.happier.app" --environment production --visibility plainText
-hstack stack eas happier env:create --name EXPO_APP_SCHEME --value "happier" --environment production --visibility plainText
-hstack stack eas happier env:create --name EXPO_APP_OWNER --value "happier-dev" --environment production --visibility plainText
-hstack stack eas happier env:create --name EXPO_APP_SLUG --value "happier" --environment production --visibility plainText
+hstack stack eas piggercode env:create --name EXPO_APP_NAME --value "Happier" --environment production --visibility plainText
+hstack stack eas piggercode env:create --name EXPO_APP_BUNDLE_ID --value "dev.happier.app" --environment production --visibility plainText
+hstack stack eas piggercode env:create --name EXPO_APP_SCHEME --value "happier" --environment production --visibility plainText
+hstack stack eas piggercode env:create --name EXPO_APP_OWNER --value "happier-dev" --environment production --visibility plainText
+hstack stack eas piggercode env:create --name EXPO_APP_SLUG --value "happier" --environment production --visibility plainText
 ```
 
 Tip:
@@ -289,14 +289,14 @@ Tip:
 If you see permission errors, verify the Expo account:
 
 ```bash
-hstack stack eas happier whoami
-hstack stack eas happier login
+hstack stack eas piggercode whoami
+hstack stack eas piggercode login
 ```
 
 If the project is not initialized/linked under your account yet:
 
 ```bash
-hstack stack eas happier project:init
+hstack stack eas piggercode project:init
 ```
 
 ### 6) Build (iOS / Android)
@@ -304,14 +304,14 @@ hstack stack eas happier project:init
 First-time iOS credential setup usually requires interactive mode:
 
 ```bash
-hstack stack eas happier ios --profile production --interactive
+hstack stack eas piggercode ios --profile production --interactive
 ```
 
 After credentials are set up, you can run non-interactive builds:
 
 ```bash
-hstack stack eas happier ios --profile production --no-wait --non-interactive
-hstack stack eas happier android --profile production --no-wait --non-interactive
+hstack stack eas piggercode ios --profile production --no-wait --non-interactive
+hstack stack eas piggercode android --profile production --no-wait --non-interactive
 ```
 
 ### Common pitfalls

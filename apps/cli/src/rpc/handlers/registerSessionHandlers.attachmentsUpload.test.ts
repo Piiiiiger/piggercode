@@ -67,7 +67,7 @@ describe('registerSessionHandlers attachments uploads', () => {
       fileName: 'file.txt',
       sizeBytes: 11,
       uploadLocation: 'workspace',
-      workspaceRelativeDir: '.happier/uploads',
+      workspaceRelativeDir: '.piggercode/uploads',
       vcsIgnoreStrategy: 'none',
       vcsIgnoreWritesEnabled: false,
     });
@@ -86,7 +86,7 @@ describe('registerSessionHandlers attachments uploads', () => {
     const finalizeResult: any = await finalize({ uploadId: initResult.uploadId });
     expect(finalizeResult).toMatchObject({
       success: true,
-      path: expect.stringMatching(/^\.happier\/uploads\/messages\/message-1\/[0-9a-f]{8}-file\.txt$/),
+      path: expect.stringMatching(/^\.piggercode\/uploads\/messages\/message-1\/[0-9a-f]{8}-file\.txt$/),
       sizeBytes: 11,
       sha256: expect.any(String),
     });

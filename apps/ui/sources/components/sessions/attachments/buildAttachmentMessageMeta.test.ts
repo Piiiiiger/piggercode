@@ -7,15 +7,15 @@ describe('buildAttachmentMessageMeta', () => {
         const meta = buildAttachmentMessageMeta([
             {
                 name: 'screen.png',
-                path: '.happier/uploads/messages/m1/screen.png',
+                path: '.piggercode/uploads/messages/m1/screen.png',
                 mimeType: 'image/png',
                 sizeBytes: 42,
                 sha256: 'h1',
                 structuredInput: {
                     type: 'localImage',
                     kind: 'image',
-                    localPath: '.happier/uploads/messages/m1/screen.png',
-                    path: '.happier/uploads/messages/m1/screen.png',
+                    localPath: '.piggercode/uploads/messages/m1/screen.png',
+                    path: '.piggercode/uploads/messages/m1/screen.png',
                     mimeType: 'image/png',
                     name: 'screen.png',
                     sizeBytes: 42,
@@ -31,7 +31,7 @@ describe('buildAttachmentMessageMeta', () => {
                     attachments: [
                         {
                             name: 'screen.png',
-                            path: '.happier/uploads/messages/m1/screen.png',
+                            path: '.piggercode/uploads/messages/m1/screen.png',
                             mimeType: 'image/png',
                             sizeBytes: 42,
                             sha256: 'h1',
@@ -45,8 +45,8 @@ describe('buildAttachmentMessageMeta', () => {
                     {
                         type: 'localImage',
                         kind: 'image',
-                        localPath: '.happier/uploads/messages/m1/screen.png',
-                        path: '.happier/uploads/messages/m1/screen.png',
+                        localPath: '.piggercode/uploads/messages/m1/screen.png',
+                        path: '.piggercode/uploads/messages/m1/screen.png',
                         provenance: { kind: 'sessionAttachmentUpload' },
                     },
                 ],

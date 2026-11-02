@@ -100,7 +100,7 @@ describe('handleCodexCliCommand', () => {
     }));
   });
 
-  it('preserves Codex-native args while consuming Happier session flags', async () => {
+  it('preserves Codex-native args while consuming PiggerCode session flags', async () => {
     process.env.PIGGERCODE_ACCOUNT_SETTINGS_MODE = 'never';
     const credentials: Credentials = { token: 't', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) } };
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);

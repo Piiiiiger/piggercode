@@ -15,7 +15,7 @@ function createBaseDeps() {
   };
 }
 
-describe('happier tools --json', () => {
+describe('piggercode tools --json', () => {
   it('prints a tools_list JSON envelope grouped by source', async () => {
     const output = captureStdoutJsonOutput();
     const initializeBackendApiContext = vi.fn(async () => ({ api: {} as any, machineId: 'machine-1' }));
@@ -42,7 +42,7 @@ describe('happier tools --json', () => {
       const parsed = output.json<any>();
       expect(parsed.ok).toBe(true);
       expect(parsed.kind).toBe('tools_list');
-      expect(parsed.data?.sources?.happier).toEqual([
+      expect(parsed.data?.sources?.piggercode).toEqual([
         expect.objectContaining({ name: 'change_title' }),
       ]);
       expect(parsed.data?.sources?.playwright).toEqual([
@@ -96,7 +96,7 @@ describe('happier tools --json', () => {
     }
   });
 
-  it('allows happier tools list without a session id', async () => {
+  it('allows piggercode tools list without a session id', async () => {
     const output = captureStdoutJsonOutput();
     const prevExitCode = process.exitCode;
     process.exitCode = undefined;
@@ -113,7 +113,7 @@ describe('happier tools --json', () => {
       const parsed = output.json<any>();
       expect(parsed.ok).toBe(true);
       expect(parsed.kind).toBe('tools_list');
-      expect(parsed.data?.sources?.happier).toEqual([
+      expect(parsed.data?.sources?.piggercode).toEqual([
         expect.objectContaining({ name: 'change_title' }),
       ]);
       expect(process.exitCode).toBe(0);
@@ -123,7 +123,7 @@ describe('happier tools --json', () => {
     }
   });
 
-  it('prints a tools_call JSON envelope for built-in Happier tools', async () => {
+  it('prints a tools_call JSON envelope for built-in PiggerCode tools', async () => {
     const output = captureStdoutJsonOutput();
     const initializeBackendApiContext = vi.fn(async () => ({ api: {} as any, machineId: 'machine-1' }));
     const bootstrapAccountSettingsContext = vi.fn(async () => ({ settings: {}, source: 'network', settingsVersion: 1, loadedAtMs: 1, whenRefreshed: null }));
@@ -141,7 +141,7 @@ describe('happier tools --json', () => {
         '--directory',
         '/tmp/workspace',
         '--source',
-        'happier',
+        'piggercode',
         '--tool',
         'change_title',
         '--args-json',
@@ -162,7 +162,7 @@ describe('happier tools --json', () => {
       expect(parsed.ok).toBe(true);
       expect(parsed.kind).toBe('tools_call');
       expect(parsed.data).toEqual({
-        source: 'happier',
+        source: 'piggercode',
         tool: 'change_title',
         isError: false,
         output: {
@@ -181,7 +181,7 @@ describe('happier tools --json', () => {
     }
   });
 
-  it('prints a tools_call JSON envelope for custom Happier-managed tools', async () => {
+  it('prints a tools_call JSON envelope for custom PiggerCode-managed tools', async () => {
     const output = captureStdoutJsonOutput();
     const resolveCustomHappierToolsContext = vi.fn(async () => ({ mcpServers: {}, warnings: [], cleanup: () => undefined }));
     const prevExitCode = process.exitCode;
@@ -231,7 +231,7 @@ describe('happier tools --json', () => {
     }
   });
 
-  it('includes session ambiguity candidates in the tools_call JSON error envelope for built-in Happier tools', async () => {
+  it('includes session ambiguity candidates in the tools_call JSON error envelope for built-in PiggerCode tools', async () => {
     const output = captureStdoutJsonOutput();
     const prevExitCode = process.exitCode;
     process.exitCode = undefined;
@@ -244,7 +244,7 @@ describe('happier tools --json', () => {
         '--directory',
         '/tmp/workspace',
         '--source',
-        'happier',
+        'piggercode',
         '--tool',
         'change_title',
         '--args-json',
@@ -286,7 +286,7 @@ describe('happier tools --json', () => {
         'call',
         '--session-id', 'sess-1',
         '--directory', '/tmp/workspace',
-        '--source', 'happier',
+        '--source', 'piggercode',
         '--tool', 'action_execute',
         '--args-json', '{"actionId":"memory.search","input":{}}',
         '--session-agent-bridge',

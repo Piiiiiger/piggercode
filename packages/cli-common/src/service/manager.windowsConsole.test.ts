@@ -33,11 +33,11 @@ describe('Windows background service consoles', () => {
         stderr: '',
       }));
       await applyServicePlan(planServiceAction({
-        backend: 'schtasks-user', action: 'restart', label: 'happier-daemon.default',
-        taskName: 'Happier\\happier-daemon.default',
-        definitionPath: join(directory, 'happier-daemon.default.ps1'),
+        backend: 'schtasks-user', action: 'restart', label: 'piggercode-daemon.default',
+        taskName: 'PiggerCode\\piggercode-daemon.default',
+        definitionPath: join(directory, 'piggercode-daemon.default.ps1'),
       }));
-      expect(inspectServiceRegistration({ backend: 'schtasks-user', label: 'happier-daemon.default' })).toBe('registered');
+      expect(inspectServiceRegistration({ backend: 'schtasks-user', label: 'piggercode-daemon.default' })).toBe('registered');
       expect(spawnSyncMock.mock.calls.some(([command]) => command === 'powershell.exe')).toBe(true);
       expect(spawnSyncMock.mock.calls.some(([command]) => command === 'schtasks')).toBe(true);
       for (const [, , options] of spawnSyncMock.mock.calls) expect(options.windowsHide).toBe(true);

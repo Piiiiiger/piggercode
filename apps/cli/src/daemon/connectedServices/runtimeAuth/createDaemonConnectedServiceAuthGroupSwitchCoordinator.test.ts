@@ -359,7 +359,7 @@ describe('createDaemonConnectedServiceAuthGroupSwitchCoordinator', () => {
     };
     const continuity = {
       materializationIdentityId: 'csm_abc',
-      targetMaterializedRoot: '/home/user/.happier/csm/csm_abc',
+      targetMaterializedRoot: '/home/user/.piggercode/csm/csm_abc',
       vendorResumeId: 'resume-123',
       candidatePersistedSessionFile: '/home/user/.codex/sessions/rollout.jsonl',
       requestedStateMode: 'shared',

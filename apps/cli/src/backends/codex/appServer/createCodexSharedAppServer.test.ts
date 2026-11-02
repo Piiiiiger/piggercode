@@ -66,7 +66,7 @@ describe('createCodexSharedAppServer', () => {
     const servers: Awaited<ReturnType<typeof createCodexSharedAppServer>>[] = [];
     const clients: Awaited<ReturnType<Awaited<ReturnType<typeof createCodexSharedAppServer>>['createClient']>>[] = [];
     const stderr: string[] = [];
-    const nativeStartupLock = join(userInfo().homedir, '.happier-codex-native-startup.lock');
+    const nativeStartupLock = join(userInfo().homedir, '.piggercode-codex-native-startup.lock');
     let failedStartupOwner: string | null = null;
     const cleanupWasExclusive: boolean[] = [];
     const spawnProcess = vi.fn(spawn);
@@ -143,7 +143,7 @@ describe('createCodexSharedAppServer', () => {
     }
   });
 
-  it('owns one socket app-server and gives Happier clients WebSocket transports to that server', async () => {
+  it('owns one socket app-server and gives PiggerCode clients WebSocket transports to that server', async () => {
     const child = Object.assign(new EventEmitter(), { pid: 42, stderr: new EventEmitter() });
     const spawnProcess = vi.fn(() => child as never);
     const createClient = vi.fn(async (params: unknown) => ({ params, dispose: vi.fn() }));

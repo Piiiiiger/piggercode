@@ -10,8 +10,8 @@ describe('buildAcpPromptContentBlocks', () => {
   it('projects text plus only hash-verified uploaded local images into binary-safe ACP blocks', async () => {
     await withTempDir('acp-prompt-image-', async (cwd) => {
       const bytes = Buffer.from([0, 255, 1, 2, 3, 128]);
-      const uploadPath = '.happier/uploads/messages/message-1/screen.png';
-      await mkdir(`${cwd}/.happier/uploads/messages/message-1`, { recursive: true });
+      const uploadPath = '.piggercode/uploads/messages/message-1/screen.png';
+      await mkdir(`${cwd}/.piggercode/uploads/messages/message-1`, { recursive: true });
       await writeFile(`${cwd}/${uploadPath}`, bytes);
 
       const blocks = await buildAcpPromptContentBlocks({

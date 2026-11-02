@@ -28,7 +28,7 @@ export function prismaGenerateDatabaseUrlForProvider(provider: BuildDbProvider):
         return "mysql://root:root@127.0.0.1:3306/mysql";
     }
     // Any syntactically valid SQLite URL works for `prisma generate` (no file access required).
-    return "file:./.happier-prisma-generate.sqlite";
+    return "file:./.piggercode-prisma-generate.sqlite";
 }
 
 async function main(): Promise<void> {

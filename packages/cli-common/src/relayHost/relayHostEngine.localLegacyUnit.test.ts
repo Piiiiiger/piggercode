@@ -88,7 +88,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return '{"version":"0.2.1"}\n';
             }
             if (path.endsWith('happier-server.service')) {
-              return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host-preview\n';
+              return '[Service]\nWorkingDirectory=/tmp/happy-home/.piggercode/self-host-preview\n';
             }
             if (path.endsWith('server.env')) {
               return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
@@ -104,7 +104,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       const status = await engine.readStatus({
@@ -211,7 +211,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return 'PORT=3005\nPIGGERCODE_SERVER_HOST=127.0.0.1\n';
             }
             if (path.endsWith('happier-server.service')) {
-              return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host-preview\n';
+              return '[Service]\nWorkingDirectory=/tmp/happy-home/.piggercode/self-host-preview\n';
             }
             return '';
           },
@@ -224,7 +224,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       await expect(engine.control({
@@ -327,7 +327,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
     <key>Label</key>
     <string>happier-server</string>
     <key>WorkingDirectory</key>
-    <string>/tmp/happy-home/.happier/self-host-preview</string>
+    <string>/tmp/happy-home/.piggercode/self-host-preview</string>
   </dict>
 </plist>
 `;
@@ -346,7 +346,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'darwin', arch: 'arm64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       const status = await engine.readStatus({
@@ -449,7 +449,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
     <key>Label</key>
     <string>happier-server</string>
     <key>WorkingDirectory</key>
-    <string>/tmp/happy-home/.happier/self-host-preview</string>
+    <string>/tmp/happy-home/.piggercode/self-host-preview</string>
   </dict>
 </plist>
 `;
@@ -465,7 +465,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'darwin', arch: 'arm64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
       });
 
       await expect(engine.control({
@@ -513,10 +513,10 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
           spawnSync: (cmd: string, args?: readonly string[]) => {
             if (cmd === 'schtasks' && Array.isArray(args) && args[0] === '/Query') {
               const taskName = String(args[args.indexOf('/TN') + 1] ?? '');
-              if (taskName === 'Happier\\happier-server-preview') {
+              if (taskName === 'PiggerCode\\happier-server-preview') {
                 return { status: 1, stdout: '', stderr: 'ERROR: The system cannot find the file specified.\r\n' };
               }
-              if (taskName === 'Happier\\happier-server') {
+              if (taskName === 'PiggerCode\\happier-server') {
                 return { status: 0, stdout: 'Status: Ready\r\nScheduled Task State: Enabled\r\n', stderr: '' };
               }
             }
@@ -552,7 +552,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
             path.includes('self-host-state.json')
             || path.endsWith('\\bin\\happier-server.exe')
             || path.endsWith('\\server.env')
-            || path.endsWith('\\.happier\\services\\happier-server.ps1'),
+            || path.endsWith('\\.piggercode\\services\\happier-server.ps1'),
         };
       });
 
@@ -565,7 +565,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
               return '{"version":"0.2.1"}\n';
             }
             if (path.endsWith('happier-server.ps1')) {
-              return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.happier\\self-host-preview"\n';
+              return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.piggercode\\self-host-preview"\n';
             }
             if (path.endsWith('server.env')) {
               return 'PORT=3005\r\nPIGGERCODE_SERVER_HOST=127.0.0.1\r\n';
@@ -581,7 +581,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.happier\\self-host\\current\\happier-server.exe', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.piggercode\\self-host\\current\\happier-server.exe', versionId: 'preview-1' }),
       });
 
       const status = await engine.readStatus({
@@ -629,10 +629,10 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
             invoked.push([cmd, ...(Array.isArray(args) ? args : [])].join(' '));
             if (cmd === 'schtasks' && Array.isArray(args) && args[0] === '/Query') {
               const taskName = String(args[args.indexOf('/TN') + 1] ?? '');
-              if (taskName === 'Happier\\happier-server-preview') {
+              if (taskName === 'PiggerCode\\happier-server-preview') {
                 return { status: 1, stdout: '', stderr: 'ERROR: The system cannot find the file specified.\r\n' };
               }
-              if (taskName === 'Happier\\happier-server') {
+              if (taskName === 'PiggerCode\\happier-server') {
                 return { status: 0, stdout: 'Status: Running\r\nScheduled Task State: Enabled\r\n', stderr: '' };
               }
             }
@@ -666,7 +666,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
           ...actual,
           existsSync: (path: string) =>
             path.endsWith('\\server.env')
-            || path.endsWith('\\.happier\\services\\happier-server.ps1'),
+            || path.endsWith('\\.piggercode\\services\\happier-server.ps1'),
         };
       });
 
@@ -693,7 +693,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
           ...actual,
           readFile: async (path: string) => {
             if (path.endsWith('happier-server.ps1')) {
-              return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.happier\\self-host-preview"\n';
+              return '$ErrorActionPreference = "Stop"\nSet-Location -LiteralPath "C:\\Users\\tester\\.piggercode\\self-host-preview"\n';
             }
             if (path.endsWith('server.env')) {
               return 'PORT=3005\r\nPIGGERCODE_SERVER_HOST=127.0.0.1\r\n';
@@ -709,7 +709,7 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
         runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
         copyLocalDirectoryToRemote: async () => {},
-        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.happier\\self-host\\current\\happier-server.exe', versionId: 'preview-1' }),
+        installRemoteComponent: async () => ({ binaryPath: '%USERPROFILE%\\.piggercode\\self-host\\current\\happier-server.exe', versionId: 'preview-1' }),
       });
 
       await expect(engine.control({
@@ -719,8 +719,8 @@ describe('RelayHostEngine (local legacy service name compatibility)', () => {
         action: 'start',
       })).resolves.toBeUndefined();
 
-      expect(invoked.some((cmd) => cmd.includes('schtasks /Run /TN Happier\\happier-server'))).toBe(true);
-      expect(invoked.some((cmd) => cmd.includes('schtasks /Run /TN Happier\\happier-server-preview'))).toBe(false);
+      expect(invoked.some((cmd) => cmd.includes('schtasks /Run /TN PiggerCode\\happier-server'))).toBe(true);
+      expect(invoked.some((cmd) => cmd.includes('schtasks /Run /TN PiggerCode\\happier-server-preview'))).toBe(false);
     } finally {
       Object.defineProperty(process, 'platform', { value: originalPlatform });
       globalThis.fetch = originalFetch;

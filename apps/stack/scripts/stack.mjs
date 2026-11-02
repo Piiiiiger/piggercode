@@ -1791,7 +1791,7 @@ async function cmdPrStack({ rootDir, argv }) {
         'examples:',
         '  # Create stack + check out PRs + start dev UI',
         '  hstack stack pr pr123 \\',
-        '    --repo=https://github.com/happier-dev/happier/pull/123 \\',
+        '    --repo=https://github.com/Piiiiiger/piggercode/pull/123 \\',
         '    --seed-auth --copy-auth-from=dev-auth \\',
         '    --dev',
         '',
@@ -2315,7 +2315,7 @@ async function main() {
               '  hstack stack wt <name> -- <wt args...>',
               '',
               'example:',
-	              '  hstack stack wt exp1 -- use happier pr/123-fix-thing',
+	              '  hstack stack wt exp1 -- use piggercode pr/123-fix-thing',
             ]
           : cmd === 'srv'
             ? [
@@ -2348,9 +2348,9 @@ async function main() {
                     '  hstack stack eas <name> <eas args...>',
                     '',
                     'examples:',
-                    '  hstack stack eas happier android --profile production',
-                    '  hstack stack eas happier build --platform android --profile production',
-                    '  hstack stack eas happier env:sync --environment production',
+                    '  hstack stack eas piggercode android --profile production',
+                    '  hstack stack eas piggercode build --platform android --profile production',
+                    '  hstack stack eas piggercode env:sync --environment production',
                   ]
             : cmd === 'daemon'
                 ? [
@@ -2429,7 +2429,7 @@ async function main() {
     });
     return;
   }
-  if (cmd === 'happier') {
+  if (cmd === 'piggercode') {
     await runStackHappierPassthroughCommand({ rootDir, stackName, passthrough });
     return;
   }

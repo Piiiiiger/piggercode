@@ -23,7 +23,7 @@ vi.mock('@/session/actions/createCliActionExecutorFromCredentials', () => ({
 
 const { handleSessionCommand } = await import('./handleSessionCommand');
 
-describe('happier session stop (action executor)', () => {
+describe('piggercode session stop (action executor)', () => {
   it('routes through ActionExecutor with the expected action id and args', async () => {
     execute.mockResolvedValueOnce({
       ok: true,

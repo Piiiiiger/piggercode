@@ -76,7 +76,7 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
     it('prefers the repo-local Happier CLI command before attempting a payload download', async () => {
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-repo-local-happier-cli-'));
         const repoRoot = join(rootDir, 'repo');
-        const happierPath = join(repoRoot, 'apps', 'cli', 'bin', 'happier.mjs');
+        const happierPath = join(repoRoot, 'apps', 'cli', 'bin', 'piggercode.mjs');
         const preparePayload = vi.fn(async () => {
             throw new Error('preparePayload should not have been called');
         });
@@ -110,12 +110,12 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
     });
 
     it('refuses managed provenance for a binary planted under the install root with no install record', () => {
-        // A local process can create `~/.happier/cli/current/<binary>` before anything was ever
+        // A local process can create `~/.piggercode/cli/current/<binary>` before anything was ever
         // acquired. Nothing verified it, so it must never be classified `managed` — automatic
         // pairing approval hands a managed CLI the account content key (R13/INV2/D4).
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-planted-binary-'));
         const happyHomeDir = join(rootDir, 'home');
-        const plantedPath = join(happyHomeDir, 'cli', 'current', 'happier');
+        const plantedPath = join(happyHomeDir, 'cli', 'current', 'piggercode');
 
         try {
             mkdirSync(dirname(plantedPath), { recursive: true });
@@ -135,9 +135,9 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
     it('reports a real managed install as managed and env/repo overrides as override', async () => {
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-provenance-'));
         const happyHomeDir = join(rootDir, 'home');
-        const managedPath = join(happyHomeDir, 'cli', 'current', 'happier');
+        const managedPath = join(happyHomeDir, 'cli', 'current', 'piggercode');
         const repoRoot = join(rootDir, 'repo');
-        const repoPath = join(repoRoot, 'apps', 'cli', 'bin', 'happier.mjs');
+        const repoPath = join(repoRoot, 'apps', 'cli', 'bin', 'piggercode.mjs');
         const envPath = join(rootDir, 'env-happier');
         const stagedPayloadRoot = join(rootDir, 'staged');
 
@@ -151,8 +151,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
             // The real install path: it writes the payload under `versions/<versionId>` and
             // records `current.version` beside it. That record is what `managed` means.
             mkdirSync(stagedPayloadRoot, { recursive: true });
-            writeFileSync(join(stagedPayloadRoot, 'happier'), '#!/usr/bin/env node\n', 'utf8');
-            chmodSync(join(stagedPayloadRoot, 'happier'), 0o755);
+            writeFileSync(join(stagedPayloadRoot, 'piggercode'), '#!/usr/bin/env node\n', 'utf8');
+            chmodSync(join(stagedPayloadRoot, 'piggercode'), 0o755);
             await installVersionedPayload({
                 componentId: 'happier-cli',
                 versionId: '0.2.13',
@@ -197,8 +197,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
         const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-choice-'));
         const happyHomeDir = join(rootDir, 'home');
         const npmBin = join(rootDir, 'npm-global', 'bin');
-        const npmHappier = join(npmBin, 'happier');
-        const managedPath = join(happyHomeDir, 'cli', 'current', 'happier');
+        const npmHappier = join(npmBin, 'piggercode');
+        const managedPath = join(happyHomeDir, 'cli', 'current', 'piggercode');
         const stagedPayloadRoot = join(rootDir, 'staged');
         const processEnv = { PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin };
         const resolve = () => resolveExplicitOrInstalledLocalFirstPartyCommand({ componentId: 'happier-cli', releaseRing: 'stable', processEnv });
@@ -216,8 +216,8 @@ describe('ensureLocalFirstPartyComponentCommand', () => {
             expect(resolve()).toBeNull();
 
             mkdirSync(stagedPayloadRoot, { recursive: true });
-            writeFileSync(join(stagedPayloadRoot, 'happier'), '#!/bin/sh\n', 'utf8');
-            chmodSync(join(stagedPayloadRoot, 'happier'), 0o755);
+            writeFileSync(join(stagedPayloadRoot, 'piggercode'), '#!/bin/sh\n', 'utf8');
+            chmodSync(join(stagedPayloadRoot, 'piggercode'), 0o755);
             await installVersionedPayload({
                 componentId: 'happier-cli',
                 versionId: '0.2.13',

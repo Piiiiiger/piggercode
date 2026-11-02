@@ -225,7 +225,7 @@ describe('buildSetupPlan — readiness is more than credential bytes', () => {
     expect(plan.steps).toEqual([]);
     expect(plan.stop?.reason).toBe('relay-unavailable');
     expect(plan.stop?.detail).toContain('temporarily-unavailable.example.com');
-    expect(plan.stop?.detail).toContain('happier setup --cloud');
+    expect(plan.stop?.detail).toContain('piggercode setup --cloud');
   });
 
   it('does not call a machine whose credentials the relay rejected already set up', () => {
@@ -315,7 +315,7 @@ describe('buildSetupPlan — unattended runs (--yes)', () => {
 
     expect(plan.steps.map((step) => step.kind)).toEqual(['selectCloudRelay']);
     expect(plan.stop?.reason).toBe('needs-sign-in');
-    expect(plan.stop?.detail).toContain('happier auth login');
+    expect(plan.stop?.detail).toContain('piggercode auth login');
   });
 
   it('never plans a sign-in that has to be approved on a device', () => {

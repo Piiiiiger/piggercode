@@ -14,6 +14,6 @@ describe('buildHappierCliCommandName', () => {
         expect(buildHappierCliCommandName({ appVariant: 'preview' })).toBe('hprev');
         expect(buildHappierCliCommandName({ appVariant: 'development' })).toBe('hprev');
         expect(buildHappierCliCommandName({ appVariant: 'production', distTagOverride: 'next' })).toBe('hprev');
-        expect(buildHappierCliCommandName({ appVariant: 'production' })).toBe('happier');
+        expect(buildHappierCliCommandName({ appVariant: 'production' })).toBe('piggercode');
     });
 });

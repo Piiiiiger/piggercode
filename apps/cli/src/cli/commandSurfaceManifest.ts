@@ -6,93 +6,93 @@ export type CliCommandSurfaceEntry = Readonly<{
   allowTmux: boolean;
 }>;
 
-export const RESUME_COMMAND_USAGE = 'happier resume [<session-id-or-prefix>]';
+export const RESUME_COMMAND_USAGE = 'piggercode resume [<session-id-or-prefix>]';
 
 const COMMAND_SURFACE_MANIFEST: readonly CliCommandSurfaceEntry[] = [
   {
     command: null,
-    rootHelpLabel: 'happier [options]',
+    rootHelpLabel: 'piggercode [options]',
     rootHelpDescription: 'Start the default backend with mobile control',
     allowTmux: true,
   },
   {
     command: 'setup',
-    rootHelpLabel: 'happier setup',
-    rootHelpDescription: 'Connect this computer to your Happier account',
+    rootHelpLabel: 'piggercode setup',
+    rootHelpDescription: 'Connect this computer to your PiggerCode account',
     rootHelpDetail: 'choose where your relay lives, then sign in',
     allowTmux: false,
   },
   {
     command: 'auth',
-    rootHelpLabel: 'happier auth',
+    rootHelpLabel: 'piggercode auth',
     rootHelpDescription: 'Manage authentication',
     allowTmux: false,
   },
   {
     command: 'automation',
-    rootHelpLabel: 'happier automation',
+    rootHelpLabel: 'piggercode automation',
     rootHelpDescription: 'Trigger and manage automations',
     allowTmux: false,
   },
   {
     command: 'mcp',
-    rootHelpLabel: 'happier mcp',
+    rootHelpLabel: 'piggercode mcp',
     rootHelpDescription: 'Expose the MCP server and manage MCP clients',
     allowTmux: false,
   },
   {
     command: 'codex',
-    rootHelpLabel: 'happier codex',
+    rootHelpLabel: 'piggercode codex',
     rootHelpDescription: 'Start Codex mode',
     allowTmux: true,
   },
   {
     command: 'connect',
-    rootHelpLabel: 'happier connect',
+    rootHelpLabel: 'piggercode connect',
     rootHelpDescription: 'Connect AI vendor API keys',
     allowTmux: false,
   },
   {
     command: 'notify',
-    rootHelpLabel: 'happier notify',
+    rootHelpLabel: 'piggercode notify',
     rootHelpDescription: 'Send push notification',
     allowTmux: false,
   },
   {
     command: 'install',
-    rootHelpLabel: 'happier install',
+    rootHelpLabel: 'piggercode install',
     rootHelpDescription: 'Install provider CLIs and helpers',
     allowTmux: false,
   },
   {
     command: 'status',
-    rootHelpLabel: 'happier status',
+    rootHelpLabel: 'piggercode status',
     rootHelpDescription: 'Show system status and recommended repairs',
     allowTmux: false,
   },
   {
     command: 'service',
-    rootHelpLabel: 'happier service',
+    rootHelpLabel: 'piggercode service',
     rootHelpDescription: 'Manage automatic startup',
     rootHelpDetail: 'background services on this computer',
     allowTmux: false,
   },
   {
     command: 'daemon',
-    rootHelpLabel: 'happier daemon',
+    rootHelpLabel: 'piggercode daemon',
     rootHelpDescription: 'Manage the local daemon process',
     rootHelpDetail: 'started manually or via automatic startup',
     allowTmux: false,
   },
   {
     command: 'doctor',
-    rootHelpLabel: 'happier doctor',
+    rootHelpLabel: 'piggercode doctor',
     rootHelpDescription: 'System diagnostics & troubleshooting',
     allowTmux: false,
   },
   {
     command: 'herdr',
-    rootHelpLabel: 'happier herdr',
+    rootHelpLabel: 'piggercode herdr',
     rootHelpDescription: 'Open Herdr for local terminal sessions',
     allowTmux: false,
   },
@@ -106,7 +106,7 @@ const COMMAND_SURFACE_MANIFEST: readonly CliCommandSurfaceEntry[] = [
   },
   {
     command: 'attach',
-    rootHelpLabel: 'happier attach <session-id>',
+    rootHelpLabel: 'piggercode attach <session-id>',
     rootHelpDescription: 'Attach a terminal to a running session',
     allowTmux: false,
   },
@@ -121,9 +121,9 @@ const COMMAND_SURFACE_MANIFEST: readonly CliCommandSurfaceEntry[] = [
   {
     command: 'session',
     allowTmux: false,
-    rootHelpLabel: 'happier session',
+    rootHelpLabel: 'piggercode session',
     rootHelpDescription: 'Manage sessions and execution runs',
-    rootHelpDetail: 'create scripted sessions with happier session create --help',
+    rootHelpDetail: 'create scripted sessions with piggercode session create --help',
   },
   {
     command: 'resume',

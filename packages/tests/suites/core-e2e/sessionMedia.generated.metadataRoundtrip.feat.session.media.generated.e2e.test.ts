@@ -74,7 +74,7 @@ describe('core e2e: generated session media metadata roundtrip', () => {
       });
 
       const [media] = decoded.meta.happier.payload.media;
-      expect(media?.path).toMatch(/^\.happier\/uploads\/generated\/assistant-media-only\/.+\.png$/);
+      expect(media?.path).toMatch(/^\.piggercode\/uploads\/generated\/assistant-media-only\/.+\.png$/);
       await expect(readFile(resolve(workspaceDir, media!.path))).resolves.toEqual(fixture.mediaBytes);
     } finally {
       await rm(workspaceDir, { recursive: true, force: true });

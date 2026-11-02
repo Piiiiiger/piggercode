@@ -36,7 +36,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
   it.each([
     { startupSource: 'manual' as const, scopeName: 'session-6.scope' },
     { startupSource: 'background-service' as const, scopeName: 'session-6.scope' },
-    { startupSource: 'manual' as const, scopeName: 'happier-daemon.default.service' },
+    { startupSource: 'manual' as const, scopeName: 'piggercode-daemon.default.service' },
   ])('does not take custody of untracked siblings without service ownership ($startupSource/$scopeName)', async ({ startupSource, scopeName }) => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-shared-scope-'));
     const procfsRootDir = join(sandboxDir, 'proc');
@@ -60,7 +60,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await writeProcCgroup(procfsRootDir, 111, daemonServiceRelativePath);
     await writeProcCgroup(procfsRootDir, 6480, daemonServiceRelativePath);
@@ -77,9 +77,9 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     await writeProcChildren(procfsRootDir, 6482, []);
     await writeProcChildren(procfsRootDir, 9761, []);
     await mkdir(join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice'), { recursive: true });
-    await mkdir(join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service'), { recursive: true });
+    await mkdir(join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service'), { recursive: true });
     await writeFile(
-      join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service/cgroup.procs'),
+      join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service/cgroup.procs'),
       '111\n6480\n6481\n6482\n9761\n9802\n',
       'utf8',
     );
@@ -160,7 +160,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await writeProcCgroup(procfsRootDir, 111, daemonServiceRelativePath);
     await writeProcCgroup(procfsRootDir, 222, '/user.slice/user-501.slice/session-6.scope');
@@ -201,7 +201,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await writeProcCgroup(procfsRootDir, 111, daemonServiceRelativePath);
     await writeProcCgroup(procfsRootDir, 555, daemonServiceRelativePath);
@@ -230,7 +230,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await writeProcCgroup(procfsRootDir, 111, daemonServiceRelativePath);
     await writeProcCgroup(
@@ -263,7 +263,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-write-fail-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await mkdir(join(sandboxDir, 'sys', 'fs'), { recursive: true });
     await writeFile(cgroupRootDir, 'not-a-dir\n', 'utf8');
@@ -283,7 +283,7 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
     sandboxDir = await mkdtemp(join(tmpdir(), 'happier-cgroup-migration-'));
     const procfsRootDir = join(sandboxDir, 'proc');
     const cgroupRootDir = join(sandboxDir, 'sys', 'fs', 'cgroup');
-    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service';
+    const daemonServiceRelativePath = '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service';
 
     await writeProcCgroup(procfsRootDir, 111, daemonServiceRelativePath);
     await writeProcCgroup(
@@ -291,11 +291,11 @@ describe('migrateTrackedSessionProcessesOutOfDaemonServiceCgroup', () => {
       15161,
       '/user.slice/user-501.slice/user@501.service/app.slice/happier-session-15161.scope',
     );
-    await mkdir(join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service'), {
+    await mkdir(join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service'), {
       recursive: true,
     });
     await writeFile(
-      join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service/cgroup.procs'),
+      join(cgroupRootDir, '/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service/cgroup.procs'),
       '111\n',
       'utf8',
     );

@@ -31,7 +31,7 @@ class FakePtyProvider implements PtyProvider {
 }
 
 describe('registerMachineTerminalRpcHandlers', () => {
-  it('launches a typed Happier CLI intent through the daemon current-runtime resolver', async () => {
+  it('launches a typed PiggerCode CLI intent through the daemon current-runtime resolver', async () => {
     const suiteDir = await mkdtemp(join(tmpdir(), 'happier-terminal-cli-'));
     const provider = new FakePtyProvider();
     const sessionManager = createTerminalPtySessionManager({

@@ -101,7 +101,7 @@ export function createOpenAiCodexQuotaFetcher(params?: Readonly<{
   const disablePrivateEndpoint = params?.disablePrivateEndpoint === true
     && usageUrl === DEFAULT_OPENAI_CODEX_USAGE_URL;
   const staleAfterMs = typeof params?.staleAfterMs === 'number' && Number.isFinite(params.staleAfterMs) ? Math.max(1, Math.trunc(params.staleAfterMs)) : 300_000;
-  const userAgent = params?.userAgent ?? 'happier';
+  const userAgent = params?.userAgent ?? 'piggercode';
 
   return {
     serviceId: 'openai-codex',

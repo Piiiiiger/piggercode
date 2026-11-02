@@ -6,7 +6,7 @@ import { installSessionHandoffCommonModuleMocks } from './sessionHandoffTestHelp
 import type { CustomModalChromeConfig } from '@/modal';
 
 const refreshMachinesThrottledMock = vi.fn(async () => {});
-const openMachinePathBrowserModalMock = vi.fn<(params: unknown) => Promise<string>>(async () => '/home/leeroy.guest/.happier-stack/workspace/0.2');
+const openMachinePathBrowserModalMock = vi.fn<(params: unknown) => Promise<string>>(async () => '/home/leeroy.guest/.piggercode-stack/workspace/0.2');
 const pathBrowserModuleLoadedMock = vi.fn();
 const handoffCapabilityRpc = vi.hoisted(() => vi.fn());
 vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', async (importOriginal) => {

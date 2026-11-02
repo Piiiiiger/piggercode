@@ -329,7 +329,7 @@ describe('memoryWorker', () => {
           createdAtToMs: 2000,
           summary: 'We discussed integrating OpenClaw memory search.',
           keywords: ['openclaw', 'memory'],
-          entities: ['Happier'],
+          entities: ['PiggerCode'],
           decisions: ['Make memory search opt-in'],
         }],
       },

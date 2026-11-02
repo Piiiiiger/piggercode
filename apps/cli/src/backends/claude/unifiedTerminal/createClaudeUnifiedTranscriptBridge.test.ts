@@ -1105,7 +1105,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
     }
   });
 
-  it('suppresses historical resume rows in a fresh Happier session while emitting the newly accepted prompt', async () => {
+  it('suppresses historical resume rows in a fresh PiggerCode session while emitting the newly accepted prompt', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'happier-claude-unified-transcript-resume-'));
     tempDirs.push(dir);
     const transcriptPath = join(dir, 'sess_resume.jsonl');
@@ -1162,7 +1162,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
         sessionId: 'sess_resume',
         message: {
           role: 'user',
-          content: 'new prompt accepted after Happier resumed Claude',
+          content: 'new prompt accepted after PiggerCode resumed Claude',
         },
       } as RawJSONLines);
 
@@ -1346,7 +1346,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
       sessionId: 'sess_known_resume',
       message: {
         role: 'assistant',
-        content: [{ type: 'text', text: 'completed while the Happier runner was down' }],
+        content: [{ type: 'text', text: 'completed while the PiggerCode runner was down' }],
       },
     } as RawJSONLines);
 
@@ -1638,7 +1638,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
     const projectDir = getProjectPath(workspaceDir, claudeConfigDir);
     await mkdir(projectDir, { recursive: true });
 
-    const exactPrompt = 'the exact Happier-injected prompt';
+    const exactPrompt = 'the exact PiggerCode-injected prompt';
     const acceptedPromptDiscovery = createClaudeUnifiedAcceptedPromptTranscriptDiscovery({
       acceptedPromptWindowMs: 5_000,
     });
@@ -1787,7 +1787,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
     const precedingStarted = createDeferred<void>();
     const precedingCommit = createDeferred<void>();
     const committed: string[] = [];
-    const prompt = 'the exact Happier-injected prompt';
+    const prompt = 'the exact PiggerCode-injected prompt';
     const discovery = createClaudeUnifiedAcceptedPromptTranscriptDiscovery({ acceptedPromptWindowMs: 5_000 });
     discovery.recordAcceptedPrompt({ message: prompt, deliveryIdentity: { localIds: ['hookless-pending'] } });
     const onMessage = vi.fn(async (message: RawJSONLines) => {
@@ -1909,7 +1909,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
         uuid: 'accepted_prompt_before_compact',
         timestamp: new Date().toISOString(),
         sessionId: discoveredSessionId,
-        message: { role: 'user', content: 'the exact Happier-injected prompt' },
+        message: { role: 'user', content: 'the exact PiggerCode-injected prompt' },
       } as RawJSONLines);
       await waitUntil(() => onSessionFound.mock.calls.length === 1);
       await waitUntil(() => onMessage.mock.calls.length === 1);
@@ -2015,7 +2015,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
         uuid: 'accepted_prompt_during_hook_race',
         timestamp: new Date().toISOString(),
         sessionId: discoveredSessionId,
-        message: { role: 'user', content: 'the exact Happier-injected prompt' },
+        message: { role: 'user', content: 'the exact PiggerCode-injected prompt' },
       } as RawJSONLines);
 
       await waitUntil(() => onSessionFound.mock.calls.length >= 1);
@@ -2246,7 +2246,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
         sessionId: firstSessionId,
         message: {
           role: 'assistant',
-          content: [{ type: 'text', text: 'belongs to this Happier session' }],
+          content: [{ type: 'text', text: 'belongs to this PiggerCode session' }],
         },
       } as RawJSONLines);
 
@@ -2265,7 +2265,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
         sessionId: secondSessionId,
         message: {
           role: 'assistant',
-          content: [{ type: 'text', text: 'belongs to a different Happier session' }],
+          content: [{ type: 'text', text: 'belongs to a different PiggerCode session' }],
         },
       } as RawJSONLines);
 
@@ -2293,7 +2293,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
       sessionId: 'sess_committed_keys',
       message: {
         role: 'assistant',
-        content: [{ type: 'text', text: 'already in Happier' }],
+        content: [{ type: 'text', text: 'already in PiggerCode' }],
       },
     } as RawJSONLines);
     await appendJsonl(transcriptPath, {
@@ -2303,7 +2303,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
       sessionId: 'sess_committed_keys',
       message: {
         role: 'assistant',
-        content: [{ type: 'text', text: 'missing from Happier' }],
+        content: [{ type: 'text', text: 'missing from PiggerCode' }],
       },
     } as RawJSONLines);
 
@@ -2582,7 +2582,7 @@ describe('createClaudeUnifiedTranscriptBridge', () => {
       uuid: 'missed_during_downtime',
       timestamp: new Date(nowMs - 20_000).toISOString(),
       sessionId: 'sess_coverage',
-      message: { role: 'assistant', content: [{ type: 'text', text: 'missing from Happier' }] },
+      message: { role: 'assistant', content: [{ type: 'text', text: 'missing from PiggerCode' }] },
     } as RawJSONLines);
 
     let subscribedHook: ((data: SessionHookData) => void) | undefined;

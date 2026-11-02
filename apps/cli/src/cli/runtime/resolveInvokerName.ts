@@ -1,13 +1,13 @@
 import { basename } from 'node:path';
 
 /**
- * Resolve the user-facing invoker name (`happier`, `hdev`, `hprev`, or a
+ * Resolve the user-facing invoker name (`piggercode`, `hdev`, `hprev`, or a
  * custom shim) for the current CLI process.
  *
  * Used wherever we surface "run this command" guidance to the user — the
  * suggestion must match the binary they actually invoked, not a hardcoded
- * `happier`. When invoked as `hdev` against the dev channel, copy should
- * read `hdev daemon start`, not `happier daemon start`.
+ * `piggercode`. When invoked as `hdev` against the dev channel, copy should
+ * read `hdev daemon start`, not `piggercode daemon start`.
  *
  * Resolution order:
  *  1. `PIGGERCODE_CLI_INVOKER_NAME` env var (set by shim wrappers when known).
@@ -16,7 +16,7 @@ import { basename } from 'node:path';
  *     packaged single-executable builds it's the shim).
  *
  * Returns `null` when none of the candidates produce a usable name.
- * Callers typically default to `'happier'` when null, since that's the
+ * Callers typically default to `'piggercode'` when null, since that's the
  * canonical user-facing name.
  */
 export function resolveInvokerName(): string | null {
@@ -33,7 +33,7 @@ export function resolveInvokerName(): string | null {
 /**
  * Normalize a path or env value into the canonical user-facing invoker name.
  * Strips directory parts and platform-specific suffixes (`.exe`, `.mjs`,
- * `.js`) so callers can compare against `'happier'` / `'hdev'` / `'hprev'`
+ * `.js`) so callers can compare against `'piggercode'` / `'hdev'` / `'hprev'`
  * directly.
  */
 function sanitizeInvokerName(raw: string | undefined | null): string | null {

@@ -12,7 +12,7 @@
  * 
  * ## The Wrapper Strategy
  * 
- * We created a wrapper script `bin/happier.mjs` with a shebang `#!/usr/bin/env node`.
+ * We created a wrapper script `bin/piggercode.mjs` with a shebang `#!/usr/bin/env node`.
  * This allows direct execution on Unix systems and NPM automatically generates 
  * Windows-specific wrapper scripts (`happier.cmd` and `happier.ps1`) when it sees 
  * the `bin` field in package.json pointing to a JavaScript file with a shebang.
@@ -23,19 +23,19 @@
  * ## Execution Chains
  * 
  * **Unix/Linux/macOS:**
- * 1. User runs `happier` command
- * 2. Shell directly executes `bin/happier.mjs` (shebang: `#!/usr/bin/env node`)
- * 3. `bin/happier.mjs` either execs `node --no-warnings --no-deprecation dist/index.mjs` or imports `dist/index.mjs` directly
+ * 1. User runs `piggercode` command
+ * 2. Shell directly executes `bin/piggercode.mjs` (shebang: `#!/usr/bin/env node`)
+ * 3. `bin/piggercode.mjs` either execs `node --no-warnings --no-deprecation dist/index.mjs` or imports `dist/index.mjs` directly
  * 
  * **Windows:**
- * 1. User runs `happier` command  
- * 2. NPM wrapper (`happier.cmd`) calls `node bin/happier.mjs`
- * 3. `bin/happier.mjs` either execs `node --no-warnings --no-deprecation dist/index.mjs` or imports `dist/index.mjs` directly
+ * 1. User runs `piggercode` command  
+ * 2. NPM wrapper (`happier.cmd`) calls `node bin/piggercode.mjs`
+ * 3. `bin/piggercode.mjs` either execs `node --no-warnings --no-deprecation dist/index.mjs` or imports `dist/index.mjs` directly
  * 
  * ## The Spawning Problem
  * 
  * When our code needs to spawn Happier CLI as a subprocess (for daemon processes), 
- * we were trying to execute `bin/happier.mjs` directly. This fails on Windows 
+ * we were trying to execute `bin/piggercode.mjs` directly. This fails on Windows 
  * because Windows doesn't understand shebangs - you get an `EFTYPE` error.
  * 
  * ## The Solution
@@ -260,7 +260,7 @@ function resolveCurrentProcessBundledScriptPath(): string | null {
   if (!existsSync(scriptPath)) return null;
   const lowered = normalized.toLowerCase();
   const base = basename(lowered);
-  if (base.includes('happier')) return scriptPath;
+  if (base.includes('piggercode')) return scriptPath;
   if (base === 'index.mjs' && (lowered.includes('/@piggercode/cli/') || lowered.includes('/happier/'))) {
     return scriptPath;
   }
@@ -279,7 +279,7 @@ function resolveSiblingWindowsPackagedBinary(entrypoint: string): string | null 
   if (process.platform !== 'win32') return null;
   const distDir = dirname(entrypoint);
   if (basename(distDir).toLowerCase() !== 'package-dist') return null;
-  const binaryPath = join(dirname(distDir), 'happier.exe');
+  const binaryPath = join(dirname(distDir), 'piggercode.exe');
   return existsSync(binaryPath) ? binaryPath : null;
 }
 
@@ -336,7 +336,7 @@ function resolveSubprocessRuntimeExecutable(runtime: Exclude<HappyCliSubprocessR
       isBunRuntime: isBun(),
     });
     if (!javaScriptRuntime) {
-      throw new ReferenceError(buildMissingJavaScriptRuntimeMessage('Happier CLI subprocess'));
+      throw new ReferenceError(buildMissingJavaScriptRuntimeMessage('PiggerCode CLI subprocess'));
     }
     return javaScriptRuntime;
   }
@@ -786,7 +786,7 @@ export function buildHappyCliSubprocessInvocation(
     }
     if (isRuntimeBackedSubprocess()) {
       throw new HappyCliImmutableRuntimeClosureError(
-        'Runtime-backed Happier CLI runner requires its admitted immutable dist closure; mutable source fallback is disabled.',
+        'Runtime-backed PiggerCode CLI runner requires its admitted immutable dist closure; mutable source fallback is disabled.',
       );
     }
     const tsxInvocation = buildDevTsxSubprocessInvocation(args, entrypoint);
@@ -795,7 +795,7 @@ export function buildHappyCliSubprocessInvocation(
 
   if (isRuntimeBackedSubprocess()) {
     throw new HappyCliImmutableRuntimeClosureError(
-      'Runtime-backed Happier CLI runner could not resolve its admitted immutable dist closure.',
+      'Runtime-backed PiggerCode CLI runner could not resolve its admitted immutable dist closure.',
     );
   }
 
@@ -856,7 +856,7 @@ export function resolveHappyCliSubprocessRuntimeDecision(
   const invocation = buildHappyCliSubprocessInvocation([], options);
   if (invocation.runtime !== 'node') {
     throw new HappyCliImmutableRuntimeClosureError(
-      'Runtime-backed Happier CLI runner did not resolve to the admitted Node.js closure.',
+      'Runtime-backed PiggerCode CLI runner did not resolve to the admitted Node.js closure.',
     );
   }
   return {
@@ -890,7 +890,7 @@ export function buildHappyCliSubprocessLaunchSpec(
 /**
  * Spawn the Happier CLI with the given arguments in a cross-platform way.
  * 
- * This function bypasses the wrapper script (bin/happier.mjs) and spawns the 
+ * This function bypasses the wrapper script (bin/piggercode.mjs) and spawns the 
  * actual CLI entrypoint (dist/index.mjs) directly with Node.js, ensuring
  * compatibility across all platforms including Windows.
  * 
@@ -910,11 +910,11 @@ export function spawnHappyCLI(
     directory = process.cwd()
   }
   // Note: We're actually executing 'node' with the calculated entrypoint path below,
-  // bypassing the 'happier' wrapper that would normally be found in the shell's PATH.
-  // However, we log it as 'happier' here because other engineers are typically looking
-  // for when "happier" was started and don't care about the underlying node process
+  // bypassing the 'piggercode' wrapper that would normally be found in the shell's PATH.
+  // However, we log it as 'piggercode' here because other engineers are typically looking
+  // for when "piggercode" was started and don't care about the underlying node process
   // details and flags we use to achieve the same result.
-  const fullCommand = `happier ${args.join(' ')}`;
+  const fullCommand = `piggercode ${args.join(' ')}`;
   logger.debug(`[SPAWN HAPPIER CLI] Spawning: ${fullCommand} in ${directory}`);
 
   const launchSpec = buildHappyCliSubprocessLaunchSpec(args, launchOptions);

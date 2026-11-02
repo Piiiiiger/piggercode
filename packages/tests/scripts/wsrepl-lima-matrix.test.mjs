@@ -277,7 +277,7 @@ function buildPlaywrightHarnessNodeScript(options = {}) {
   }
 
   if (includeDaemonControl) {
-    lines.push('if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then');
+    lines.push('if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then');
     lines.push(`  stopped_marker=${JSON.stringify(daemonStatedPath)}`);
     lines.push('  sub="${3:-}"');
     lines.push('  case "$sub" in');
@@ -403,50 +403,50 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await mkdir(join(homeDir, 'wsrepl-qa-fixtures', 'large-repo-k8s'), { recursive: true });
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
 
@@ -467,7 +467,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 	    [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -507,7 +507,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
 
   const runtimeHappierDir = join(
     homeDir,
-    '.happier',
+    '.piggercode',
     'stacks',
     'stack-test',
     'runtime',
@@ -519,13 +519,13 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
   await writeFile(runtimeHappierPath, await readFile(happierPath, 'utf8'), 'utf8');
   await chmod(runtimeHappierPath, 0o755);
 
-  await mkdir(join(homeDir, '.happier', 'bin'), { recursive: true });
+  await mkdir(join(homeDir, '.piggercode', 'bin'), { recursive: true });
   await writeFile(
-    join(homeDir, '.happier', 'bin', 'happier'),
+    join(homeDir, '.piggercode', 'bin', 'happier'),
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      `echo "guest happier $*" >> ${JSON.stringify(guestDaemonLog)}`,
+      `echo "guest piggercode $*" >> ${JSON.stringify(guestDaemonLog)}`,
       `runtime_log=${JSON.stringify(join(logDir, 'guest-daemon-runtime.log'))}`,
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
       '  printf \'%s\\n\' "PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-}" >> ' + JSON.stringify(guestDaemonLog),
@@ -557,7 +557,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
     ].join('\n') + '\n',
     'utf8',
   );
-  await chmod(join(homeDir, '.happier', 'bin', 'happier'), 0o755);
+  await chmod(join(homeDir, '.piggercode', 'bin', 'happier'), 0o755);
 
   const nodePath = join(binDir, 'node');
   await writeFile(
@@ -570,11 +570,11 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-	      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+	      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
 	      '  echo "0.1.0"',
 	      '  exit 0',
 	      'fi',
-	      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+	      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
 	      '  stopped_marker="${HOME}/.host-daemon-stopped"',
 	      '  sub="${3:-}"',
 	      '  case "$sub" in',
@@ -710,7 +710,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
       '      shift',
       '    done',
       '    if [[ "${1:-}" == "--" ]]; then shift; fi',
-      "    # Run guest commands in a minimal PATH so they don't accidentally pick up the host's stub happier binary.",
+      "    # Run guest commands in a minimal PATH so they don't accidentally pick up the host's stub piggercode binary.",
       '    export PATH=/usr/bin:/bin',
       limaGuestExec,
       '    ;;',
@@ -834,7 +834,7 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
   assert.match(limaYaml, /guestPortRange: \[48888, 48888\]/);
 
   const guestDaemonOut = await readFile(guestDaemonLog, 'utf8');
-  assert.match(guestDaemonOut, /guest happier daemon start/);
+  assert.match(guestDaemonOut, /guest piggercode daemon start/);
   assert.match(guestDaemonOut, /PIGGERCODE_FEATURE_MACHINES_TRANSFER_SERVER_ROUTED__MAX_BYTES=4096/);
   assert.match(guestDaemonOut, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT=48888/);
   assert.match(guestDaemonOut, /PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS=127.0.0.1/);
@@ -890,11 +890,11 @@ test('macos wsrepl lima matrix wrapper defaults Playwright to headless (supports
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
       '  sub="${3:-}"',
       '  case "$sub" in',
@@ -1002,7 +1002,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
 
@@ -1012,14 +1012,14 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   await writeFile(unamePath, ['#!/usr/bin/env bash', 'echo Darwin'].join('\n') + '\n', 'utf8');
   await chmod(unamePath, 0o755);
 
-  // Host happier stub that *never* reports not-running, even after stop.
+  // Host piggercode stub that *never* reports not-running, even after stop.
   const happierPath = join(binDir, 'happier');
   await writeFile(
     happierPath,
     [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      'stopped_marker="${HOME}/.host-daemon-stopped"',
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -1044,13 +1044,13 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   await chmod(happierPath, 0o755);
 
   // Minimal guest happier + tooling stubs so the wrapper reaches host daemon restart.
-  await mkdir(join(homeDir, '.happier', 'bin'), { recursive: true });
+  await mkdir(join(homeDir, '.piggercode', 'bin'), { recursive: true });
   await writeFile(
-    join(homeDir, '.happier', 'bin', 'happier'),
+    join(homeDir, '.piggercode', 'bin', 'happier'),
     ['#!/usr/bin/env bash', 'set -euo pipefail', 'echo "Daemon is running"', 'exit 0'].join('\n') + '\n',
     'utf8',
   );
-  await chmod(join(homeDir, '.happier', 'bin', 'happier'), 0o755);
+  await chmod(join(homeDir, '.piggercode', 'bin', 'happier'), 0o755);
 
   const nodePath = join(binDir, 'node');
   await writeFile(
@@ -1136,7 +1136,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
 
@@ -1184,13 +1184,13 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
   );
   await chmod(happierPath, 0o755);
 
-  await mkdir(join(homeDir, '.happier', 'bin'), { recursive: true });
+  await mkdir(join(homeDir, '.piggercode', 'bin'), { recursive: true });
   await writeFile(
-    join(homeDir, '.happier', 'bin', 'happier'),
+    join(homeDir, '.piggercode', 'bin', 'happier'),
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      `echo "guest happier $*" >> ${JSON.stringify(guestDaemonLog)}`,
+      `echo "guest piggercode $*" >> ${JSON.stringify(guestDaemonLog)}`,
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
       '  printf \'%s\\n\' "START_ENV BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> ' +
         JSON.stringify(guestDaemonLog),
@@ -1216,7 +1216,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon does not st
     ].join('\n') + '\n',
     'utf8',
   );
-  await chmod(join(homeDir, '.happier', 'bin', 'happier'), 0o755);
+  await chmod(join(homeDir, '.piggercode', 'bin', 'happier'), 0o755);
 
   const nodePath = join(binDir, 'node');
   await writeFile(
@@ -1332,12 +1332,12 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
   await mkdir(join(limaHome, extraVm), { recursive: true });
   await writeFile(
     join(limaHome, primaryVm, 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
   await writeFile(
     join(limaHome, extraVm, 'lima.yaml'),
-    ['memory: \"4GiB\"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: \"4GiB\"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
 
@@ -1387,9 +1387,9 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
   );
   await chmod(happierPath, 0o755);
 
-  await mkdir(join(homeDir, '.happier', 'bin'), { recursive: true });
+  await mkdir(join(homeDir, '.piggercode', 'bin'), { recursive: true });
   await writeFile(
-    join(homeDir, '.happier', 'bin', 'happier'),
+    join(homeDir, '.piggercode', 'bin', 'happier'),
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
@@ -1397,7 +1397,7 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
       'instance="${LIMA_INSTANCE:-unknown}"',
       'safe_instance="${instance//[^A-Za-z0-9._-]/_}"',
       'log_path="${log_dir}/${safe_instance}.log"',
-      'echo "guest happier ${instance} $*" >> "$log_path"',
+      'echo "guest piggercode ${instance} $*" >> "$log_path"',
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
       '  printf \'%s\\n\' "START_ENV BIND_PORT=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_BIND_PORT:-} ADVERTISED_HOSTS=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_ADVERTISED_HOSTS:-} FEATURE_ENABLED=${PIGGERCODE_FEATURE_MACHINES_TRANSFER_DIRECT_PEER__ENABLED:-} SERVER_ENABLED=${PIGGERCODE_MACHINE_TRANSFER_DIRECT_PEER_SERVER_ENABLED:-}" >> "$log_path"',
       '  echo "Daemon is running"',
@@ -1422,7 +1422,7 @@ test('macos wsrepl lima matrix wrapper configures unique guest direct-peer ports
     ].join('\n') + '\n',
     'utf8',
   );
-  await chmod(join(homeDir, '.happier', 'bin', 'happier'), 0o755);
+  await chmod(join(homeDir, '.piggercode', 'bin', 'happier'), 0o755);
 
   const nodePath = join(binDir, 'node');
   await writeFile(
@@ -1580,7 +1580,7 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright does not pro
 
   const runtimeHappierDir = join(
     homeDir,
-    '.happier',
+    '.piggercode',
     'stacks',
     'stack-test',
     'runtime',
@@ -1801,7 +1801,7 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
 
   const runtimeHappierDir = join(
     homeDir,
-    '.happier',
+    '.piggercode',
     'stacks',
     'stack-test',
     'runtime',
@@ -1813,9 +1813,9 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
   await writeFile(runtimeHappierPath, await readFile(happierPath, 'utf8'), 'utf8');
   await chmod(runtimeHappierPath, 0o755);
 
-  await mkdir(join(homeDir, '.happier', 'bin'), { recursive: true });
+  await mkdir(join(homeDir, '.piggercode', 'bin'), { recursive: true });
   await writeFile(
-    join(homeDir, '.happier', 'bin', 'happier'),
+    join(homeDir, '.piggercode', 'bin', 'happier'),
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
@@ -1842,7 +1842,7 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
     ].join('\n') + '\n',
     'utf8',
   );
-  await chmod(join(homeDir, '.happier', 'bin', 'happier'), 0o755);
+  await chmod(join(homeDir, '.piggercode', 'bin', 'happier'), 0o755);
 
   const nodePath = join(binDir, 'node');
   await writeFile(
@@ -1935,7 +1935,7 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
   await mkdir(join(limaHome, 'happy-wsrepl'), { recursive: true });
   await writeFile(
     join(limaHome, 'happy-wsrepl', 'lima.yaml'),
-    ['memory: "4GiB"', '# --- happier port forwards (managed) ---'].join('\n') + '\n',
+    ['memory: "4GiB"', '# --- piggercode port forwards (managed) ---'].join('\n') + '\n',
     'utf8',
   );
 
@@ -1979,7 +1979,7 @@ test('macos wsrepl lima matrix wrapper normalizes nonzero Playwright runner exit
   assert.equal(summary.sessionId, 'sess_created_1');
 });
 
-test('macos wsrepl lima matrix wrapper defaults host happier source to stack runtime when available', async () => {
+test('macos wsrepl lima matrix wrapper defaults host piggercode source to stack runtime when available', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-host-default-stack-runtime-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -2012,8 +2012,8 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" ]]; then',
-      '  echo "unexpected worktree_node host happier invocation" >&2',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
+      '  echo "unexpected worktree_node host piggercode invocation" >&2',
       '  exit 12',
       'fi',
       // The wrapper invokes the Playwright harness via `node <repo>/.project/scripts/...`.
@@ -2057,7 +2057,7 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
   await writeFile(ncPath, ['#!/usr/bin/env bash', 'set -euo pipefail', 'exit 1'].join('\n') + '\n', 'utf8');
   await chmod(ncPath, 0o755);
 
-  const guestHappierPath = join(homeDir, '.happier', 'bin', 'happier');
+  const guestHappierPath = join(homeDir, '.piggercode', 'bin', 'happier');
   await mkdir(join(guestHappierPath, '..'), { recursive: true });
   await writeFile(
     guestHappierPath,
@@ -2099,7 +2099,7 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -2117,7 +2117,7 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
       '  shell)',
       '    while [[ $# -gt 0 && "$1" != "--" ]]; do shift; done',
       '    if [[ "${1:-}" == "--" ]]; then shift; fi',
-      '    export PATH="$HOME/.happier/bin:/usr/bin:/bin"',
+      '    export PATH="$HOME/.piggercode/bin:/usr/bin:/bin"',
       limaGuestExec,
       '    ;;',
       '  copy)',
@@ -2134,7 +2134,7 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to stack run
   await chmod(limactlPath, 0o755);
 
   const stackName = 'stack-default-host-source';
-  const runtimeCliPath = join(homeDir, '.happier', 'stacks', stackName, 'runtime', 'current', 'cli', 'happier');
+  const runtimeCliPath = join(homeDir, '.piggercode', 'stacks', stackName, 'runtime', 'current', 'cli', 'happier');
   await mkdir(join(runtimeCliPath, '..'), { recursive: true });
   await writeFile(
     runtimeCliPath,
@@ -2256,7 +2256,7 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
 	    [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -2320,11 +2320,11 @@ test('macos wsrepl lima matrix watchdog probes daemon status using stack-scoped 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-	      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+	      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
 	      '  echo "0.1.0"',
 	      '  exit 0',
 	      'fi',
-	      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+	      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
 	      '  stopped_marker="${HOME}/.host-daemon-stopped"',
 	      '  sub="${3:-}"',
 	      '  case "$sub" in',
@@ -2496,7 +2496,7 @@ test('macos wsrepl lima matrix watchdog ignores transient "Daemon is not running
 	    [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -2545,7 +2545,7 @@ test('macos wsrepl lima matrix watchdog ignores transient "Daemon is not running
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
       '  cmd="${2:-}"',
       '  sub="${3:-}"',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
@@ -2745,11 +2745,11 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright harness writ
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -2961,11 +2961,11 @@ test('macos wsrepl lima matrix wrapper fails closed when Playwright runner does 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -3117,7 +3117,7 @@ test('macos wsrepl lima matrix wrapper can derive host server url from stack.run
   const nodeLog = join(logDir, 'node.log');
   const happierLog = join(logDir, 'happier.log');
 
-  const stacksRoot = join(homeDir, '.happier', 'stacks');
+  const stacksRoot = join(homeDir, '.piggercode', 'stacks');
   const runtimeDir = join(stacksRoot, 'stack-test');
   await mkdir(runtimeDir, { recursive: true });
   await writeFile(
@@ -3136,7 +3136,7 @@ test('macos wsrepl lima matrix wrapper can derive host server url from stack.run
 	    [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -3176,11 +3176,11 @@ test('macos wsrepl lima matrix wrapper can derive host server url from stack.run
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -3371,7 +3371,7 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
       'set -euo pipefail',
       `echo "node $*" >> ${JSON.stringify(nodeLog)}`,
       'stopped_marker="${HOME}/.host-daemon-stopped"',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -3436,7 +3436,7 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards: []',
       '# --- /happier port forwards ---',
       'EOF',
@@ -3454,7 +3454,7 @@ test('macos wsrepl lima matrix wrapper supports multiple VM args and writes per-
       '    exit 0',
       '    ;;',
       '  shell)',
-      '    # Simulate a reachable shell but no guest happier binary.',
+      '    # Simulate a reachable shell but no guest piggercode binary.',
       '    while [[ $# -gt 0 && "$1" != "--" ]]; do shift; done',
       '    if [[ "${1:-}" == "--" ]]; then shift; fi',
       limaGuestExec,
@@ -3598,7 +3598,7 @@ test('macos wsrepl lima matrix wrapper prefers WSREPL_QA_LARGE_REPO_PATH for PIG
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards: []',
       '# --- /happier port forwards ---',
       'EOF',
@@ -3683,7 +3683,7 @@ test('macos wsrepl lima matrix wrapper retries Playwright once when fatal.json r
 	    [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
 	      `stopped_marker=${JSON.stringify(join(homeDir, '.host-daemon-stopped'))}`,
 	      'if [[ "${1:-}" == "daemon" && "${2:-}" == "start" ]]; then',
 	      '  rm -f "$stopped_marker" >/dev/null 2>&1 || true',
@@ -3837,7 +3837,7 @@ test('macos wsrepl lima matrix wrapper retries Playwright once when fatal.json r
   const happierOut = await readFile(happierLog, 'utf8');
   assert.ok(
     happierOut.split('\n').filter((line) => line.includes('daemon start')).length >= 2,
-    `expected daemon to be restarted before retry (got happier log: ${happierOut})`,
+    `expected daemon to be restarted before retry (got piggercode log: ${happierOut})`,
   );
 });
 
@@ -3955,7 +3955,7 @@ test('macos wsrepl lima matrix wrapper prefers the stack runtime CLI inferred fr
   await chmod(yarnPath, 0o755);
 
   const stackName = 'stack-from-ui';
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   const runtimeCliPath = join(stackRoot, 'runtime', 'current', 'cli', 'happier');
   const runtimeCliDir = join(stackRoot, 'runtime', 'current', 'cli');
   const runtimeJsonPath = join(stackRoot, 'stack.runtime.json');
@@ -4088,11 +4088,11 @@ test('macos wsrepl lima matrix wrapper restarts the guest daemon with PIGGERCODE
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
       '  sub="${3:-}"',
       '  case "$sub" in',
@@ -4232,7 +4232,7 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
   // Seed a stack runtime + CLI access.key under this test HOME so the wrapper can discover it.
   const stackName = 'host-home-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -4245,8 +4245,8 @@ test('macos wsrepl lima matrix wrapper uses stack CLI home dir + active server i
   await writeFile(unamePath, ['#!/usr/bin/env bash', 'echo Darwin'].join('\n') + '\n', 'utf8');
   await chmod(unamePath, 0o755);
 
-  // Force wrapper host CLI calls to use $HOME/.happier/bin/happier so we can observe env.
-  const happierBinDir = join(homeDir, '.happier', 'bin');
+  // Force wrapper host CLI calls to use $HOME/.piggercode/bin/happier so we can observe env.
+  const happierBinDir = join(homeDir, '.piggercode', 'bin');
   await mkdir(happierBinDir, { recursive: true });
   const happierPath = join(happierBinDir, 'happier');
   await writeFile(
@@ -4384,7 +4384,7 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
 
   const stackName = 'host-home-prefers-server-scoped-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -4404,7 +4404,7 @@ test('macos wsrepl lima matrix wrapper prefers server-scoped stack credentials o
   await writeFile(unamePath, ['#!/usr/bin/env bash', 'echo Darwin'].join('\n') + '\n', 'utf8');
   await chmod(unamePath, 0o755);
 
-  const happierBinDir = join(homeDir, '.happier', 'bin');
+  const happierBinDir = join(homeDir, '.piggercode', 'bin');
   await mkdir(happierBinDir, { recursive: true });
   const happierPath = join(happierBinDir, 'happier');
   await writeFile(
@@ -4541,7 +4541,7 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
   const hostEnvLog = join(logDir, 'host-env.log');
   const stackName = 'host-home-active-server-dir-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -4554,7 +4554,7 @@ test('macos wsrepl lima matrix wrapper still uses stack CLI home dir + active se
   await writeFile(unamePath, ['#!/usr/bin/env bash', 'echo Darwin'].join('\n') + '\n', 'utf8');
   await chmod(unamePath, 0o755);
 
-  const happierBinDir = join(homeDir, '.happier', 'bin');
+  const happierBinDir = join(homeDir, '.piggercode', 'bin');
   await mkdir(happierBinDir, { recursive: true });
   const happierPath = join(happierBinDir, 'happier');
   await writeFile(
@@ -4691,7 +4691,7 @@ test('macos wsrepl lima matrix wrapper seeds host daemon access.key from stack c
 
   // Seed a stack runtime + CLI access.key under this test HOME so the wrapper can discover it.
   const stackName = 'seed-host-stack';
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli'), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -4707,7 +4707,7 @@ test('macos wsrepl lima matrix wrapper seeds host daemon access.key from stack c
   await chmod(unamePath, 0o755);
 
   const daemonLogPath = join(logDir, 'daemon.log');
-  const expectedDaemonAccessKeyPath = join(homeDir, '.happier', 'servers', 'env_test', 'access.key');
+  const expectedDaemonAccessKeyPath = join(homeDir, '.piggercode', 'servers', 'env_test', 'access.key');
 
   const happierPath = join(binDir, 'happier');
   await writeScript(
@@ -4756,7 +4756,7 @@ test('macos wsrepl lima matrix wrapper seeds host daemon access.key from stack c
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -4765,7 +4765,7 @@ test('macos wsrepl lima matrix wrapper seeds host daemon access.key from stack c
       '    exit 0',
       '    ;;',
       '  shell)',
-      '    # Guest does not have happier installed in this test; wrapper should skip guest daemon restart.',
+      '    # Guest does not have piggercode installed in this test; wrapper should skip guest daemon restart.',
       '    exit 0',
       '    ;;',
       '  start|stop|info|list|copy)',
@@ -4825,7 +4825,7 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
   const stackServerId = `stack_${stackName}__id_default`;
   const stackAccountId = 'cmn7wkmq5000itrk3ajbwgo26';
   const canonicalMachineId = '5ddb9a7e-bbb3-4a00-890e-1ec5771f8d00';
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -4956,7 +4956,7 @@ test('macos wsrepl lima matrix wrapper preserves the canonical host machine id w
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -5099,7 +5099,7 @@ test('macos wsrepl lima matrix wrapper fails closed when WSREPL_QA_HOST_HOME_REL
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -5151,7 +5151,7 @@ test('macos wsrepl lima matrix wrapper fails closed when WSREPL_QA_HOST_HOME_REL
   assert.equal(summary.failureStage, 'host_daemon');
   assert.equal(summary.failureReason, 'host_daemon_scope_resolution_failed');
 
-  assert.equal(await fileExists(hostEnvLog), false, 'expected wrapper to fail closed before invoking happier daemon start');
+  assert.equal(await fileExists(hostEnvLog), false, 'expected wrapper to fail closed before invoking piggercode daemon start');
 
   const scopePath = join(reportDir, 'daemon', 'host.daemon.scope.json');
   assert.equal(await fileExists(scopePath), true, 'expected scope diagnostics to be written');
@@ -5179,7 +5179,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
 
   const stackName = 'bind-port-occupied-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -5252,7 +5252,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -5343,7 +5343,7 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
 
   const stackName = 'bind-port-env-precedence-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -5415,7 +5415,7 @@ test('macos wsrepl lima matrix wrapper prefers the wrapper-selected host direct-
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -5505,7 +5505,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
 
   const stackName = 'bind-port-nc-fallback-stack';
   const stackServerId = `stack_${stackName}__id_default`;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', stackServerId), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -5577,7 +5577,7 @@ test('macos wsrepl lima matrix wrapper advances the host direct-peer bind port w
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -5717,11 +5717,11 @@ test('macos wsrepl lima matrix wrapper surfaces playwright fatal hint in summary
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -6418,7 +6418,7 @@ test('macos wsrepl lima matrix wrapper can discover stack credentials from the m
 
   // Seed a stack runtime + CLI access.key under this test HOME so the wrapper can discover it.
   const stackName = 'autodetect-stack';
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli'), { recursive: true });
   await writeFile(
     join(stackRoot, 'stack.runtime.json'),
@@ -6434,7 +6434,7 @@ test('macos wsrepl lima matrix wrapper can discover stack credentials from the m
   await chmod(unamePath, 0o755);
 
   const daemonLogPath = join(logDir, 'daemon.log');
-  const expectedDaemonAccessKeyPath = join(homeDir, '.happier', 'servers', 'env_test', 'access.key');
+  const expectedDaemonAccessKeyPath = join(homeDir, '.piggercode', 'servers', 'env_test', 'access.key');
 
   const happierPath = join(binDir, 'happier');
   await writeScript(
@@ -6556,7 +6556,7 @@ test('macos wsrepl lima matrix wrapper derives host server url from the most-rec
 
   const stackName = 'autodetect-stack';
   const serverPort = 41234;
-  const stackRoot = join(homeDir, '.happier', 'stacks', stackName);
+  const stackRoot = join(homeDir, '.piggercode', 'stacks', stackName);
   await mkdir(join(stackRoot, 'cli', 'servers', `stack_${stackName}__id_default`), { recursive: true });
   const accessKeyPath = join(stackRoot, 'cli', 'access.key');
   await writeFile(accessKeyPath, JSON.stringify({ token: 'tok_test_server_url' }) + '\n', 'utf8');
@@ -6743,7 +6743,7 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit PIG
   const desiredStackName = 'desired-stack';
   const desiredServerPort = 53288;
   const desiredServerId = `stack_${desiredStackName}__id_default`;
-  const desiredStackRoot = join(homeDir, '.happier', 'stacks', desiredStackName);
+  const desiredStackRoot = join(homeDir, '.piggercode', 'stacks', desiredStackName);
   await mkdir(join(desiredStackRoot, 'cli', 'servers', desiredServerId), { recursive: true });
   await writeFile(
     join(desiredStackRoot, 'stack.runtime.json'),
@@ -6757,7 +6757,7 @@ test('macos wsrepl lima matrix wrapper resolves stack cli home from explicit PIG
   await writeFile(join(desiredStackRoot, 'cli', 'servers', desiredServerId, 'access.key'), JSON.stringify({ token: 'tok_desired' }) + '\n', 'utf8');
 
   const distractingStackName = 'newer-but-unrelated-stack';
-  const distractingStackRoot = join(homeDir, '.happier', 'stacks', distractingStackName);
+  const distractingStackRoot = join(homeDir, '.piggercode', 'stacks', distractingStackName);
   await mkdir(distractingStackRoot, { recursive: true });
   await writeFile(
     join(distractingStackRoot, 'stack.runtime.json'),
@@ -7175,7 +7175,7 @@ test('macos wsrepl lima matrix wrapper runs the autoupdate payload builder from 
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -7320,7 +7320,7 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -7351,7 +7351,7 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -7400,7 +7400,7 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
   assert.match(`${res.stdout}\n${res.stderr}`, /wsrepl build marker|wsrepl-build\.json/i);
 });
 
-test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the worktree (autoupdate mode)', async () => {
+test('macos wsrepl lima matrix wrapper can autoupdate guest piggercode to match the worktree (autoupdate mode)', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-autoupdate-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -7428,9 +7428,9 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       'set -euo pipefail',
       'if [[ "${1:-}" == "--version" ]]; then',
       '  # Before autoupdate, the guest has a preview build installed.',
-      '  if [[ -L "${HOME}/.happier/bin/happier" ]]; then',
-      '    target="$(readlink "${HOME}/.happier/bin/happier" || true)"',
-      '    if [[ "$target" == "${HOME}/.happier/wsrepl-dev/payload/happier" ]]; then',
+      '  if [[ -L "${HOME}/.piggercode/bin/happier" ]]; then',
+      '    target="$(readlink "${HOME}/.piggercode/bin/happier" || true)"',
+      '    if [[ "$target" == "${HOME}/.piggercode/wsrepl-dev/payload/happier" ]]; then',
       '      echo "0.1.0"',
       '      exit 0',
       '    fi',
@@ -7479,11 +7479,11 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -7510,7 +7510,7 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       '  esac',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -7568,7 +7568,7 @@ test('macos wsrepl lima matrix wrapper can autoupdate guest happier to match the
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -7777,7 +7777,7 @@ test('macos wsrepl lima matrix writes vm-happier build log when guest autoupdate
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -7867,7 +7867,7 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
     [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(hostLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(hostLog)}`,
 	      'stopped_marker="${HOME}/.host-daemon-stopped"',
 	      'cmd="${1:-}"',
 	      'shift || true',
@@ -7930,7 +7930,7 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -7987,7 +7987,7 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [48888, 48888]',
       '    hostPortRange:  [48888, 48888]',
@@ -8072,16 +8072,16 @@ test('macos wsrepl lima matrix wrapper keeps the host daemon alive while autoupd
   );
 
   const hostOut = await readFile(hostLog, 'utf8');
-  const startCount = hostOut.split('\n').filter((line) => line.includes('happier daemon start')).length;
+  const startCount = hostOut.split('\n').filter((line) => line.includes('piggercode daemon start')).length;
   assert.equal(
     startCount,
     1,
     `expected the watchdog to tolerate a single transient failure without restarting the host daemon; log:\n${hostOut}`,
   );
-  const firstStartIndex = hostOut.indexOf('happier daemon start');
+  const firstStartIndex = hostOut.indexOf('piggercode daemon start');
   const playWrightPhaseHostOut = firstStartIndex >= 0 ? hostOut.slice(firstStartIndex + 1) : hostOut;
   assert.equal(
-    playWrightPhaseHostOut.includes('happier daemon stop'),
+    playWrightPhaseHostOut.includes('piggercode daemon stop'),
     false,
     `expected watchdog to avoid stopping the host daemon during Playwright; log:\n${hostOut}`,
   );
@@ -8118,7 +8118,7 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      `echo "happier $*" >> ${JSON.stringify(hostLog)}`,
+      `echo "piggercode $*" >> ${JSON.stringify(hostLog)}`,
       'stopped_marker="${HOME}/.host-daemon-stopped"',
       'cmd="${1:-}"',
       'shift || true',
@@ -8188,7 +8188,7 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -8256,7 +8256,7 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [48888, 48888]',
       '    hostPortRange:  [48888, 48888]',
@@ -8334,7 +8334,7 @@ test('macos wsrepl lima matrix watchdog restarts the host daemon when status rep
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const hostOut = await readFile(hostLog, 'utf8');
-  const startCount = hostOut.split('\n').filter((line) => line.includes('happier daemon start')).length;
+  const startCount = hostOut.split('\n').filter((line) => line.includes('piggercode daemon start')).length;
   assert.equal(startCount, 2, `expected watchdog to restart when daemon status reports a dead PID; log:\n${hostOut}`);
 });
 
@@ -8410,11 +8410,11 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not fail closed when
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -8495,7 +8495,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not fail closed when
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -8640,7 +8640,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -8721,7 +8721,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -8793,7 +8793,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   assert.equal(
-    await fileExists(join(homeDir, '.happier', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
+    await fileExists(join(homeDir, '.piggercode', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
     true,
     'expected autoupdate to install a wsrepl build marker into the guest payload',
   );
@@ -8805,7 +8805,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs even when guest 
   assert.ok(stdin.includes('===stdin-begin==='), 'expected wrapper to run at least one node stdin helper');
 });
 
-test('macos wsrepl lima matrix wrapper autoupdate mode does not require a preinstalled guest happier on PATH', async () => {
+test('macos wsrepl lima matrix wrapper autoupdate mode does not require a preinstalled guest piggercode on PATH', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-autoupdate-no-happier-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -8861,7 +8861,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode does not require a preins
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -8993,7 +8993,7 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs the current payl
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -9071,12 +9071,12 @@ test('macos wsrepl lima matrix wrapper autoupdate mode installs the current payl
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   assert.equal(
-    await fileExists(join(homeDir, 'guest-homes', primaryVm, '.happier', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
+    await fileExists(join(homeDir, 'guest-homes', primaryVm, '.piggercode', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
     true,
     'expected autoupdate payload for primary VM',
   );
   assert.equal(
-    await fileExists(join(homeDir, 'guest-homes', extraVm, '.happier', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
+    await fileExists(join(homeDir, 'guest-homes', extraVm, '.piggercode', 'wsrepl-dev', 'payload', 'wsrepl-build.json')),
     true,
     'expected autoupdate payload for extra VM',
   );
@@ -9116,11 +9116,11 @@ test('macos wsrepl lima matrix wrapper can derive PIGGERCODE_QA_STEPS_JSON from 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
       '  sub="${3:-}"',
       '  case "$sub" in',
@@ -9403,7 +9403,7 @@ test('macos wsrepl lima matrix wrapper retries host daemon start on transient fa
     [
 	      '#!/usr/bin/env bash',
 	      'set -euo pipefail',
-	      `echo "happier $*" >> ${JSON.stringify(hostLog)}`,
+	      `echo "piggercode $*" >> ${JSON.stringify(hostLog)}`,
 	      'stopped_marker="${HOME}/.host-daemon-stopped"',
 	      'cmd="${1:-}"',
       'shift || true',
@@ -9503,7 +9503,7 @@ test('macos wsrepl lima matrix wrapper retries host daemon start on transient fa
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -9549,7 +9549,7 @@ test('macos wsrepl lima matrix wrapper retries host daemon start on transient fa
   assert.equal(res.status, 0, `expected exit 0\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
 
   const logged = await readFile(hostLog, 'utf8').catch(() => '');
-  const starts = logged.split('\n').filter((line) => line.includes('happier daemon start')).length;
+  const starts = logged.split('\n').filter((line) => line.includes('piggercode daemon start')).length;
   assert.equal(starts, 2, `expected wrapper to retry host daemon start; log:\n${logged}`);
 });
 
@@ -9587,7 +9587,7 @@ test('macos wsrepl lima matrix wrapper rebuilds the CLI when host daemon status 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "$script" == *"/apps/cli/bin/happier.mjs" ]]; then',
+      'if [[ "$script" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
       '  cmd="${1:-}"',
       '  shift || true',
@@ -9806,7 +9806,7 @@ test('macos wsrepl lima matrix wrapper fails closed when host daemon status stay
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "$script" == *"/apps/cli/bin/happier.mjs" ]]; then',
+      'if [[ "$script" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
       '  cmd="${1:-}"',
       '  shift || true',
@@ -9989,7 +9989,7 @@ test('macos wsrepl lima matrix wrapper seeds server-routed max-bytes env for the
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "$script" == *"/apps/cli/bin/happier.mjs" ]]; then',
+      'if [[ "$script" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
       '  cmd="${1:-}"',
       '  shift || true',
       '  case "$cmd" in',
@@ -10120,9 +10120,9 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
   await mkdir(reportDir, { recursive: true });
   await mkdir(logDir, { recursive: true });
 
-  await mkdir(join(homeDir, '.happier', 'wsrepl-dev', 'payload'), { recursive: true });
-  await writeFile(join(homeDir, '.happier', 'wsrepl-dev', 'payload', 'wsrepl-build.gitrev'), 'deadbeef\n', 'utf8');
-  await writeFile(join(homeDir, '.happier', 'wsrepl-dev', 'payload', 'wsrepl-build.version'), '0.1.0\n', 'utf8');
+  await mkdir(join(homeDir, '.piggercode', 'wsrepl-dev', 'payload'), { recursive: true });
+  await writeFile(join(homeDir, '.piggercode', 'wsrepl-dev', 'payload', 'wsrepl-build.gitrev'), 'deadbeef\n', 'utf8');
+  await writeFile(join(homeDir, '.piggercode', 'wsrepl-dev', 'payload', 'wsrepl-build.version'), '0.1.0\n', 'utf8');
 
   const unamePath = join(binDir, 'uname');
   await writeFile(unamePath, ['#!/usr/bin/env bash', 'echo Darwin'].join('\n') + '\n', 'utf8');
@@ -10189,7 +10189,7 @@ test('macos wsrepl lima matrix wrapper fails closed when guest wsrepl build mark
       '    done',
       '    mkdir -p "${LIMA_HOME:-$HOME/.lima}/${name}"',
       '    cat > "${LIMA_HOME:-$HOME/.lima}/${name}/lima.yaml" <<EOF',
-      '# --- happier port forwards (managed) ---',
+      '# --- piggercode port forwards (managed) ---',
       'portForwards:',
       '  - guestPortRange: [13000, 13001]',
       '    hostPortRange:  [13000, 13001]',
@@ -10306,8 +10306,8 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
   await mkdir(safeLargeRepoPath, { recursive: true });
 
   // Keep the legacy fixture location present as well to ensure the wrapper prefers the safe path
-  // (Lima guests can fail to traverse host `chmod 700` parents like `.happier`).
-  const legacyLargeRepoPath = join(homeDir, '.happier', 'wsrepl-qa-fixtures', 'large-repo-k8s');
+  // (Lima guests can fail to traverse host `chmod 700` parents like `.piggercode`).
+  const legacyLargeRepoPath = join(homeDir, '.piggercode', 'wsrepl-qa-fixtures', 'large-repo-k8s');
   await mkdir(legacyLargeRepoPath, { recursive: true });
 
   const limactlLog = join(logDir, 'limactl.log');
@@ -10324,7 +10324,7 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
     [
       '#!/usr/bin/env bash',
       'set -euo pipefail',
-      `echo "happier $*" >> ${JSON.stringify(happierLog)}`,
+      `echo "piggercode $*" >> ${JSON.stringify(happierLog)}`,
       'stopped_marker="${HOME}/.host-daemon-stopped"',
       'if [[ "${1:-}" == "daemon" && "${2:-}" == "stop" ]]; then',
       '  printf "1" > "$stopped_marker"',
@@ -10360,11 +10360,11 @@ test('macos wsrepl lima matrix wrapper prefers default large-repo fixture under 
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "daemon" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "daemon" ]]; then',
       '  sub="${3:-}"',
       '  case "$sub" in',
       '    stop)',
@@ -10563,7 +10563,7 @@ test('macos wsrepl lima matrix wrapper writes a nonzero summary status when term
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -10733,7 +10733,7 @@ test('macos wsrepl lima matrix wrapper leaves a top-level summary.json even when
       '  echo "v99.0.0-test"',
       '  exit 0',
       'fi',
-      'if [[ "${1:-}" == *"/apps/cli/bin/happier.mjs" && "${2:-}" == "--version" ]]; then',
+      'if [[ "${1:-}" == *"/apps/cli/bin/piggercode.mjs" && "${2:-}" == "--version" ]]; then',
       '  echo "0.1.0"',
       '  exit 0',
       'fi',
@@ -10900,7 +10900,7 @@ test('macos wsrepl lima matrix wrapper records early-abort failure metadata befo
   assert.equal(summary.failureReason, 'command_not_found');
 });
 
-test('macos wsrepl lima matrix wrapper can force host happier source to worktree_node', async () => {
+test('macos wsrepl lima matrix wrapper can force host piggercode source to worktree_node', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-host-source-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -10949,7 +10949,7 @@ test('macos wsrepl lima matrix wrapper can force host happier source to worktree
       'fi',
       'script="${1:-}"',
       'shift || true',
-	      'if [[ "$script" == *"/apps/cli/bin/happier.mjs" ]]; then',
+	      'if [[ "$script" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
 	      '  cmd="${1:-}"',
 	      '  sub="${2:-}"',
 	      '  stopped_marker="${HOME}/.host-daemon-stopped"',
@@ -11115,21 +11115,21 @@ test('macos wsrepl lima matrix wrapper can force host happier source to worktree
   assert.equal(resolvePayload.source, 'worktree_node');
   assert.equal(resolvePayload.hostHappierKind, 'worktree_node');
   assert.ok(
-    Array.isArray(resolvePayload.invocation) && resolvePayload.invocation.join(' ').includes('apps/cli/bin/happier.mjs'),
-    `expected invocation to mention apps/cli/bin/happier.mjs (got ${JSON.stringify(resolvePayload.invocation)})`,
+    Array.isArray(resolvePayload.invocation) && resolvePayload.invocation.join(' ').includes('apps/cli/bin/piggercode.mjs'),
+    `expected invocation to mention apps/cli/bin/piggercode.mjs (got ${JSON.stringify(resolvePayload.invocation)})`,
   );
 
   const nodeInvocations = await readFile(nodeLog, 'utf8');
   assert.ok(
-    nodeInvocations.includes('apps/cli/bin/happier.mjs daemon'),
+    nodeInvocations.includes('apps/cli/bin/piggercode.mjs daemon'),
     `expected node to be used for host daemon (got ${nodeInvocations})`,
   );
 
-  assert.equal(await fileExists(runtimeLog), false, 'expected stack runtime happier not to be invoked');
-  assert.equal(await fileExists(happierLog), false, 'expected PATH happier not to be invoked');
+  assert.equal(await fileExists(runtimeLog), false, 'expected stack runtime piggercode not to be invoked');
+  assert.equal(await fileExists(happierLog), false, 'expected PATH piggercode not to be invoked');
 });
 
-test('macos wsrepl lima matrix wrapper defaults host happier source to PATH when no stack runtime is available', async () => {
+test('macos wsrepl lima matrix wrapper defaults host piggercode source to PATH when no stack runtime is available', async () => {
   const root = await mkdtemp(join(tmpdir(), 'hstack-macos-lima-wsrepl-matrix-host-default-source-'));
   const binDir = join(root, 'bin');
   const homeDir = join(root, 'home');
@@ -11210,7 +11210,7 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to PATH when
       'fi',
       'script="${1:-}"',
       'shift || true',
-      'if [[ "$script" == *"/apps/cli/bin/happier.mjs" ]]; then',
+      'if [[ "$script" == *"/apps/cli/bin/piggercode.mjs" ]]; then',
       '  cmd="${1:-}"',
       '  sub="${2:-}"',
       '  stopped_marker="${HOME}/.host-daemon-stopped"',
@@ -11379,9 +11379,9 @@ test('macos wsrepl lima matrix wrapper defaults host happier source to PATH when
   assert.equal(resolvePayload.hostHappierKind, 'path');
 
   const nodeInvocations = await readFile(nodeLog, 'utf8');
-  assert.equal(nodeInvocations.includes('apps/cli/bin/happier.mjs daemon'), false, `expected node not to be used for host daemon (got ${nodeInvocations})`);
+  assert.equal(nodeInvocations.includes('apps/cli/bin/piggercode.mjs daemon'), false, `expected node not to be used for host daemon (got ${nodeInvocations})`);
 
-  assert.equal(await fileExists(runtimeLog), false, 'expected stack runtime happier not to be invoked');
+  assert.equal(await fileExists(runtimeLog), false, 'expected stack runtime piggercode not to be invoked');
   const pathInvocations = await readFile(happierLog, 'utf8');
-  assert.ok(pathInvocations.includes('path-happier daemon start'), `expected PATH happier to be invoked (got ${pathInvocations})`);
+  assert.ok(pathInvocations.includes('path-happier daemon start'), `expected PATH piggercode to be invoked (got ${pathInvocations})`);
 });

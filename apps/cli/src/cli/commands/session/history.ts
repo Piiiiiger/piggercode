@@ -19,7 +19,7 @@ export async function cmdSessionHistory(
     valueFlags: ['--limit', '--format'],
   });
   if (!idOrPrefix) {
-    throw new Error('Usage: happier session history <session-id-or-prefix> [--limit <n>] [--format <compact|raw>] [--json]');
+    throw new Error('Usage: piggercode session history <session-id-or-prefix> [--limit <n>] [--format <compact|raw>] [--json]');
   }
 
   const limitRaw = readIntFlagValue(argv, '--limit', { min: 1 });
@@ -37,7 +37,7 @@ export async function cmdSessionHistory(
       await printJsonEnvelope({ ok: false, kind: 'session_history', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

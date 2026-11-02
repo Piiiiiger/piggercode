@@ -157,7 +157,7 @@ describe('updateSettings', () => {
     expect(Date.now() - startedAt).toBeLessThan(3_000);
   });
 
-  it('breaks a settings lock whose live owner pid no longer belongs to a Happier process', async () => {
+  it('breaks a settings lock whose live owner pid no longer belongs to a PiggerCode process', async () => {
     const { configuration } = await import('@/configuration');
     const { updateSettings } = await import('@/persistence');
 

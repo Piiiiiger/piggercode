@@ -10,10 +10,10 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const STABLE_DIR = path.join(os.homedir(), '.happier');
-const DEV_DIR = path.join(os.homedir(), '.happier-dev');
+const STABLE_DIR = path.join(os.homedir(), '.piggercode');
+const DEV_DIR = path.join(os.homedir(), '.piggercode-dev');
 
-console.log('🔧 Setting up Happier CLI development environment...\n');
+console.log('🔧 Setting up PiggerCode CLI development environment...\n');
 
 // Create directories
 [STABLE_DIR, DEV_DIR].forEach(dir => {
@@ -26,11 +26,11 @@ console.log('🔧 Setting up Happier CLI development environment...\n');
 });
 
 // Create .envrc for direnv users (optional)
-const envrcContent = `# Happier CLI environment (for direnv users)
+const envrcContent = `# PiggerCode CLI environment (for direnv users)
 # Automatically sets PIGGERCODE_HOME_DIR based on directory
 #
 # To use: cd to happier-cli-dev directory, run: direnv allow
-export PIGGERCODE_HOME_DIR="$HOME/.happier-dev"
+export PIGGERCODE_HOME_DIR="$HOME/.piggercode-dev"
 export PIGGERCODE_VARIANT="dev"
 `;
 

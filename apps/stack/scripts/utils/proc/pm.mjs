@@ -905,7 +905,7 @@ export async function ensureHappyCliLocalNpmLinked(rootDir, { npmLinkCli, quiet 
   await mkdir(binDir, { recursive: true });
 
   const legacyHappyShim = join(binDir, 'happy');
-  const happierShim = join(binDir, 'happier');
+  const happierShim = join(binDir, 'piggercode');
 
   const shim = `#!/bin/bash
 set -euo pipefail
@@ -913,14 +913,14 @@ set -euo pipefail
 BIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 hstack="$BIN_DIR/hstack"
 if [[ -x "$hstack" ]]; then
-  exec "$hstack" happier "$@"
+  exec "$hstack" piggercode "$@"
 fi
 
 # Fallback: run hstack from runtime install if present.
-HOME_DIR="\${PIGGERCODE_STACK_HOME_DIR:-$HOME/.happier-stack}"
+HOME_DIR="\${PIGGERCODE_STACK_HOME_DIR:-$HOME/.piggercode-stack}"
 RUNTIME="$HOME_DIR/runtime/node_modules/@piggercode/stack/bin/hstack.mjs"
 if [[ -f "$RUNTIME" ]]; then
-  exec node "$RUNTIME" happier "$@"
+  exec node "$RUNTIME" piggercode "$@"
 fi
 
 echo "error: cannot find hstack shim or runtime install" >&2
@@ -952,7 +952,7 @@ exit 1
 
   // If user’s PATH points at a legacy install path, try to make it sane (best-effort).
   const entries = getPathEntries();
-  const legacyBin = join(homedir(), '.happier-stack', 'bin');
+  const legacyBin = join(homedir(), '.piggercode-stack', 'bin');
   const newBin = join(homeDir, 'bin');
   if (entries.some((p) => isPathInside(p, legacyBin)) && !entries.some((p) => isPathInside(p, newBin))) {
     if (!quiet) {

@@ -1337,7 +1337,7 @@ describe('settings', () => {
             expect((settingsDefaults as any).attachmentsUploadsUploadLocation).toBe('shared_folder');
             expect((settingsDefaults as any).attachmentsUploadsSharedFolderPath).toBe('~/Downloads');
             expect((settingsDefaults as any).attachmentsUploadsSharedFolderSshAddress).toBe('');
-            expect((settingsDefaults as any).attachmentsUploadsWorkspaceRelativeDir).toBe('.happier/uploads');
+            expect((settingsDefaults as any).attachmentsUploadsWorkspaceRelativeDir).toBe('.piggercode/uploads');
             expect((settingsDefaults as any).attachmentsUploadsVcsIgnoreStrategy).toBe('git_info_exclude');
             expect((settingsDefaults as any).attachmentsUploadsVcsIgnoreWritesEnabled).toBe(true);
             expect((settingsDefaults as any).attachmentsUploadsMaxFileBytes).toBe(25 * 1024 * 1024);

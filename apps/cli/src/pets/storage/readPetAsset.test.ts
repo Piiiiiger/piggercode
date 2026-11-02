@@ -34,7 +34,7 @@ async function writePetPackage(packagePath: string): Promise<void> {
   await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
     id: 'blink',
     displayName: 'Blink',
-    description: 'Happier companion pet',
+    description: 'PiggerCode companion pet',
     spritesheetPath: 'spritesheet.png',
   }));
   await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -81,7 +81,7 @@ describe('readPetAsset', () => {
     const manifestBytes = Buffer.from(JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.png',
     }));
     await writeFile(join(packagePath, 'pet.json'), manifestBytes);

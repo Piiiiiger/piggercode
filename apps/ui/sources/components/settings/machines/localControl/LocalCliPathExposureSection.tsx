@@ -25,7 +25,7 @@ function readTaskOutcome(kind: CliPathExposureTaskKind, result: SystemTaskResult
         return data.removed === true ? t('machine.cliPath.removed') : t('machine.cliPath.nothingToRemove');
     }
     if (data.changed !== true) {
-        // Another `happier` already answers in the terminal and was deliberately left in front, so
+        // Another `piggercode` already answers in the terminal and was deliberately left in front, so
         // nothing was added; say which one, rather than claiming ours is already there (R17).
         const existingCommand = typeof data.existingCommand === 'string' ? data.existingCommand.trim() : '';
         return existingCommand

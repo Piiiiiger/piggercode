@@ -45,7 +45,7 @@ over every file in this folder.
 2. **Leading and trailing whitespace is load-bearing.** `" and "` must come back with both spaces.
    A trimmed fragment glues two words onto the interpolated value.
 3. **Code stays byte-identical**: CLI invocations, paths, globs, flags, config keys, env vars,
-   identifiers and URLs. A localised `happier attach <session-id>` is a command that does not run.
+   identifiers and URLs. A localised `piggercode attach <session-id>` is a command that does not run.
 4. **Product names never translate**: Happier, Claude, Codex, Gemini, GitHub, MCP, tmux, zellij.
 5. **Match the shape of the source**: no trailing period if the English has none; ALL CAPS stays
    ALL CAPS; a `\n` count must be preserved.

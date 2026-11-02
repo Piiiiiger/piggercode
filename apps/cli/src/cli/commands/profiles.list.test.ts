@@ -9,7 +9,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('happier profiles list --json', () => {
+describe('piggercode profiles list --json', () => {
   it('lists built-in profiles when unauthenticated', async () => {
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(null);
     const bootstrapSpy = vi.spyOn(accountSettingsModule, 'bootstrapAccountSettingsContext');

@@ -17,7 +17,7 @@ vi.mock('socket.io-client', () => ({
   io: mockIo,
 }));
 
-describe('happier session create plaintext sessions (integration)', () => {
+describe('piggercode session create plaintext sessions (integration)', () => {
   const envKeys = [
     'PIGGERCODE_SERVER_URL',
     'PIGGERCODE_WEBAPP_URL',

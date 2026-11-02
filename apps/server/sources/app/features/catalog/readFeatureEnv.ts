@@ -455,7 +455,7 @@ export function readAuthMtlsFeatureEnv(env: NodeJS.ProcessEnv): AuthMtlsFeatureE
   const allowPrefixesFromEnv = parseCsvList(env[FEATURE_ENV_KEYS.authMtlsReturnToAllowPrefixes]);
   const webUrl = resolveEffectiveWebappBaseUrl(env).trim();
   const returnToAllowPrefixes = Object.freeze(
-    (allowPrefixesFromEnv.length > 0 ? allowPrefixesFromEnv : ["happier://", webUrl])
+    (allowPrefixesFromEnv.length > 0 ? allowPrefixesFromEnv : ["piggercode://", webUrl])
       .map((s) => s.trim())
       .filter(Boolean),
   );

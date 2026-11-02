@@ -94,7 +94,7 @@ describe("bugReportDiagnosticsRoutes", () => {
     it("expands ~/ configured log paths against HOME", async () => {
         const dir = mkdtempSync(join(tmpdir(), "happier-bug-report-diag-tilde-"));
         const homeDir = join(dir, "home");
-        const logDir = join(homeDir, ".happier", "logs");
+        const logDir = join(homeDir, ".piggercode", "logs");
         const logPath = join(logDir, "server.log");
         mkdirSync(logDir, { recursive: true });
         writeFileSync(logPath, "INFO hello\n", "utf8");
@@ -102,7 +102,7 @@ describe("bugReportDiagnosticsRoutes", () => {
             HOME: homeDir,
             PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ENABLED: "1",
             PIGGERCODE_BUG_REPORTS_SERVER_DIAGNOSTICS_ACCESS_MODE: "authenticated",
-            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: "~/.happier/logs/server.log",
+            PIGGERCODE_BUG_REPORTS_SERVER_LOG_PATH: "~/.piggercode/logs/server.log",
         });
 
         try {

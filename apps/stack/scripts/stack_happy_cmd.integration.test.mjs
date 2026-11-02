@@ -105,7 +105,7 @@ async function createHappyStackFixture(
   };
 }
 
-test('hstack stack happier <name> runs CLI under that stack env', async (t) => {
+test('hstack stack piggercode <name> runs CLI under that stack env', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-',
     message: 'hello',
@@ -125,7 +125,7 @@ test('hstack stack happier <name> runs CLI under that stack env', async (t) => {
   assert.equal(out.serverUrl, `http://127.0.0.1:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> overrides pre-set PIGGERCODE_* env vars with stack-scoped values', async (t) => {
+test('hstack stack piggercode <name> overrides pre-set PIGGERCODE_* env vars with stack-scoped values', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-override-',
     message: 'override',
@@ -149,7 +149,7 @@ test('hstack stack happier <name> overrides pre-set PIGGERCODE_* env vars with s
   assert.equal(out.serverUrl, `http://127.0.0.1:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> ignores stale cloud settings defaults and keeps stack-local server urls', async (t) => {
+test('hstack stack piggercode <name> ignores stale cloud settings defaults and keeps stack-local server urls', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-ignore-settings-',
     message: 'ignore-settings-defaults',
@@ -185,7 +185,7 @@ test('hstack stack happier <name> ignores stale cloud settings defaults and keep
   assert.equal(out.webappUrl, `http://localhost:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> delegates stack profile reconciliation to the selected CLI runtime', async (t) => {
+test('hstack stack piggercode <name> delegates stack profile reconciliation to the selected CLI runtime', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-seed-settings-',
     message: 'seed-settings',
@@ -244,7 +244,7 @@ test('hstack stack happier <name> delegates stack profile reconciliation to the 
   assert.equal(settings.servers[out.activeServerId].webappUrl, `http://localhost:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> rejects a CLI that exits successfully without reconciling the stack profile', async (t) => {
+test('hstack stack piggercode <name> rejects a CLI that exits successfully without reconciling the stack profile', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-legacy-server-set-',
     message: 'must-not-run',
@@ -277,7 +277,7 @@ test('hstack stack happier <name> rejects a CLI that exits successfully without 
   assert.doesNotMatch(res.stdout, /must-not-run/);
 });
 
-test('hstack stack happier <name> uses stack.runtime.json ports when env file does not pin PIGGERCODE_STACK_SERVER_PORT', async (t) => {
+test('hstack stack piggercode <name> uses stack.runtime.json ports when env file does not pin PIGGERCODE_STACK_SERVER_PORT', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-runtime-ports-',
     message: 'runtime-ports',
@@ -299,10 +299,10 @@ test('hstack stack happier <name> uses stack.runtime.json ports when env file do
   assert.equal(out.serverUrl, `http://127.0.0.1:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> forwards wrapper runtime flags to happier.mjs', async (t) => {
+test('hstack stack piggercode <name> forwards wrapper runtime flags to piggercode.mjs', async (t) => {
   const fixture = await createRuntimeSnapshotFixture(t, {
     stackName: 'runtime-wrapper-passthrough',
-    cliEntrypoint: 'cli/happier.mjs',
+    cliEntrypoint: 'cli/piggercode.mjs',
     cliSource: 'process.stdout.write("SNAPSHOT WRAPPER HELP\\n");\n',
   });
 
@@ -342,7 +342,7 @@ test('hstack happier (PIGGERCODE_STACK_STACK set) uses stack.runtime.json ports 
   delete env.PIGGERCODE_STACK_SERVER_PORT_BASE;
   delete env.PIGGERCODE_STACK_SERVER_PORT_RANGE;
 
-  const res = await runNodeCapture([join(rootDir, 'bin', 'happier.mjs')], {
+  const res = await runNodeCapture([join(rootDir, 'bin', 'piggercode.mjs')], {
     cwd: rootDir,
     env,
   });
@@ -355,7 +355,7 @@ test('hstack happier (PIGGERCODE_STACK_STACK set) uses stack.runtime.json ports 
   assert.equal(out.webappUrl, `http://localhost:${fixture.serverPort}`);
 });
 
-test('hstack happier keeps the stable scope when another settings profile matches the stack URL', async (t) => {
+test('hstack piggercode keeps the stable scope when another settings profile matches the stack URL', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-explicit-stack-scope-',
     message: 'explicit-stack-scope',
@@ -384,7 +384,7 @@ test('hstack happier keeps the stable scope when another settings profile matche
   };
   delete env.PIGGERCODE_STACK_ENV_FILE;
 
-  const res = await runNodeCapture([join(rootDir, 'bin', 'happier.mjs')], {
+  const res = await runNodeCapture([join(rootDir, 'bin', 'piggercode.mjs')], {
     cwd: rootDir,
     env,
   });
@@ -403,7 +403,7 @@ test('hstack happier keeps the stable scope when another settings profile matche
   );
 });
 
-test('hstack stack happier <name> --identity=<name> uses identity-scoped PIGGERCODE_HOME_DIR', async (t) => {
+test('hstack stack piggercode <name> --identity=<name> uses identity-scoped PIGGERCODE_HOME_DIR', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happier-stack-stack-happy-identity-',
     message: 'identity',
@@ -438,7 +438,7 @@ test('hstack <stack> happier ... shorthand runs CLI under that stack env', async
   assert.equal(out.serverUrl, `http://127.0.0.1:${fixture.serverPort}`);
 });
 
-test('hstack stack happier <name> does not print wrapper stack traces on CLI failure', async (t) => {
+test('hstack stack piggercode <name> does not print wrapper stack traces on CLI failure', async (t) => {
   const fixture = await createHappyStackFixture(t, {
     prefix: 'happy-stacks-stack-happy-fail-',
     stubType: 'failing',
@@ -451,7 +451,7 @@ test('hstack stack happier <name> does not print wrapper stack traces on CLI fai
   });
   assert.equal(res.code, 1, `expected exit 1, got ${res.code}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`);
   assert.ok(res.stderr.includes('stub failure'), `expected stderr to include stub failure, got:\n${res.stderr}`);
-  assert.ok(!res.stderr.includes('[happier] failed:'), `expected no [happier] failed stack trace, got:\n${res.stderr}`);
+  assert.ok(!res.stderr.includes('[piggercode] failed:'), `expected no [piggercode] failed stack trace, got:\n${res.stderr}`);
   assert.ok(!res.stderr.includes('[stack] failed:'), `expected no [stack] failed stack trace, got:\n${res.stderr}`);
   assert.ok(!res.stderr.includes('node:internal'), `expected no node:internal stack trace, got:\n${res.stderr}`);
 });

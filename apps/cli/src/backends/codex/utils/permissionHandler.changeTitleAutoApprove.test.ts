@@ -10,13 +10,13 @@ describe('CodexPermissionHandler - title changes', () => {
     const handler = new CodexPermissionHandler(session.asApiSessionClient());
     handler.setPermissionMode('read-only');
 
-    const result = await handler.handleToolCall('tool-change-title-1', 'mcp__happier__change_title', { title: 'New Title' });
+    const result = await handler.handleToolCall('tool-change-title-1', 'mcp__piggercode__change_title', { title: 'New Title' });
 
     expect(result.decision).toBe('approved');
     expect(session.snapshot().requests?.['tool-change-title-1']).toBeUndefined();
     expect(session.snapshot().completedRequests?.['tool-change-title-1']).toEqual(
       expect.objectContaining({
-        tool: 'mcp__happier__change_title',
+        tool: 'mcp__piggercode__change_title',
         status: 'approved',
         decision: 'approved',
       }),

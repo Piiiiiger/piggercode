@@ -252,7 +252,7 @@ function formatCodexResumeFailure(params: Readonly<{
         && cause instanceof Error
         && /\bthread\s+\S+\s+already has an active writer\b/i.test(cause.message);
     const guidance = activeWriter
-        ? 'Another Codex process is already writing to this thread. Happier cannot resume it through a separate app-server while that writer is active. Continue in the original Codex session. To share control of a new session, start a new session in Happier and run `happier attach` on the same machine.'
+        ? 'Another Codex process is already writing to this thread. PiggerCode cannot resume it through a separate app-server while that writer is active. Continue in the original Codex session. To share control of a new session, start a new session in PiggerCode and run `piggercode attach` on the same machine.'
         : `ensure Codex ${backendLabel} can run${localToRemote ? ' reliably' : ''} on this machine, then retry${localToRemote ? ' switching to remote' : ''}.`;
     const reason = formatErrorForUi(cause);
     return localToRemote
@@ -260,11 +260,11 @@ function formatCodexResumeFailure(params: Readonly<{
           `Reason: could not resume the remote Codex ${backendLabel} session (${resumeId}).\n` +
           `Details: ${reason}\n` +
           `${activeWriter ? 'What to do' : 'Fix'}: ${guidance}\n` +
-          `Note: Happier refuses to start a new remote Codex session during a local→remote switch, because it would fork the conversation.`
+          `Note: PiggerCode refuses to start a new remote Codex session during a local→remote switch, because it would fork the conversation.`
         : `Failed to resume this Codex ${backendLabel} session (${resumeId}).\n` +
           `Reason: ${reason}\n` +
           `${activeWriter ? 'What to do' : 'Fix'}: ${guidance}\n` +
-          `Note: Happier refuses to start a new Codex session when --resume was requested.`;
+          `Note: PiggerCode refuses to start a new Codex session when --resume was requested.`;
 }
 
 /**
@@ -690,7 +690,7 @@ export async function runCodex(opts: {
         credentials: opts.credentials,
         machineMetadata: initialMachineMetadata,
         missingMachineIdMessage:
-            '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/happier-dev/happier/issues',
+            '[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/Piiiiiger/piggercode/issues',
         skipMachineRegistration: opts.startedBy === 'daemon',
     });
     stopApiContextSpan();
@@ -732,7 +732,7 @@ export async function runCodex(opts: {
                 throw new Error(
                     `Codex ACP is required to resume sessions, but it cannot start on this machine.\n` +
                     `Reason: ${reason}\n` +
-                    `Fix: install codex-acp via Happier → Machine Details → Installables, add codex-acp to PATH, or disable ACP for this session.`,
+                    `Fix: install codex-acp via PiggerCode → Machine Details → Installables, add codex-acp to PATH, or disable ACP for this session.`,
                 );
             }
             useCodexAcp = false;

@@ -230,7 +230,7 @@ function buildWizardProps(): NewSessionWizardTestProps {
             displayName: 'Machine 1',
             host: 'machine-1.local',
             happyCliVersion: '1.0.0',
-            happyHomeDir: '/Users/alice/.happier',
+            happyHomeDir: '/Users/alice/.piggercode',
             homeDir: '/Users/alice',
             platform: 'darwin',
         },

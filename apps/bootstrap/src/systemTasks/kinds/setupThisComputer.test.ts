@@ -329,7 +329,7 @@ describe('setup.thisComputer.v1 (interactive executor)', () => {
    * the user approved may silently never happen.
    */
   it('asks before switching a service that runs another CLI to the managed one, naming both (K3)', async () => {
-    const runtimeReplacement = { current: '/usr/local/bin/happier', replacement: '/home/me/.happier/bin/happier' };
+    const runtimeReplacement = { current: '/usr/local/bin/happier', replacement: '/home/me/.piggercode/bin/happier' };
     const { deps, calls } = createScenario({
       preview: {
         takeover: null,
@@ -873,10 +873,10 @@ describe('setup.thisComputer.v1 — one CLI per computer (R12)', () => {
     takeover: null,
     installConflict: {
       blocking: false,
-      message: `The background service runs ${NPM_CLI}; installing switches it to /home/me/.happier/bin/happier.`,
+      message: `The background service runs ${NPM_CLI}; installing switches it to /home/me/.piggercode/bin/happier.`,
       competingServices: [],
       servicesToRemove: [],
-      runtimeReplacement: { current: NPM_CLI, replacement: '/home/me/.happier/bin/happier' },
+      runtimeReplacement: { current: NPM_CLI, replacement: '/home/me/.piggercode/bin/happier' },
     },
   };
 
@@ -952,8 +952,8 @@ describe('setup.thisComputer.v1 — one CLI per computer (R12)', () => {
       takeover: null,
       installConflict: {
         ...runtimeSwitch.installConflict!,
-        message: `The background service runs /home/me/.happier/bin/happier; installing switches it to ${NPM_CLI}.`,
-        runtimeReplacement: { current: '/home/me/.happier/bin/happier', replacement: NPM_CLI },
+        message: `The background service runs /home/me/.piggercode/bin/happier; installing switches it to ${NPM_CLI}.`,
+        runtimeReplacement: { current: '/home/me/.piggercode/bin/happier', replacement: NPM_CLI },
       },
     };
     const answered = createScenario({
@@ -1118,9 +1118,9 @@ describe('setup.thisComputer.v1 with a pinned service for the app relay', () => 
         takeover: null,
         installConflict: {
           blocking: false,
-          message: 'Would remove competing background services before install: com.happier.cli.daemon.default.',
-          competingServices: ['com.happier.cli.daemon.default'],
-          servicesToRemove: ['com.happier.cli.daemon.default'],
+          message: 'Would remove competing background services before install: com.piggercode.cli.daemon.default.',
+          competingServices: ['com.piggercode.cli.daemon.default'],
+          servicesToRemove: ['com.piggercode.cli.daemon.default'],
           runtimeReplacement: null,
         },
       },

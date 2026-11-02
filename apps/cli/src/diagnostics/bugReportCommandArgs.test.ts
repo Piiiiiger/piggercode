@@ -30,12 +30,12 @@ describe('parseBugReportArgs', () => {
 
   it('tags --attach-session-log and --attach-provider-transcript with the right kinds', () => {
     const parsed = parseBugReportArgs([
-      '--attach-session-log', '/home/user/.happier/logs/2026-04-26-pid-12345.log',
+      '--attach-session-log', '/home/user/.piggercode/logs/2026-04-26-pid-12345.log',
       '--attach-provider-transcript', '/home/user/.claude/projects/-x/uuid.jsonl',
       '--attach', '/tmp/screenshot.png',
     ]);
     expect(parsed.attachments).toEqual([
-      { path: '/home/user/.happier/logs/2026-04-26-pid-12345.log', sourceKind: 'session-log' },
+      { path: '/home/user/.piggercode/logs/2026-04-26-pid-12345.log', sourceKind: 'session-log' },
       { path: '/home/user/.claude/projects/-x/uuid.jsonl', sourceKind: 'provider-transcript' },
       { path: '/tmp/screenshot.png', sourceKind: 'attachment' },
     ]);

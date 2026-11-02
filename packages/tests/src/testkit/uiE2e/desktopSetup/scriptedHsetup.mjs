@@ -28,7 +28,7 @@ function statusFacts(kind) {
         daemonRunning: signedInElsewhere,
         needsAuth: !signedInElsewhere,
         machineId: signedInElsewhere ? 'machine-scripted' : null,
-        acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed', version: '0.2.13', channel: 'stable' },
+        acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed', version: '0.2.13', channel: 'stable' },
         server: { activeServerId: 'custom', serverUrl: relay, publicServerUrl: relay, localServerUrl: null, comparableKey: relay },
         auth: {
             authenticated: signedInElsewhere,

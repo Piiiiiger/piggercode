@@ -13,9 +13,9 @@ function setupFakeHome(): string {
 }
 
 function writeSiblingServerEnv(home: string, channelSuffix: string, port: number): void {
-  // Mirror resolveRelayRuntimeDefaults layout: <home>/.happier/self-host[-<channel>]/config/server.env
+  // Mirror resolveRelayRuntimeDefaults layout: <home>/.piggercode/self-host[-<channel>]/config/server.env
   const suffix = channelSuffix ? `-${channelSuffix}` : '';
-  const configDir = join(home, '.happier', `self-host${suffix}`, 'config');
+  const configDir = join(home, '.piggercode', `self-host${suffix}`, 'config');
   mkdirSync(configDir, { recursive: true });
   writeFileSync(join(configDir, 'server.env'), `PORT=${port}\n`, 'utf8');
 }

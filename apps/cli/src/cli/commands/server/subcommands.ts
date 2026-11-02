@@ -122,10 +122,10 @@ function relayProbeFailureDetailLines(result: Extract<ProbeServerVersionResult, 
 
 /**
  * Check that a relay URL actually answers before it is written to settings,
- * using the same `/v1/version` probe `happier server test` runs.
+ * using the same `/v1/version` probe `piggercode server test` runs.
  *
  * A relay that does not answer is nearly always a typo or a URL that is not up
- * yet; persisting it only moves the failure to `happier auth login`, where it
+ * yet; persisting it only moves the failure to `piggercode auth login`, where it
  * is much harder to read. The answer therefore follows the same shape as the
  * local/LAN question in `cmdAdd`: an interactive terminal is asked, and every
  * non-interactive caller (`--json`, no TTY) gets the prompt's own default —
@@ -138,7 +138,7 @@ async function assertRelayUrlAnswersBeforePersisting(params: Readonly<{
   const result = await probeServerVersion(params.probeUrl);
   if (result.ok) return;
 
-  const headline = `No Happier relay answered at ${params.probeUrl}.`;
+  const headline = `No PiggerCode relay answered at ${params.probeUrl}.`;
   const detailLines = relayProbeFailureDetailLines(result);
 
   if (!params.interactive) {
@@ -244,7 +244,7 @@ async function cmdAdd(args: string[]): Promise<void> {
     if (!name || !serverUrlRaw) {
       throw new Error(
         [
-          'Non-interactive mode: missing required arguments for `happier server add`.',
+          'Non-interactive mode: missing required arguments for `piggercode server add`.',
           'Provide: --name <name> --server-url <relay-url> [--local-server-url <url>] [--webapp-url <url>] [--use].',
           'Optional actions: --start-daemon, --install-service.',
         ].join(' '),
@@ -268,7 +268,7 @@ async function cmdAdd(args: string[]): Promise<void> {
           })).trim();
           if (!canonical) {
             throw new Error(
-              'Missing canonical relay URL. Provide a public HTTPS URL, or run `happier server add --local-server-url <url> --server-url <canonical>`.',
+              'Missing canonical relay URL. Provide a public HTTPS URL, or run `piggercode server add --local-server-url <url> --server-url <canonical>`.',
             );
           }
           serverUrlRaw = canonical;
@@ -363,7 +363,7 @@ async function cmdAdd(args: string[]): Promise<void> {
 
   if (shouldUse) reloadConfiguration();
   console.log(ok(`Saved relay profile: ${created.name} (${created.id})`));
-  const prefix = `happier --server ${created.id}`;
+  const prefix = `piggercode --server ${created.id}`;
   if (shouldUse) {
     console.log(chalk.gray(`  Active relay is now: ${created.serverUrl}`));
     if (created.localServerUrl && created.localServerUrl !== created.serverUrl) {

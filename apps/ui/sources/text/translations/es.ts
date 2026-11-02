@@ -96,7 +96,7 @@ const mcpServersUxTranslationExtension = {
   mcpServersDeliveryNativeTitle: 'MCP nativo',
   mcpServersDeliveryNativeSubtitle: 'Este backend recibe las herramientas de Happier como servidores MCP nativos.',
   mcpServersDeliveryShellBridgeTitle: 'Puente de shell de Happier',
-  mcpServersDeliveryShellBridgeSubtitle: 'Este backend llama a las herramientas de Happier a través del puente `happier tools`.',
+  mcpServersDeliveryShellBridgeSubtitle: 'Este backend llama a las herramientas de Happier a través del puente `piggercode tools`.',
   mcpServersDeliveryUnsupportedTitle: 'No compatible',
   mcpServersDeliveryUnsupportedSubtitle: 'Este backend todavía no recibe herramientas de Happier.',
 } as const;
@@ -203,7 +203,7 @@ const settingsAppearanceTranslationExtension = {
     previewSubtitle: 'A local sandbox preview of surfaces, text, controls, state, and syntax colors.',
     previewButton: 'Primary action',
     previewStatus: 'Ready',
-    previewCode: 'const theme = "happier";',
+    previewCode: 'const theme = "piggercode";',
     colorInputPlaceholder: '#RRGGBB, rgba(...), transparent',
     tokenSubtitle: 'Public color token override',
     recentColors: 'Recent colors',
@@ -1375,8 +1375,8 @@ export const es: TranslationStructure = {
     generateNewQrCode: "Generar nuevo código QR",
     pairingQrExpired: "Este código QR ha caducado. Genera uno nuevo.",
     openMachine: "Abrir máquina",
-    terminalUrlPlaceholder: "happier://terminal?...",
-    accountUrlPlaceholder: "happier:///account?...",
+    terminalUrlPlaceholder: "piggercode://terminal?...",
+    accountUrlPlaceholder: "piggercode:///account?...",
     restoreQrInstructions:
       "En un dispositivo que ya haya iniciado sesión, ve a Configuración → Cuenta y escanea este código QR.",
     externalAuthVerifiedTitle: ({ provider }: { provider: string }) =>
@@ -1406,7 +1406,7 @@ export const es: TranslationStructure = {
       runCommandInTerminal: "Ejecuta el siguiente comando en tu terminal:",
       runCommandInTerminalWithCommand: ({ command }: { command: string }) =>
         `Ejecuta el siguiente comando en tu terminal:\n\n${command}`,
-      command: ({ name }: { name: string }) => `happier connect ${name}`,
+      command: ({ name }: { name: string }) => `piggercode connect ${name}`,
     },
   },
 
@@ -2212,7 +2212,7 @@ export const es: TranslationStructure = {
       copyReportSubtitle: "Copia un informe JSON redactado para soporte",
     },
     pasteDoctorJson: {
-      footer: "Consejo: ejecuta `happier doctor --json` en tu ordenador y pégalo aquí.",
+      footer: "Consejo: ejecuta `piggercode doctor --json` en tu ordenador y pégalo aquí.",
       placeholder: '{ "capturedAt": "...", ... }',
       parse: "Validar JSON pegado",
       ok: "El doctor JSON pegado parece válido.",
@@ -3133,7 +3133,7 @@ export const es: TranslationStructure = {
         promptMessage:
           "Introduce un directorio relativo al espacio de trabajo (sin rutas absolutas, sin ..).",
         invalidDirectoryTitle: "Directorio no válido",
-        invalidDirectoryMessage: "Usa una ruta relativa como `.happier/uploads`.",
+        invalidDirectoryMessage: "Usa una ruta relativa como `.piggercode/uploads`.",
       },
     },
     sourceControlIgnore: {
@@ -6402,7 +6402,7 @@ export const es: TranslationStructure = {
         unpinSession: "Desfijar sesión",
         pinLimitExceeded: ({ count }: { count: number }) => `Puedes fijar hasta ${count.toLocaleString()} sesiones. Desfija otra sesión y vuelve a intentarlo.`,
     copyResumeCommand: "Copiar comando de reanudación",
-    resumeCommand: ({ sessionId }: { sessionId: string }) => `happier resume ${sessionId}`,
+    resumeCommand: ({ sessionId }: { sessionId: string }) => `piggercode resume ${sessionId}`,
     viewMachine: "Ver máquina",
     viewMachineSubtitle: "Ver detalles de máquina y sesiones",
     killSessionSubtitle: "Terminar inmediatamente la sesión",
@@ -6478,7 +6478,7 @@ export const es: TranslationStructure = {
       runIt: "Ejecútelo",
       scanQrCode: "Escanee el código QR",
       openCamera: "Abrir cámara",
-      runCommand: "$ happier",
+      runCommand: "$ piggercode",
     },
     emptyMessages: {
       noMessagesYet: "Aún no hay mensajes",
@@ -8037,7 +8037,7 @@ settingsSession: {
           title: 'Windows',
           defaultModeTitle: 'Modo remoto predeterminado de Windows',
           windowNameTitle: 'Nombre de la ventana de Windows Terminal',
-          windowNamePlaceholder: 'happier',
+          windowNamePlaceholder: 'piggercode',
           windowNameHint: 'Las sesiones abiertas en Windows Terminal usan esta ventana con nombre para que las nuevas sesiones puedan aparecer como pestañas.',
       },
       advanced: {
@@ -10282,7 +10282,7 @@ settingsSession: {
     offlineUnableToSpawn:
       "El lanzador está deshabilitado mientras la máquina está desconectada",
     offlineHelp:
-      "• Asegúrate de que tu computadora esté en línea\n• Ejecuta `happier daemon status` para diagnosticar\n• ¿Estás usando la última versión del CLI? Ejecuta `happier self update`",
+      "• Asegúrate de que tu computadora esté en línea\n• Ejecuta `piggercode daemon status` para diagnosticar\n• ¿Estás usando la última versión del CLI? Ejecuta `piggercode self update`",
     launchNewSessionInDirectory: "Iniciar nueva sesión en directorio",
     customPathPlaceholder: "Ingresa una ruta personalizada",
     tools: {
@@ -10347,13 +10347,13 @@ settingsSession: {
     cliPath: {
       title: "Terminal",
       footer: "Happier Desktop solo añade o elimina las entradas del PATH que ha creado; las escritas por el instalador del shell no se tocan.",
-      addTitle: "Añadir happier al PATH",
-      addSubtitle: "Haz que el comando happier esté disponible en los terminales nuevos.",
-      removeTitle: "Quitar happier del PATH",
+      addTitle: "Añadir piggercode al PATH",
+      addSubtitle: "Haz que el comando piggercode esté disponible en los terminales nuevos.",
+      removeTitle: "Quitar piggercode del PATH",
       removeSubtitle: "Quita solo las entradas del PATH que Happier Desktop añadió.",
-      added: "Añadido. Abre un terminal nuevo para usar happier.",
-      alreadyPresent: "happier ya está en tu PATH.",
-      existingCommand: ({ path }: { path: string }) => `Otro happier en ${path} ya responde en tu terminal, así que no se añadió nada.`,
+      added: "Añadido. Abre un terminal nuevo para usar piggercode.",
+      alreadyPresent: "piggercode ya está en tu PATH.",
+      existingCommand: ({ path }: { path: string }) => `Otro piggercode en ${path} ya responde en tu terminal, así que no se añadió nada.`,
       removed: "Se quitaron las entradas del PATH que Happier Desktop había añadido.",
       nothingToRemove: "Happier Desktop no ha añadido ninguna entrada al PATH.",
     },

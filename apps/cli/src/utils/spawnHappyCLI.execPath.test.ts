@@ -128,7 +128,7 @@ describe('spawnHappyCLI runtime executable selection', () => {
       const packageDistDir = join(rootDir, 'package-dist');
       mkdirSync(packageDistDir, { recursive: true });
       const entrypoint = join(packageDistDir, 'index.mjs');
-      const binaryPath = join(rootDir, 'happier.exe');
+      const binaryPath = join(rootDir, 'piggercode.exe');
       writeFileSync(entrypoint, 'export {};\n', 'utf8');
       writeFileSync(binaryPath, '@echo off\r\n', 'utf8');
 
@@ -156,7 +156,7 @@ describe('spawnHappyCLI runtime executable selection', () => {
       const packageDistDir = join(rootDir, 'package-dist');
       mkdirSync(packageDistDir, { recursive: true });
       const entrypoint = join(packageDistDir, 'index.mjs');
-      const binaryPath = join(rootDir, 'happier.exe');
+      const binaryPath = join(rootDir, 'piggercode.exe');
       writeFileSync(entrypoint, 'export {};\n', 'utf8');
       writeFileSync(binaryPath, '@echo off\r\n', 'utf8');
 
@@ -185,9 +185,9 @@ describe('spawnHappyCLI runtime executable selection', () => {
     const originalExecPath = process.execPath;
 
     try {
-      process.argv = ['/Applications/Happier.app/Contents/MacOS/happier', '/$bunfs/root/happier-linux-arm64', 'daemon', 'start-sync'];
+      process.argv = ['/Applications/PiggerCode.app/Contents/MacOS/happier', '/$bunfs/root/happier-linux-arm64', 'daemon', 'start-sync'];
       Object.defineProperty(process, 'execPath', {
-        value: '/Applications/Happier.app/Contents/MacOS/happier',
+        value: '/Applications/PiggerCode.app/Contents/MacOS/happier',
         configurable: true,
       });
 
@@ -206,7 +206,7 @@ describe('spawnHappyCLI runtime executable selection', () => {
       const launchSpec = mod.buildHappyCliSubprocessLaunchSpec(['daemon', 'start-sync']);
 
       expect(launchSpec.runtime).toBe('bun');
-      expect(launchSpec.filePath).toBe('/Applications/Happier.app/Contents/MacOS/happier');
+      expect(launchSpec.filePath).toBe('/Applications/PiggerCode.app/Contents/MacOS/happier');
       expect(launchSpec.args).toEqual(['daemon', 'start-sync']);
     } finally {
       process.argv = originalArgv;

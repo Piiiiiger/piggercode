@@ -125,7 +125,7 @@ async function runInstall(extraArgs: readonly string[] = []): Promise<string[]> 
     }
 }
 
-describe('happier relay host install reachable relay URL selection', () => {
+describe('piggercode relay host install reachable relay URL selection', () => {
     let home = '';
     let preparedPayloadRoot = '';
     let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);

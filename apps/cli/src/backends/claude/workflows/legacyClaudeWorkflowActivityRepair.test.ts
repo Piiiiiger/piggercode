@@ -44,9 +44,9 @@ function metadataWithHeadlines(runs: readonly SessionWorkflowRunHeadlineV1[]): M
     path: '/x',
     host: 'h',
     homeDir: '/home/tester',
-    happyHomeDir: '/home/tester/.happier',
-    happyLibDir: '/home/tester/.happier/lib',
-    happyToolsDir: '/home/tester/.happier/tools',
+    happyHomeDir: '/home/tester/.piggercode',
+    happyLibDir: '/home/tester/.piggercode/lib',
+    happyToolsDir: '/home/tester/.piggercode/tools',
     sessionWorkflowActivityHeadlineV1: buildSessionWorkflowActivityHeadline({
       backendId: 'claude',
       updatedAt: 1000,

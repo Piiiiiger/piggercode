@@ -96,7 +96,7 @@ const mcpServersUxTranslationExtension = {
   mcpServersDeliveryNativeTitle: 'MCP natiu',
   mcpServersDeliveryNativeSubtitle: 'Aquest backend rep les eines de Happier com a servidors MCP natius.',
   mcpServersDeliveryShellBridgeTitle: 'Pont de shell de Happier',
-  mcpServersDeliveryShellBridgeSubtitle: 'Aquest backend crida les eines de Happier a través del pont `happier tools`.',
+  mcpServersDeliveryShellBridgeSubtitle: 'Aquest backend crida les eines de Happier a través del pont `piggercode tools`.',
   mcpServersDeliveryUnsupportedTitle: 'No compatible',
   mcpServersDeliveryUnsupportedSubtitle: 'Aquest backend encara no rep eines de Happier.',
 } as const;
@@ -203,7 +203,7 @@ const settingsAppearanceTranslationExtension = {
     previewSubtitle: 'A local sandbox preview of surfaces, text, controls, state, and syntax colors.',
     previewButton: 'Primary action',
     previewStatus: 'Ready',
-    previewCode: 'const theme = "happier";',
+    previewCode: 'const theme = "piggercode";',
     colorInputPlaceholder: '#RRGGBB, rgba(...), transparent',
     tokenSubtitle: 'Public color token override',
     recentColors: 'Recent colors',
@@ -1317,8 +1317,8 @@ export const ca: TranslationStructure = {
         generateNewQrCode: 'Generar un nou codi QR',
         pairingQrExpired: 'Aquest codi QR ha caducat. Genera\'n un de nou.',
         openMachine: 'Obrir màquina',
-        terminalUrlPlaceholder: 'happier://terminal?...',
-        accountUrlPlaceholder: 'happier:///account?...',
+        terminalUrlPlaceholder: 'piggercode://terminal?...',
+        accountUrlPlaceholder: 'piggercode:///account?...',
         restoreQrInstructions: 'En un dispositiu on ja hagis iniciat sessió, ves a Configuració → Compte i escaneja aquest codi QR.',
         externalAuthVerifiedTitle: ({ provider }: { provider: string }) => `${provider} verificat`,
         externalAuthVerifiedBody: ({ provider }: { provider: string }) =>
@@ -1344,7 +1344,7 @@ export const ca: TranslationStructure = {
             runCommandInTerminal: 'Executa l\'ordre següent al terminal:',
             runCommandInTerminalWithCommand: ({ command }: { command: string }) =>
                 `Executa l'ordre següent al terminal:\n\n${command}`,
-            command: ({ name }: { name: string }) => `happier connect ${name}`,
+            command: ({ name }: { name: string }) => `piggercode connect ${name}`,
         },
     },
 
@@ -2101,7 +2101,7 @@ export const ca: TranslationStructure = {
             copyReportSubtitle: 'Copia un informe JSON redactat per a suport',
         },
         pasteDoctorJson: {
-            footer: 'Consell: executa `happier doctor --json` a l\'ordinador i enganxa\'l aquí.',
+            footer: 'Consell: executa `piggercode doctor --json` a l\'ordinador i enganxa\'l aquí.',
             placeholder: '{ "capturedAt": "...", ... }',
             parse: 'Valida el JSON enganxat',
             ok: 'El JSON del doctor sembla vàlid.',
@@ -2998,7 +2998,7 @@ export const ca: TranslationStructure = {
                 promptTitle: 'Directori de pujades',
                 promptMessage: 'Introdueix un directori relatiu a l’espai de treball (sense camins absoluts, sense ..).',
                 invalidDirectoryTitle: 'Directori no vàlid',
-                invalidDirectoryMessage: 'Fes servir un camí relatiu com `.happier/uploads`.',
+                invalidDirectoryMessage: 'Fes servir un camí relatiu com `.piggercode/uploads`.',
             },
         },
         sourceControlIgnore: {
@@ -6059,7 +6059,7 @@ deps: {
         unpinSession: 'Desfixar sessió',
         pinLimitExceeded: ({ count }: { count: number }) => `Pots fixar fins a ${count.toLocaleString()} sessions. Desfixa'n una altra i torna-ho a provar.`,
         copyResumeCommand: 'Copia l’ordre de reprendre',
-        resumeCommand: ({ sessionId }: { sessionId: string }) => `happier resume ${sessionId}`,
+        resumeCommand: ({ sessionId }: { sessionId: string }) => `piggercode resume ${sessionId}`,
         viewMachine: 'Veure la màquina',
         viewMachineSubtitle: 'Veure detalls de la màquina i sessions',
         killSessionSubtitle: 'Finalitzar immediatament la sessió',
@@ -6128,7 +6128,7 @@ deps: {
             runIt: 'Executa\'l',
             scanQrCode: 'Escaneja el codi QR',
             openCamera: 'Obre la càmera',
-            runCommand: '$ happier',
+            runCommand: '$ piggercode',
         },
         emptyMessages: {
             noMessagesYet: 'Encara no hi ha missatges',
@@ -7622,7 +7622,7 @@ settingsSession: {
                 title: 'Windows',
                 defaultModeTitle: 'Mode remot de Windows per defecte',
                 windowNameTitle: 'Nom de la finestra de Windows Terminal',
-                windowNamePlaceholder: 'happier',
+                windowNamePlaceholder: 'piggercode',
                 windowNameHint: 'Les sessions obertes a Windows Terminal fan servir aquesta finestra amb nom perquè les sessions noves puguin aparèixer com a pestanyes.',
             },
             advanced: {
@@ -9597,7 +9597,7 @@ settingsSession: {
 
       machine: {
           offlineUnableToSpawn: 'El llançador està desactivat mentre la màquina està fora de línia',
-          offlineHelp: '• Assegura\'t que l\'ordinador estigui en línia\n• Executa `happier daemon status` per diagnosticar\n• Fas servir l\'última versió del CLI? Executa `happier self update`',
+          offlineHelp: '• Assegura\'t que l\'ordinador estigui en línia\n• Executa `piggercode daemon status` per diagnosticar\n• Fas servir l\'última versió del CLI? Executa `piggercode self update`',
           launchNewSessionInDirectory: 'Inicia una nova sessió al directori',
             customPathPlaceholder: 'Introdueix un camí personalitzat',
             tools: {
@@ -9657,13 +9657,13 @@ settingsSession: {
         cliPath: {
             title: 'Terminal',
             footer: 'Happier Desktop només afegeix o elimina les entrades del PATH que ha creat; les escrites per l\'instal·lador del shell no es toquen.',
-            addTitle: 'Afegeix happier al PATH',
-            addSubtitle: 'Fes que l\'ordre happier estigui disponible als terminals nous.',
-            removeTitle: 'Elimina happier del PATH',
+            addTitle: 'Afegeix piggercode al PATH',
+            addSubtitle: 'Fes que l\'ordre piggercode estigui disponible als terminals nous.',
+            removeTitle: 'Elimina piggercode del PATH',
             removeSubtitle: 'Elimina només les entrades del PATH que Happier Desktop ha afegit.',
-            added: 'Afegit. Obre un terminal nou per fer servir happier.',
-            alreadyPresent: 'happier ja és al teu PATH.',
-            existingCommand: ({ path }: { path: string }) => `Un altre happier a ${path} ja respon al teu terminal, així que no s’ha afegit res.`,
+            added: 'Afegit. Obre un terminal nou per fer servir piggercode.',
+            alreadyPresent: 'piggercode ja és al teu PATH.',
+            existingCommand: ({ path }: { path: string }) => `Un altre piggercode a ${path} ja respon al teu terminal, així que no s’ha afegit res.`,
             removed: 'S\'han eliminat les entrades del PATH que Happier Desktop havia afegit.',
             nothingToRemove: 'Happier Desktop no ha afegit cap entrada al PATH.',
         },

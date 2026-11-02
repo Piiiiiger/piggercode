@@ -30,7 +30,7 @@ import { resolveClaudeConfigDirOverride } from '@/backends/claude/utils/resolveC
 const DEFAULT_TRACKED_FILES = ['settings.json', 'settings.local.json', '.claude.json'] as const;
 const DEFAULT_LOCK_TIMEOUT_MS = 5_000;
 const DEFAULT_LOCK_STALE_MS = 60_000;
-const LOCK_DIR_NAME = '.happier-tui-control.lock';
+const LOCK_DIR_NAME = '.piggercode-tui-control.lock';
 const JOURNAL_FILE_NAME = 'settings-journal.json';
 
 export function resolveClaudeConfigRootFromEnv(

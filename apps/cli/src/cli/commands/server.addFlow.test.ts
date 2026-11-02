@@ -91,7 +91,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
     ? process.platform
     : 'linux';
   process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
-  process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+  process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.piggercode');
   process.env.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE = 'default-following';
   reloadConfiguration();
 
@@ -106,7 +106,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
         label: paths.label,
         programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
         env: {
-          PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+          PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
           PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
           PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
           PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -124,10 +124,10 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
     writeFileSync(
       paths.installedPath,
       renderSystemdServiceUnit({
-        description: 'Happier Daemon',
+        description: 'PiggerCode Daemon',
         execStart: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
         env: {
-          PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+          PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
           PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
           PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
           PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -144,7 +144,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
     renderWindowsScheduledTaskWrapperPs1({
       programArgs: [runtime.nodePath, runtime.entryPath, 'daemon', 'start-sync'].filter(Boolean),
       env: {
-        PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+        PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: runtime.channel,
         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -154,7 +154,7 @@ function installDefaultFollowingServiceFixture(homeDir: string): void {
   );
 }
 
-describe('happier server add guided flow', () => {
+describe('piggercode server add guided flow', () => {
   it('guides for missing required values in interactive mode', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-server-add-guided-'));
     const prevHome = process.env.PIGGERCODE_HOME_DIR;
@@ -736,12 +736,12 @@ describe('happier server add guided flow', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/tmp/happier-daemon.default.service',
+          path: '/tmp/piggercode-daemon.default.service',
           platform: process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'win32'
             ? process.platform
             : 'linux',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         },
       ]);
@@ -759,9 +759,9 @@ describe('happier server add guided flow', () => {
       ]);
 
       const out = output.logs.join('\n');
-      expect(out).toContain('Authenticate Happier against https://company.example.test');
-      expect(out).toContain('happier auth login');
-      expect(out).toContain('happier service restart');
+      expect(out).toContain('Authenticate PiggerCode against https://company.example.test');
+      expect(out).toContain('piggercode auth login');
+      expect(out).toContain('piggercode service restart');
     } finally {
       output.restore();
       restoreTty();

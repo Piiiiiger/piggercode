@@ -4,7 +4,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { captureConsoleJsonOutput } from '@/testkit/logger/captureOutput';
 
-describe('happier session archive/unarchive (integration)', () => {
+describe('piggercode session archive/unarchive (integration)', () => {
   const envKeys = ['PIGGERCODE_SERVER_URL', 'PIGGERCODE_WEBAPP_URL', 'PIGGERCODE_HOME_DIR'] as const;
   let envScope = createEnvKeyScope(envKeys);
   let server: Server | null = null;

@@ -264,7 +264,7 @@ describe('SettingsView (native connect terminal)', () => {
     it('routes manually entered account URLs through the shared auth processor', async () => {
         promptSpy.mockReset();
         processAuthUrlSpy.mockReset();
-        promptSpy.mockResolvedValueOnce(' happier:///account?manual ');
+        promptSpy.mockResolvedValueOnce(' piggercode:///account?manual ');
 
         vi.resetModules();
         const { SettingsView } = await import('./SettingsView');
@@ -283,7 +283,7 @@ describe('SettingsView (native connect terminal)', () => {
 
         expect(promptSpy).toHaveBeenCalledTimes(1);
         expect(processAuthUrlSpy).toHaveBeenCalledTimes(1);
-        expect(processAuthUrlSpy).toHaveBeenCalledWith('happier:///account?manual');
+        expect(processAuthUrlSpy).toHaveBeenCalledWith('piggercode:///account?manual');
     });
 
     it('waits for native interactions before showing below-fold settings sections', async () => {

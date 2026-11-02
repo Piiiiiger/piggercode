@@ -35,7 +35,7 @@ describe('buildReviewCommentsOutboundMessage', () => {
                     payload: {
                         attachments: [{
                             name: 'note.txt',
-                            path: '.happier/uploads/note.txt',
+                            path: '.piggercode/uploads/note.txt',
                             mimeType: 'text/plain',
                             sizeBytes: 12,
                             sha256: 'sha-note',
@@ -58,7 +58,7 @@ describe('buildReviewCommentsOutboundMessage', () => {
                 payload: {
                     attachments: [expect.objectContaining({
                         name: 'note.txt',
-                        path: '.happier/uploads/note.txt',
+                        path: '.piggercode/uploads/note.txt',
                     })],
                 },
             },

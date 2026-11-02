@@ -2,7 +2,7 @@ import { createRelayUrlComparableKeySafe } from '@/sync/domains/server/relayDrif
 
 /**
  * Whether the installed background service starts the daemon at login — the CLI's own
- * `at-login | on-demand` vocabulary, carried unchanged from `happier daemon status --json`
+ * `at-login | on-demand` vocabulary, carried unchanged from `piggercode daemon status --json`
  * through the toggle that writes it back. One name for one concept, so nothing in between has to
  * translate; `null` is UNKNOWN and is never one of the modes.
  */
@@ -89,7 +89,7 @@ export type DesktopLocalReadinessFacts = Readonly<{
 
 /**
  * R12 — `mode` is what this computer answered (`null`: nobody was asked). `otherCli` is the CLI
- * that is not the managed one: the person's own after "Keep my own", otherwise a `happier` still on
+ * that is not the managed one: the person's own after "Keep my own", otherwise a `piggercode` still on
  * PATH — the old copy after "Let Happier manage it". Its commands are shown, never run.
  */
 export type DesktopCliChoiceFacts = Readonly<{
@@ -545,7 +545,7 @@ export function deriveDesktopLocalSetupSnapshot(
         return { state: 'checking', presentation: unsettled, reason: null };
     }
     if (input.inspection.status === 'failed') {
-        // R12 — the read failed on a `happier` nobody chose yet (or the kept one). Re-reading can
+        // R12 — the read failed on a `piggercode` nobody chose yet (or the kept one). Re-reading can
         // never change that; the answer can, and setup's first step asks for it.
         if (input.inspection.error.code === 'cli_choice_required') {
             return { state: 'setup', presentation: settled, reason: 'cli_choice_required' };

@@ -27,7 +27,7 @@ const PUBLIC_RELEASE_RING_IDS = ['stable', 'preview', 'publicdev'];
  * @property {'production' | 'preview' | ''} embeddedPolicyEnv
  * @property {'production' | 'preview' | 'development'} expoAppEnv
  * @property {'production' | 'preview' | 'dev' | 'internalpreview' | 'internaldev'} expoUpdatesChannel
- * @property {'happier' | 'happier-preview' | 'happier-dev' | 'happier-internalpreview' | 'happier-internaldev'} appScheme
+ * @property {'piggercode' | 'piggercode-preview' | 'piggercode-dev' | 'piggercode-internalpreview' | 'piggercode-internaldev'} appScheme
  * @property {boolean} supportsMobileStoreSubmit
  */
 
@@ -43,7 +43,7 @@ const releaseRingCatalog = Object.freeze({
     embeddedPolicyEnv: 'production',
     expoAppEnv: 'production',
     expoUpdatesChannel: 'production',
-    appScheme: 'happier',
+    appScheme: 'piggercode',
     supportsMobileStoreSubmit: true,
   },
   preview: {
@@ -56,7 +56,7 @@ const releaseRingCatalog = Object.freeze({
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'preview',
-    appScheme: 'happier-preview',
+    appScheme: 'piggercode-preview',
     supportsMobileStoreSubmit: true,
   },
   publicdev: {
@@ -69,7 +69,7 @@ const releaseRingCatalog = Object.freeze({
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'dev',
-    appScheme: 'happier-dev',
+    appScheme: 'piggercode-dev',
     supportsMobileStoreSubmit: true,
   },
   internalpreview: {
@@ -82,7 +82,7 @@ const releaseRingCatalog = Object.freeze({
     embeddedPolicyEnv: 'preview',
     expoAppEnv: 'preview',
     expoUpdatesChannel: 'internalpreview',
-    appScheme: 'happier-internalpreview',
+    appScheme: 'piggercode-internalpreview',
     supportsMobileStoreSubmit: false,
   },
   internaldev: {
@@ -95,7 +95,7 @@ const releaseRingCatalog = Object.freeze({
     embeddedPolicyEnv: '',
     expoAppEnv: 'development',
     expoUpdatesChannel: 'internaldev',
-    appScheme: 'happier-internaldev',
+    appScheme: 'piggercode-internaldev',
     supportsMobileStoreSubmit: false,
   },
 });

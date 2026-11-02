@@ -103,8 +103,8 @@ export function buildTerminalConnectLinks(params: Readonly<{
       ? `${webappUrl}/terminal/connect#key=${publicKeyB64Url}&server=${encodedWebServerUrl}${pairingSuffix}`
       : `${webappUrl}/terminal/connect#key=${publicKeyB64Url}${pairingSuffix}`,
     mobileUrl: mobileServerUrl
-      ? `happier://terminal?key=${publicKeyB64Url}&server=${encodedMobileServerUrl}${pairingSuffix}`
-      : `happier://terminal?key=${publicKeyB64Url}${pairingSuffix}`,
+      ? `piggercode://terminal?key=${publicKeyB64Url}&server=${encodedMobileServerUrl}${pairingSuffix}`
+      : `piggercode://terminal?key=${publicKeyB64Url}${pairingSuffix}`,
   };
 }
 
@@ -118,13 +118,13 @@ export function buildConfigureServerLinks(params: Readonly<{
   const encodedWebServerUrl = webServerUrl ? encodeURIComponent(webServerUrl) : '';
   const encodedMobileServerUrl = mobileServerUrl ? encodeURIComponent(mobileServerUrl) : '';
   if (!webServerUrl && !mobileServerUrl) {
-    return { webUrl: webappUrl, mobileUrl: `happier://server` };
+    return { webUrl: webappUrl, mobileUrl: `piggercode://server` };
   }
 
   return {
     // Prefer setting the server on any screen via `?server=` so callers don't need to navigate
     // to a dedicated server selection route first.
     webUrl: webServerUrl ? `${webappUrl}/?server=${encodedWebServerUrl}` : webappUrl,
-    mobileUrl: mobileServerUrl ? `happier://server?url=${encodedMobileServerUrl}` : `happier://server`,
+    mobileUrl: mobileServerUrl ? `piggercode://server?url=${encodedMobileServerUrl}` : `piggercode://server`,
   };
 }

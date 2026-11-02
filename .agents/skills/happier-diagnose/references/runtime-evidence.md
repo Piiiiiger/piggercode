@@ -9,7 +9,7 @@ Prefer copied Session info metadata when available. Useful fields include `sessi
 With only a Happier session ID, use the `happier-session-control` contract:
 
 ```bash
-happier session status <session-id-or-prefix> --json
+piggercode session status <session-id-or-prefix> --json
 ```
 
 For daemon-wide incidents, session metadata may be unnecessary.
@@ -19,8 +19,8 @@ For daemon-wide incidents, session metadata may be unnecessary.
 When daemon, server, auth, process, version, or connectivity state is material:
 
 ```bash
-happier doctor --json
-happier auth status --json
+piggercode doctor --json
+piggercode auth status --json
 ```
 
 Interpret the returned fields rather than assuming that command success means the subsystem is healthy.
@@ -29,9 +29,9 @@ Interpret the returned fields rather than assuming that command success means th
 
 Trust `metadata.happyHomeDir` and `metadata.sessionLogPath` over guesses. `$PIGGERCODE_HOME_DIR` can override defaults. Common homes include:
 
-- release: `~/.happier/`;
-- preview: `~/.happier-preview/`;
-- development: `~/.happier-dev/`;
+- release: `~/.piggercode/`;
+- preview: `~/.piggercode-preview/`;
+- development: `~/.piggercode-dev/`;
 - custom: the configured home.
 
 Primary session evidence is `metadata.sessionLogPath`. When absent, search the resolved home for the `hostPid`:

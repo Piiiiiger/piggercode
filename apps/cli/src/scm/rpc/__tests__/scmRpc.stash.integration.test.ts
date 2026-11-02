@@ -28,7 +28,7 @@ describe('git RPC handlers (stash)', () => {
         git(workspace, ['stash', 'push', '-u', '-m', 'unmanaged']);
 
         writeFileSync(join(workspace, 'managed.txt'), 'managed\n');
-        git(workspace, ['stash', 'push', '-u', '-m', `!!Happier<${head}>`]);
+        git(workspace, ['stash', 'push', '-u', '-m', `!!PiggerCode<${head}>`]);
 
         const { call } = createTestRpcManager({ workingDirectory: workspace });
         const list = await call<any, { cwd?: string }>(RPC_METHODS.SCM_STASH_LIST, { cwd: '.' });
@@ -45,7 +45,7 @@ describe('git RPC handlers (stash)', () => {
         const { workspace, head } = initGitWorkspace();
 
         writeFileSync(join(workspace, 'managed.txt'), 'managed\n');
-        git(workspace, ['stash', 'push', '-u', '-m', `!!Happier<${head}>`]);
+        git(workspace, ['stash', 'push', '-u', '-m', `!!PiggerCode<${head}>`]);
 
         const { call } = createTestRpcManager({ workingDirectory: workspace });
         const list = await call<any, { cwd?: string }>(RPC_METHODS.SCM_STASH_LIST, { cwd: '.' });
@@ -82,7 +82,7 @@ describe('git RPC handlers (stash)', () => {
         const { workspace, head } = initGitWorkspace();
 
         writeFileSync(join(workspace, 'pop.txt'), 'pop\n');
-        git(workspace, ['stash', 'push', '-u', '-m', `!!Happier<${head}>`]);
+        git(workspace, ['stash', 'push', '-u', '-m', `!!PiggerCode<${head}>`]);
 
         const { call } = createTestRpcManager({ workingDirectory: workspace });
         const list = await call<any, { cwd?: string }>(RPC_METHODS.SCM_STASH_LIST, { cwd: '.' });
@@ -110,7 +110,7 @@ describe('git RPC handlers (stash)', () => {
         const { workspace, head } = initGitWorkspace();
 
         writeFileSync(join(workspace, 'apply.txt'), 'apply\n');
-        git(workspace, ['stash', 'push', '-u', '-m', `!!Happier<${head}>`]);
+        git(workspace, ['stash', 'push', '-u', '-m', `!!PiggerCode<${head}>`]);
 
         const { call } = createTestRpcManager({ workingDirectory: workspace });
         const list = await call<any, { cwd?: string }>(RPC_METHODS.SCM_STASH_LIST, { cwd: '.' });
@@ -169,7 +169,7 @@ describe('git RPC handlers (stash)', () => {
         expect(lines.length).toBe(2);
 
         // Find which index has our managed stash
-        const managedIndex = lines.findIndex((line) => line.includes(`!!Happier<${head}>`));
+        const managedIndex = lines.findIndex((line) => line.includes(`!!PiggerCode<${head}>`));
         expect(managedIndex).toBeGreaterThanOrEqual(0);
 
         // The returned stashRef should match the actual position of our managed stash

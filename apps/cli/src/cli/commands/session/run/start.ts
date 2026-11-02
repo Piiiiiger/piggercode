@@ -36,7 +36,7 @@ const EXECUTION_RUN_RETENTION_USAGE = formatProtocolEnumUsage(ExecutionRunRetent
 const EXECUTION_RUN_CLASS_USAGE = formatProtocolEnumUsage(ExecutionRunClassSchema);
 const EXECUTION_RUN_IO_MODE_USAGE = formatProtocolEnumUsage(ExecutionRunIoModeSchema);
 
-export const SESSION_RUN_START_USAGE = `happier session run start <session-id-or-prefix-or-tag> --intent <${EXECUTION_RUN_INTENT_USAGE}> --backend <backend-target> [--instructions <text>] [--permission-mode <mode>] [--retention <${EXECUTION_RUN_RETENTION_USAGE}>] [--run-class <${EXECUTION_RUN_CLASS_USAGE}>] [--io-mode <${EXECUTION_RUN_IO_MODE_USAGE}>] [--json]`;
+export const SESSION_RUN_START_USAGE = `piggercode session run start <session-id-or-prefix-or-tag> --intent <${EXECUTION_RUN_INTENT_USAGE}> --backend <backend-target> [--instructions <text>] [--permission-mode <mode>] [--retention <${EXECUTION_RUN_RETENTION_USAGE}>] [--run-class <${EXECUTION_RUN_CLASS_USAGE}>] [--io-mode <${EXECUTION_RUN_IO_MODE_USAGE}>] [--json]`;
 
 export async function cmdSessionRunStart(
   argv: string[],
@@ -99,7 +99,7 @@ export async function cmdSessionRunStart(
       await printJsonEnvelope({ ok: false, kind: 'session_run_start', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

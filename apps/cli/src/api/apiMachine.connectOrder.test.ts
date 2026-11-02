@@ -365,7 +365,7 @@ describe('ApiMachineClient connect ordering', () => {
     expect(connectionHarness.reportProbeResult).toHaveBeenCalledWith({
       status: 'auth_failed',
       statusCode: 426,
-      errorMessage: 'This Happier daemon must be upgraded before it can sync sessions.',
+      errorMessage: 'This PiggerCode daemon must be upgraded before it can sync sessions.',
     }, { generation: 1 });
   });
 });

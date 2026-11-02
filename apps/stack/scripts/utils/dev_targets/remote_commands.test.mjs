@@ -17,7 +17,7 @@ const posix = {
   platform: 'posix',
   ssh: 'happier-stack-linux',
   repoDir: '/home/dev/Happier repo',
-  cliHomeDir: '/home/dev/.happier/dev linux',
+  cliHomeDir: '/home/dev/.piggercode/dev linux',
   remoteServerPort: null,
 };
 
@@ -26,7 +26,7 @@ const windows = {
   platform: 'windows',
   ssh: 'happier-stack-windows',
   repoDir: 'C:/Users/test qa/Happier',
-  cliHomeDir: 'C:/Users/test qa/.happier/windows',
+  cliHomeDir: 'C:/Users/test qa/.piggercode/windows',
   remoteServerPort: 43105,
 };
 

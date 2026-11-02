@@ -119,7 +119,7 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
     });
 }
 
-describe('happier relay --json', () => {
+describe('piggercode relay --json', () => {
     let home = '';
     let envScope = createEnvKeyScope([
         'PIGGERCODE_HOME_DIR',

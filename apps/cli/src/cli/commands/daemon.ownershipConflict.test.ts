@@ -23,11 +23,11 @@ const {
         title: 'A background service is already installed for the selected relay.',
         lines: params?.action === 'daemon-restart'
             ? [
-                'Use `happier doctor repair` to switch automatic startup to this installation.',
+                'Use `piggercode doctor repair` to switch automatic startup to this installation.',
                 'If you want to restart the daemon manually, stop or replace the installed background service first.',
             ]
             : [
-                'Use `happier service start` to start the installed background service instead of starting another daemon.',
+                'Use `piggercode service start` to start the installed background service instead of starting another daemon.',
                 'If you want to start another daemon, stop or replace the installed background service first.',
             ],
     })),
@@ -96,11 +96,11 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
             title: 'A background service is already installed for the selected relay.',
             lines: params?.action === 'daemon-restart'
                 ? [
-                    'Use `happier doctor repair` to switch automatic startup to this installation.',
+                    'Use `piggercode doctor repair` to switch automatic startup to this installation.',
                     'If you want to restart the daemon manually, stop or replace the installed background service first.',
                 ]
                 : [
-                    'Use `happier service start` to start the installed background service instead of starting another daemon.',
+                    'Use `piggercode service start` to start the installed background service instead of starting another daemon.',
                     'If you want to start another daemon, stop or replace the installed background service first.',
                 ],
         }));
@@ -116,7 +116,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
             });
@@ -134,7 +134,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 startedWithCliVersion: '0.0.0-other' as const,
                 startedWithPublicReleaseChannel: 'preview' as const,
                 startupSource: 'background-service' as const,
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             };
             writeDaemonState(serviceOwnedState);
             inspectDaemonMock.mockResolvedValue({
@@ -163,7 +163,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
                 expect(startOutput.text()).toContain('background service');
                 expect(startOutput.text()).toContain('selected relay');
-                expect(startOutput.text()).toContain('happier doctor repair');
+                expect(startOutput.text()).toContain('piggercode doctor repair');
 
                 const stopOutput = captureConsoleText();
                 try {
@@ -180,7 +180,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
 
                 expect(stopDaemonMock).not.toHaveBeenCalled();
                 expect(stopOutput.text()).toContain('background service');
-                expect(stopOutput.text()).toContain('happier service stop');
+                expect(stopOutput.text()).toContain('piggercode service stop');
 
                 const restartOutput = captureConsoleText();
                 try {
@@ -196,8 +196,8 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 }
 
                 expect(restartOutput.text()).toContain('background service');
-                expect(restartOutput.text()).toContain('happier doctor repair');
-                expect(restartOutput.text()).not.toContain('happier service stop');
+                expect(restartOutput.text()).toContain('piggercode doctor repair');
+                expect(restartOutput.text()).not.toContain('piggercode service stop');
             } finally {
                 exitSpy.mockRestore();
             }
@@ -393,7 +393,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
             });
@@ -413,7 +413,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                   platform: 'linux',
                   releaseChannel: 'stable',
                   targetMode: 'default-following',
-                  path: join(homeDir, '.config/systemd/user/happier-daemon.cloud.service'),
+                  path: join(homeDir, '.config/systemd/user/piggercode-daemon.cloud.service'),
                 }],
             }));
 
@@ -443,7 +443,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
             expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
             expect(waitForDaemonRunningWithinBudgetMock).not.toHaveBeenCalled();
             expect(output.text()).toContain('background service is already installed');
-            expect(output.text()).toContain('happier doctor repair');
+            expect(output.text()).toContain('piggercode doctor repair');
         });
     });
 
@@ -455,7 +455,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                 PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
                 PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: homeDir,
-                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.happier'),
+                PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: join(homeDir, '.piggercode'),
                 PIGGERCODE_DAEMON_SERVICE_CHANNEL: 'stable',
                 PIGGERCODE_DAEMON_STARTUP_SOURCE: '',
             });
@@ -475,7 +475,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                   platform: 'linux',
                   releaseChannel: 'stable',
                   targetMode: 'default-following',
-                  path: join(homeDir, '.config/systemd/user/happier-daemon.cloud.service'),
+                  path: join(homeDir, '.config/systemd/user/piggercode-daemon.cloud.service'),
                 }],
             }));
 
@@ -664,7 +664,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
 
     it('fails closed for daemon start when a background service is installed for the active relay', async () => {
         await withTempDir('happier-daemon-service-installed-', async (homeDir) => {
-            const happierHomeDir = join(homeDir, '.happier');
+            const happierHomeDir = join(homeDir, '.piggercode');
             envScope.patch({
                 PIGGERCODE_HOME_DIR: happierHomeDir,
                 PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
@@ -705,8 +705,8 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
             writeFileSync(
                 paths.installedPath,
                 renderSystemdServiceUnit({
-                    description: 'Happier Daemon',
-                    execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                    description: 'PiggerCode Daemon',
+                    execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                     env: {
                         PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
                         PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
@@ -724,7 +724,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
                         name: 'Default background service',
                         installed: true,
                         platform: 'linux',
-                        label: 'com.happier.cli.daemon.default',
+                        label: 'com.piggercode.cli.daemon.default',
                         releaseChannel: 'stable',
                         targetMode: 'default-following',
                         path: paths.installedPath,
@@ -751,7 +751,7 @@ describe('handleDaemonCliCommand ownership conflicts', () => {
 
             expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
             expect(output.text()).toContain('background service is already installed');
-            expect(output.text()).toContain('happier service start');
+            expect(output.text()).toContain('piggercode service start');
             expect(output.text()).toContain('stop or replace the installed background service first');
         });
     });

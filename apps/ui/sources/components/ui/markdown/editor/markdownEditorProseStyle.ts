@@ -59,7 +59,7 @@ function round2(value: number): number {
 }
 
 /**
- * Builds the prose CSS, scoped to `scopeSelector` (e.g. `.happier-md-prose` on
+ * Builds the prose CSS, scoped to `scopeSelector` (e.g. `.piggercode-md-prose` on
  * web, `.ProseMirror` in the native WebView). All rules are prefixed so the
  * stylesheet is reusable and never leaks to other content.
  */

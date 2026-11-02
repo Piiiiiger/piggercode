@@ -29,9 +29,9 @@ describe('createExecutionRunBackend built-in ACP MCP context', () => {
     resolveCustomHappierToolsContextMock.mockReset();
   });
 
-  it('provides the canonical Happier MCP servers to a built-in backend with one resolution', async () => {
+  it('provides the canonical PiggerCode MCP servers to a built-in backend with one resolution', async () => {
     const mcpServers = {
-      happier: { command: 'happier-mcp', args: ['bridge'] },
+      happier: { command: 'piggercode-mcp', args: ['bridge'] },
     } satisfies Record<string, McpServerConfig>;
     const captured: { first?: Readonly<Record<string, McpServerConfig>>; second?: Readonly<Record<string, McpServerConfig>> } = {};
 

@@ -58,7 +58,7 @@ vi.mock('@/ui/logger', () => ({
   },
 }));
 
-describe('happier auth login', () => {
+describe('piggercode auth login', () => {
   const envScope = createEnvKeyScope([
     'PIGGERCODE_ACTIVE_SERVER_ID',
     'PIGGERCODE_AUTH_METHOD',
@@ -197,7 +197,7 @@ describe('happier auth login', () => {
 
   it('hands --wait-timeout to the wait the auth flow performs', async () => {
     // The bound only exists if both files agree on this key; a rename on either
-    // side leaves `happier setup` holding the terminal forever and says nothing.
+    // side leaves `piggercode setup` holding the terminal forever and says nothing.
     delete process.env.PIGGERCODE_AUTH_WAIT_TIMEOUT_MS;
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {

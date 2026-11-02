@@ -17,7 +17,7 @@ export type DaemonServiceTargetMode = 'pinned' | 'default-following';
  *   `enable`d unit, a Windows current-user logon trigger.
  * - `on-demand`: the service stays installed and startable, but nothing starts
  *   it at login — the daemon runs only while something asks for it (the desktop
- *   app, or `happier service start`).
+ *   app, or `piggercode service start`).
  */
 export type DaemonServiceAutostartMode = 'at-login' | 'on-demand';
 
@@ -84,11 +84,11 @@ export type DaemonServiceUninstallPlan = Readonly<{
   commands: DaemonServicePlannedCommand[];
 }>;
 
-const DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX = 'com.happier.cli.daemon';
-const DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX = 'happier-daemon';
+const DAEMON_SERVICE_LAUNCHD_LABEL_PREFIX = 'com.piggercode.cli.daemon';
+const DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX = 'piggercode-daemon';
 
-const LEGACY_DAEMON_SERVICE_LAUNCHD_LABEL = 'com.happier.cli.daemon';
-const LEGACY_DAEMON_SERVICE_SYSTEMD_UNIT_NAME = 'happier-daemon.service';
+const LEGACY_DAEMON_SERVICE_LAUNCHD_LABEL = 'com.piggercode.cli.daemon';
+const LEGACY_DAEMON_SERVICE_SYSTEMD_UNIT_NAME = 'piggercode-daemon.service';
 
 export function resolveDaemonServiceChannelSegment(channel: PublicReleaseRingId): '' | 'preview' | 'dev' {
   const label = getReleaseRingCatalogEntry(channel).publicLabel;
@@ -205,7 +205,7 @@ export function resolveWindowsDaemonTaskName(params: Readonly<{
   targetMode?: DaemonServiceTargetMode;
 }>): string {
   const label = resolveDaemonServiceSystemdUnitLabel(params.instanceId, params.channel ?? 'stable', params.targetMode ?? 'pinned');
-  return `Happier\\${label}`;
+  return `PiggerCode\\${label}`;
 }
 
 export function resolveWindowsDaemonWrapperPath(params: Readonly<{
@@ -473,8 +473,8 @@ export function planDaemonServiceInstall(params: Readonly<{
     const commands: DaemonServicePlannedCommand[] = [];
     if (shouldApplyRawLegacyDefaultFollowingCleanup({ targetMode })) {
       const legacyUnitLabel = DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX;
-      commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `Happier\\${legacyUnitLabel}`], ignoreFailure: true });
-      commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `Happier\\${legacyUnitLabel}`], ignoreFailure: true });
+      commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `PiggerCode\\${legacyUnitLabel}`], ignoreFailure: true });
+      commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `PiggerCode\\${legacyUnitLabel}`], ignoreFailure: true });
       // Note: legacy wrapper path is best-effort removed via filesToRemove on uninstall.
     }
     commands.push(...basePlan.commands.map((c) => ({ cmd: c.cmd, args: c.args })));
@@ -498,7 +498,7 @@ export function planDaemonServiceInstall(params: Readonly<{
     : resolveSystemdUserUnitPath({ userHomeDir: params.userHomeDir, instanceId, channel, targetMode });
 
   const unit = renderSystemdServiceUnit({
-    description: targetMode === 'default-following' ? 'Happier CLI daemon (default)' : `Happier CLI daemon (${instanceId})`,
+    description: targetMode === 'default-following' ? 'PiggerCode CLI daemon (default)' : `PiggerCode CLI daemon (${instanceId})`,
     execStart: programArgs,
     workingDirectory: mode === 'system' ? params.userHomeDir : '%h',
     env: {
@@ -613,7 +613,7 @@ export function planDaemonServiceUninstall(params: Readonly<{
     }
     const wrapperPath = installedPath || resolveWindowsDaemonWrapperPath({ happierHomeDir, instanceId, channel, targetMode });
     const installedUnitLabel = basename(wrapperPath, '.ps1');
-    const taskName = `Happier\\${installedUnitLabel}`;
+    const taskName = `PiggerCode\\${installedUnitLabel}`;
     const plan = planServiceAction({
       backend: 'schtasks-user',
       action: 'uninstall',
@@ -629,14 +629,14 @@ export function planDaemonServiceUninstall(params: Readonly<{
         ? `${DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX}.${legacyIdentitySegment}`
         : null;
       if (legacyUnitLabel && legacyUnitLabel !== installedUnitLabel) {
-        commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `Happier\\${legacyUnitLabel}`], ignoreFailure: true });
-        commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `Happier\\${legacyUnitLabel}`], ignoreFailure: true });
+        commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `PiggerCode\\${legacyUnitLabel}`], ignoreFailure: true });
+        commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `PiggerCode\\${legacyUnitLabel}`], ignoreFailure: true });
       }
     }
     if (shouldApplyRawLegacyDefaultFollowingCleanup({ targetMode })) {
       const legacyUnitLabel = DAEMON_SERVICE_SYSTEMD_UNIT_PREFIX;
-      commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `Happier\\${legacyUnitLabel}`] });
-      commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `Happier\\${legacyUnitLabel}`] });
+      commands.push({ cmd: 'schtasks', args: ['/End', '/TN', `PiggerCode\\${legacyUnitLabel}`] });
+      commands.push({ cmd: 'schtasks', args: ['/Delete', '/F', '/TN', `PiggerCode\\${legacyUnitLabel}`] });
     }
     commands.push(...plan.commands.map((c) => ({ cmd: c.cmd, args: c.args })));
     const filesToRemove = [wrapperPath];

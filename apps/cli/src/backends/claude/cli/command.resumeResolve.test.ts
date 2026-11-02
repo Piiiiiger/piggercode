@@ -12,8 +12,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('handleClaudeCliCommand --resume (best-effort Happier id resolution)', () => {
-  it('delegates to `happier resume <id>` for implicit Claude invocations when the id is a Happier session id without a cm prefix', async () => {
+describe('handleClaudeCliCommand --resume (best-effort PiggerCode id resolution)', () => {
+  it('delegates to `piggercode resume <id>` for implicit Claude invocations when the id is a PiggerCode session id without a cm prefix', async () => {
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({
       token: 'x',
       encryption: { type: 'legacy', secret: new Uint8Array(32) },
@@ -55,7 +55,7 @@ describe('handleClaudeCliCommand --resume (best-effort Happier id resolution)', 
     expect(runSpy).not.toHaveBeenCalled();
   });
 
-  it('delegates to `happier resume <id>` for implicit Claude invocations when the id is a Happier session id', async () => {
+  it('delegates to `piggercode resume <id>` for implicit Claude invocations when the id is a PiggerCode session id', async () => {
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({
       token: 'x',
       encryption: { type: 'legacy', secret: new Uint8Array(32) },
@@ -97,7 +97,7 @@ describe('handleClaudeCliCommand --resume (best-effort Happier id resolution)', 
     expect(runSpy).not.toHaveBeenCalled();
   });
 
-  it('does not rewrite resume ids for explicit happier claude invocations', async () => {
+  it('does not rewrite resume ids for explicit piggercode claude invocations', async () => {
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({
       token: 'x',
       encryption: { type: 'legacy', secret: new Uint8Array(32) },
@@ -119,7 +119,7 @@ describe('handleClaudeCliCommand --resume (best-effort Happier id resolution)', 
     expect(claudeArgs).toEqual(expect.arrayContaining(['--resume', 'cmm_test_happy_123']));
   });
 
-  it('does not delegate when the resume id is not a Happier session id', async () => {
+  it('does not delegate when the resume id is not a PiggerCode session id', async () => {
     vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({
       token: 'x',
       encryption: { type: 'legacy', secret: new Uint8Array(32) },

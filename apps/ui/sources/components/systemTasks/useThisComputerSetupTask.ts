@@ -46,7 +46,7 @@ export type ThisComputerSetupFollowUp = 'auth' | null;
 export type ThisComputerSetupAuthRequestApproval = SetupPairingApprovalTarget;
 
 /**
- * What the executor learned from `happier service install --dry-run --json` and needs a decision
+ * What the executor learned from `piggercode service install --dry-run --json` and needs a decision
  * on (INV9). Presented, never re-evaluated, by the UI. The payload shape and its parsing live in
  * `@piggercode/protocol`'s setup task contract, which the executor builds through.
  */
@@ -139,7 +139,7 @@ export function useThisComputerSetupTask(options: Readonly<{
      */
     onAccountConsentRequired?: (request: ThisComputerMoveRequest) => Promise<boolean>;
     /**
-     * R12 — the executor found a `happier` this app did not install and asks, once, who manages
+     * R12 — the executor found a `piggercode` this app did not install and asks, once, who manages
      * the command line. Defaults to the app's one presenter, so every surface that starts setup
      * can answer it; `null` means the question was dismissed and the run stops unchanged.
      */

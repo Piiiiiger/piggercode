@@ -81,7 +81,7 @@ const addPickedAttachmentsSpy = vi.fn();
 vi.mock('@/components/sessions/attachments/useAttachmentsUploadConfig', () => ({
     useAttachmentsUploadConfig: () => ({
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
         maxFileBytes: 25 * 1024 * 1024,
@@ -664,7 +664,7 @@ describe('NewSessionWizard (attachments.uploads)', () => {
         uploadAttachmentDraftsToSessionSpy.mockResolvedValue({
             uploaded: [{
                 name: 'notes.txt',
-                path: '.happier/uploads/notes.txt',
+                path: '.piggercode/uploads/notes.txt',
                 mimeType: 'text/plain',
                 sizeBytes: 12,
                 sha256: 'abc123',
@@ -812,7 +812,7 @@ describe('NewSessionWizard (attachments.uploads)', () => {
                     payload: {
                         attachments: [{
                             name: 'notes.txt',
-                            path: '.happier/uploads/notes.txt',
+                            path: '.piggercode/uploads/notes.txt',
                             mimeType: 'text/plain',
                             sizeBytes: 12,
                             sha256: 'abc123',

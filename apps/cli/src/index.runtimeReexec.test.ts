@@ -49,7 +49,7 @@ vi.mock('axios', () => ({
 }));
 
 vi.mock('@/configuration', () => ({
-  configuration: { happyHomeDir: '/home/test/.happier' },
+  configuration: { happyHomeDir: '/home/test/.piggercode' },
 }));
 
 vi.mock('@/cli/runtime/update/autoUpdateNotice', () => ({

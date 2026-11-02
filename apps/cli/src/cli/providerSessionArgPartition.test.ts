@@ -8,7 +8,7 @@ afterEach(() => {
 
 describe('partitionProviderSessionArgs', () => {
 
-  it('consumes common Happier session flags and preserves provider args', () => {
+  it('consumes common PiggerCode session flags and preserves provider args', () => {
     const result = partitionProviderSessionArgs({
       args: [
         'codex',
@@ -65,7 +65,7 @@ describe('partitionProviderSessionArgs', () => {
     expect(result.providerArgs).toEqual(['--dangerously-skip-permissions', 'fix this']);
   });
 
-  it('preserves provider resume flags when requested while exposing the Happier resume value', () => {
+  it('preserves provider resume flags when requested while exposing the PiggerCode resume value', () => {
     const result = partitionProviderSessionArgs({
       args: ['claude', '--resume', 'abc123', '--continue'],
       providerSubcommand: 'claude',
@@ -97,7 +97,7 @@ describe('partitionProviderSessionArgs', () => {
     expect(result.providerArgs).toEqual([]);
   });
 
-  it('does not treat provider-specific -V as a common Happier version flag', () => {
+  it('does not treat provider-specific -V as a common PiggerCode version flag', () => {
     const result = partitionProviderSessionArgs({
       args: ['claude', '-V'],
       providerSubcommand: 'claude',
@@ -117,7 +117,7 @@ describe('partitionProviderSessionArgs', () => {
     expect(result.providerArgs).toEqual(['exec']);
   });
 
-  it('rejects option-like values for required Happier-owned flags', () => {
+  it('rejects option-like values for required PiggerCode-owned flags', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(process, 'exit').mockImplementation((code?: string | number | null): never => {
       throw new Error(`exit:${code ?? 0}`);

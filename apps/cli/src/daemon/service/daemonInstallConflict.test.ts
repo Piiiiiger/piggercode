@@ -3,23 +3,23 @@ import { describe, expect, it } from 'vitest';
 import { resolveDaemonServiceInstallConflictPlan } from './daemonInstallConflict';
 
 describe('resolveDaemonServiceInstallConflictPlan', () => {
-  it('does not treat the exact target as a duplicate when the only matching tuple is from another Happier home', () => {
+  it('does not treat the exact target as a duplicate when the only matching tuple is from another PiggerCode home', () => {
     const exactTargetService = {
       serverId: 'default',
       name: 'Default background service',
       installed: true as const,
-      path: '/home/alice/.config/systemd/user/happier-daemon.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.default.service',
       platform: 'linux' as const,
       mode: 'user' as const,
-      happierHomeDir: '/home/alice/.happier',
+      happierHomeDir: '/home/alice/.piggercode',
       releaseChannel: 'preview' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following' as const,
     };
     const otherHomeService = {
       ...exactTargetService,
-      path: '/home/bob/.config/systemd/user/happier-daemon.default.service',
-      happierHomeDir: '/home/bob/.happier',
+      path: '/home/bob/.config/systemd/user/piggercode-daemon.default.service',
+      happierHomeDir: '/home/bob/.piggercode',
     };
 
     const plan = resolveDaemonServiceInstallConflictPlan({
@@ -29,7 +29,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'default-following',
         ring: 'preview',
         instanceId: null,
-        happierHomeDir: '/home/alice/.happier',
+        happierHomeDir: '/home/alice/.piggercode',
       },
       strategy: 'require-explicit',
       services: [exactTargetService, otherHomeService],
@@ -46,17 +46,17 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
       serverId: 'default',
       name: 'Default background service',
       installed: true as const,
-      path: '/home/alice/.config/systemd/user/happier-daemon.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.default.service',
       platform: 'linux' as const,
       mode: 'user' as const,
-      happierHomeDir: '/home/alice/.happier',
+      happierHomeDir: '/home/alice/.piggercode',
       releaseChannel: 'preview' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following' as const,
     };
     const duplicateTargetService = {
       ...exactTargetService,
-      path: '/home/alice/.config/systemd/user/happier-daemon.preview.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.preview.default.service',
     };
 
     const plan = resolveDaemonServiceInstallConflictPlan({
@@ -66,7 +66,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'default-following',
         ring: 'preview',
         instanceId: null,
-        happierHomeDir: '/home/alice/.happier',
+        happierHomeDir: '/home/alice/.piggercode',
       },
       strategy: 'require-explicit',
       services: [exactTargetService, duplicateTargetService],
@@ -84,12 +84,12 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
       serverId: 'default',
       name: 'Default background service',
       installed: true as const,
-      path: '/home/alice/.config/systemd/user/happier-daemon.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.default.service',
       platform: 'linux' as const,
       mode: 'user' as const,
-      happierHomeDir: '/home/alice/.happier/',
+      happierHomeDir: '/home/alice/.piggercode/',
       releaseChannel: 'preview' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following' as const,
     };
 
@@ -100,7 +100,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'default-following',
         ring: 'preview',
         instanceId: null,
-        happierHomeDir: '/home/alice/.happier',
+        happierHomeDir: '/home/alice/.piggercode',
       },
       strategy: 'require-explicit',
       services: [existingService],
@@ -115,19 +115,19 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
       serverId: 'default',
       name: 'Preview default background service',
       installed: true as const,
-      path: '/home/alice/.config/systemd/user/happier-daemon.preview.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.preview.default.service',
       platform: 'linux' as const,
       mode: 'user' as const,
-      happierHomeDir: '/home/alice/.happier',
+      happierHomeDir: '/home/alice/.piggercode',
       releaseChannel: 'preview' as const,
-      label: 'happier-daemon.preview.default',
+      label: 'piggercode-daemon.preview.default',
       targetMode: 'default-following' as const,
     };
     const stableService = {
       ...previewService,
-      path: '/home/alice/.config/systemd/user/happier-daemon.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.default.service',
       releaseChannel: 'stable' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
     };
 
     const plan = resolveDaemonServiceInstallConflictPlan({
@@ -137,7 +137,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'default-following',
         ring: 'preview',
         instanceId: null,
-        happierHomeDir: '/home/alice/.happier',
+        happierHomeDir: '/home/alice/.piggercode',
       },
       strategy: 'replace-ring',
       services: [previewService, stableService],
@@ -147,17 +147,17 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
     expect(plan.servicesToRemove).toEqual([]);
   });
 
-  it('lets replace-all remove a same-mode default-following service from another Happier home', () => {
+  it('lets replace-all remove a same-mode default-following service from another PiggerCode home', () => {
     const staleDefaultService = {
       serverId: 'default',
       name: 'Default background service',
       installed: true as const,
-      path: '/Users/alice/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+      path: '/Users/alice/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
       platform: 'darwin' as const,
       mode: 'user' as const,
-      happierHomeDir: '/Users/alice/.happier/stacks/repo-dev-old/cli',
+      happierHomeDir: '/Users/alice/.piggercode/stacks/repo-dev-old/cli',
       releaseChannel: 'stable' as const,
-      label: 'com.happier.cli.daemon.default',
+      label: 'com.piggercode.cli.daemon.default',
       targetMode: 'default-following' as const,
     };
 
@@ -168,7 +168,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'default-following',
         ring: 'publicdev',
         instanceId: null,
-        happierHomeDir: '/Users/alice/.happier',
+        happierHomeDir: '/Users/alice/.piggercode',
       },
       strategy: 'replace-all',
       services: [staleDefaultService],
@@ -180,17 +180,17 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
     expect(plan.exactTargetIsConverged).toBe(false);
   });
 
-  it('keeps replace-all blocked for same-instance pinned services from another Happier home', () => {
+  it('keeps replace-all blocked for same-instance pinned services from another PiggerCode home', () => {
     const pinnedService = {
       serverId: 'company',
       name: 'Company',
       installed: true as const,
-      path: '/Users/alice/Library/LaunchAgents/com.happier.cli.daemon.company.plist',
+      path: '/Users/alice/Library/LaunchAgents/com.piggercode.cli.daemon.company.plist',
       platform: 'darwin' as const,
       mode: 'user' as const,
-      happierHomeDir: '/Users/alice/.happier-other',
+      happierHomeDir: '/Users/alice/.piggercode-other',
       releaseChannel: 'stable' as const,
-      label: 'com.happier.cli.daemon.company',
+      label: 'com.piggercode.cli.daemon.company',
       targetMode: 'pinned' as const,
     };
 
@@ -201,7 +201,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
         targetMode: 'pinned',
         ring: 'publicdev',
         instanceId: 'company',
-        happierHomeDir: '/Users/alice/.happier',
+        happierHomeDir: '/Users/alice/.piggercode',
       },
       strategy: 'replace-all',
       services: [pinnedService],
@@ -211,7 +211,7 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
     expect(plan.servicesToRemove).toEqual([]);
   });
   describe('pinned targets on one release ring', () => {
-    const home = '/home/alice/.happier';
+    const home = '/home/alice/.piggercode';
     const pinnedTarget = {
       platform: 'linux' as const,
       mode: 'user' as const,
@@ -229,12 +229,12 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
       name: serverId,
       relayUrl,
       installed: true as const,
-      path: `/home/alice/.config/systemd/user/happier-daemon.${serverId}.service`,
+      path: `/home/alice/.config/systemd/user/piggercode-daemon.${serverId}.service`,
       platform: 'linux' as const,
       mode: 'user' as const,
       happierHomeDir: home,
       releaseChannel: 'stable' as const,
-      label: `happier-daemon.${serverId}`,
+      label: `piggercode-daemon.${serverId}`,
       targetMode: 'pinned' as const,
     });
     const defaultFollowingService = {
@@ -242,12 +242,12 @@ describe('resolveDaemonServiceInstallConflictPlan', () => {
       name: 'Default automatic startup',
       relayUrl: null,
       installed: true as const,
-      path: '/home/alice/.config/systemd/user/happier-daemon.default.service',
+      path: '/home/alice/.config/systemd/user/piggercode-daemon.default.service',
       platform: 'linux' as const,
       mode: 'user' as const,
       happierHomeDir: home,
       releaseChannel: 'stable' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following' as const,
     };
 

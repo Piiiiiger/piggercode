@@ -13,7 +13,7 @@ vi.mock('@/session/actions/createCliActionExecutor', () => ({
   createCliActionExecutor,
 }));
 
-describe('happier session actions (unit)', () => {
+describe('piggercode session actions (unit)', () => {
   it('prints a JSON envelope for actions execute', async () => {
     resolveSessionTransportContext.mockResolvedValueOnce({
       ok: true,

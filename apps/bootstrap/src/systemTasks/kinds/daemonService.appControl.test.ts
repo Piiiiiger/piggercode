@@ -33,7 +33,7 @@ import {
   createDaemonServiceStatusHandler,
 } from './daemonService.js';
 
-// Mirrors what `happier daemon status --json` prints for a stopped service: a daemon that never
+// Mirrors what `piggercode daemon status --json` prints for a stopped service: a daemon that never
 // started reports no version and no service label, and the CLI omits those keys rather than
 // sending nulls.
 const STOPPED_STATUS_JSON = {

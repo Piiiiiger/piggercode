@@ -40,10 +40,10 @@ export type ParsedBugReportArgs = {
 
 export function bugReportUsage(): string {
   return [
-    `${chalk.bold('happier bug-report')} - Submit a structured bug report with optional diagnostics`,
+    `${chalk.bold('piggercode bug-report')} - Submit a structured bug report with optional diagnostics`,
     '',
     `${chalk.bold('Usage:')}`,
-    '  happier bug-report --title <title> --summary <text> [options]',
+    '  piggercode bug-report --title <title> --summary <text> [options]',
     '',
     `${chalk.bold('Required fields:')}`,
     '  --title <text>',
@@ -66,9 +66,9 @@ export function bugReportUsage(): string {
     '  --no-similar-issues                Skip searching for similar issues',
     '  --server-version <version>',
     '  --deployment-type <cloud|self-hosted|enterprise>',
-    '  --session-id <id>                  Bind the report to a specific Happier session id',
+    '  --session-id <id>                  Bind the report to a specific PiggerCode session id',
     '  --attach <path>                    Attach an additional file (repeatable)',
-    '  --attach-session-log <path>        Attach a Happier session log file (repeatable)',
+    '  --attach-session-log <path>        Attach a PiggerCode session log file (repeatable)',
     '  --attach-provider-transcript <path> Attach a provider transcript (Claude/Codex/...) (repeatable)',
     '  -h, --help',
   ].join('\n');

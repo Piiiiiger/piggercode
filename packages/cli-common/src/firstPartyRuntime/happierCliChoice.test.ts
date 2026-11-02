@@ -41,107 +41,107 @@ describe('the computer-scoped CLI choice (R12)', () => {
 
         expect(readHappierCliChoiceSync({ processEnv })).toBeNull();
 
-        await writeHappierCliChoice({ choice: { mode: 'own', command: '/usr/local/bin/happier' }, processEnv });
-        expect(resolveHappierCliChoiceStatePath({ processEnv })).toBe(join(homeDir, '.happier', 'cli-choice.json'));
-        expect(readHappierCliChoiceSync({ processEnv })).toEqual({ mode: 'own', command: '/usr/local/bin/happier' });
+        await writeHappierCliChoice({ choice: { mode: 'own', command: '/usr/local/bin/piggercode' }, processEnv });
+        expect(resolveHappierCliChoiceStatePath({ processEnv })).toBe(join(homeDir, '.piggercode', 'cli-choice.json'));
+        expect(readHappierCliChoiceSync({ processEnv })).toEqual({ mode: 'own', command: '/usr/local/bin/piggercode' });
 
         await writeHappierCliChoice({ choice: { mode: 'managed' }, processEnv });
         expect(readHappierCliChoiceSync({ processEnv })).toEqual({ mode: 'managed' });
-        expect(JSON.parse(await readFile(join(homeDir, '.happier', 'cli-choice.json'), 'utf8'))).toEqual({ mode: 'managed' });
+        expect(JSON.parse(await readFile(join(homeDir, '.piggercode', 'cli-choice.json'), 'utf8'))).toEqual({ mode: 'managed' });
     });
 
     it('reads an unreadable or incomplete record as no choice, never as a mode', async () => {
         const homeDir = await createHome();
         const processEnv = { HOME: homeDir };
-        await mkdir(join(homeDir, '.happier'), { recursive: true });
+        await mkdir(join(homeDir, '.piggercode'), { recursive: true });
 
-        await writeFile(join(homeDir, '.happier', 'cli-choice.json'), '{ not json', 'utf8');
+        await writeFile(join(homeDir, '.piggercode', 'cli-choice.json'), '{ not json', 'utf8');
         expect(readHappierCliChoiceSync({ processEnv })).toBeNull();
 
-        await writeFile(join(homeDir, '.happier', 'cli-choice.json'), JSON.stringify({ mode: 'own' }), 'utf8');
+        await writeFile(join(homeDir, '.piggercode', 'cli-choice.json'), JSON.stringify({ mode: 'own' }), 'utf8');
         expect(readHappierCliChoiceSync({ processEnv })).toBeNull();
 
-        await writeFile(join(homeDir, '.happier', 'cli-choice.json'), JSON.stringify({ mode: 'something' }), 'utf8');
+        await writeFile(join(homeDir, '.piggercode', 'cli-choice.json'), JSON.stringify({ mode: 'something' }), 'utf8');
         expect(readHappierCliChoiceSync({ processEnv })).toBeNull();
     });
 });
 
-posixOnly('a happier this app did not install (R12)', () => {
+posixOnly('a piggercode this app did not install (R12)', () => {
     it('is found on PATH, and the managed shim or an installer link to it is not foreign', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const npmBin = join(homeDir, 'npm-global', 'bin');
         await mkdir(npmBin, { recursive: true });
-        await writeExecutable(join(npmBin, 'happier'));
+        await writeExecutable(join(npmBin, 'piggercode'));
 
         expect(resolveForeignHappierCli({ binDir, processEnv: { HOME: homeDir, PATH: `/usr/bin:${npmBin}` } }))
-            .toBe(join(npmBin, 'happier'));
+            .toBe(join(npmBin, 'piggercode'));
 
-        const versionDir = join(homeDir, '.happier', 'cli', 'versions', '1.0.0');
+        const versionDir = join(homeDir, '.piggercode', 'cli', 'versions', '1.0.0');
         await mkdir(versionDir, { recursive: true });
         await mkdir(binDir, { recursive: true });
-        await writeExecutable(join(versionDir, 'happier'));
-        await symlink(join(versionDir, 'happier'), join(binDir, 'happier'));
+        await writeExecutable(join(versionDir, 'piggercode'));
+        await symlink(join(versionDir, 'piggercode'), join(binDir, 'piggercode'));
         const localBin = join(homeDir, '.local', 'bin');
         await mkdir(localBin, { recursive: true });
-        await symlink(join(binDir, 'happier'), join(localBin, 'happier'));
+        await symlink(join(binDir, 'piggercode'), join(localBin, 'piggercode'));
 
         expect(resolveForeignHappierCli({ binDir, processEnv: { HOME: homeDir, PATH: localBin } })).toBeNull();
         expect(resolveForeignHappierCli({ binDir, processEnv: { HOME: homeDir, PATH: '/nonexistent' } })).toBeNull();
         // R13(b): after "Let Happier manage it" the managed shim (or the installer link to it) answers
         // first; the copy the person may remove is still found behind it.
         expect(resolveForeignHappierCli({ binDir, processEnv: { HOME: homeDir, PATH: `${binDir}:${npmBin}` } }))
-            .toBe(join(npmBin, 'happier'));
+            .toBe(join(npmBin, 'piggercode'));
         expect(resolveForeignHappierCli({ binDir, processEnv: { HOME: homeDir, PATH: `${localBin}:${binDir}:${npmBin}` } }))
-            .toBe(join(npmBin, 'happier'));
+            .toBe(join(npmBin, 'piggercode'));
     });
 
-    it('on Windows finds the npm command shim behind the managed happier.exe, through PATHEXT (R13)', async () => {
+    it('on Windows finds the npm command shim behind the managed piggercode.exe, through PATHEXT (R13)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const npmDir = join(homeDir, 'AppData', 'Roaming', 'npm');
         await mkdir(binDir, { recursive: true });
         await mkdir(npmDir, { recursive: true });
-        await writeExecutable(join(binDir, 'happier.exe'));
-        await writeFile(join(npmDir, 'happier.cmd'), '@ECHO off\r\n', 'utf8');
+        await writeExecutable(join(binDir, 'piggercode.exe'));
+        await writeFile(join(npmDir, 'piggercode.cmd'), '@ECHO off\r\n', 'utf8');
         const realPlatform = process.platform;
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
         try {
             // `Path` spelled the Windows way; the delimiter is this host's, as node:path reports it.
             expect(resolveForeignHappierCli({ binDir, processEnv: { Path: `${binDir}${delimiter}${npmDir}`, PATHEXT: '.EXE;.CMD' } }))
-                .toBe(join(npmDir, 'happier.cmd'));
+                .toBe(join(npmDir, 'piggercode.cmd'));
             expect(resolveForeignHappierCli({ binDir, processEnv: { Path: binDir, PATHEXT: '.EXE;.CMD' } })).toBeNull();
         } finally {
             Object.defineProperty(process, 'platform', { value: realPlatform, configurable: true });
         }
     });
 
-    it('says which happier a new terminal runs first, and whether a managed one got there through what Desktop can take back (RV3-1)', async () => {
+    it('says which piggercode a new terminal runs first, and whether a managed one got there through what Desktop can take back (RV3-1)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         const npmBin = join(homeDir, 'npm-global', 'bin');
         const localBin = join(homeDir, '.local', 'bin');
         await mkdir(npmBin, { recursive: true });
-        await writeExecutable(join(npmBin, 'happier'));
+        await writeExecutable(join(npmBin, 'piggercode'));
         await mkdir(binDir, { recursive: true });
-        await writeExecutable(join(binDir, 'happier'));
+        await writeExecutable(join(binDir, 'piggercode'));
         await mkdir(localBin, { recursive: true });
-        await symlink(join(binDir, 'happier'), join(localBin, 'happier'));
+        await symlink(join(binDir, 'piggercode'), join(localBin, 'piggercode'));
         const terminal = (PATH: string) => resolveTerminalHappierCli({ binDir, processEnv: { HOME: homeDir, PATH } });
 
-        expect(terminal(`${npmBin}:${localBin}`)).toEqual({ command: join(npmBin, 'happier'), managed: false, desktopExposed: false });
+        expect(terminal(`${npmBin}:${localBin}`)).toEqual({ command: join(npmBin, 'piggercode'), managed: false, desktopExposed: false });
         // Desktop's own line exposes the managed bin dir itself; "Keep my own" takes that line back.
-        expect(terminal(`${binDir}:${npmBin}`)).toEqual({ command: join(binDir, 'happier'), managed: true, desktopExposed: true });
+        expect(terminal(`${binDir}:${npmBin}`)).toEqual({ command: join(binDir, 'piggercode'), managed: true, desktopExposed: true });
         // The installer's link is not Desktop's to remove.
-        expect(terminal(`${localBin}:${npmBin}`)).toEqual({ command: join(localBin, 'happier'), managed: true, desktopExposed: false });
+        expect(terminal(`${localBin}:${npmBin}`)).toEqual({ command: join(localBin, 'piggercode'), managed: true, desktopExposed: false });
         expect(terminal('/nonexistent')).toBeNull();
     });
 
     it('on Windows counts the managed bin dir as Desktop\'s only when Desktop recorded adding or moving it (RV3-1)', async () => {
         const homeDir = await createHome();
-        const binDir = join(homeDir, '.happier', 'bin');
+        const binDir = join(homeDir, '.piggercode', 'bin');
         await mkdir(binDir, { recursive: true });
-        await writeExecutable(join(binDir, 'happier.exe'));
+        await writeExecutable(join(binDir, 'piggercode.exe'));
         const realPlatform = process.platform;
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
         try {
@@ -161,11 +161,11 @@ posixOnly('a happier this app did not install (R12)', () => {
         const packageRoot = join(prefix, 'lib', 'node_modules', '@piggercode', 'cli');
         await mkdir(join(packageRoot, 'bin'), { recursive: true });
         await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli', version: '0.2.13' }), 'utf8');
-        await writeExecutable(join(packageRoot, 'bin', 'happier.mjs'));
+        await writeExecutable(join(packageRoot, 'bin', 'piggercode.mjs'));
         await mkdir(join(prefix, 'bin'), { recursive: true });
-        await symlink(join(packageRoot, 'bin', 'happier.mjs'), join(prefix, 'bin', 'happier'));
+        await symlink(join(packageRoot, 'bin', 'piggercode.mjs'), join(prefix, 'bin', 'piggercode'));
 
-        expect(describeHappierCliOrigin(join(prefix, 'bin', 'happier'))).toEqual({
+        expect(describeHappierCliOrigin(join(prefix, 'bin', 'piggercode'))).toEqual({
             kind: 'npm',
             packageName: '@piggercode/cli',
             removalCommand: 'npm uninstall -g @piggercode/cli',
@@ -180,12 +180,12 @@ posixOnly('a happier this app did not install (R12)', () => {
         await mkdir(join(packageRoot, 'bin'), { recursive: true });
         await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
         await writeFile(
-            join(npmDir, 'happier.cmd'),
-            '@ECHO off\r\nGOTO start\r\n:find_dp0\r\nSET dp0=%~dp0\r\nEXIT /b\r\n:start\r\nSETLOCAL\r\nCALL :find_dp0\r\n"%_prog%"  "%dp0%\\node_modules\\@piggercode\\cli\\bin\\happier.mjs" %*\r\n',
+            join(npmDir, 'piggercode.cmd'),
+            '@ECHO off\r\nGOTO start\r\n:find_dp0\r\nSET dp0=%~dp0\r\nEXIT /b\r\n:start\r\nSETLOCAL\r\nCALL :find_dp0\r\n"%_prog%"  "%dp0%\\node_modules\\@piggercode\\cli\\bin\\piggercode.mjs" %*\r\n',
             'utf8',
         );
 
-        expect(describeHappierCliOrigin(join(npmDir, 'happier.cmd'))).toMatchObject({
+        expect(describeHappierCliOrigin(join(npmDir, 'piggercode.cmd'))).toMatchObject({
             kind: 'npm',
             packageName: '@piggercode/cli',
             removalCommand: 'npm uninstall -g @piggercode/cli',
@@ -194,26 +194,26 @@ posixOnly('a happier this app did not install (R12)', () => {
 
     it('names a Homebrew install by its formula', async () => {
         const homeDir = await createHome();
-        const cellarBin = join(homeDir, 'homebrew', 'Cellar', 'happier', '0.2.13', 'bin');
+        const cellarBin = join(homeDir, 'homebrew', 'Cellar', 'piggercode', '0.2.13', 'bin');
         await mkdir(cellarBin, { recursive: true });
-        await writeExecutable(join(cellarBin, 'happier'));
+        await writeExecutable(join(cellarBin, 'piggercode'));
         const brewBin = join(homeDir, 'homebrew', 'bin');
         await mkdir(brewBin, { recursive: true });
-        await symlink(join(cellarBin, 'happier'), join(brewBin, 'happier'));
+        await symlink(join(cellarBin, 'piggercode'), join(brewBin, 'piggercode'));
 
-        expect(describeHappierCliOrigin(join(brewBin, 'happier'))).toEqual({
+        expect(describeHappierCliOrigin(join(brewBin, 'piggercode'))).toEqual({
             kind: 'brew',
-            formula: 'happier',
-            removalCommand: 'brew uninstall happier',
-            updateCommand: 'brew upgrade happier',
+            formula: 'piggercode',
+            removalCommand: 'brew uninstall piggercode',
+            updateCommand: 'brew upgrade piggercode',
             // The origin reads the resolved path, so macOS temp dirs appear under /private.
-            optPath: join(realpathSync(homeDir), 'homebrew', 'opt', 'happier', 'bin', 'happier'),
+            optPath: join(realpathSync(homeDir), 'homebrew', 'opt', 'piggercode', 'bin', 'piggercode'),
         });
     });
 
     it('names anything else by its path only, offering no command it cannot vouch for', async () => {
         const homeDir = await createHome();
-        const manual = join(homeDir, 'bin', 'happier');
+        const manual = join(homeDir, 'bin', 'piggercode');
         await mkdir(join(homeDir, 'bin'), { recursive: true });
         await writeExecutable(manual);
 

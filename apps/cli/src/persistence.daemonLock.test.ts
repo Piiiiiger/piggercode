@@ -203,7 +203,7 @@ describe('acquireDaemonLock', () => {
     vi.doMock('@/daemon/doctor', () => ({
       classifyDaemonLifecycleProcessByPid: async () => ({
         kind: 'daemon' as const,
-        process: { pid: process.pid, command: 'happier daemon start-sync', type: 'daemon' },
+        process: { pid: process.pid, command: 'piggercode daemon start-sync', type: 'daemon' },
       }),
     }));
 

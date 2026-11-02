@@ -40,10 +40,10 @@ describe('resolveSelfHostServerMigrationPlan', () => {
     })).toEqual({ command: '/opt/happier/server/happier-server-migrate', args: [] });
 
     expect(resolveSelfHostServerMigrationPlan({
-      serverBinaryPath: 'C:\\Happier\\happier-server.exe',
+      serverBinaryPath: 'C:\\PiggerCode\\happier-server.exe',
       env: { PIGGERCODE_DB_PROVIDER: 'mysql', DATABASE_URL: 'mysql://db/happier' },
       platform: 'win32',
-    })).toEqual({ command: 'C:\\Happier\\happier-server-migrate.exe', args: [] });
+    })).toEqual({ command: 'C:\\PiggerCode\\happier-server-migrate.exe', args: [] });
 
     expect(resolveSelfHostServerMigrationPlan({
       serverBinaryPath: '/opt/happier/server/happier-server',
@@ -232,14 +232,14 @@ describe('renderSelfHostServerEnvText', () => {
         const rendered = renderSelfHostServerEnvText({
             port: 3005,
             host: '127.0.0.1',
-            dataDir: 'C:\\Users\\me\\Happier QA\\self-host\\data',
-            filesDir: 'C:\\Users\\me\\Happier QA\\self-host\\data\\files',
-            dbDir: 'C:\\Users\\me\\Happier QA\\self-host\\data\\pglite',
+            dataDir: 'C:\\Users\\me\\PiggerCode QA\\self-host\\data',
+            filesDir: 'C:\\Users\\me\\PiggerCode QA\\self-host\\data\\files',
+            dbDir: 'C:\\Users\\me\\PiggerCode QA\\self-host\\data\\pglite',
             platform: 'win32',
         });
 
         expect(rendered).toContain(
-            'DATABASE_URL=file:C:\\Users\\me\\Happier QA\\self-host\\data\\happier-server-light.sqlite?socket_timeout=30&connection_limit=1',
+            'DATABASE_URL=file:C:\\Users\\me\\PiggerCode QA\\self-host\\data\\happier-server-light.sqlite?socket_timeout=30&connection_limit=1',
         );
     });
 
@@ -310,9 +310,9 @@ describe('renderPrismaCompatibleSqliteDatabaseUrl', () => {
 
   it('keeps Windows drive-letter URLs Prisma-compatible when appending query params', () => {
     expect(render({
-      dbPath: 'C:\\Users\\me\\Happier QA\\self-host\\data\\happier-server-light.sqlite',
+      dbPath: 'C:\\Users\\me\\PiggerCode QA\\self-host\\data\\happier-server-light.sqlite',
       platform: 'win32',
-    })).toBe('file:C:\\Users\\me\\Happier QA\\self-host\\data\\happier-server-light.sqlite?socket_timeout=30');
+    })).toBe('file:C:\\Users\\me\\PiggerCode QA\\self-host\\data\\happier-server-light.sqlite?socket_timeout=30');
   });
 
   it('converts busy timeout milliseconds to Prisma socket_timeout seconds without rounding down', () => {
@@ -350,7 +350,7 @@ describe('appendPrismaSqliteConnectionParams', () => {
 });
 
 describe('resolvePrismaSqliteDatabaseUrlOptionsFromEnv', () => {
-  it('resolves sqlite URL options from Happier env keys', () => {
+  it('resolves sqlite URL options from PiggerCode env keys', () => {
     expect(resolvePrismaSqliteDatabaseUrlOptionsFromEnv({
       PIGGERCODE_SQLITE_BUSY_TIMEOUT_MS: '500',
       PIGGERCODE_SQLITE_CONNECTION_LIMIT: '2',

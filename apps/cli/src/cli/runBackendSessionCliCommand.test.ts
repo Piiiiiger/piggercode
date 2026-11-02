@@ -624,7 +624,7 @@ describe('runBackendSessionCliCommand', () => {
     }
   });
 
-  it('shows combined Happier and provider help without auth or session startup', async () => {
+  it('shows combined PiggerCode and provider help without auth or session startup', async () => {
     const root = join(tmpdir(), `happier-codex-help-${Date.now()}-${Math.random().toString(16).slice(2)}`);
     const codexPath = join(root, process.platform === 'win32' ? 'codex.cmd' : 'codex');
     mkdirSync(root, { recursive: true });
@@ -653,7 +653,7 @@ describe('runBackendSessionCliCommand', () => {
           windowsHide: true,
         }),
       );
-      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('happier'));
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('piggercode'));
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('codex CLI Options'));
       expect(loadRun).not.toHaveBeenCalled();
       expect(readCredentialsSpy).not.toHaveBeenCalled();

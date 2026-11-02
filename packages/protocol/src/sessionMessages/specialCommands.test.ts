@@ -19,7 +19,7 @@ describe('session special command payload steerability', () => {
     { message: '/compact keep the summary', expectedType: 'compact' },
     { message: '/compact\tkeep the summary', expectedType: 'compact' },
     { message: '/compact\nkeep the summary', expectedType: 'compact' },
-  ])('parses non-steerable Happier command "$message"', ({ message, expectedType }) => {
+  ])('parses non-steerable PiggerCode command "$message"', ({ message, expectedType }) => {
     expect(parseSpecialCommand(message).type).toBe(expectedType);
     expect(isNonSteerablePromptPayload(message)).toBe(true);
   });
@@ -31,7 +31,7 @@ describe('session special command payload steerability', () => {
     '/not-a-happier-command',
     'please run /compact later',
     'regular steering prompt',
-  ])('treats non-Happier command text as steerable payload: %s', (message) => {
+  ])('treats non-PiggerCode command text as steerable payload: %s', (message) => {
     expect(parseSpecialCommand(message).type).toBeNull();
     expect(isNonSteerablePromptPayload(message)).toBe(false);
   });

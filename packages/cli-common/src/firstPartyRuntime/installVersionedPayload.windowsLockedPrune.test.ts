@@ -47,7 +47,7 @@ async function withPlatform<T>(platform: NodeJS.Platform, run: () => Promise<T>)
 async function createPayload(rootDir: string, versionId: string, contents: string): Promise<string> {
     const payloadRoot = join(rootDir, `payload-${versionId}`);
     await mkdir(join(payloadRoot, 'package-dist'), { recursive: true });
-    await writeFile(join(payloadRoot, 'happier.exe'), contents, 'utf8');
+    await writeFile(join(payloadRoot, 'piggercode.exe'), contents, 'utf8');
     await writeFile(join(payloadRoot, 'package-dist', 'index.mjs'), `export default ${JSON.stringify(versionId)};\n`, 'utf8');
     return payloadRoot;
 }
@@ -107,7 +107,7 @@ describe('installVersionedPayload Windows locked-version pruning', () => {
 
                 expect(await readFile(paths.binaryPath, 'utf8')).toBe('third-preview');
                 expect(existsSync(lockedVersionPath)).toBe(true);
-                expect(await readFile(join(lockedVersionPath, 'happier.exe'), 'utf8')).toBe('first-preview');
+                expect(await readFile(join(lockedVersionPath, 'piggercode.exe'), 'utf8')).toBe('first-preview');
             } finally {
                 lockedRmTargets.clear();
                 await rm(homeDir, { recursive: true, force: true });

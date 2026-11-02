@@ -7,7 +7,7 @@ const baseInstallParams = {
   mode: 'user',
   channel: 'stable',
   userHomeDir: '/home/alice',
-  happierHomeDir: '/home/alice/.happier',
+  happierHomeDir: '/home/alice/.piggercode',
   serverUrl: 'https://api.example.test',
   webappUrl: 'https://app.example.test',
   publicServerUrl: 'https://api.example.test',
@@ -29,7 +29,7 @@ describe('daemon service plan legacy cloud cleanup', () => {
           command.cmd === 'systemctl' &&
           command.args.includes('disable') &&
           command.args.includes('--now') &&
-          command.args.includes('happier-daemon.service'),
+          command.args.includes('piggercode-daemon.service'),
       ),
     ).toBe(true);
   });
@@ -47,7 +47,7 @@ describe('daemon service plan legacy cloud cleanup', () => {
           command.cmd === 'systemctl' &&
           command.args.includes('disable') &&
           command.args.includes('--now') &&
-          command.args.includes('happier-daemon.service'),
+          command.args.includes('piggercode-daemon.service'),
       ),
     ).toBe(true);
   });

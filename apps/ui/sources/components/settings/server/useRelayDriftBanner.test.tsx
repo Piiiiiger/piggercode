@@ -108,7 +108,7 @@ const AMBIENT_STATUS_DATA = {
     daemonRunning: false,
     needsAuth: true,
     machineId: null,
-    acquisition: { command: '/home/user/.happier/cli/current/happier', provenance: 'managed' },
+    acquisition: { command: '/home/user/.piggercode/cli/current/happier', provenance: 'managed' },
     server: { activeServerId: 'cloud', serverUrl: null, publicServerUrl: null, localServerUrl: null, comparableKey: null },
     auth: {
         authenticated: false,

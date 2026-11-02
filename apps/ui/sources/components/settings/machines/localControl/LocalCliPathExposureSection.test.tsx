@@ -128,7 +128,7 @@ describe('LocalCliPathExposureSection', () => {
         expect(harness.screen.findByTestId('settings.localCliPath.status')?.props.subtitle).toBe('machine.cliPath.alreadyPresent');
     });
 
-    it('says which other happier already answers in the terminal when nothing was added (R17/R6)', async () => {
+    it('says which other piggercode already answers in the terminal when nothing was added (R17/R6)', async () => {
         const harness = await createHarness();
         await harness.screen.pressByTestIdAsync('settings.localCliPath.add');
         await harness.resolve('task_1:cli.pathExposure.ensure.v1', {

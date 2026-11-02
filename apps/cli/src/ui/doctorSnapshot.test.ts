@@ -44,7 +44,7 @@ const { readDaemonStatusSnapshotMock } = vi.hoisted(() => ({
       startedWithPublicReleaseChannel: 'preview',
       startupSource: 'background-service',
       serviceManaged: true,
-      serviceLabel: 'com.happier.cli.daemon.default',
+      serviceLabel: 'com.piggercode.cli.daemon.default',
     },
     service: {
       installed: true,
@@ -68,11 +68,11 @@ const {
     channel === 'publicdev' ? ['0.2.5-dev.7.1'] : [],
   ),
   resolveInstalledFirstPartyComponentPathsMock: vi.fn(({ channel }: { channel?: string }) => ({
-    installRoot: channel === 'publicdev' ? '/Users/test/.happier/cli-dev' : `/Users/test/.happier/cli-${channel ?? 'stable'}`,
-    currentPath: channel === 'publicdev' ? '/Users/test/.happier/cli-dev/current' : `/Users/test/.happier/cli-${channel ?? 'stable'}/current`,
-    previousPath: channel === 'publicdev' ? '/Users/test/.happier/cli-dev/previous' : `/Users/test/.happier/cli-${channel ?? 'stable'}/previous`,
-    versionsDir: channel === 'publicdev' ? '/Users/test/.happier/cli-dev/versions' : `/Users/test/.happier/cli-${channel ?? 'stable'}/versions`,
-    binaryPath: channel === 'publicdev' ? '/Users/test/.happier/cli-dev/current/happier' : `/Users/test/.happier/cli-${channel ?? 'stable'}/current/happier`,
+    installRoot: channel === 'publicdev' ? '/Users/test/.piggercode/cli-dev' : `/Users/test/.piggercode/cli-${channel ?? 'stable'}`,
+    currentPath: channel === 'publicdev' ? '/Users/test/.piggercode/cli-dev/current' : `/Users/test/.piggercode/cli-${channel ?? 'stable'}/current`,
+    previousPath: channel === 'publicdev' ? '/Users/test/.piggercode/cli-dev/previous' : `/Users/test/.piggercode/cli-${channel ?? 'stable'}/previous`,
+    versionsDir: channel === 'publicdev' ? '/Users/test/.piggercode/cli-dev/versions' : `/Users/test/.piggercode/cli-${channel ?? 'stable'}/versions`,
+    binaryPath: channel === 'publicdev' ? '/Users/test/.piggercode/cli-dev/current/happier' : `/Users/test/.piggercode/cli-${channel ?? 'stable'}/current/happier`,
     nodeEntrypointPath: null,
     shimPaths: channel === 'publicdev' ? ['/Users/test/.local/bin/hdev'] : [`/Users/test/.local/bin/${channel === 'preview' ? 'hprev' : 'happier'}`],
   })),
@@ -89,21 +89,21 @@ const {
     instanceId: 'default',
     uid: 501,
     userHomeDir: '/Users/test',
-    happierHomeDir: '/Users/test/.happier',
+    happierHomeDir: '/Users/test/.piggercode',
     serverUrl: 'https://api.happier.dev',
     publicServerUrl: 'https://relay.happier.dev',
     webappUrl: 'https://app.happier.dev',
     nodePath: '/usr/bin/node',
-    entryPath: '/Users/test/.happier/cli-dev/current/happier',
+    entryPath: '/Users/test/.piggercode/cli-dev/current/happier',
   })),
   resolveDaemonServiceInventoryEntriesMock: vi.fn(async (_params?: unknown) => ([
     {
       serviceType: 'daemon',
       serverId: 'default',
       name: 'Default background service',
-      path: '/Users/test/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
+      path: '/Users/test/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
       mode: 'user',
-      label: 'com.happier.cli.daemon.default',
+      label: 'com.piggercode.cli.daemon.default',
       ring: 'publicdev',
       targetMode: 'default-following',
       installed: true,
@@ -124,12 +124,12 @@ const { resolveBackgroundServiceRepairPlanForCurrentRuntimeMock } = vi.hoisted((
       instanceId: 'default',
       uid: 501,
       userHomeDir: '/Users/test',
-      happierHomeDir: '/Users/test/.happier',
+      happierHomeDir: '/Users/test/.piggercode',
       serverUrl: 'https://api.happier.dev',
       publicServerUrl: 'https://relay.happier.dev',
       webappUrl: 'https://app.happier.dev',
       nodePath: '/usr/bin/node',
-      entryPath: '/Users/test/.happier/cli-dev/current/happier',
+      entryPath: '/Users/test/.piggercode/cli-dev/current/happier',
     },
     services: [],
     scannedModes: ['user'],
@@ -254,10 +254,10 @@ describe('buildDoctorSnapshot', () => {
     expect(snapshot.daemonStatus?.daemon.startedWithPublicReleaseChannel).toBe('preview');
     expect(snapshot.daemonStatus?.daemon.startupSource).toBe('background-service');
     expect(snapshot.daemonStatus?.daemon.serviceManaged).toBe(true);
-    expect(snapshot.daemonStatus?.daemon.serviceLabel).toBe('com.happier.cli.daemon.default');
+    expect(snapshot.daemonStatus?.daemon.serviceLabel).toBe('com.piggercode.cli.daemon.default');
     expect(snapshot.installations?.happier?.activeInvocation?.ring).toBe('dev');
     expect(snapshot.installations?.happier?.activeInvocation?.installationId).toBe('firstPartyManaged:dev');
-    expect(snapshot.installations?.happier?.installations[0]?.managedRoot).toBe('/Users/test/.happier/cli-dev');
+    expect(snapshot.installations?.happier?.installations[0]?.managedRoot).toBe('/Users/test/.piggercode/cli-dev');
     expect(snapshot.services?.happier?.services[0]?.ring).toBe('dev');
     expect(snapshot.services?.happier?.services[0]?.configuredCliVersion).toBe('0.2.5-dev.7.1');
     expect(snapshot.services?.happier?.services[0]?.runningCliVersion).toBe('0.2.5-dev.7.1');

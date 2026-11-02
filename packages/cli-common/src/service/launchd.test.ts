@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildLaunchdPlistXml } from './launchd';
 
 const BASE = {
-  label: 'com.happier.cli.daemon.company',
+  label: 'com.piggercode.cli.daemon.company',
   programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
   stdoutPath: '/tmp/out.log',
   stderrPath: '/tmp/err.log',

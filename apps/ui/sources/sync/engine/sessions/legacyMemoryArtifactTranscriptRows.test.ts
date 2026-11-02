@@ -10,7 +10,7 @@ describe('isLegacyMemoryArtifactTranscriptRow', () => {
         })).toBe(true);
     });
 
-    it('skips legacy memory synopsis rows by happier meta kind', () => {
+    it('skips legacy memory synopsis rows by piggercode meta kind', () => {
         expect(isLegacyMemoryArtifactTranscriptRow({
             localId: null,
             content: {

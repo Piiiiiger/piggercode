@@ -450,7 +450,7 @@ describe('ApiMachineClient reconnect race handling', () => {
                     publicReleaseChannel: 'stable',
                     startupSource: 'background-service',
                     serviceManaged: true,
-                    serviceLabel: 'com.happier.cli.daemon.default',
+                    serviceLabel: 'com.piggercode.cli.daemon.default',
                 },
             },
         });
@@ -463,7 +463,7 @@ describe('ApiMachineClient reconnect race handling', () => {
                 publicReleaseChannel: 'stable',
                 startupSource: 'background-service',
                 serviceManaged: true,
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             },
         });
     });
@@ -541,7 +541,7 @@ describe('ApiMachineClient reconnect race handling', () => {
         expect(states.at(-1)).toEqual(expect.objectContaining({
             phase: 'auth_failed',
             nextRetryAt: null,
-            lastErrorMessage: 'This Happier daemon must be upgraded before it can sync sessions.',
+            lastErrorMessage: 'This PiggerCode daemon must be upgraded before it can sync sessions.',
         }));
     });
 
@@ -617,7 +617,7 @@ describe('ApiMachineClient reconnect race handling', () => {
                     publicReleaseChannel: 'stable',
                     startupSource: 'background-service',
                     serviceManaged: true,
-                    serviceLabel: 'com.happier.cli.daemon.default',
+                    serviceLabel: 'com.piggercode.cli.daemon.default',
                 },
             },
         });

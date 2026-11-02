@@ -11,24 +11,24 @@ describe('resolveHappierHomeDirComparableKey', () => {
     });
 
     it('trims and strips trailing separators for POSIX paths without changing case', () => {
-        expect(resolveHappierHomeDirComparableKey('/home/Alice/.happier/')).toBe('/home/Alice/.happier');
-        expect(resolveHappierHomeDirComparableKey('/home/Alice/.happier////')).toBe('/home/Alice/.happier');
+        expect(resolveHappierHomeDirComparableKey('/home/Alice/.piggercode/')).toBe('/home/Alice/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('/home/Alice/.piggercode////')).toBe('/home/Alice/.piggercode');
     });
 
     it('normalizes Windows drive paths as case-insensitive and slash-insensitive', () => {
-        expect(resolveHappierHomeDirComparableKey('C:\\Users\\Alice\\.happier\\')).toBe('c:/users/alice/.happier');
-        expect(resolveHappierHomeDirComparableKey('c:/Users/Alice/.happier')).toBe('c:/users/alice/.happier');
-        expect(resolveHappierHomeDirComparableKey('C:/Users/Alice/.happier\\\\')).toBe('c:/users/alice/.happier');
+        expect(resolveHappierHomeDirComparableKey('C:\\Users\\Alice\\.piggercode\\')).toBe('c:/users/alice/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('c:/Users/Alice/.piggercode')).toBe('c:/users/alice/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('C:/Users/Alice/.piggercode\\\\')).toBe('c:/users/alice/.piggercode');
     });
 
     it('normalizes Windows UNC paths as case-insensitive and slash-insensitive', () => {
-        expect(resolveHappierHomeDirComparableKey('\\\\Server\\Share\\.happier\\')).toBe('//server/share/.happier');
-        expect(resolveHappierHomeDirComparableKey('//SERVER/Share/.happier/')).toBe('//server/share/.happier');
+        expect(resolveHappierHomeDirComparableKey('\\\\Server\\Share\\.piggercode\\')).toBe('//server/share/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('//SERVER/Share/.piggercode/')).toBe('//server/share/.piggercode');
     });
 
     it('normalizes POSIX-style Windows drive paths to the same key as native Windows paths', () => {
-        expect(resolveHappierHomeDirComparableKey('/c/Users/Alice/.happier')).toBe('c:/users/alice/.happier');
-        expect(resolveHappierHomeDirComparableKey('/C/Users/Alice/.happier/')).toBe('c:/users/alice/.happier');
-        expect(resolveHappierHomeDirComparableKey('C:\\Users\\Alice\\.happier')).toBe('c:/users/alice/.happier');
+        expect(resolveHappierHomeDirComparableKey('/c/Users/Alice/.piggercode')).toBe('c:/users/alice/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('/C/Users/Alice/.piggercode/')).toBe('c:/users/alice/.piggercode');
+        expect(resolveHappierHomeDirComparableKey('C:\\Users\\Alice\\.piggercode')).toBe('c:/users/alice/.piggercode');
     });
 });

@@ -9,7 +9,7 @@ import type { CliSelfUpdateAvailable, RepairFinding } from './types';
 
 /**
  * Whether a newer CLI is published on the user's release channel, as the one update-check owner
- * cached it (plan R13 S-1): `happier self check` writes the ring's cache — from the acquisition
+ * cached it (plan R13 S-1): `piggercode self check` writes the ring's cache — from the acquisition
  * owner's release lookup for binary installs, npm for npm installs — and this reads it through the
  * same ring-filtered reader as the terminal notice and the daemon's update facts. Doctor never
  * writes the cache and never makes the network call itself; when the cache is stale (always, for a

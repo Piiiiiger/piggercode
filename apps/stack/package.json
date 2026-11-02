@@ -2,7 +2,7 @@
   "name": "@piggercode/stack",
   "type": "module",
   "version": "0.2.17",
-  "repository": "happier-dev/happier",
+  "repository": "Piiiiiger/piggercode",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
@@ -10,7 +10,7 @@
   "packageManager": "yarn@1.22.22",
   "bin": {
     "hstack": "./bin/hstack.mjs",
-    "happier": "./bin/happier.mjs"
+    "piggercode": "./bin/piggercode.mjs"
   },
   "files": [
     "bin/",
@@ -40,7 +40,7 @@
     "ui:tauri": "node ./scripts/tauri_dev.mjs",
     "tauri:dev": "node ./scripts/tauri_dev.mjs",
     "release": "node ./scripts/release.mjs",
-    "happier": "node ./bin/happier.mjs",
+    "piggercode": "node ./bin/piggercode.mjs",
     "wt": "node ./scripts/worktrees.mjs",
     "srv": "node ./scripts/server_flavor.mjs",
     "server-flavor": "node ./scripts/server_flavor.mjs",

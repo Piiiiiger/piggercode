@@ -138,9 +138,9 @@ expo_a, expo_b = parse_range(os.environ.get("EXPO_PORT_RANGE", "18000-19099"))
 
 text = path.read_text(encoding="utf-8")
 
-MEM_MARK_BEGIN = "# --- happier vm sizing (managed) ---"
+MEM_MARK_BEGIN = "# --- piggercode vm sizing (managed) ---"
 MEM_MARK_END = "# --- /happier vm sizing ---"
-MARK_BEGIN = "# --- happier port forwards (managed) ---"
+MARK_BEGIN = "# --- piggercode port forwards (managed) ---"
 MARK_END = "# --- /happier port forwards ---"
 
 entries = [

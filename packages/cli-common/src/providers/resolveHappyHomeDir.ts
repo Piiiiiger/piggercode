@@ -44,5 +44,5 @@ export function resolveHappyHomeDirFromEnvironment(processEnv: NodeJS.ProcessEnv
     baseHome = tmpdir();
   }
 
-  return joinPathForPathShape(baseHome, '.happier');
+  return joinPathForPathShape(baseHome, '.piggercode');
 }

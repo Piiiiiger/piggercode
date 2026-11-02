@@ -12,7 +12,7 @@ describe('QRCode.web', () => {
     it('keeps finder rings scannable when backgroundColor is transparent', async () => {
         const screen = await renderScreen(
             <QRCode
-                data="happier:///account/connect?publicKey=test"
+                data="piggercode:///account/connect?publicKey=test"
                 size={260}
                 foregroundColor="#FFFFFF"
                 backgroundColor="transparent"

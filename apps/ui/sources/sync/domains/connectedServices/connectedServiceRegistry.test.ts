@@ -22,7 +22,7 @@ describe('connectedServiceRegistry', () => {
     const entry = getConnectedServiceRegistryEntry('github');
     expect(entry).toMatchObject({
       serviceId: 'github',
-      connectCommand: 'happier connect github --token',
+      connectCommand: 'piggercode connect github --token',
       supportsOauth: false,
       supportsToken: true,
       tokenKind: 'access-token',

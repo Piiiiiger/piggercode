@@ -35,7 +35,7 @@ describe('session media testkit fixtures', () => {
       });
       expect(fixture.metadataEnvelope.payload.media).toHaveLength(1);
       const [media] = fixture.metadataEnvelope.payload.media;
-      expect(media?.path).toMatch(/^\.happier\/uploads\/generated\/message-1\/.+\.png$/);
+      expect(media?.path).toMatch(/^\.piggercode\/uploads\/generated\/message-1\/.+\.png$/);
       expect(media?.path).not.toContain(workspaceDir);
       expect(resolve(workspaceDir, media!.path)).toBe(fixture.mediaPath);
       await expect(readFile(fixture.mediaPath)).resolves.toEqual(fixture.mediaBytes);
@@ -63,7 +63,7 @@ describe('session media testkit fixtures', () => {
       kind: 'session_media.v1',
       payload: {
         media: [{
-          path: '.happier/uploads/generated/../provider-temp/generated-image.png',
+          path: '.piggercode/uploads/generated/../provider-temp/generated-image.png',
         }],
       },
     })).toThrow(/relative session file path/);

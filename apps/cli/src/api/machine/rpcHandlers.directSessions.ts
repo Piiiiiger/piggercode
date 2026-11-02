@@ -378,7 +378,7 @@ export function registerMachineDirectSessionsRpcHandlers(params: Readonly<{
     if (owner) {
       return err(
         'provider_unavailable',
-        'This session is still running in Happier. Stop it before deleting it.',
+        'This session is still running in PiggerCode. Stop it before deleting it.',
       ) satisfies DirectSessionCandidateDeleteResponse;
     }
 

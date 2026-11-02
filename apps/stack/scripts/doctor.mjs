@@ -141,7 +141,7 @@ async function main() {
 
 	  const serverDir = getComponentDir(rootDir, serverComponentName);
 	  const cliDir = getComponentDir(rootDir, 'happier-cli');
-	  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+	  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
 
   assertServerComponentDirMatches({ rootDir, serverComponentName, serverDir });
 

@@ -32,11 +32,11 @@ export function resolveRelayReleaseTag(channel: RelayChannelInput): string {
 /**
  * Resolve the owner/repo slug used for Happier GitHub releases.
  * Honours the `PIGGERCODE_GITHUB_REPO` env var (for forked or internal repos)
- * and falls back to the canonical `happier-dev/happier`.
+ * and falls back to the canonical `Piiiiiger/piggercode`.
  */
 export function resolveHappierGithubRepo(): string {
   const raw = String(process.env.PIGGERCODE_GITHUB_REPO ?? '').trim();
-  return raw || 'happier-dev/happier';
+  return raw || 'Piiiiiger/piggercode';
 }
 
 function normaliseToPublicLabel(channel: RelayChannelInput): PublicReleaseRingLabel {

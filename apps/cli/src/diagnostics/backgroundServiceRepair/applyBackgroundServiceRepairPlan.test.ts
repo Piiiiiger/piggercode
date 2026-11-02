@@ -43,8 +43,8 @@ describe('applyBackgroundServiceRepairPlan', () => {
         {
           kind: 'remove-service',
           service: {
-            label: 'happier-daemon.dev.default',
-            installedPath: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+            label: 'piggercode-daemon.dev.default',
+            installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
             mode: 'user',
             releaseChannel: 'publicdev',
             targetMode: 'default-following',
@@ -64,26 +64,26 @@ describe('applyBackgroundServiceRepairPlan', () => {
       systemUser: '',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
     });
 
     expect(uninstallDaemonServiceMock).toHaveBeenCalledWith({
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
-      installedPath: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+      installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
       runCommands: true,
     });
     expect(installDaemonServiceMock).toHaveBeenCalledWith(expect.objectContaining({
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'preview',
       targetMode: 'default-following',
@@ -109,8 +109,8 @@ describe('applyBackgroundServiceRepairPlan', () => {
         {
           kind: 'remove-service',
           service: {
-            label: 'happier-daemon.dev.default',
-            installedPath: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+            label: 'piggercode-daemon.dev.default',
+            installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
             mode: 'user',
             releaseChannel: 'publicdev',
             targetMode: 'default-following',
@@ -135,26 +135,26 @@ describe('applyBackgroundServiceRepairPlan', () => {
       systemUser: '',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
     })).rejects.toThrow(replacementError);
 
     expect(uninstallDaemonServiceMock).toHaveBeenCalledWith({
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'publicdev',
       targetMode: 'default-following',
       instanceId: 'default',
-      installedPath: '/home/tester/.config/systemd/user/happier-daemon.dev.default.service',
+      installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.dev.default.service',
       runCommands: true,
     });
     expect(uninstallDaemonServiceMock).toHaveBeenNthCalledWith(2, {
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'preview',
       targetMode: 'default-following',
@@ -165,7 +165,7 @@ describe('applyBackgroundServiceRepairPlan', () => {
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'preview',
       targetMode: 'default-following',
@@ -176,7 +176,7 @@ describe('applyBackgroundServiceRepairPlan', () => {
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'publicdev',
       targetMode: 'default-following',
@@ -194,14 +194,14 @@ describe('applyBackgroundServiceRepairPlan', () => {
       existingServices: [
         {
           serverId: 'default',
-          name: 'happier-daemon.preview.default.service',
+          name: 'piggercode-daemon.preview.default.service',
           installed: true,
-          path: '/home/tester/.config/systemd/user/happier-daemon.preview.default.service',
+          path: '/home/tester/.config/systemd/user/piggercode-daemon.preview.default.service',
           platform: 'linux',
           mode: 'user',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           releaseChannel: 'preview',
-          label: 'happier-daemon.preview.default',
+          label: 'piggercode-daemon.preview.default',
           targetMode: 'default-following',
         },
       ],
@@ -223,7 +223,7 @@ describe('applyBackgroundServiceRepairPlan', () => {
       systemUser: '',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
     })).rejects.toThrow(replacementError);
 
     expect(installDaemonServiceMock).toHaveBeenCalledTimes(1);
@@ -236,15 +236,15 @@ describe('applyBackgroundServiceRepairPlan', () => {
       existingServices: [
         {
           serverId: 'default',
-          name: 'happier-daemon.default.service',
+          name: 'piggercode-daemon.default.service',
           installed: true,
           installedDefinitionMatchesExpected: false,
-          path: '/home/tester/.config/systemd/user/happier-daemon.default.service',
+          path: '/home/tester/.config/systemd/user/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'user',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           releaseChannel: 'preview',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         },
       ],
@@ -258,8 +258,8 @@ describe('applyBackgroundServiceRepairPlan', () => {
         {
           kind: 'remove-service',
           service: {
-            label: 'happier-daemon.preview.server-2',
-            installedPath: '/home/tester/.config/systemd/user/happier-daemon.preview.server-2.service',
+            label: 'piggercode-daemon.preview.server-2',
+            installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.preview.server-2.service',
             mode: 'user',
             releaseChannel: 'preview',
             targetMode: 'pinned',
@@ -278,7 +278,7 @@ describe('applyBackgroundServiceRepairPlan', () => {
       systemUser: '',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
     })).rejects.toThrow(laterFailure);
 
     expect(installDaemonServiceMock).toHaveBeenCalledTimes(1);
@@ -287,12 +287,12 @@ describe('applyBackgroundServiceRepairPlan', () => {
       platform: 'linux',
       uid: 501,
       userHomeDir: '/home/tester',
-      happierHomeDir: '/home/tester/.happier',
+      happierHomeDir: '/home/tester/.piggercode',
       mode: 'user',
       channel: 'preview',
       targetMode: 'pinned',
       instanceId: 'server-2',
-      installedPath: '/home/tester/.config/systemd/user/happier-daemon.preview.server-2.service',
+      installedPath: '/home/tester/.config/systemd/user/piggercode-daemon.preview.server-2.service',
       runCommands: true,
     });
   });

@@ -22,7 +22,7 @@ export type ConnectedServiceRegistryEntry = Readonly<{
 export const CONNECTED_SERVICES_REGISTRY: readonly ConnectedServiceRegistryEntry[] = Object.freeze([
   {
     serviceId: 'claude-subscription',
-    connectCommand: 'happier connect claude',
+    connectCommand: 'piggercode connect claude',
     supportsOauth: true,
     oauthAddActionModes: ['paste', 'browser'],
     supportsToken: true,
@@ -30,27 +30,27 @@ export const CONNECTED_SERVICES_REGISTRY: readonly ConnectedServiceRegistryEntry
   },
   {
     serviceId: 'openai-codex',
-    connectCommand: 'happier connect codex',
+    connectCommand: 'piggercode connect codex',
     supportsOauth: true,
     oauthAddActionModes: ['device', 'paste', 'browser'],
   },
   {
     serviceId: 'openai',
-    connectCommand: 'happier connect codex --api-key',
+    connectCommand: 'piggercode connect codex --api-key',
     supportsOauth: false,
     supportsToken: true,
     tokenKind: 'api-key',
   },
   {
     serviceId: 'anthropic',
-    connectCommand: 'happier connect claude --api-key',
+    connectCommand: 'piggercode connect claude --api-key',
     supportsOauth: false,
     supportsToken: true,
     tokenKind: 'api-key',
   },
   {
     serviceId: 'github',
-    connectCommand: 'happier connect github --token',
+    connectCommand: 'piggercode connect github --token',
     supportsOauth: false,
     supportsToken: true,
     tokenKind: 'access-token',
@@ -63,7 +63,7 @@ export function getConnectedServiceRegistryEntry(serviceId: ConnectedServiceId):
   if (entry) return entry;
   return {
     serviceId,
-    connectCommand: `happier connect ${serviceId}`,
+    connectCommand: `piggercode connect ${serviceId}`,
     supportsOauth: false,
     oauthAddActionModes: [],
     supportsToken: false,

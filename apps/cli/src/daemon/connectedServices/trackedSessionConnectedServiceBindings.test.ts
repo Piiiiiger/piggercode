@@ -37,9 +37,9 @@ describe('trackedSessionConnectedServiceBindings', () => {
         path: '/tmp/project',
         host: 'test-host',
         homeDir: '/tmp/home',
-        happyHomeDir: '/tmp/home/.happier',
-        happyLibDir: '/tmp/home/.happier/lib',
-        happyToolsDir: '/tmp/home/.happier/tools',
+        happyHomeDir: '/tmp/home/.piggercode',
+        happyLibDir: '/tmp/home/.piggercode/lib',
+        happyToolsDir: '/tmp/home/.piggercode/tools',
         connectedServices: metadataBindings,
       },
     });
@@ -72,9 +72,9 @@ describe('trackedSessionConnectedServiceBindings', () => {
         path: '/tmp/project',
         host: 'test-host',
         homeDir: '/tmp/home',
-        happyHomeDir: '/tmp/home/.happier',
-        happyLibDir: '/tmp/home/.happier/lib',
-        happyToolsDir: '/tmp/home/.happier/tools',
+        happyHomeDir: '/tmp/home/.piggercode',
+        happyLibDir: '/tmp/home/.piggercode/lib',
+        happyToolsDir: '/tmp/home/.piggercode/tools',
         connectedServices: {
           v: 1,
           bindingsByServiceId: {

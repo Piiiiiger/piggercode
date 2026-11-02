@@ -17,7 +17,7 @@ vi.mock('./serviceRepair/handleServiceRepairCliCommand', () => ({
 }));
 
 vi.mock('@/cli/runtime/resolveInvokerName', () => ({
-  resolveInvokerName: () => 'happier',
+  resolveInvokerName: () => 'piggercode',
 }));
 
 import { handleServiceCliCommand } from './service';
@@ -26,26 +26,26 @@ describe('service command routing', () => {
   it('routes top-level service actions through the daemon service CLI', async () => {
     await handleServiceCliCommand({
       args: ['service', 'install', '--json'],
-      rawArgv: ['node', 'happier', 'service', 'install', '--json'],
+      rawArgv: ['node', 'piggercode', 'service', 'install', '--json'],
       terminalRuntime: null,
     });
 
     expect(runDaemonServiceCliCommandMock).toHaveBeenCalledWith({
       argv: ['install', '--json'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     });
   });
 
   it('routes service repair through the bounded repair command handler', async () => {
     await handleServiceCliCommand({
       args: ['service', 'repair', '--json'],
-      rawArgv: ['node', 'happier', 'service', 'repair', '--json'],
+      rawArgv: ['node', 'piggercode', 'service', 'repair', '--json'],
       terminalRuntime: null,
     });
 
     expect(handleServiceRepairCliCommandMock).toHaveBeenCalledWith({
       argv: ['repair', '--json'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     });
     expect(runDaemonServiceCliCommandMock).not.toHaveBeenCalledWith({
       argv: ['repair', '--json'],

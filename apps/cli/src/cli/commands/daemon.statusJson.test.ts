@@ -106,7 +106,7 @@ vi.mock('@/daemon/waitForDaemonRunningWithinBudget', () => ({
   waitForDaemonRunningWithinBudget: vi.fn(async () => true),
 }));
 
-describe('happier daemon status --json', () => {
+describe('piggercode daemon status --json', () => {
   afterEach(() => {
     runDoctorCommandMock.mockReset();
     listDaemonStatusesForAllKnownServersMock.mockReset();

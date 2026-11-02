@@ -17,13 +17,13 @@ const {
   existsSyncMock: vi.fn((value: unknown) => String(value).includes('hdev.exe')),
   findAllHappyProcessesMock: vi.fn(),
   resolveInstalledFirstPartyComponentPathsMock: vi.fn((_params?: unknown) => ({
-    installRoot: 'C:\\Users\\tester\\.happier\\cli-dev',
-    currentPath: 'C:\\Users\\tester\\.happier\\cli-dev\\current',
-    previousPath: 'C:\\Users\\tester\\.happier\\cli-dev\\previous',
-    versionsDir: 'C:\\Users\\tester\\.happier\\cli-dev\\versions',
-    binaryPath: 'C:\\Users\\tester\\.happier\\cli-dev\\current\\happier.exe',
-    nodeEntrypointPath: 'C:\\Users\\tester\\.happier\\cli-dev\\current\\package-dist\\index.mjs',
-    shimPaths: ['C:\\Users\\tester\\.happier\\bin\\hdev.exe'],
+    installRoot: 'C:\\Users\\tester\\.piggercode\\cli-dev',
+    currentPath: 'C:\\Users\\tester\\.piggercode\\cli-dev\\current',
+    previousPath: 'C:\\Users\\tester\\.piggercode\\cli-dev\\previous',
+    versionsDir: 'C:\\Users\\tester\\.piggercode\\cli-dev\\versions',
+    binaryPath: 'C:\\Users\\tester\\.piggercode\\cli-dev\\current\\piggercode.exe',
+    nodeEntrypointPath: 'C:\\Users\\tester\\.piggercode\\cli-dev\\current\\package-dist\\index.mjs',
+    shimPaths: ['C:\\Users\\tester\\.piggercode\\bin\\hdev.exe'],
   })),
   spawnSyncMock: vi.fn((_command?: unknown, _args?: unknown, _options?: unknown) => ({ status: 0 })),
 }));
@@ -90,13 +90,13 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       .mockResolvedValueOnce([
         {
           pid: 11,
-          command: '"C:\\Users\\tester\\.happier\\bin\\hdev.exe" daemon start-sync',
+          command: '"C:\\Users\\tester\\.piggercode\\bin\\hdev.exe" daemon start-sync',
           type: 'daemon',
         },
         {
           pid: 12,
           command:
-            'C:\\Users\\tester\\.happier\\bin\\hdev.exe C:\\Users\\tester\\.happier\\cli-dev\\current\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+            'C:\\Users\\tester\\.piggercode\\bin\\hdev.exe C:\\Users\\tester\\.piggercode\\cli-dev\\current\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
           type: 'daemon-spawned-session',
         },
         {
@@ -106,7 +106,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
         },
         {
           pid: 14,
-          command: '"C:\\Users\\tester\\.happier\\bin\\hdev.exe" auth status --json',
+          command: '"C:\\Users\\tester\\.piggercode\\bin\\hdev.exe" auth status --json',
           type: 'user-session',
         },
       ])
@@ -116,7 +116,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       const { quiesceInstalledCliWindowsPayloadOwners } = await import('./quiesceInstalledCliWindowsPayloadOwners');
       await quiesceInstalledCliWindowsPayloadOwners({
         channel: 'publicdev',
-        processEnv: { ...process.env, PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier' },
+        processEnv: { ...process.env, PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode' },
       });
     });
 
@@ -124,16 +124,16 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       componentId: 'happier-cli',
       channel: 'publicdev',
       processEnv: expect.objectContaining({
-        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+        PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
       }),
     });
     expect(spawnSyncMock).toHaveBeenNthCalledWith(
       1,
-      'C:\\Users\\tester\\.happier\\bin\\hdev.exe',
+      'C:\\Users\\tester\\.piggercode\\bin\\hdev.exe',
       ['service', 'stop', '--json'],
       expect.objectContaining({
         env: expect.objectContaining({
-          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
         }),
         stdio: 'ignore',
         windowsHide: true,
@@ -141,11 +141,11 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
     );
     expect(spawnSyncMock).toHaveBeenNthCalledWith(
       2,
-      'C:\\Users\\tester\\.happier\\bin\\hdev.exe',
+      'C:\\Users\\tester\\.piggercode\\bin\\hdev.exe',
       ['daemon', 'stop', '--all', '--kill-sessions', '--json'],
       expect.objectContaining({
         env: expect.objectContaining({
-          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
         }),
         stdio: 'ignore',
         windowsHide: true,
@@ -177,7 +177,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
         channel: 'publicdev',
         processEnv: {
           ...process.env,
-          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
           PIGGERCODE_INSTALLER_PRE_INSTALL_COMMAND_TIMEOUT_MS: '7000',
         },
       });
@@ -185,7 +185,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
 
     expect(spawnSyncMock).toHaveBeenNthCalledWith(
       1,
-      'C:\\Users\\tester\\.happier\\bin\\hdev.exe',
+      'C:\\Users\\tester\\.piggercode\\bin\\hdev.exe',
       ['service', 'stop', '--json'],
       expect.objectContaining({
         timeout: 7000,
@@ -195,7 +195,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
     );
     expect(spawnSyncMock).toHaveBeenNthCalledWith(
       2,
-      'C:\\Users\\tester\\.happier\\bin\\hdev.exe',
+      'C:\\Users\\tester\\.piggercode\\bin\\hdev.exe',
       ['daemon', 'stop', '--all', '--kill-sessions', '--json'],
       expect.objectContaining({
         timeout: 7000,
@@ -210,7 +210,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       .mockResolvedValueOnce([
         {
           pid: 31,
-          command: '"C:\\Users\\tester\\.happier\\bin\\hdev.exe" daemon start-sync',
+          command: '"C:\\Users\\tester\\.piggercode\\bin\\hdev.exe" daemon start-sync',
           type: 'daemon',
         },
       ])
@@ -222,7 +222,7 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
         channel: 'publicdev',
         processEnv: {
           ...process.env,
-          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+          PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
           PIGGERCODE_CLI_SKIP_PAYLOAD_OWNER_STOP_COMMANDS: '1',
         },
       });
@@ -241,14 +241,14 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       .mockResolvedValueOnce([
         {
           pid: 21,
-          command: '"C:\\Users\\tester\\.happier\\bin\\hdev.exe" daemon start-sync',
+          command: '"C:\\Users\\tester\\.piggercode\\bin\\hdev.exe" daemon start-sync',
           type: 'daemon',
         },
       ])
       .mockResolvedValueOnce([
         {
           pid: 21,
-          command: '"C:\\Users\\tester\\.happier\\bin\\hdev.exe" daemon start-sync',
+          command: '"C:\\Users\\tester\\.piggercode\\bin\\hdev.exe" daemon start-sync',
           type: 'daemon',
         },
       ]);
@@ -257,8 +257,8 @@ describe('quiesceInstalledCliWindowsPayloadOwners', () => {
       const { quiesceInstalledCliWindowsPayloadOwners } = await import('./quiesceInstalledCliWindowsPayloadOwners');
       await expect(quiesceInstalledCliWindowsPayloadOwners({
         channel: 'publicdev',
-        processEnv: { ...process.env, PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier' },
-      })).rejects.toThrow(/Failed to stop running Happier runtime processes before payload promotion/i);
+        processEnv: { ...process.env, PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode' },
+      })).rejects.toThrow(/Failed to stop running PiggerCode runtime processes before payload promotion/i);
     });
   });
 });

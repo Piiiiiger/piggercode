@@ -9,7 +9,7 @@ import { createEnvKeyScope } from '@/testkit/env/envScope';
 import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { captureConsoleJsonOutput, captureConsoleLogAndMuteStdout } from '@/testkit/logger/captureOutput';
 
-describe('happier session list (integration)', () => {
+describe('piggercode session list (integration)', () => {
   const envKeys = [
     'PIGGERCODE_SERVER_URL',
     'PIGGERCODE_WEBAPP_URL',

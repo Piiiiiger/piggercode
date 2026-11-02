@@ -12,7 +12,7 @@ describe('createWindowsTerminalZellijForegroundClientLauncher', () => {
     const { createWindowsTerminalZellijForegroundClientLauncher } = await import('./windowsForegroundClient');
     const launchClient = createWindowsTerminalZellijForegroundClientLauncher({
       windowId: 'happier-zellij-qa',
-      titlePrefix: 'Happier QA',
+      titlePrefix: 'PiggerCode QA',
     });
 
     await launchClient({
@@ -39,7 +39,7 @@ describe('createWindowsTerminalZellijForegroundClientLauncher', () => {
       workingDirectory: 'C:\\repo',
       env: { ZELLIJ_SOCKET_DIR: 'C:\\Temp\\zellij' },
       windowId: 'happier-zellij-qa',
-      title: 'Happier QA happy-claude',
+      title: 'PiggerCode QA happy-claude',
       inheritParentEnv: false,
     });
   });

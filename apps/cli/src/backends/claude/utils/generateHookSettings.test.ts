@@ -72,15 +72,15 @@ describe('generateHookSettingsFile', () => {
     const parsed = JSON.parse(readFileSync(filePath, 'utf8')) as any;
     expect(parsed.hooks).toBeUndefined();
     expect(parsed.permissions?.allow).toEqual(expect.arrayContaining([
-      'mcp__happier__change_title',
-      'mcp__happier__session_title_set',
+      'mcp__piggercode__change_title',
+      'mcp__piggercode__session_title_set',
     ]));
     expect(parsed.permissions?.allow).not.toEqual(expect.arrayContaining([
-      'mcp__happier__execution_run_start',
-      'mcp__happier__execution_run_get',
-      'mcp__happier__execution_run_wait',
-      'mcp__happier__subagents_delegate_start',
-      'mcp__happier__review_start',
+      'mcp__piggercode__execution_run_start',
+      'mcp__piggercode__execution_run_get',
+      'mcp__piggercode__execution_run_wait',
+      'mcp__piggercode__subagents_delegate_start',
+      'mcp__piggercode__review_start',
     ]));
     expect(statSync(filePath).mode & 0o777).toBe(0o600);
   });
@@ -235,8 +235,8 @@ describe('generateHookPluginDir', () => {
     const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as any;
     expect(parsed.name).toMatch(/^happier-session-hooks-\d+$/);
     expect(parsed.version).toBe('1.0.0');
-    expect(parsed.description).toContain('Happier');
-    expect(parsed.author?.name).toBe('Happier');
+    expect(parsed.description).toContain('PiggerCode');
+    expect(parsed.author?.name).toBe('PiggerCode');
   });
 
   it('uses a stable session-scoped plugin dir when a session hook plugin id is provided', () => {

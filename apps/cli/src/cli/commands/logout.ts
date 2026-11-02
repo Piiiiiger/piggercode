@@ -5,7 +5,7 @@ import { handleAuthCommand } from '@/cli/commands/auth';
 import type { CommandContext } from '@/cli/commandRegistry';
 
 export async function handleLogoutCliCommand(_context: CommandContext): Promise<void> {
-  console.log(`${warn(`${cmd('happier logout')} is deprecated. Use ${cmd('happier auth logout')} instead.`)}\n`);
+  console.log(`${warn(`${cmd('piggercode logout')} is deprecated. Use ${cmd('piggercode auth logout')} instead.`)}\n`);
   try {
     await handleAuthCommand(['logout']);
   } catch (error) {

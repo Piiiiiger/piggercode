@@ -47,7 +47,7 @@ function readRequestedChannel(params: unknown): string | null {
 
 /**
  * `cli.update.v1` hosted by the daemon (plan R13 f): the same update transaction as
- * `happier self update`, started remotely through the daemon's `tool.systemTasks` capability
+ * `piggercode self update`, started remotely through the daemon's `tool.systemTasks` capability
  * (same-account RPC; the app confirms before it asks).
  *
  * The daemon cannot run the update in-process — the transaction restarts the very service this
@@ -79,21 +79,21 @@ export function createCliUpdateRemoteTaskKind(deps: Readonly<{
       if (requestedChannel !== null && requestedChannel !== facts.channel) {
         throw new SystemTaskExecutionError(
           'invalid_params',
-          `This machine runs the ${facts.channel} Happier CLI; it cannot update the ${requestedChannel} one.`,
+          `This machine runs the ${facts.channel} PiggerCode CLI; it cannot update the ${requestedChannel} one.`,
         );
       }
       if (facts.installSource !== 'managed') {
         throw new SystemTaskExecutionError(
           'cli_not_managed',
           facts.updateCommand
-            ? `The Happier CLI on this machine was not installed by Happier. Update it there with: ${facts.updateCommand}`
-            : 'The Happier CLI on this machine was not installed by Happier. Update it where it came from.',
+            ? `The PiggerCode CLI on this machine was not installed by PiggerCode. Update it there with: ${facts.updateCommand}`
+            : 'The PiggerCode CLI on this machine was not installed by PiggerCode. Update it where it came from.',
         );
       }
       if (!facts.canUpdateRemotely) {
         throw new SystemTaskExecutionError(
           'cli_remote_update_unsupported',
-          `This machine cannot update its Happier CLI remotely yet. On that machine, run: ${facts.updateCommand ?? 'happier self update'}`,
+          `This machine cannot update its PiggerCode CLI remotely yet. On that machine, run: ${facts.updateCommand ?? 'piggercode self update'}`,
         );
       }
 
@@ -107,7 +107,7 @@ export function createCliUpdateRemoteTaskKind(deps: Readonly<{
         logPath,
         admissionFdEnvName: UPDATER_ADMISSION_FD_ENV,
       });
-      const fallback = facts.updateCommand ?? 'happier self update';
+      const fallback = facts.updateCommand ?? 'piggercode self update';
       if (!spawned.started || !spawned.admission) {
         throw new SystemTaskExecutionError('cli_update_start_failed', `The update could not be started on this machine. On that machine, run: ${fallback}`);
       }

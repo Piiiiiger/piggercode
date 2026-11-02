@@ -10,9 +10,9 @@ export class FirstPartyPayloadMutationLockError extends Error {
 
   constructor(params: Readonly<{ subject: string; holderPid: number | null; lockfilePath: string }>) {
     super(
-      `Another Happier process is installing or updating ${params.subject}`
+      `Another PiggerCode process is installing or updating ${params.subject}`
       + `${params.holderPid ? ` (pid ${params.holderPid})` : ''}. Try again when it finishes.`
-      + ` If no Happier process is running, remove ${params.lockfilePath}.`,
+      + ` If no PiggerCode process is running, remove ${params.lockfilePath}.`,
     );
     this.name = 'FirstPartyPayloadMutationLockError';
     this.holderPid = params.holderPid;
@@ -133,7 +133,7 @@ async function withOwnedLockfile<T>(params: Readonly<{
 }
 
 function reportReleaseFailure(error: unknown): void {
-  process.stderr.write(`[happier] ${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(`[piggercode] ${error instanceof Error ? error.message : String(error)}\n`);
 }
 
 /**
@@ -173,7 +173,7 @@ export async function withFirstPartyActivationLock<T>(params: Readonly<{
   return await withOwnedLockfile({
     lockfilePath: joinPathForPathShape(params.happyHomeDir, 'first-party-activation.lock'),
     parentDir: params.happyHomeDir,
-    subject: `the Happier commands in '${params.happyHomeDir}'`,
+    subject: `the PiggerCode commands in '${params.happyHomeDir}'`,
     operation: params.operation,
     onReleaseFailure: params.onReleaseFailure,
   });

@@ -554,7 +554,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --resume claude-live-thread --existing-session session-live-restart',
+          '/home/guest/.piggercode/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --resume claude-live-thread --existing-session session-live-restart',
       } satisfies HappyProcessInfo,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -777,7 +777,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --existing-session session-live-terminal-restart',
+          '/home/guest/.piggercode/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --existing-session session-live-terminal-restart',
       } satisfies HappyProcessInfo,
     ]);
     vi.mocked(adoptSessionsFromMarkers).mockImplementationOnce(({ pidToTrackedSession }) => {
@@ -829,7 +829,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
           CLAUDE_CONFIG_DIR: '/tmp/claude-config',
         },
         command:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -850,7 +850,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
               CLAUDE_CONFIG_DIR: '/tmp/claude-config',
             },
             command:
-              '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+              '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
           },
         ],
         pidToTrackedSession,
@@ -872,7 +872,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommandHash:
-          'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          'hash:/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -881,9 +881,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        'hash:/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       processCommand:
-        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       respawn: {
         version: 1,
         directory: '/tmp/project',
@@ -1018,7 +1018,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       type: 'daemon-spawned-session',
       cwd: '/tmp/project',
       command:
-        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
     } satisfies HappyProcessInfo;
 
     vi.mocked(listSessionMarkers).mockResolvedValue([]);
@@ -1050,7 +1050,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1071,9 +1071,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
         processCommandHash:
-          'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          'hash:/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1082,9 +1082,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        'hash:/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       processCommand:
-        '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+        '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       respawn: {
         version: 1,
         directory: '/tmp/project',
@@ -1118,7 +1118,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --existing-session session-hash-fallback',
+          '/home/guest/.piggercode/cli-preview/current/happier claude --happy-starting-mode remote --started-by daemon --existing-session session-hash-fallback',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1187,7 +1187,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --existing-session session-456',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --existing-session session-456',
       } satisfies HappyProcessInfo,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1235,7 +1235,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'daemon-spawned-session',
         command:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1254,9 +1254,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
         processCommandHash:
-          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1265,9 +1265,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       processCommand:
-        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
+        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon',
       respawn: {
         version: 1,
         directory: '/tmp/project',
@@ -1300,7 +1300,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       {
         pid: 12345,
         type: 'user-session',
-        command: 'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe',
+        command: 'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1353,7 +1353,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'user-session',
         command:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1377,9 +1377,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         },
         reattachedFromDiskMarker: true,
         processCommand:
-          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
         processCommandHash:
-          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+          'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       }),
     );
     expect(writeSessionMarker).toHaveBeenCalledWith({
@@ -1388,9 +1388,9 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       startedBy: 'daemon',
       cwd: '/tmp/project',
       processCommandHash:
-        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+        'hash:C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       processCommand:
-        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\happier.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
+        'C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\piggercode.exe C:\\hq\\windetachedfix-007\\happier-v0.2.4-windows-x64\\package-dist\\index.mjs codex --happy-starting-mode remote --started-by daemon --existing-session session-123',
       respawn: expect.objectContaining({
         version: 1,
         directory: '/tmp/project',
@@ -1423,7 +1423,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         pid: 12345,
         type: 'daemon-spawned-session',
         command:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation(() => true);
@@ -1711,14 +1711,14 @@ describe('reattachTrackedSessionsFromMarkers', () => {
       pid: 76546,
       type: 'daemon-spawned-session',
       cwd: '/tmp/project',
-      command: 'happier claude --started-by daemon --existing-session session-marker-default',
+      command: 'piggercode claude --started-by daemon --existing-session session-marker-default',
     } satisfies HappyProcessInfo;
     const markerlessProcess = {
       pid: 99991,
       daemonOwnershipEnvironmentVariables: currentOwnershipEnvironment(),
       type: 'daemon-spawned-session',
       cwd: '/tmp/other',
-      command: 'happier codex --started-by daemon --existing-session session-markerless',
+      command: 'piggercode codex --started-by daemon --existing-session session-markerless',
     } satisfies HappyProcessInfo;
     const marker = {
       pid: markedProcess.pid,
@@ -1794,7 +1794,7 @@ describe('reattachTrackedSessionsFromMarkers', () => {
         type: 'daemon-spawned-session',
         cwd: '/tmp/project',
         command:
-          '/home/guest/.happier/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
+          '/home/guest/.piggercode/cli-preview/current/happier codex --happy-starting-mode remote --started-by daemon --resume vendor-1 --existing-session session-123',
       } as any,
     ]);
     vi.spyOn(process, 'kill').mockImplementation((pid: number) => {

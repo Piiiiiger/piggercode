@@ -46,7 +46,7 @@ export async function listResolvedCustomHappierTools(params: Readonly<{
   const tools: ResolvedCustomHappierTool[] = [];
   const warnings: ResolvedCustomHappierToolWarning[] = [];
   for (const [serverName, config] of Object.entries(params.mcpServers)) {
-    if (serverName === 'happier') continue;
+    if (serverName === 'piggercode') continue;
     try {
       tools.push(...await listServerTools(serverName, config, params.processEnv ?? process.env));
     } catch (error) {

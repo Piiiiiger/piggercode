@@ -371,7 +371,7 @@ PY
       fi
       base64 --decode
     }
-    dst=\"\$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js\"
+    dst=\"\$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js\"
     mkdir -p \"\$(dirname \"\$dst\")\"
     printf '%s' '${encoded}' | decode_base64 > \"\$dst\"
     chmod 700 \"\$dst\" 2>/dev/null || true
@@ -858,7 +858,7 @@ start_host_daemon_watchdog_background() {
     set +o pipefail
     consecutive_not_running=0
     while true; do
-      # `happier daemon status` can exit 0 even when unhealthy; treat explicit "not running" as unhealthy.
+      # `piggercode daemon status` can exit 0 even when unhealthy; treat explicit "not running" as unhealthy.
       if [[ -n "${watchdog_cli_root}" && -n "${watchdog_active_server_id}" ]]; then
         status_out="$(PIGGERCODE_SERVER_URL="${host_server_url:-}" PIGGERCODE_HOME_DIR="${watchdog_cli_root}" PIGGERCODE_ACTIVE_SERVER_ID="${watchdog_active_server_id}" run_host_happier daemon status 2>&1)"
         status_code=$?
@@ -1151,7 +1151,7 @@ resolve_stack_runtime_cli_bin() {
     local access_key_src=""
     access_key_src="$(resolve_stack_cli_access_key_path_for_ui_url || true)"
     if [[ -n "${access_key_src}" ]]; then
-      stack_name="$(python3 - <<'PY' "${access_key_src}" "$HOME/.happier/stacks" 2>/dev/null || true
+      stack_name="$(python3 - <<'PY' "${access_key_src}" "$HOME/.piggercode/stacks" 2>/dev/null || true
 import sys
 from pathlib import Path
 
@@ -1176,7 +1176,7 @@ PY
     echo ""
     return 0
   fi
-  local candidate="$HOME/.happier/stacks/${stack_name}/runtime/current/cli/happier"
+  local candidate="$HOME/.piggercode/stacks/${stack_name}/runtime/current/cli/piggercode"
   if [[ -x "${candidate}" ]]; then
     echo "${candidate}"
     return 0
@@ -1275,10 +1275,10 @@ PY
 
   if [[ "${source}" == "worktree_node" ]]; then
     kind="worktree_node"
-    resolved_path="node ${REPO_DIR}/apps/cli/bin/happier.mjs"
-    invocation=(node "${REPO_DIR}/apps/cli/bin/happier.mjs")
-    version_output="$(node "${REPO_DIR}/apps/cli/bin/happier.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
-    cmd=(node "${REPO_DIR}/apps/cli/bin/happier.mjs" "$@")
+    resolved_path="node ${REPO_DIR}/apps/cli/bin/piggercode.mjs"
+    invocation=(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs")
+    version_output="$(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+    cmd=(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs" "$@")
     WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
@@ -1304,33 +1304,33 @@ PY
     return $?
   fi
 
-  if [[ -x "$HOME/.happier/bin/happier" ]]; then
+  if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
     kind="user_install"
-    resolved_path="$HOME/.happier/bin/happier"
-    invocation=("$HOME/.happier/bin/happier")
-    version_output="$("$HOME/.happier/bin/happier" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
-    cmd=("$HOME/.happier/bin/happier" "$@")
+    resolved_path="$HOME/.piggercode/bin/happier"
+    invocation=("$HOME/.piggercode/bin/happier")
+    version_output="$("$HOME/.piggercode/bin/happier" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+    cmd=("$HOME/.piggercode/bin/happier" "$@")
     WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
   fi
-  if command -v happier >/dev/null 2>&1; then
+  if command -v piggercode >/dev/null 2>&1; then
     kind="path"
-    resolved_path="$(command -v happier 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+    resolved_path="$(command -v piggercode 2>/dev/null | head -n 1 | tr -d '\r' || true)"
     invocation=("happier")
-    version_output="$(happier --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
-    cmd=(happier "$@")
+    version_output="$(piggercode --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+    cmd=(piggercode "$@")
     WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
     write_resolution_once
     "${cmd[@]}"
     return $?
   fi
   kind="worktree_node"
-  resolved_path="node ${REPO_DIR}/apps/cli/bin/happier.mjs"
-  invocation=(node "${REPO_DIR}/apps/cli/bin/happier.mjs")
-  version_output="$(node "${REPO_DIR}/apps/cli/bin/happier.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
-  cmd=(node "${REPO_DIR}/apps/cli/bin/happier.mjs" "$@")
+  resolved_path="node ${REPO_DIR}/apps/cli/bin/piggercode.mjs"
+  invocation=(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs")
+  version_output="$(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs" --version 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+  cmd=(node "${REPO_DIR}/apps/cli/bin/piggercode.mjs" "$@")
   WSREPL_QA_HOST_PIGGERCODE_KIND="${kind}"
   write_resolution_once
   "${cmd[@]}"
@@ -1410,7 +1410,7 @@ process.stdout.write(JSON.stringify({
   cliRoot,
   activeServerId,
   activeServerDir,
-  stackHomeDir: stackName ? path.join(homeDir, '.happier', 'stacks', stackName) : '',
+  stackHomeDir: stackName ? path.join(homeDir, '.piggercode', 'stacks', stackName) : '',
   candidates,
 }));
 NODE
@@ -1451,7 +1451,7 @@ PY
     fi
   fi
 
-  local stacks_root="$HOME/.happier/stacks"
+  local stacks_root="$HOME/.piggercode/stacks"
   if [[ ! -d "${stacks_root}" ]]; then
     echo ""
     return 0
@@ -2424,14 +2424,14 @@ restart_guest_daemon_and_capture_logs() {
     guest_direct_peer_server_enabled="${WSREPL_QA_VM_DIRECT_PEER_SERVER_ENABLED:-true}"
   fi
   if [[ -n "${guest_active_server_id}" && -n "${guest_access_key_src}" && -f "${guest_access_key_src}" ]]; then
-    guest_happier_home_rel=".happier/wsrepl-qa"
+    guest_happier_home_rel=".piggercode/wsrepl-qa"
   fi
 
   # If the guest does not have Happier installed yet (common in local harness tests, or when mode=skip),
   # keep the wrapper non-fatal and leave the placeholder diagnostics in place.
-  if ! limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.happier/bin/happier" ]] || command -v happier >/dev/null 2>&1' >/dev/null 2>&1; then
-    printf "%s\n" "(guest happier not found; skipping daemon restart)" > "${start_file}"
-    printf "%s\n" "(guest happier not found)" > "${status_file}"
+  if ! limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.piggercode/bin/happier" ]] || command -v piggercode >/dev/null 2>&1' >/dev/null 2>&1; then
+    printf "%s\n" "(guest piggercode not found; skipping daemon restart)" > "${start_file}"
+    printf "%s\n" "(guest piggercode not found)" > "${status_file}"
     printf "%s\n" "" > "${log_path_file}"
     printf "%s\n" "(no daemon log file found)" > "${log_tail_file}"
     return 0
@@ -2486,17 +2486,17 @@ PY
     if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
       export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
     fi
-    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-      export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+      export PIGGERCODE_CLAUDE_PATH="$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js"
     fi
     HAPPY=""
-    if [[ -x "$HOME/.happier/bin/happier" ]]; then
-      HAPPY="$HOME/.happier/bin/happier"
-    elif command -v happier >/dev/null 2>&1; then
+    if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+      HAPPY="$HOME/.piggercode/bin/happier"
+    elif command -v piggercode >/dev/null 2>&1; then
       HAPPY="happier"
 	    fi
 	    if [[ -z "$HAPPY" ]]; then
-	      echo "missing guest happier binary (expected $HOME/.happier/bin/happier or PATH happier)" >&2
+	      echo "missing guest piggercode binary (expected $HOME/.piggercode/bin/happier or PATH piggercode)" >&2
 	      exit 2
 	    fi
 	    "$HAPPY" daemon stop >/dev/null 2>&1 || true
@@ -2520,13 +2520,13 @@ PY
       if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
         export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
       fi
-      if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-        export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+      if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+        export PIGGERCODE_CLAUDE_PATH="$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js"
       fi
 	    HAPPY=""
-    if [[ -x "$HOME/.happier/bin/happier" ]]; then
-      HAPPY="$HOME/.happier/bin/happier"
-    elif command -v happier >/dev/null 2>&1; then
+    if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+      HAPPY="$HOME/.piggercode/bin/happier"
+    elif command -v piggercode >/dev/null 2>&1; then
       HAPPY="happier"
     fi
     if [[ -z "$HAPPY" ]]; then exit 0; fi
@@ -2542,13 +2542,13 @@ PY
     if [[ -n "${WSREPL_QA_GUEST_HOME_REL:-}" ]]; then
       export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
     fi
-    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
-      export PIGGERCODE_CLAUDE_PATH="$HOME/.happier/wsrepl-qa/fixtures/fake-claude-code-cli.js"
+    if [[ -z "${PIGGERCODE_CLAUDE_PATH:-}" && -f "$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js" ]]; then
+      export PIGGERCODE_CLAUDE_PATH="$HOME/.piggercode/wsrepl-qa/fixtures/fake-claude-code-cli.js"
     fi
     HAPPY=""
-    if [[ -x "$HOME/.happier/bin/happier" ]]; then
-      HAPPY="$HOME/.happier/bin/happier"
-    elif command -v happier >/dev/null 2>&1; then
+    if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+      HAPPY="$HOME/.piggercode/bin/happier"
+    elif command -v piggercode >/dev/null 2>&1; then
       HAPPY="happier"
     fi
     if [[ -z "$HAPPY" ]]; then exit 0; fi
@@ -2593,9 +2593,9 @@ PY
 	          export PIGGERCODE_HOME_DIR="$HOME/${WSREPL_QA_GUEST_HOME_REL}"
 	        fi
 	        HAPPY=""
-	        if [[ -x "$HOME/.happier/bin/happier" ]]; then
-	          HAPPY="$HOME/.happier/bin/happier"
-	        elif command -v happier >/dev/null 2>&1; then
+	        if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+	          HAPPY="$HOME/.piggercode/bin/happier"
+	        elif command -v piggercode >/dev/null 2>&1; then
 	          HAPPY="happier"
 	        fi
 	        if [[ -z "$HAPPY" ]]; then exit 0; fi
@@ -2609,7 +2609,7 @@ PY
 	    return 0
 	  }
 
-	  # `happier daemon status` is a doctor-style command and may exit 0 even when the daemon
+	  # `piggercode daemon status` is a doctor-style command and may exit 0 even when the daemon
 	  # isn't running. Detect health from the rendered output we captured above.
 	  if ! grep -qi "Daemon is not running" "${status_file}" 2>/dev/null; then
 	    if [[ -z "${WSREPL_QA_VM_MACHINE_ID:-}" && "${WSREPL_QA_DERIVE_STEPS_LATER:-0}" == "1" ]]; then
@@ -2632,9 +2632,9 @@ PY
         limactl shell "${VM_NAME}" -- env PIGGERCODE_SERVER_URL="${server_url}" bash -lc '
           set -euo pipefail
           HAPPY=""
-          if [[ -x "$HOME/.happier/bin/happier" ]]; then
-            HAPPY="$HOME/.happier/bin/happier"
-          elif command -v happier >/dev/null 2>&1; then
+          if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+            HAPPY="$HOME/.piggercode/bin/happier"
+          elif command -v piggercode >/dev/null 2>&1; then
             HAPPY="happier"
           fi
           if [[ -z "$HAPPY" ]]; then exit 2; fi
@@ -2676,8 +2676,8 @@ ensure_guest_provider_cli_installed() {
 
   # If the guest does not have Happier installed, keep this best-effort and let the matrix fail
   # on its own (common in local harness tests with WSREPL_QA_VM_PIGGERCODE_MODE=skip).
-  if ! limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.happier/bin/happier" ]] || command -v happier >/dev/null 2>&1' >/dev/null 2>&1; then
-    printf "%s\n" "(guest happier not found; skipping provider install)" > "${out_file}"
+  if ! limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.piggercode/bin/happier" ]] || command -v piggercode >/dev/null 2>&1' >/dev/null 2>&1; then
+    printf "%s\n" "(guest piggercode not found; skipping provider install)" > "${out_file}"
     return 0
   fi
 
@@ -2685,13 +2685,13 @@ ensure_guest_provider_cli_installed() {
   limactl shell "${VM_NAME}" -- bash -lc '
     set -euo pipefail
     HAPPY=""
-    if [[ -x "$HOME/.happier/bin/happier" ]]; then
-      HAPPY="$HOME/.happier/bin/happier"
-    elif command -v happier >/dev/null 2>&1; then
+    if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
+      HAPPY="$HOME/.piggercode/bin/happier"
+    elif command -v piggercode >/dev/null 2>&1; then
       HAPPY="happier"
     fi
     if [[ -z "$HAPPY" ]]; then
-      echo "missing guest happier binary (expected $HOME/.happier/bin/happier or PATH happier)" >&2
+      echo "missing guest piggercode binary (expected $HOME/.piggercode/bin/happier or PATH piggercode)" >&2
       exit 2
     fi
     "$HAPPY" install provider "'"${provider_id}"'" 2>&1
@@ -2978,7 +2978,7 @@ ensure_vm_ready() {
     return 0
   fi
 
-  if ! grep -q "# --- happier port forwards (managed) ---" "${LIMA_YAML}" 2>/dev/null; then
+  if ! grep -q "# --- piggercode port forwards (managed) ---" "${LIMA_YAML}" 2>/dev/null; then
     FAILURE_STAGE="ensure_vm"
     echo "[wsrepl-qa] ensure VM (configure port forwarding via lima-vm.sh; missing managed markers)..."
     "${LIMA_VM_SCRIPT}" "${VM_NAME}"
@@ -3281,12 +3281,12 @@ PY
 }
 
 resolve_guest_happier_version() {
-  limactl shell "${VM_NAME}" -- bash -lc 'if [[ -x "$HOME/.happier/bin/happier" ]]; then "$HOME/.happier/bin/happier" --version; elif command -v happier >/dev/null 2>&1; then happier --version; fi' \
+  limactl shell "${VM_NAME}" -- bash -lc 'if [[ -x "$HOME/.piggercode/bin/happier" ]]; then "$HOME/.piggercode/bin/happier" --version; elif command -v piggercode >/dev/null 2>&1; then piggercode --version; fi' \
     2>/dev/null | head -n 1 | tr -d '\r' || true
 }
 
 resolve_guest_wsrepl_installed_happier_version() {
-  limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.happier/bin/happier" ]] && "$HOME/.happier/bin/happier" --version' \
+  limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.piggercode/bin/happier" ]] && "$HOME/.piggercode/bin/happier" --version' \
     2>/dev/null | head -n 1 | tr -d '\r' || true
 }
 
@@ -3379,25 +3379,25 @@ NODE
   python3 "${PAYLOAD_TAR_HELPER}" "${payload_dir}" "${payload_tar}"
 
   limactl shell "${VM_NAME}" -- bash -lc 'set -euo pipefail;
-    mkdir -p "$HOME/.happier/wsrepl-dev"
-    rm -rf "$HOME/.happier/wsrepl-dev/payload.tmp"
-    rm -f "$HOME/.happier/wsrepl-dev/payload.tar"
+    mkdir -p "$HOME/.piggercode/wsrepl-dev"
+    rm -rf "$HOME/.piggercode/wsrepl-dev/payload.tmp"
+    rm -f "$HOME/.piggercode/wsrepl-dev/payload.tar"
   '
 
-  limactl copy --backend=scp "${payload_tar}" "${VM_NAME}:${guest_home}/.happier/wsrepl-dev/payload.tar"
+  limactl copy --backend=scp "${payload_tar}" "${VM_NAME}:${guest_home}/.piggercode/wsrepl-dev/payload.tar"
 
   limactl shell "${VM_NAME}" -- bash -lc 'set -euo pipefail;
-    mkdir -p "$HOME/.happier/wsrepl-dev/payload.tmp"
-    tar -xf "$HOME/.happier/wsrepl-dev/payload.tar" -C "$HOME/.happier/wsrepl-dev/payload.tmp"
-    rm -f "$HOME/.happier/wsrepl-dev/payload.tar"
+    mkdir -p "$HOME/.piggercode/wsrepl-dev/payload.tmp"
+    tar -xf "$HOME/.piggercode/wsrepl-dev/payload.tar" -C "$HOME/.piggercode/wsrepl-dev/payload.tmp"
+    rm -f "$HOME/.piggercode/wsrepl-dev/payload.tar"
   '
 
   limactl shell "${VM_NAME}" -- bash -lc 'set -euo pipefail;
-    export PATH="$HOME/.happier/bin:$PATH"
+    export PATH="$HOME/.piggercode/bin:$PATH"
 
     # Stop any existing daemon before swapping binaries. Some Lima images can end up with multiple
-    # daemon processes (PATH + ~/.happier/bin) which causes mismatched transfer-id contracts.
-    if [[ -d "$HOME/.happier/servers" ]]; then
+    # daemon processes (PATH + ~/.piggercode/bin) which causes mismatched transfer-id contracts.
+    if [[ -d "$HOME/.piggercode/servers" ]]; then
       python3 - "$HOME" <<'"'"'PY'"'"' || true
 import json
 import os
@@ -3405,7 +3405,7 @@ import signal
 from pathlib import Path
 
 home = os.environ.get("HOME") or ""
-servers = Path(home) / ".happier" / "servers"
+servers = Path(home) / ".piggercode" / "servers"
 for state_path in sorted(servers.glob("*/daemon.state.json")):
   try:
     payload = json.loads(state_path.read_text(encoding="utf-8"))
@@ -3421,51 +3421,51 @@ for state_path in sorted(servers.glob("*/daemon.state.json")):
       continue
 PY
     fi
-    if [[ -x "$HOME/.happier/bin/happier" ]]; then
+    if [[ -x "$HOME/.piggercode/bin/happier" ]]; then
       if command -v timeout >/dev/null 2>&1; then
-        timeout 5s "$HOME/.happier/bin/happier" daemon stop >/dev/null 2>&1 || true
+        timeout 5s "$HOME/.piggercode/bin/happier" daemon stop >/dev/null 2>&1 || true
       else
-        "$HOME/.happier/bin/happier" daemon stop >/dev/null 2>&1 || true
+        "$HOME/.piggercode/bin/happier" daemon stop >/dev/null 2>&1 || true
       fi
     fi
-    if command -v happier >/dev/null 2>&1; then
+    if command -v piggercode >/dev/null 2>&1; then
       if command -v timeout >/dev/null 2>&1; then
-        timeout 5s happier daemon stop >/dev/null 2>&1 || true
+        timeout 5s piggercode daemon stop >/dev/null 2>&1 || true
       else
-        happier daemon stop >/dev/null 2>&1 || true
+        piggercode daemon stop >/dev/null 2>&1 || true
       fi
     fi
     # Best-effort hard stop: ensure no stale worker keeps running with the old binary.
     if command -v pkill >/dev/null 2>&1; then
       # Avoid killing this shell (its argv contains the pattern). Use a regex trick (`happie[r]`)
       # so the pattern matches "happier" in the target process but not itself.
-      pkill -f "/\\.happier/bin/happie[r] daemon start-sync" >/dev/null 2>&1 || true
+      pkill -f "/\\.piggercode/bin/happie[r] daemon start-sync" >/dev/null 2>&1 || true
       pkill -f "package-dist/index\\.mjs daemon start-syn[c]" >/dev/null 2>&1 || true
     fi
 
-    mkdir -p "$HOME/.happier/bin"
-    if [[ -d "$HOME/.happier/wsrepl-dev/payload.tmp" ]]; then
-      if [[ -d "$HOME/.happier/wsrepl-dev/payload" ]]; then
-        mv "$HOME/.happier/wsrepl-dev/payload" "$HOME/.happier/wsrepl-dev/payload.wsrepl-backup.$(date +%Y%m%d-%H%M%S)" || true
+    mkdir -p "$HOME/.piggercode/bin"
+    if [[ -d "$HOME/.piggercode/wsrepl-dev/payload.tmp" ]]; then
+      if [[ -d "$HOME/.piggercode/wsrepl-dev/payload" ]]; then
+        mv "$HOME/.piggercode/wsrepl-dev/payload" "$HOME/.piggercode/wsrepl-dev/payload.wsrepl-backup.$(date +%Y%m%d-%H%M%S)" || true
       fi
-      mv "$HOME/.happier/wsrepl-dev/payload.tmp" "$HOME/.happier/wsrepl-dev/payload"
+      mv "$HOME/.piggercode/wsrepl-dev/payload.tmp" "$HOME/.piggercode/wsrepl-dev/payload"
     fi
-    if [[ ! -x "$HOME/.happier/wsrepl-dev/payload/happier" ]]; then
+    if [[ ! -x "$HOME/.piggercode/wsrepl-dev/payload/happier" ]]; then
       echo "[wsrepl-qa] guest payload install failed (missing payload/happier)" >&2
       exit 2
     fi
-    if [[ -e "$HOME/.happier/bin/happier" && ! -L "$HOME/.happier/bin/happier" ]]; then
-      mv "$HOME/.happier/bin/happier" "$HOME/.happier/bin/happier.wsrepl-backup.$(date +%Y%m%d-%H%M%S)" || true
+    if [[ -e "$HOME/.piggercode/bin/happier" && ! -L "$HOME/.piggercode/bin/happier" ]]; then
+      mv "$HOME/.piggercode/bin/happier" "$HOME/.piggercode/bin/happier.wsrepl-backup.$(date +%Y%m%d-%H%M%S)" || true
     fi
-    ln -sf "$HOME/.happier/wsrepl-dev/payload/happier" "$HOME/.happier/bin/happier"
+    ln -sf "$HOME/.piggercode/wsrepl-dev/payload/happier" "$HOME/.piggercode/bin/happier"
 
-    "$HOME/.happier/bin/happier" daemon start >/dev/null 2>&1 || true
+    "$HOME/.piggercode/bin/happier" daemon start >/dev/null 2>&1 || true
     # `daemon start` can legitimately fail or remain unhealthy while the daemon is waiting for
     # credentials (Playwright injects auth later in this harness). Do a short best-effort poll to
     # catch obvious "daemon is up" cases, but never fail autoupdate solely on daemon health.
     set +e
     for attempt in {1..20}; do
-      status_out="$("$HOME/.happier/bin/happier" daemon status 2>&1)"
+      status_out="$("$HOME/.piggercode/bin/happier" daemon status 2>&1)"
       status_code=$?
       if [[ "$status_code" == "0" ]]; then
         exit 0
@@ -3482,12 +3482,12 @@ PY
 }
 
 resolve_guest_wsrepl_build_marker_git_rev() {
-  limactl shell "${VM_NAME}" -- bash -lc 'cat "$HOME/.happier/wsrepl-dev/payload/wsrepl-build.gitrev" 2>/dev/null || true' \
+  limactl shell "${VM_NAME}" -- bash -lc 'cat "$HOME/.piggercode/wsrepl-dev/payload/wsrepl-build.gitrev" 2>/dev/null || true' \
     2>/dev/null | head -n 1 | tr -d '\r' || true
 }
 
 resolve_guest_wsrepl_build_marker_cli_version() {
-  limactl shell "${VM_NAME}" -- bash -lc 'cat "$HOME/.happier/wsrepl-dev/payload/wsrepl-build.version" 2>/dev/null || true' \
+  limactl shell "${VM_NAME}" -- bash -lc 'cat "$HOME/.piggercode/wsrepl-dev/payload/wsrepl-build.version" 2>/dev/null || true' \
     2>/dev/null | head -n 1 | tr -d '\r' || true
 }
 
@@ -3515,7 +3515,7 @@ ensure_current_vm_happier_matches_worktree() {
     if [[ -z "${guest_marker_git_rev}" ]]; then
       echo "[wsrepl-qa] guest wsrepl build marker is missing, but the worktree git rev is available (mode=${WSREPL_QA_VM_PIGGERCODE_MODE})." >&2
       echo "[wsrepl-qa] expected git rev: ${expected_git_rev}" >&2
-      echo "[wsrepl-qa] expected marker path: \$HOME/.happier/wsrepl-dev/payload/wsrepl-build.json" >&2
+      echo "[wsrepl-qa] expected marker path: \$HOME/.piggercode/wsrepl-dev/payload/wsrepl-build.json" >&2
       echo "[wsrepl-qa] Fix: rerun with WSREPL_QA_VM_PIGGERCODE_MODE=autoupdate (installs a matching build marker), or set WSREPL_QA_VM_PIGGERCODE_MODE=skip to bypass this guard." >&2
       return 2
     fi
@@ -3534,7 +3534,7 @@ ensure_current_vm_happier_matches_worktree() {
     fi
   else
     if [[ -z "${guest_version}" ]]; then
-      echo "[wsrepl-qa] failed to resolve guest Happier version; ensure happier is installed in the VM and reachable from PATH" >&2
+      echo "[wsrepl-qa] failed to resolve guest Happier version; ensure piggercode is installed in the VM and reachable from PATH" >&2
       return 2
     fi
     if [[ "${guest_version}" != "${expected_version}" ]]; then
@@ -3558,10 +3558,10 @@ fi
 # for dev/smoke runs when the fixture is not present).
 if [[ -z "${PIGGERCODE_QA_SESSION_PATH:-}" && -z "${WSREPL_QA_LARGE_REPO_PATH:-}" ]]; then
   # Prefer a non-hidden fixture location when present. Lima guests mount the macOS home directory,
-  # but cannot reliably traverse host `chmod 700` parents like `.happier` due to UID/GID/perms
+  # but cannot reliably traverse host `chmod 700` parents like `.piggercode` due to UID/GID/perms
   # mapping, which can surface as ENOENT during target staging.
   SAFE_WSREPL_QA_LARGE_REPO_PATH="${HOME}/wsrepl-qa-fixtures/large-repo-k8s"
-  LEGACY_WSREPL_QA_LARGE_REPO_PATH="${HOME}/.happier/wsrepl-qa-fixtures/large-repo-k8s"
+  LEGACY_WSREPL_QA_LARGE_REPO_PATH="${HOME}/.piggercode/wsrepl-qa-fixtures/large-repo-k8s"
   if [[ -d "${SAFE_WSREPL_QA_LARGE_REPO_PATH}" ]]; then
     export PIGGERCODE_QA_SESSION_PATH="${SAFE_WSREPL_QA_LARGE_REPO_PATH}"
   elif [[ -d "${LEGACY_WSREPL_QA_LARGE_REPO_PATH}" ]]; then
@@ -3767,7 +3767,7 @@ if [[ -z "${host_server_url}" ]]; then
   # When the wrapper is invoked without PIGGERCODE_UI_URL, derive the server port from the most-recent
   # stack.runtime.json (same heuristic as resolveQaUiUrl.mjs) so the host daemon is started against
   # the same local stack server that Playwright will later resolve.
-  host_server_url="$(python3 - <<'PY' "$HOME/.happier/stacks" "${PIGGERCODE_QA_STACK_NAME:-}" 2>/dev/null || true
+  host_server_url="$(python3 - <<'PY' "$HOME/.piggercode/stacks" "${PIGGERCODE_QA_STACK_NAME:-}" 2>/dev/null || true
 import json
 import sys
 from pathlib import Path
@@ -3931,7 +3931,7 @@ if [[ "${#EXTRA_VM_NAMES[@]}" -gt 0 ]]; then
       restart_guest_daemon_and_capture_logs "${guest_server_url}" "${server_routed_max_bytes_seed}" || true
 
       # Best-effort only: do not fail the whole wrapper if an additional VM lacks Happier/provider tooling.
-      if limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.happier/bin/happier" ]] || command -v happier >/dev/null 2>&1' >/dev/null 2>&1; then
+      if limactl shell "${VM_NAME}" -- bash -lc '[[ -x "$HOME/.piggercode/bin/happier" ]] || command -v piggercode >/dev/null 2>&1' >/dev/null 2>&1; then
         extra_provider_log="${DAEMON_DIAG_DIR}/guest.provider.install.${guest_provider_install_id}.txt"
         ensure_guest_provider_cli_installed "${guest_provider_install_id}" "${extra_provider_log}" || true
       fi
@@ -4126,7 +4126,7 @@ PY
 }
 
 if [[ -z "${PIGGERCODE_QA_STACK_NAME:-}" ]]; then
-  inferred_stack_name="$(infer_stack_name_for_wsrepl "$HOME/.happier/stacks" "${host_server_url:-}" 2>/dev/null || true)"
+  inferred_stack_name="$(infer_stack_name_for_wsrepl "$HOME/.piggercode/stacks" "${host_server_url:-}" 2>/dev/null || true)"
   if [[ -n "${inferred_stack_name}" ]]; then
     export PIGGERCODE_QA_STACK_NAME="${inferred_stack_name}"
   fi
@@ -4134,7 +4134,7 @@ fi
 
 if [[ -n "${PIGGERCODE_QA_STACK_NAME:-}" && -z "${PIGGERCODE_QA_ACTIVE_SERVER_DIR:-}" ]]; then
   stack_server_slug="$(resolve_stack_server_slug_for_active_dir "${PIGGERCODE_QA_STACK_NAME}" 2>/dev/null || true)"
-  stack_home_dir="$HOME/.happier/stacks/${PIGGERCODE_QA_STACK_NAME}"
+  stack_home_dir="$HOME/.piggercode/stacks/${PIGGERCODE_QA_STACK_NAME}"
   candidate_active_server_dir="${stack_home_dir}/cli/servers/${stack_server_slug}"
   if [[ -d "${candidate_active_server_dir}" ]]; then
     export PIGGERCODE_QA_STACK_HOME_DIR="${stack_home_dir}"

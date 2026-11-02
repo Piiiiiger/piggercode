@@ -393,7 +393,7 @@ describe('ClaudeLocalPermissionBridge', () => {
     });
   });
 
-  it('suppresses provider prompts for first-party Happier MCP tools when action approval is required', async () => {
+  it('suppresses provider prompts for first-party PiggerCode MCP tools when action approval is required', async () => {
     const { session, client } = createPermissionHandlerSessionStub('session-happier-approval-gate');
     (session as any).accountSettings = {
       actionsSettingsV1: {
@@ -411,7 +411,7 @@ describe('ClaudeLocalPermissionBridge', () => {
 
     await expect(bridge.handlePermissionHook({
       hook_event_name: 'PermissionRequest',
-      tool_name: 'mcp__happier__session_list',
+      tool_name: 'mcp__piggercode__session_list',
       tool_input: {},
       tool_use_id: 'toolu_happier_session_list_1',
     })).resolves.toMatchObject({
@@ -423,7 +423,7 @@ describe('ClaudeLocalPermissionBridge', () => {
     expect(client.agentState.requests.toolu_happier_session_list_1).toBeUndefined();
   });
 
-  it('continues to publish custom MCP tool prompts even when a similarly named Happier action requires approval', async () => {
+  it('continues to publish custom MCP tool prompts even when a similarly named PiggerCode action requires approval', async () => {
     const { session, client } = createPermissionHandlerSessionStub('session-custom-mcp-still-prompts');
     (session as any).accountSettings = {
       actionsSettingsV1: {
@@ -634,7 +634,7 @@ describe('ClaudeLocalPermissionBridge', () => {
 
     const res = await bridge.handlePermissionHook({
       hook_event_name: 'PermissionRequest',
-      tool_name: 'mcp__happier__change_title',
+      tool_name: 'mcp__piggercode__change_title',
       tool_input: { title: 'QA Agent Team Setup' },
       tool_use_id: 'toolu_yolo_1',
     });
@@ -680,7 +680,7 @@ describe('ClaudeLocalPermissionBridge', () => {
 
     const result = await bridge.handlePermissionHook({
       hook_event_name: 'PermissionRequest',
-      tool_name: 'mcp__happier__execution_run_start',
+      tool_name: 'mcp__piggercode__execution_run_start',
       tool_input: {
         intent: 'delegate',
         backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
@@ -704,7 +704,7 @@ describe('ClaudeLocalPermissionBridge', () => {
     expect(client.agentState.requests.toolu_execution_run_start_default_1).toBeUndefined();
     expect(client.agentState.completedRequests.toolu_execution_run_start_default_1).toMatchObject({
       status: 'approved',
-      tool: 'mcp__happier__execution_run_start',
+      tool: 'mcp__piggercode__execution_run_start',
     });
   });
 

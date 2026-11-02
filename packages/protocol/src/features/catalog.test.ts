@@ -162,7 +162,7 @@ describe('feature catalog', () => {
     expect(isFeatureId('voice.agent')).toBe(true);
   });
 
-  it('includes happier voice feature id', () => {
+  it('includes piggercode voice feature id', () => {
     expect(isFeatureId('voice.happierVoice')).toBe(true);
   });
 

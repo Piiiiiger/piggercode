@@ -13,11 +13,11 @@ describe('renderHelpPage', () => {
     noColorChalk.level = 0;
 
     const out = renderHelpPage({
-      title: 'happier auth',
+      title: 'piggercode auth',
       subtitle: 'Authentication management',
       usage: [
-        { label: 'happier auth login', description: 'Authenticate with Happier' },
-        { label: 'happier auth status', description: 'Show authentication status' },
+        { label: 'piggercode auth login', description: 'Authenticate with PiggerCode' },
+        { label: 'piggercode auth status', description: 'Show authentication status' },
       ],
       notes: [
         'Use --json for scripting.',
@@ -26,12 +26,12 @@ describe('renderHelpPage', () => {
     }, { chalkLike: noColorChalk });
 
     expect(stripAnsi(out)).toBe([
-      'happier auth',
+      'piggercode auth',
       'Authentication management',
       '',
       'Usage:',
-      '  happier auth login   Authenticate with Happier',
-      '  happier auth status  Show authentication status',
+      '  piggercode auth login   Authenticate with PiggerCode',
+      '  piggercode auth status  Show authentication status',
       '',
       'Notes:',
       '- Use --json for scripting.',

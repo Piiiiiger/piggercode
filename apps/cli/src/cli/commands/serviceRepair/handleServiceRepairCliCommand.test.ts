@@ -87,7 +87,7 @@ const {
     instanceId: 'default',
     uid: 1000,
     userHomeDir: '/tmp/user',
-    happierHomeDir: '/tmp/user/.happier',
+    happierHomeDir: '/tmp/user/.piggercode',
     serverUrl: 'https://example.test',
     publicServerUrl: 'https://example.test',
     webappUrl: 'https://app.example.test',
@@ -142,7 +142,7 @@ describe('handleServiceRepairCliCommand', () => {
 
     await expect(handleServiceRepairCliCommand({
       argv: ['repair', '--mode', 'system', '--yes'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     })).rejects.toThrow('Root privileges are required for system mode automatic startup repair');
 
     expect(applyBackgroundServiceRepairPlanMock).not.toHaveBeenCalled();
@@ -153,7 +153,7 @@ describe('handleServiceRepairCliCommand', () => {
 
     await expect(handleServiceRepairCliCommand({
       argv: ['repair', '--mode', 'system', '--yes', '--json'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     })).rejects.toThrow('Root privileges are required for system mode automatic startup repair');
 
     expect(applyBackgroundServiceRepairPlanMock).not.toHaveBeenCalled();
@@ -167,7 +167,7 @@ describe('handleServiceRepairCliCommand', () => {
       instanceId: 'default',
       uid: 501,
       userHomeDir: '/tmp/user',
-      happierHomeDir: '/tmp/user/.happier',
+      happierHomeDir: '/tmp/user/.piggercode',
       serverUrl: 'https://example.test',
       publicServerUrl: 'https://example.test',
       webappUrl: 'https://app.example.test',
@@ -178,7 +178,7 @@ describe('handleServiceRepairCliCommand', () => {
 
     await expect(handleServiceRepairCliCommand({
       argv: ['repair', '--mode', 'system', '--yes'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     })).rejects.toThrow('System mode background services are only supported on Linux');
 
     expect(applyBackgroundServiceRepairPlanMock).not.toHaveBeenCalled();
@@ -212,7 +212,7 @@ describe('handleServiceRepairCliCommand', () => {
       try {
         await handleServiceRepairCliCommand({
           argv: ['repair', '--json'],
-          commandPath: 'happier service',
+          commandPath: 'piggercode service',
         });
 
         // The legacy ownership-note `warning` string was retired — its info
@@ -248,12 +248,12 @@ describe('handleServiceRepairCliCommand', () => {
       serverId: 'default',
       name: 'Default background service',
       installed: true,
-      path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+      path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
       platform: 'linux',
       mode: 'user',
-      happierHomeDir: '/tmp/user/.happier',
+      happierHomeDir: '/tmp/user/.piggercode',
       releaseChannel: 'stable',
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following',
     }]);
 
@@ -262,7 +262,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--json'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       });
     } finally {
       output.restore();
@@ -303,7 +303,7 @@ describe('handleServiceRepairCliCommand', () => {
       try {
         await handleServiceRepairCliCommand({
           argv: ['repair', '--server', 'http://127.0.0.1:52753', '--json'],
-          commandPath: 'happier service',
+          commandPath: 'piggercode service',
         });
 
         const json = output.json();
@@ -326,9 +326,9 @@ describe('handleServiceRepairCliCommand', () => {
       platform: 'linux',
       serverId: 'default',
       name: 'Default background service',
-      path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+      path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
       mode: 'user',
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       ring: 'stable',
       targetMode: 'default-following',
       installed: true,
@@ -342,7 +342,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       });
 
       // New unified renderer: automatic-startup entries + manually-started daemons
@@ -372,12 +372,12 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+        path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'pinned',
       }];
     });
@@ -387,7 +387,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--report-only'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       });
 
       expect(output.text()).toContain('Background services');
@@ -406,12 +406,12 @@ describe('handleServiceRepairCliCommand', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.default.service',
+          path: '/etc/systemd/system/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'system',
-          happierHomeDir: '/tmp/user/.happier',
+          happierHomeDir: '/tmp/user/.piggercode',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         }];
       }
@@ -419,12 +419,12 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+        path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }];
     });
@@ -438,7 +438,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--json'],
-        commandPath: 'happier service',
+        commandPath: 'piggercode service',
       });
     } finally {
       output.restore();
@@ -449,13 +449,13 @@ describe('handleServiceRepairCliCommand', () => {
     expect(output.json()).toEqual(expect.objectContaining({
       ok: true,
       existingServices: [
-        expect.objectContaining({ mode: 'user', label: 'happier-daemon.default' }),
-        expect.objectContaining({ mode: 'system', label: 'happier-daemon.default' }),
+        expect.objectContaining({ mode: 'user', label: 'piggercode-daemon.default' }),
+        expect.objectContaining({ mode: 'system', label: 'piggercode-daemon.default' }),
       ],
       actions: [
         expect.objectContaining({
           kind: 'remove-service',
-          service: expect.objectContaining({ mode: 'system', label: 'happier-daemon.default' }),
+          service: expect.objectContaining({ mode: 'system', label: 'piggercode-daemon.default' }),
         }),
       ],
     }));
@@ -469,12 +469,12 @@ describe('handleServiceRepairCliCommand', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.default.service',
+          path: '/etc/systemd/system/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'system',
-          happierHomeDir: '/tmp/user/.happier',
+          happierHomeDir: '/tmp/user/.piggercode',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         }];
       }
@@ -482,12 +482,12 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+        path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }];
     });
@@ -496,7 +496,7 @@ describe('handleServiceRepairCliCommand', () => {
 
     await expect(handleServiceRepairCliCommand({
       argv: ['repair', '--yes', '--json'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     })).rejects.toThrow('Root privileges are required to apply system mode automatic startup repair actions');
 
     expect(applyBackgroundServiceRepairPlanMock).not.toHaveBeenCalled();
@@ -512,7 +512,7 @@ describe('handleServiceRepairCliCommand', () => {
         instanceId: 'default',
         uid: 0,
         userHomeDir: '/tmp/user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         serverUrl: 'https://example.test',
         publicServerUrl: 'https://example.test',
         webappUrl: 'https://app.example.test',
@@ -528,12 +528,12 @@ describe('handleServiceRepairCliCommand', () => {
           serverId: 'default',
           name: 'Default background service',
           installed: true,
-          path: '/etc/systemd/system/happier-daemon.default.service',
+          path: '/etc/systemd/system/piggercode-daemon.default.service',
           platform: 'linux',
           mode: 'system',
-          happierHomeDir: '/tmp/user/.happier',
+          happierHomeDir: '/tmp/user/.piggercode',
           releaseChannel: 'stable',
-          label: 'happier-daemon.default',
+          label: 'piggercode-daemon.default',
           targetMode: 'default-following',
         }];
       }
@@ -541,12 +541,12 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/tmp/user/.config/systemd/user/happier-daemon.default.service',
+        path: '/tmp/user/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'user',
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         releaseChannel: 'stable',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following',
       }];
     });
@@ -560,7 +560,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--mode', 'system', '--json'],
-        commandPath: 'happier service',
+        commandPath: 'piggercode service',
       });
     } finally {
       output.restore();
@@ -571,13 +571,13 @@ describe('handleServiceRepairCliCommand', () => {
     expect(output.json()).toEqual(expect.objectContaining({
       ok: true,
       existingServices: [
-        expect.objectContaining({ mode: 'user', label: 'happier-daemon.default' }),
-        expect.objectContaining({ mode: 'system', label: 'happier-daemon.default' }),
+        expect.objectContaining({ mode: 'user', label: 'piggercode-daemon.default' }),
+        expect.objectContaining({ mode: 'system', label: 'piggercode-daemon.default' }),
       ],
       actions: [
         expect.objectContaining({
           kind: 'remove-service',
-          service: expect.objectContaining({ mode: 'user', label: 'happier-daemon.default' }),
+          service: expect.objectContaining({ mode: 'user', label: 'piggercode-daemon.default' }),
         }),
       ],
     }));
@@ -593,7 +593,7 @@ describe('handleServiceRepairCliCommand', () => {
         instanceId: 'default',
         uid: 0,
         userHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}` : '/root',
-        happierHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}/.happier` : '/root/.happier',
+        happierHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}/.piggercode` : '/root/.piggercode',
         serverUrl: 'https://example.test',
         publicServerUrl: 'https://example.test',
         webappUrl: 'https://app.example.test',
@@ -610,11 +610,11 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/etc/systemd/system/happier-daemon.default.service',
+        path: '/etc/systemd/system/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'system',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'pinned',
       }];
     });
@@ -623,7 +623,7 @@ describe('handleServiceRepairCliCommand', () => {
 
     await expect(handleServiceRepairCliCommand({
       argv: ['repair', '--mode', 'system', '--yes', '--json'],
-      commandPath: 'happier service',
+      commandPath: 'piggercode service',
     })).rejects.toThrow('System mode automatic startup repair requires --system-user (or SUDO_USER / PIGGERCODE_DAEMON_SERVICE_SYSTEM_USER)');
 
     expect(applyBackgroundServiceRepairPlanMock).not.toHaveBeenCalled();
@@ -641,12 +641,12 @@ describe('handleServiceRepairCliCommand', () => {
         name: serverId,
         relayUrl,
         installed: true,
-        path: `/tmp/user/.config/systemd/user/happier-daemon.${serverId}.service`,
+        path: `/tmp/user/.config/systemd/user/piggercode-daemon.${serverId}.service`,
         platform: 'linux' as const,
         mode: 'user' as const,
-        happierHomeDir: '/tmp/user/.happier',
+        happierHomeDir: '/tmp/user/.piggercode',
         releaseChannel: 'stable' as const,
-        label: `happier-daemon.${serverId}`,
+        label: `piggercode-daemon.${serverId}`,
         targetMode,
       });
       return [
@@ -661,7 +661,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--yes'],
-        commandPath: 'happier doctor',
+        commandPath: 'piggercode doctor',
       });
     } finally {
       output.restore();
@@ -672,9 +672,9 @@ describe('handleServiceRepairCliCommand', () => {
       | undefined;
     const removedLabels = (appliedPlan?.actions ?? []).flatMap((action) =>
       action.kind === 'remove-service' && action.service ? [action.service.label] : []);
-    expect(removedLabels).toEqual(['happier-daemon.legacy-default-relay']);
-    expect(output.text()).toContain('happier-daemon.legacy-default-relay');
-    expect(output.text()).not.toContain('happier-daemon.company');
+    expect(removedLabels).toEqual(['piggercode-daemon.legacy-default-relay']);
+    expect(output.text()).toContain('piggercode-daemon.legacy-default-relay');
+    expect(output.text()).not.toContain('piggercode-daemon.company');
   });
 
   it('reuses the sudo invoker as system user for system-mode repair installs', async () => {
@@ -690,7 +690,7 @@ describe('handleServiceRepairCliCommand', () => {
         instanceId: 'default',
         uid: 0,
         userHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}` : '/root',
-        happierHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}/.happier` : '/root/.happier',
+        happierHomeDir: normalizedParams?.systemUser ? `/home/${normalizedParams.systemUser}/.piggercode` : '/root/.piggercode',
         serverUrl: 'https://example.test',
         publicServerUrl: 'https://example.test',
         webappUrl: 'https://app.example.test',
@@ -707,11 +707,11 @@ describe('handleServiceRepairCliCommand', () => {
         serverId: 'default',
         name: 'Default background service',
         installed: true,
-        path: '/etc/systemd/system/happier-daemon.default.service',
+        path: '/etc/systemd/system/piggercode-daemon.default.service',
         platform: 'linux',
         mode: 'system',
         releaseChannel: 'preview',
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'pinned',
       }];
     });
@@ -721,7 +721,7 @@ describe('handleServiceRepairCliCommand', () => {
     try {
       await handleServiceRepairCliCommand({
         argv: ['repair', '--mode', 'system', '--yes', '--json'],
-        commandPath: 'happier service',
+        commandPath: 'piggercode service',
       });
     } finally {
       output.restore();
@@ -736,7 +736,7 @@ describe('handleServiceRepairCliCommand', () => {
       expect.objectContaining({
         systemUser: 'developer',
         userHomeDir: '/home/developer',
-        happierHomeDir: '/home/developer/.happier',
+        happierHomeDir: '/home/developer/.piggercode',
       }),
     );
     expect(applyBackgroundServiceRepairPlanMock).toHaveBeenCalledWith(

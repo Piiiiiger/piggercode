@@ -160,7 +160,7 @@ function buildTerminalConnectUrl(params: Readonly<{
                 + `&createdAt=${params.createdAtMs}`
                 + `&expiresAt=${params.expiresAtMs}`
             : '';
-    return `happier://terminal?key=${publicKeyB64Url}&server=${server}${pairing}`;
+    return `piggercode://terminal?key=${publicKeyB64Url}&server=${server}${pairing}`;
 }
 
 function createDataKeyCredentials(params: Readonly<{ token: string; machineKeyByte: number; publicKeyByte?: number }>) {
@@ -248,7 +248,7 @@ describe('useConnectTerminal unauthenticated flow', () => {
 
         let result = true;
         await act(async () => {
-            result = await hookApi!.processAuthUrl('happier://terminal?key=abc123&server=https%3A%2F%2Fstack.example.test');
+            result = await hookApi!.processAuthUrl('piggercode://terminal?key=abc123&server=https%3A%2F%2Fstack.example.test');
         });
 
         expect(result).toBe(false);
@@ -285,7 +285,7 @@ describe('useConnectTerminal unauthenticated flow', () => {
 
         let result = true;
         await act(async () => {
-            result = await hookApi!.processAuthUrl('happier://terminal?key=abc123&server=http%3A%2F%2Flocalhost%3A53288');
+            result = await hookApi!.processAuthUrl('piggercode://terminal?key=abc123&server=http%3A%2F%2Flocalhost%3A53288');
         });
 
         expect(result).toBe(false);
@@ -318,7 +318,7 @@ describe('useConnectTerminal unauthenticated flow', () => {
 
         let result = true;
         await act(async () => {
-            result = await hookApi!.processAuthUrl('happier://terminal?key=abc123&server=http%3A%2F%2F127.0.0.1%3A3005');
+            result = await hookApi!.processAuthUrl('piggercode://terminal?key=abc123&server=http%3A%2F%2F127.0.0.1%3A3005');
         });
 
         expect(result).toBe(false);
@@ -351,7 +351,7 @@ describe('useConnectTerminal unauthenticated flow', () => {
 
         let result = true;
         await act(async () => {
-            result = await hookApi!.processAuthUrl('happier://terminal?key=abc123&server=http%3A%2F%2F127.0.0.1%3A3005');
+            result = await hookApi!.processAuthUrl('piggercode://terminal?key=abc123&server=http%3A%2F%2F127.0.0.1%3A3005');
         });
 
         expect(result).toBe(false);

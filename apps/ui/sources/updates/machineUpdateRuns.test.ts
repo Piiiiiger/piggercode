@@ -127,7 +127,7 @@ describe('runMachineItemUpdate — a remote CLI update is started, then observed
         expect(task.running).toBe(false);
         const row = buildRemoteCliUpdateItem({
             machineId: 'studio', title: 'Happier CLI', online: true, platform: 'linux', happyCliVersion: '0.2.14', remoteUpdateAdvertised: true, task,
-            facts: { currentVersion: '0.2.14', latestVersion: '0.2.14', channel: 'stable', installSource: 'managed', updateCommand: 'happier self update', canUpdateRemotely: true, lastUpdate },
+            facts: { currentVersion: '0.2.14', latestVersion: '0.2.14', channel: 'stable', installSource: 'managed', updateCommand: 'piggercode self update', canUpdateRemotely: true, lastUpdate },
         });
         expect(row).toMatchObject({ state: 'failed', failure: { kind: 'message', message: lastUpdate.message }, action: { kind: 'run', verb: 'retry' } });
     });

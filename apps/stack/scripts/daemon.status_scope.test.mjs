@@ -15,7 +15,7 @@ test('daemonStatusSummary uses stack-scoped env for status resolution', async (t
   const cliHomeDir = join(root, 'cli-home');
   await mkdir(cliHomeDir, { recursive: true });
 
-  const cliBin = join(root, 'happier.mjs');
+  const cliBin = join(root, 'piggercode.mjs');
   await writeFile(
     cliBin,
     [

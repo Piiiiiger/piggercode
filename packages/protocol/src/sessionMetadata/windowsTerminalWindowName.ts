@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME = 'happier';
+export const DEFAULT_WINDOWS_TERMINAL_WINDOW_NAME = 'piggercode';
 
 const WINDOWS_TERMINAL_RESERVED_WINDOW_NAMES = new Set(['new', '-1', 'last', '0']);
 

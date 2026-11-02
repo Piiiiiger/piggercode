@@ -19,7 +19,7 @@ export function getAttachCommandForSession(params: {
     } else {
         return null;
     }
-    return `happier attach ${sessionId}`;
+    return `piggercode attach ${sessionId}`;
 }
 
 export function getTmuxTargetForSession(terminal: Metadata['terminal'] | null | undefined): string | null {

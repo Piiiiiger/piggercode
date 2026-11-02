@@ -84,7 +84,7 @@ function createRunnerControlHarness(metadata: Metadata, sessionId: string, rpcFa
   return { session, rpc, readRelayState: () => relayState, readRelayVersion: () => relayVersion };
 }
 
-describe('happier attach', () => {
+describe('piggercode attach', () => {
   const localSettings = { machineId: 'machine-local' } as Settings;
   const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
     throw new Error(`process.exit(${code ?? 0})`);

@@ -145,7 +145,7 @@ describe('released server-light artifact lifecycle', () => {
                 version: RELEASED_SERVER_V0_2_1_VERSION,
                 os: 'linux',
                 arch: 'x64',
-                url: `https://github.com/happier-dev/happier/releases/download/server-preview/${linuxArchiveName}`,
+                url: `https://github.com/Piiiiiger/piggercode/releases/download/server-preview/${linuxArchiveName}`,
                 sha256: linuxArchiveSha256,
                 build: { commitSha: RELEASED_SERVER_V0_2_1_COMMIT, workflowRunId: null },
               }), 'utf8');
@@ -158,8 +158,8 @@ describe('released server-light artifact lifecycle', () => {
       });
 
       expect(downloads).toEqual([
-        'https://github.com/happier-dev/happier/releases/download/server-preview/linux-x64.json',
-        `https://github.com/happier-dev/happier/releases/download/server-preview/${linuxArchiveName}`,
+        'https://github.com/Piiiiiger/piggercode/releases/download/server-preview/linux-x64.json',
+        `https://github.com/Piiiiiger/piggercode/releases/download/server-preview/${linuxArchiveName}`,
       ]);
       expect(prepared).toEqual({
         status: 'ready',

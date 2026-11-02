@@ -24,7 +24,7 @@ export async function cmdSessionRunStreamRead(
 
   if (!idOrPrefix || !runId || !streamId || cursor === null) {
     throw new Error(
-      'Usage: happier session run stream-read <session-id-or-prefix> <run-id> <stream-id> --cursor <n> [--max-events <n>] [--json]',
+      'Usage: piggercode session run stream-read <session-id-or-prefix> <run-id> <stream-id> --cursor <n> [--max-events <n>] [--json]',
     );
   }
 
@@ -34,7 +34,7 @@ export async function cmdSessionRunStreamRead(
       await printJsonEnvelope({ ok: false, kind: 'session_run_stream_read', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

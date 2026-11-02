@@ -28,7 +28,7 @@ export function resolveExecutionHostController({
   if (platform !== 'darwin' || String(env.PIGGERCODE_STACK_EXECUTION_HOST_ADAPTER_REENTRY ?? '').trim() === '1') {
     return null;
   }
-  const stackHome = String(env.PIGGERCODE_STACK_HOME_DIR ?? '').trim() || join(homedir(), '.happier-stack');
+  const stackHome = String(env.PIGGERCODE_STACK_HOME_DIR ?? '').trim() || join(homedir(), '.piggercode-stack');
   const profilePath = join(stackHome, 'execution-host.json');
   if (!fileOps.existsSync(profilePath)) return null;
   try {

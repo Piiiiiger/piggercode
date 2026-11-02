@@ -115,7 +115,7 @@ function isAllowedReturnTo(params: { returnTo: string; allowPrefixes: readonly s
         const entry = allow.toString().trim();
         if (!entry) continue;
 
-        // Allow custom-scheme prefixes like "happier://".
+        // Allow custom-scheme prefixes like "piggercode://".
         const schemeOnlyMatch = entry.match(/^([a-z][a-z0-9+.-]*)\:\/\/$/i);
         if (schemeOnlyMatch) {
             const scheme = schemeOnlyMatch[1]!.toLowerCase();
@@ -124,7 +124,7 @@ function isAllowedReturnTo(params: { returnTo: string; allowPrefixes: readonly s
             continue;
         }
 
-        // Allow prefix matching for non-http(s) deep link URLs (e.g. "happier:///mtls").
+        // Allow prefix matching for non-http(s) deep link URLs (e.g. "piggercode:///mtls").
         // For http(s), prefix matching is unsafe (origin confusion), so those entries are parsed below.
         const looksLikeUrlPrefix = /^[a-z][a-z0-9+.-]*:\/\//i.test(entry);
         const isHttpPrefix = /^https?:\/\//i.test(entry);

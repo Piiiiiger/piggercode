@@ -52,7 +52,7 @@ describe('RelayHostEngine (local legacy systemd unit ownership guard)', () => {
                     readFile: async (path: string) => {
                         if (path.endsWith('/.config/systemd/user/happier-server.service')) {
                             // Stable install root, not preview.
-                            return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host\n';
+                            return '[Service]\nWorkingDirectory=/tmp/happy-home/.piggercode/self-host\n';
                         }
                         return '';
                     },
@@ -65,7 +65,7 @@ describe('RelayHostEngine (local legacy systemd unit ownership guard)', () => {
                 resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
                 runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
                 copyLocalDirectoryToRemote: async () => {},
-                installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+                installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
             });
 
             await engine.control({
@@ -134,7 +134,7 @@ describe('RelayHostEngine (local legacy systemd unit ownership guard)', () => {
                     ...actual,
                     readFile: async (path: string) => {
                         if (path.endsWith('/.config/systemd/user/happier-server.service')) {
-                            return '[Service]\nWorkingDirectory=/tmp/happy-home/.happier/self-host\n';
+                            return '[Service]\nWorkingDirectory=/tmp/happy-home/.piggercode/self-host\n';
                         }
                         return '';
                     },
@@ -147,7 +147,7 @@ describe('RelayHostEngine (local legacy systemd unit ownership guard)', () => {
                 resolveRemoteReleaseTarget: async () => ({ os: 'linux', arch: 'x64' }),
                 runRemoteText: async () => ({ status: 0, stdout: '', stderr: '' }),
                 copyLocalDirectoryToRemote: async () => {},
-                installRemoteComponent: async () => ({ binaryPath: '$HOME/.happier/happier-server/current/happier-server', versionId: 'preview-1' }),
+                installRemoteComponent: async () => ({ binaryPath: '$HOME/.piggercode/happier-server/current/happier-server', versionId: 'preview-1' }),
             });
 
             await engine.control({

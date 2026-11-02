@@ -191,7 +191,7 @@ describe('ActionExecutor prepared invocation', () => {
       },
       windowsRemoteSessionLaunchMode: 'hidden' as const,
       windowsRemoteSessionConsole: 'hidden' as const,
-      windowsTerminalWindowName: 'Happier',
+      windowsTerminalWindowName: 'PiggerCode',
       connectedServices: {
         v: 1 as const,
         bindingsByServiceId: {

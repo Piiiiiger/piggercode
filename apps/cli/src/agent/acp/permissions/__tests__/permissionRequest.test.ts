@@ -65,7 +65,7 @@ describe('extractPermissionInputWithFallback', () => {
   });
 
   it('uses execute tool titles as command input before generic permission option labels', () => {
-    const titleCommand = "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Project Deep Analysis and Audit\"}' --json";
+    const titleCommand = "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Project Deep Analysis and Audit\"}' --json";
 
     expect(
       extractPermissionInputWithFallback(
@@ -101,7 +101,7 @@ describe('extractPermissionInputWithFallback', () => {
   });
 
   it('preserves execute tool title commands without stripping command-like prefixes', () => {
-    const titleCommand = "run node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Project Deep Analysis and Audit\"}' --json";
+    const titleCommand = "run node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Project Deep Analysis and Audit\"}' --json";
 
     expect(
       extractPermissionInputWithFallback(
@@ -203,7 +203,7 @@ describe('extractPermissionInputWithFallback', () => {
         {
           toolCall: {
             kind: 'read',
-            title: "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{}'",
+            title: "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{}'",
           },
           options: [
             { optionId: 'proceed_session', kind: 'allow_session', name: 'Allow for this session' },
@@ -237,7 +237,7 @@ describe('extractPermissionInputWithFallback', () => {
   });
 
   it('uses execute titles when the resolved tool name is shell-like', () => {
-    const titleCommand = "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Resolved Shell\"}' --json";
+    const titleCommand = "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Resolved Shell\"}' --json";
 
     expect(
       extractPermissionInputWithFallback(
@@ -272,7 +272,7 @@ describe('extractPermissionInputWithFallback', () => {
                 content: {
                   type: 'text',
                   text:
-                    "Requesting approval to perform: Run command `node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Get QA Marker\"}' --json`",
+                    "Requesting approval to perform: Run command `node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Get QA Marker\"}' --json`",
                 },
               },
             ],
@@ -283,7 +283,7 @@ describe('extractPermissionInputWithFallback', () => {
       ),
     ).toEqual({
       command:
-        "node apps/cli/src/index.ts tools call --source happier --tool change_title --args-json '{\"title\":\"Get QA Marker\"}' --json",
+        "node apps/cli/src/index.ts tools call --source piggercode --tool change_title --args-json '{\"title\":\"Get QA Marker\"}' --json",
     });
   });
 });

@@ -201,7 +201,7 @@ async function selectAttachableSessionId(params: Readonly<{
   return await runSessionActionSelector({
     title: 'Attach to a running session',
     actionVerb: 'attach',
-    footerHint: params.footerHint ?? 'Use `happier resume` for stopped sessions.',
+    footerHint: params.footerHint ?? 'Use `piggercode resume` for stopped sessions.',
     rows: params.rows,
     onProbe: params.probeSessionIdFn,
   });
@@ -216,8 +216,8 @@ export async function handleAttachCommand(
     return trimmed === '--help' || trimmed === '-h';
   });
   if (hasHelpFlag) {
-    console.log('happier attach');
-    console.log('happier attach <session-id-or-prefix>');
+    console.log('piggercode attach');
+    console.log('piggercode attach <session-id-or-prefix>');
     console.log('');
     console.log('Attaches a terminal to a running session on this computer.');
     return;
@@ -250,13 +250,13 @@ export async function handleAttachCommand(
     if (!canUseInkSelectorFn()) {
       console.error(fail('Interactive attach is not available (raw TTY mode not supported).'));
       console.log('');
-      console.log('Hint: run `happier session list --active` and then `happier attach <session-id>`.');
+      console.log('Hint: run `piggercode session list --active` and then `piggercode attach <session-id>`.');
       process.exit(1);
     }
 
     credentialsForInteractive = await (deps.readCredentialsFn ?? readCredentials)();
     if (!credentialsForInteractive) {
-      console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+      console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
       process.exit(1);
     }
 
@@ -284,7 +284,7 @@ export async function handleAttachCommand(
       accountSettings,
     });
     const footerHint = formatAttachIneligibilityFooter(selectionModel.hint)
-      ?? 'Use `happier resume` for stopped sessions.';
+      ?? 'Use `piggercode resume` for stopped sessions.';
     const selected = await selectAttachableSessionIdFn({
       rows: selectionModel.rows,
       probeSessionIdFn: selectionModel.probeSessionIdFn,
@@ -299,7 +299,7 @@ export async function handleAttachCommand(
       // "running but unattachable from here" so the user sees the actual
       // cause. Today we only land here when 0 candidate rows survived.
       console.log('No active sessions on this machine.');
-      console.log('Hint: use `happier resume` for stopped sessions, or `happier session list --active` to see remote sessions.');
+      console.log('Hint: use `piggercode resume` for stopped sessions, or `piggercode session list --active` to see remote sessions.');
       return;
     }
     sessionIdOrPrefix = selected.sessionId;
@@ -308,7 +308,7 @@ export async function handleAttachCommand(
   if (!sessionIdOrPrefix) {
     console.error(fail('Missing session ID.'));
     console.log('');
-    console.log('Usage: happier attach <sessionId>');
+    console.log('Usage: piggercode attach <sessionId>');
     process.exit(1);
   }
 
@@ -336,7 +336,7 @@ export async function handleAttachCommand(
 
     if (!eligibility.eligible) {
       // Route through the same explainer the interactive selector uses so
-      // explicit `happier attach <id>` produces the same friendly,
+      // explicit `piggercode attach <id>` produces the same friendly,
       // user-actionable message instead of the raw eligibility reason.
       const tmuxAvailable = await (deps.isTmuxAvailableFn ?? isTmuxAvailable)().catch(() => false);
       const agentId = eligibility.agentId ?? null;

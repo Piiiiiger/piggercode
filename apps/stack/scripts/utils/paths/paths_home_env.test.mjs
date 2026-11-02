@@ -12,32 +12,32 @@ import {
 test('stack path overrides expand ~/ against the provided HOME env', () => {
   const env = {
     HOME: '/scoped/home',
-    PIGGERCODE_STACK_HOME_DIR: '~/.happier-stack-custom',
-    PIGGERCODE_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
+    PIGGERCODE_STACK_HOME_DIR: '~/.piggercode-stack-custom',
+    PIGGERCODE_STACK_STORAGE_DIR: '~/.piggercode/stacks-custom',
   };
 
-  assert.equal(getHappyStacksHomeDir(env), '/scoped/home/.happier-stack-custom');
-  assert.equal(getWorkspaceDir('/tmp/root', env), '/scoped/home/.happier-stack-custom/workspace');
-  assert.equal(getStacksStorageRoot(env), '/scoped/home/.happier/stacks-custom');
+  assert.equal(getHappyStacksHomeDir(env), '/scoped/home/.piggercode-stack-custom');
+  assert.equal(getWorkspaceDir('/tmp/root', env), '/scoped/home/.piggercode-stack-custom/workspace');
+  assert.equal(getStacksStorageRoot(env), '/scoped/home/.piggercode/stacks-custom');
 });
 
 test('resolveActiveStackEnvFilePath expands ~/ explicit overrides against the provided HOME env', () => {
   const env = {
     HOME: '/scoped/home',
-    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_ENV_FILE: '~/.piggercode/stacks/dev/env',
   };
 
-  assert.equal(resolveActiveStackEnvFilePath('dev', env), '/scoped/home/.happier/stacks/dev/env');
+  assert.equal(resolveActiveStackEnvFilePath('dev', env), '/scoped/home/.piggercode/stacks/dev/env');
 });
 
 test('resolveActiveStackEnvFilePath falls back to the resolved stack env file when no explicit override is set', () => {
   const env = {
     HOME: '/scoped/home',
-    PIGGERCODE_STACK_STORAGE_DIR: '~/.happier/stacks-custom',
+    PIGGERCODE_STACK_STORAGE_DIR: '~/.piggercode/stacks-custom',
   };
 
   assert.equal(
     resolveActiveStackEnvFilePath('dev', env),
-    join('/scoped/home/.happier/stacks-custom', 'dev', 'env')
+    join('/scoped/home/.piggercode/stacks-custom', 'dev', 'env')
   );
 });

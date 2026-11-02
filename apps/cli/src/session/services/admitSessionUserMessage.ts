@@ -15,7 +15,7 @@ import { resolveSessionUserMessageRequestedAction } from './resolveSessionUserMe
  * custody".
  *
  * It exists because two callers need exactly this and nothing else: the
- * `happier session send` service, and the same-Session Agent transition, which
+ * `piggercode session send` service, and the same-Session Agent transition, which
  * must admit the user's exact message after cutover without a running runtime
  * to accept it. Duplicating the record shape would duplicate two subtle
  * contracts — the `source: 'ui'` rule below, and the unconditional sealing

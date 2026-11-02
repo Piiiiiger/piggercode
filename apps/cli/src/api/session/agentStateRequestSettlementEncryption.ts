@@ -31,7 +31,7 @@ async function deriveInstallationKey(
 ): Promise<Uint8Array> {
     const accountId = readAccountIdFromToken(scope.token);
     if (!accountId) throw new Error('Request settlement requires a session account identity');
-    return await deriveKey(decodeBase64(identity.privateKey, 'base64url'), 'Happier Session Mutation', [
+    return await deriveKey(decodeBase64(identity.privateKey, 'base64url'), 'PiggerCode Session Mutation', [
         'request-settlement-v1', scope.serverId, accountId, scope.sessionId,
     ]);
 }

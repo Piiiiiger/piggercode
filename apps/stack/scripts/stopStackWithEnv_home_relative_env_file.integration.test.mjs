@@ -24,8 +24,8 @@ test('stopStackWithEnv sweeps infra tagged processes when PIGGERCODE_STACK_ENV_F
 
   const stackName = 'exp1';
   const baseDir = join(storageDir, stackName);
-  const rawEnvPath = `~/.happier/stacks/${stackName}/env`;
-  const expandedEnvPath = join(homeDir, '.happier', 'stacks', stackName, 'env');
+  const rawEnvPath = `~/.piggercode/stacks/${stackName}/env`;
+  const expandedEnvPath = join(homeDir, '.piggercode', 'stacks', stackName, 'env');
   await mkdir(dirname(expandedEnvPath), { recursive: true });
   await mkdir(baseDir, { recursive: true });
 

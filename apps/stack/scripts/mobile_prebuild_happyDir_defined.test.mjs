@@ -19,7 +19,7 @@ test('hstack mobile --prebuild does not crash with undefined happyDir', async ()
     // Avoid creating package.json to keep the run hermetic (ensureDepsInstalled will no-op).
     await mkdir(join(repoDir, 'apps', 'ui'), { recursive: true });
 
-    // Ensure stack storage stays within this tmp dir (avoid touching real ~/.happier paths).
+    // Ensure stack storage stays within this tmp dir (avoid touching real ~/.piggercode paths).
     await mkdir(join(storageDir, 'main'), { recursive: true });
 
     const env = {

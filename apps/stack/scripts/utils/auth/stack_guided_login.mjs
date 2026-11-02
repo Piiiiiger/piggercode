@@ -505,7 +505,7 @@ export async function resolveStackAuthCliExecutable({ rootDir, env = process.env
   const preferredEntrypoints = [
     join(cliDir, 'package-dist', 'index.mjs'),
     join(cliDir, 'dist', 'index.mjs'),
-    join(cliDir, 'bin', 'happier.mjs'),
+    join(cliDir, 'bin', 'piggercode.mjs'),
   ];
 
   for (const candidate of preferredEntrypoints) {

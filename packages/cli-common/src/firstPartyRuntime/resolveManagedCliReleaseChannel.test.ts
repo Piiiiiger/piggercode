@@ -60,7 +60,7 @@ describe('resolveManagedCliReleaseChannelSync', () => {
     const resolved = resolveManagedCliReleaseChannelSync({
       argv: [
         'hdev',
-        '/Users/test/.happier/cli-preview/versions/1.2.3/package-dist/index.mjs',
+        '/Users/test/.piggercode/cli-preview/versions/1.2.3/package-dist/index.mjs',
       ],
       processEnv: {},
     });
@@ -89,11 +89,11 @@ describe('resolveManagedCliReleaseChannelSync', () => {
     });
   });
 
-  it('uses the persisted default channel for the unsuffixed happier invoker', () => {
+  it('uses the persisted default channel for the unsuffixed piggercode invoker', () => {
     withDefaultChannelMarker('preview', (processEnv) => {
       const resolved = resolveManagedCliReleaseChannelSync({
         args: ['update'],
-        argv: ['happier', 'self', 'update'],
+        argv: ['piggercode', 'self', 'update'],
         invokedPath: 'self',
         processEnv,
       });
@@ -101,7 +101,7 @@ describe('resolveManagedCliReleaseChannelSync', () => {
       expect(resolved).toMatchObject({
         ringId: 'preview',
         source: 'default-marker',
-        invokedToolName: 'happier',
+        invokedToolName: 'piggercode',
         channelToolName: 'hprev',
       });
     });

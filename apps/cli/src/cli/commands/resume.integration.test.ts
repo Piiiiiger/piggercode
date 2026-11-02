@@ -10,7 +10,7 @@ import {
 } from '@piggercode/protocol';
 import type { SessionAttachSecret } from '@/agent/runtime/sessionAttach';
 
-describe('happier resume command (integration)', () => {
+describe('piggercode resume command (integration)', () => {
   const originalServerUrl = process.env.PIGGERCODE_SERVER_URL;
   const originalWebappUrl = process.env.PIGGERCODE_WEBAPP_URL;
   const originalHomeDir = process.env.PIGGERCODE_HOME_DIR;

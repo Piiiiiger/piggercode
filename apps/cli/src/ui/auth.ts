@@ -63,8 +63,8 @@ function resolveTailscaleServeStatusTimeoutMs(): number {
  *
  * Unbounded by default, because a person watching a QR code on their desk is
  * not a hung process. Callers that hand this flow a terminal they have to give
- * back — `happier setup`, which runs `auth login` with inherited stdio — ask for
- * a bound with `happier auth login --wait-timeout <seconds>`, which arrives here
+ * back — `piggercode setup`, which runs `auth login` with inherited stdio — ask for
+ * a bound with `piggercode auth login --wait-timeout <seconds>`, which arrives here
  * the same way the poll interval and the auth method already do.
  */
 function resolveTerminalAuthWaitTimeoutMs(): number | null {
@@ -85,10 +85,10 @@ function printMobileLinkMissingServerUrlHint(params: Readonly<{ serverUrl: strin
     const details = isLoopbackServerHost(params.serverUrl)
         ? [
             'Your relay URL is set to localhost, which is only reachable on this machine.',
-            'On your phone, open Happier → Settings → Relays and add a URL your phone can reach (LAN IP/VPN/Tailscale).',
+            'On your phone, open PiggerCode → Settings → Relays and add a URL your phone can reach (LAN IP/VPN/Tailscale).',
             'Tip (recommended): set PIGGERCODE_PUBLIC_SERVER_URL to a shareable https:// URL so future QR codes include it automatically.',
         ]
-        : ['Your phone will use its currently configured relay (Happier → Settings → Relays).'];
+        : ['Your phone will use its currently configured relay (PiggerCode → Settings → Relays).'];
     // eslint-disable-next-line no-console
     console.log(warn('This mobile link does not include a relay URL.'));
     // eslint-disable-next-line no-console
@@ -129,7 +129,7 @@ function printConfigureServerLinks(): void {
     }
 }
 
-const SAME_ACCOUNT_NOTE = chalk.gray('If you already have a Happier account on another device, sign in with that same account.');
+const SAME_ACCOUNT_NOTE = chalk.gray('If you already have a PiggerCode account on another device, sign in with that same account.');
 
 async function applyAutoPublicServerUrlFromTailscaleServeBestEffort(): Promise<void> {
     if (!shouldAutoInferPublicServerUrl()) return;
@@ -320,11 +320,11 @@ async function doBothAuth(params: Readonly<{
                 'The app/web UI may prompt you to switch relays automatically (because the link includes server=...)',
             ]
             : [
-                'Make sure your phone is already configured to the right relay (Happier → Settings → Relays)',
+                'Make sure your phone is already configured to the right relay (PiggerCode → Settings → Relays)',
                 'Tip: set PIGGERCODE_PUBLIC_SERVER_URL to embed a shareable relay URL in future QR codes',
             ]),
         'Sign in (or create an account)',
-        'If you already have a Happier account on another device, sign in with that same account',
+        'If you already have a PiggerCode account on another device, sign in with that same account',
     ])));
     console.log('');
 
@@ -336,14 +336,14 @@ async function doBothAuth(params: Readonly<{
     if (['1', 'true', 'yes', 'on'].includes(printConfigureLinksRaw)) printConfigureServerLinks();
 
     console.log(sectionTitle('Mobile app (recommended)'));
-    console.log('Scan this QR code with your Happier mobile app:\n');
+    console.log('Scan this QR code with your PiggerCode mobile app:\n');
     displayQRCode(terminalLinks.mobileUrl);
     console.log(chalk.gray('\nOr open this link on your phone:'));
     console.log(terminalLinks.mobileUrl);
     console.log('');
 
     console.log(sectionTitle('Web browser'));
-    console.log(chalk.gray('Open this link in a browser where you are signed in to Happier:'));
+    console.log(chalk.gray('Open this link in a browser where you are signed in to PiggerCode:'));
     console.log(terminalLinks.webUrl);
     console.log('');
 
@@ -400,7 +400,7 @@ async function doMobileAuth(params: Readonly<{
     pairingRequirement: TerminalPairingRequirement | null;
 }>): Promise<Credentials | null> {
     printConnectIntro([
-        info('Approve this computer with Happier on your phone.'),
+        info('Approve this computer with PiggerCode on your phone.'),
         ...(params.pairingRequirement === 'v3'
             ? [warn('Authenticated pairing v3 is required. For protection from an untrusted relay, approve with the native mobile app; web pairing trusts the web app origin.')]
             : []),
@@ -423,7 +423,7 @@ async function doMobileAuth(params: Readonly<{
         printMobileLinkMissingServerUrlHint({ serverUrl: configuration.serverUrl, kind: 'terminalConnect' });
     }
 
-    console.log('Scan this QR code with your Happier mobile app:\n');
+    console.log('Scan this QR code with your PiggerCode mobile app:\n');
     displayQRCode(terminalLinks.mobileUrl);
 
     console.log(chalk.gray('\nCopy this link if you cannot scan the code:'));
@@ -479,7 +479,7 @@ async function doWebAuth(params: Readonly<{
     console.log(chalk.gray('\nCopy this link into any browser:'));
     console.log(webUrl);
     console.log('');
-    console.log('Sign in to the same Happier account you use on your other devices, then approve this computer.');
+    console.log('Sign in to the same PiggerCode account you use on your other devices, then approve this computer.');
     console.log(chalk.gray('Prefer the mobile app? Cancel and run this command again, then choose Mobile app.\n'));
 
     return await waitForAuthentication(params, 'planet');
@@ -503,7 +503,7 @@ async function waitForAuthentication(
         steps.stop(result, title);
         for (const detail of details) console.log(chalk.gray(`  ${detail}`));
     };
-    const signInAgain = `Run ${cmd('happier auth login')} again to create a new sign-in request.`;
+    const signInAgain = `Run ${cmd('piggercode auth login')} again to create a new sign-in request.`;
     steps.start('Waiting for authentication');
     let cancelled = false;
 
@@ -552,7 +552,7 @@ async function waitForAuthentication(
                     });
                     if (!opened) {
                         if (params.pairingRequirement === 'v3') {
-                            end('x', 'Authenticated terminal pairing v3 is required', ['Update the Happier mobile app and scan a new QR code.']);
+                            end('x', 'Authenticated terminal pairing v3 is required', ['Update the PiggerCode mobile app and scan a new QR code.']);
                         } else {
                             end('x', "Couldn't decrypt the relay's response", ['Please try again.']);
                         }

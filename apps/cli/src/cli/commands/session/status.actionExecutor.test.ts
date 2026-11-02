@@ -9,7 +9,7 @@ vi.mock('@/session/actions/createCliActionExecutorFromCredentials', () => ({
   createCliActionExecutorFromCredentials,
 }));
 
-describe('happier session status (action executor)', () => {
+describe('piggercode session status (action executor)', () => {
   it('routes through ActionExecutor with the expected action id and args', async () => {
     execute.mockResolvedValueOnce({
       ok: true,

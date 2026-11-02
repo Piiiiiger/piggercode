@@ -8,10 +8,10 @@ import { describe, expect, it } from 'vitest';
 import { resolveStackToolTraceDir } from './resolveStackToolTraceDir';
 
 describe('resolveStackToolTraceDir', () => {
-  it('defaults to ~/.happier/stacks/<stack>/cli/tool-traces', () => {
+  it('defaults to ~/.piggercode/stacks/<stack>/cli/tool-traces', () => {
     const stack = 'unit-test-stack';
     const dir = resolveStackToolTraceDir({ stack, env: {} });
-    expect(dir).toBe(path.join(os.homedir(), '.happier', 'stacks', stack, 'cli', 'tool-traces'));
+    expect(dir).toBe(path.join(os.homedir(), '.piggercode', 'stacks', stack, 'cli', 'tool-traces'));
   });
 
   it('defaults to PIGGERCODE_HOME_DIR/stacks when PIGGERCODE_HOME_DIR is configured', () => {

@@ -21,7 +21,7 @@ export function resolveStackTauriIdentity({ env = {}, baseProductName = 'Happier
   const shouldScope = stackSlug && stackSlug !== 'main';
   return {
     stackSlug,
-    identifier: explicitIdentifier || (shouldScope ? `com.happier.stack.${stackSlug}` : 'com.happier.stack'),
+    identifier: explicitIdentifier || (shouldScope ? `com.piggercode.stack.${stackSlug}` : 'com.piggercode.stack'),
     productName: explicitProductName || (shouldScope ? `${baseProductName || 'Happier'} (${stackSlug})` : baseProductName || 'Happier'),
   };
 }

@@ -16,17 +16,17 @@ import {
 
 describe('Windows scheduled task folder listing PowerShell helper', () => {
   it('lists only the requested task folder instead of enumerating every scheduled task', () => {
-    const command = buildListWindowsScheduledTaskFolderPowerShellCommand({ taskFolder: '\\Happier\\' });
+    const command = buildListWindowsScheduledTaskFolderPowerShellCommand({ taskFolder: '\\PiggerCode\\' });
 
     expect(command).toContain('Schedule.Service');
-    expect(command).toContain('.GetFolder("\\Happier")');
+    expect(command).toContain('.GetFolder("\\PiggerCode")');
     expect(command).toContain('ConvertTo-Json');
     expect(command).not.toContain('schtasks');
   });
 
   it('parses task paths from invariant JSON and rejects anything else', () => {
-    expect(parseWindowsScheduledTaskFolderPowerShellJson('["\\\\Happier\\\\happier-daemon.default"]'))
-      .toEqual(['\\Happier\\happier-daemon.default']);
+    expect(parseWindowsScheduledTaskFolderPowerShellJson('["\\\\PiggerCode\\\\piggercode-daemon.default"]'))
+      .toEqual(['\\PiggerCode\\piggercode-daemon.default']);
     expect(parseWindowsScheduledTaskFolderPowerShellJson('[]')).toEqual([]);
     // The COM producer emits explicit [] for an empty inventory; blank output proves nothing.
     expect(parseWindowsScheduledTaskFolderPowerShellJson('')).toBeNull();
@@ -115,14 +115,14 @@ describe('Windows scheduled task wrapper script', () => {
   it('keeps the program invocation on a single `& ` line for definition readers', () => {
     const script = renderWindowsScheduledTaskWrapperPs1({
       workingDirectory: 'C:\\Users\\tester',
-      programArgs: ['C:\\Users\\tester\\.happier\\bin\\happier.exe', 'daemon', 'start-sync', '--takeover'],
-      stdoutPath: 'C:\\Users\\tester\\.happier\\logs\\out.log',
-      stderrPath: 'C:\\Users\\tester\\.happier\\logs\\err.log',
+      programArgs: ['C:\\Users\\tester\\.piggercode\\bin\\piggercode.exe', 'daemon', 'start-sync', '--takeover'],
+      stdoutPath: 'C:\\Users\\tester\\.piggercode\\logs\\out.log',
+      stderrPath: 'C:\\Users\\tester\\.piggercode\\logs\\err.log',
     });
 
     expect(/^& (.*)$/mu.exec(script)?.[1]).toBe(
-      '"C:\\Users\\tester\\.happier\\bin\\happier.exe" "daemon" "start-sync" "--takeover"'
-      + ' 1>> "C:\\Users\\tester\\.happier\\logs\\out.log" 2>> "C:\\Users\\tester\\.happier\\logs\\err.log"',
+      '"C:\\Users\\tester\\.piggercode\\bin\\piggercode.exe" "daemon" "start-sync" "--takeover"'
+      + ' 1>> "C:\\Users\\tester\\.piggercode\\logs\\out.log" 2>> "C:\\Users\\tester\\.piggercode\\logs\\err.log"',
     );
   });
 });
@@ -137,7 +137,7 @@ describe('Windows scheduled task PowerShell status helper', () => {
       stateValue: 3,
       lastRunTime: '2026-04-29T16:29:54.0000000+02:00',
       lastTaskResult: 267009,
-      taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+      taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
     }));
 
     expect(parsed).toEqual({
@@ -148,14 +148,14 @@ describe('Windows scheduled task PowerShell status helper', () => {
       stateValue: 3,
       lastRunTime: '2026-04-29T16:29:54.0000000+02:00',
       lastTaskResult: 267009,
-      taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+      taskToRun: 'powershell.exe -NoProfile -File C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
     });
   });
 
   it('queries launch post-mortem fields using culture-independent property names', () => {
     const command = buildReadWindowsScheduledTaskStatusPowerShellCommand({
-      taskPath: '\\Happier\\',
-      taskName: 'happier-daemon.default',
+      taskPath: '\\PiggerCode\\',
+      taskName: 'piggercode-daemon.default',
     });
 
     expect(command).toContain('Get-ScheduledTaskInfo');
@@ -169,14 +169,14 @@ describe('Windows scheduled task PowerShell status helper', () => {
 describe('Windows scheduled task lifecycle PowerShell helpers', () => {
   it('stops only an existing running task through typed scheduler state', () => {
     const command = buildStopWindowsScheduledTaskIfRunningPowerShellCommand({
-      qualifiedTaskName: 'Happier\\happier-daemon.default',
-      definitionPath: 'C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1',
+      qualifiedTaskName: 'PiggerCode\\piggercode-daemon.default',
+      definitionPath: 'C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1',
     });
 
     expect(command).toContain('Get-ScheduledTask');
     expect(command).toContain('[int]$task.State -eq 4');
     expect(command).toContain('Get-CimInstance Win32_Process');
-    expect(command).toContain('-File `"C:\\Users\\test\\.happier\\services\\happier-daemon.default.ps1`"');
+    expect(command).toContain('-File `"C:\\Users\\test\\.piggercode\\services\\piggercode-daemon.default.ps1`"');
     expect(command).toContain('taskkill.exe /PID $serviceProcessId /T /F');
     expect(command.indexOf('taskkill.exe')).toBeLessThan(command.indexOf('Stop-ScheduledTask'));
     expect(command).toContain('Stop-ScheduledTask');
@@ -187,7 +187,7 @@ describe('Windows scheduled task lifecycle PowerShell helpers', () => {
 
   it('removes only an existing task without parsing localized command output', () => {
     const command = buildRemoveWindowsScheduledTaskIfPresentPowerShellCommand({
-      qualifiedTaskName: 'Happier\\happier-daemon.default',
+      qualifiedTaskName: 'PiggerCode\\piggercode-daemon.default',
     });
 
     expect(command).toContain('Get-ScheduledTask');

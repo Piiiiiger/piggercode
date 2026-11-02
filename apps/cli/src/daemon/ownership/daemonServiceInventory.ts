@@ -224,8 +224,8 @@ export function renderDaemonInstalledServiceConflict(params: Readonly<{
           : 'restart the daemon manually';
   const serviceCommand =
     params.action === 'daemon-restart'
-      ? 'Use `happier doctor repair` to switch automatic startup to this installation.'
-      : 'Use `happier service start` to start the installed background service instead of starting another daemon.';
+      ? 'Use `piggercode doctor repair` to switch automatic startup to this installation.'
+      : 'Use `piggercode service start` to start the installed background service instead of starting another daemon.';
   const serviceSummary = renderDaemonServiceInventory(params.services);
   return {
     title: 'A background service is already installed for the selected relay.',

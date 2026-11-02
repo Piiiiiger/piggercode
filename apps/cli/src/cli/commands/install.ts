@@ -12,11 +12,11 @@ import { describeProviderCliInstallMode, runProviderCliInstallStep } from '@/run
 
 function usage(): string {
   return [
-    `${chalk.bold('happier install')} - Installation helpers`,
+    `${chalk.bold('piggercode install')} - Installation helpers`,
     '',
     `${chalk.bold('Usage:')}`,
-    '  happier install doctor',
-    '  happier install provider <providerId> [--dry-run] [--force]',
+    '  piggercode install doctor',
+    '  piggercode install provider <providerId> [--dry-run] [--force]',
     '',
   ].join('\n');
 }

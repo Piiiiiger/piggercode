@@ -35,7 +35,7 @@ describe('doctorRuntimeDiagnostics', () => {
   });
 
   it('reports node source installs with concrete wrapper paths', () => {
-    const exists = vi.fn((path: string) => path.endsWith('/bin/happier.mjs'));
+    const exists = vi.fn((path: string) => path.endsWith('/bin/piggercode.mjs'));
 
     const diagnostics = buildDoctorRuntimeDiagnostics({
       runtime: 'node',
@@ -51,7 +51,7 @@ describe('doctorRuntimeDiagnostics', () => {
       runtimeVersion: 'v22.14.0',
       nodeCompatibilityVersion: 'v22.14.0',
       isEmbeddedBundle: false,
-      wrapperPath: '/repo/apps/cli/bin/happier.mjs',
+      wrapperPath: '/repo/apps/cli/bin/piggercode.mjs',
       cliEntrypointPath: '/repo/apps/cli/dist/index.mjs',
       wrapperExists: true,
       cliEntrypointExists: false,

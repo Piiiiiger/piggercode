@@ -30,7 +30,7 @@ function buildMachine(overrides: Partial<Machine> = {}): Machine {
             host: 'localhost',
             platform: 'darwin',
             homeDir: '/Users/tester',
-            happyHomeDir: '/Users/tester/.happier',
+            happyHomeDir: '/Users/tester/.piggercode',
             happyCliVersion: '0.0.0-test',
         } as Machine['metadata'],
         metadataVersion: 5,
@@ -70,7 +70,7 @@ describe('buildUpdatedMachineFromSocketUpdate stale guards', () => {
             host: 'localhost',
             platform: 'darwin',
             homeDir: '/Users/tester',
-            happyHomeDir: '/Users/tester/.happier',
+            happyHomeDir: '/Users/tester/.piggercode',
             happyCliVersion: '0.0.0-test',
         })
         expect(updated?.daemonStateVersion).toBe(8)

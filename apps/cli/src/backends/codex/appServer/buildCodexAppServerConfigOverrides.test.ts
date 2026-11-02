@@ -9,9 +9,9 @@ describe('buildCodexAppServerConfigOverrides', () => {
         })).toEqual(['model_reasoning_effort=low', 'custom.value="a=b"', 'model_reasoning_effort=high', 'model_reasoning_effort=low', 'personality="friendly"']);
         expect(() => buildCodexAppServerConfigOverrides({}, { codexArgs: ['-c'] })).toThrow();
     });
-    it('translates materialized Happier MCP servers into additive app-server config overrides', () => {
+    it('translates materialized PiggerCode MCP servers into additive app-server config overrides', () => {
         const overrides = buildCodexAppServerConfigOverrides({
-            happier: {
+            piggercode: {
                 command: '/tmp/happier-mcp-bridge',
                 args: ['--url', 'http://127.0.0.1:0'],
                 env: {
@@ -22,21 +22,21 @@ describe('buildCodexAppServerConfigOverrides', () => {
 
         expect(overrides).toEqual([
             'mcp_optional_startup_grace_ms=60000',
-            'mcp_servers.happier.command="/tmp/happier-mcp-bridge"',
-            'mcp_servers.happier.args=["--url","http://127.0.0.1:0"]',
-            'mcp_servers.happier.env={PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE="/tmp/bridge-config.json"}',
-            'mcp_servers.happier.enabled=true',
-            'mcp_servers.happier.startup_timeout_sec=60',
-            'mcp_servers.happier.tool_timeout_sec=3720',
-            'mcp_servers.happier.tools.execution_run_get.approval_mode="approve"',
-            'mcp_servers.happier.tools.execution_run_list.approval_mode="approve"',
-            'mcp_servers.happier.tools.execution_run_wait.approval_mode="approve"',
+            'mcp_servers.piggercode.command="/tmp/happier-mcp-bridge"',
+            'mcp_servers.piggercode.args=["--url","http://127.0.0.1:0"]',
+            'mcp_servers.piggercode.env={PIGGERCODE_MCP_REMOTE_BRIDGE_CONFIG_FILE="/tmp/bridge-config.json"}',
+            'mcp_servers.piggercode.enabled=true',
+            'mcp_servers.piggercode.startup_timeout_sec=60',
+            'mcp_servers.piggercode.tool_timeout_sec=3720',
+            'mcp_servers.piggercode.tools.execution_run_get.approval_mode="approve"',
+            'mcp_servers.piggercode.tools.execution_run_list.approval_mode="approve"',
+            'mcp_servers.piggercode.tools.execution_run_wait.approval_mode="approve"',
         ]);
     });
 
-    it('uses the app-server startup budget for optional Happier MCP discovery without making it required', () => {
+    it('uses the app-server startup budget for optional PiggerCode MCP discovery without making it required', () => {
         const overrides = buildCodexAppServerConfigOverrides({
-            happier: { command: 'happier-mcp' },
+            piggercode: { command: 'piggercode-mcp' },
         }, {
             processEnv: {
                 PIGGERCODE_CODEX_APP_SERVER_STARTUP_RPC_TIMEOUT_MS: '90000',
@@ -44,11 +44,11 @@ describe('buildCodexAppServerConfigOverrides', () => {
         });
 
         expect(overrides).toContain('mcp_optional_startup_grace_ms=90000');
-        expect(overrides).toContain('mcp_servers.happier.startup_timeout_sec=90');
+        expect(overrides).toContain('mcp_servers.piggercode.startup_timeout_sec=90');
         expect(overrides.some((override) => override.includes('.required='))).toBe(false);
     });
 
-    it('prefixes configured server names so user Codex MCP entries cannot collide with Happier-injected ones', () => {
+    it('prefixes configured server names so user Codex MCP entries cannot collide with PiggerCode-injected ones', () => {
         const overrides = buildCodexAppServerConfigOverrides({
             context7: {
                 command: 'echo',
@@ -59,24 +59,24 @@ describe('buildCodexAppServerConfigOverrides', () => {
             },
         });
 
-        expect(overrides).toContain('mcp_servers.happier__context7.command="echo"');
-        expect(overrides).toContain('mcp_servers.happier__server_with_spaces.command="node"');
+        expect(overrides).toContain('mcp_servers.piggercode__context7.command="echo"');
+        expect(overrides).toContain('mcp_servers.piggercode__server_with_spaces.command="node"');
         expect(overrides).not.toContain('mcp_servers.context7.command="echo"');
         expect(overrides.some((override) => override.includes('.tool_timeout_sec='))).toBe(false);
         expect(overrides.some((override) => override.includes('.tools.execution_run_wait.approval_mode'))).toBe(false);
     });
 
-    it('uses the configured bounded Happier MCP tool-call timeout', () => {
+    it('uses the configured bounded PiggerCode MCP tool-call timeout', () => {
         const overrides = buildCodexAppServerConfigOverrides({
-            happier: { command: 'happier-mcp' },
+            piggercode: { command: 'piggercode-mcp' },
         }, {
             happierMcpToolCallTimeoutMs: 7_230_500,
         });
 
-        expect(overrides).toContain('mcp_servers.happier.tool_timeout_sec=7230.5');
+        expect(overrides).toContain('mcp_servers.piggercode.tool_timeout_sec=7230.5');
     });
 
-    it('injects only the explicit Happier session context into Codex shell subprocesses', () => {
+    it('injects only the explicit PiggerCode session context into Codex shell subprocesses', () => {
         const overrides = buildCodexAppServerConfigOverrides({}, {
             happierSessionId: 'session-123',
         });

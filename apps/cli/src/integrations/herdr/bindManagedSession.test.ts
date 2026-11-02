@@ -46,12 +46,12 @@ describe('bindManagedHerdrSession', () => {
   });
 
   it('restores with the installed release channel rather than always using stable', () => {
-    expect(createHerdrResumeArgv('session-123', 'stable')).toEqual(['happier', '--runtime-context', expect.any(String), 'resume', 'session-123']);
+    expect(createHerdrResumeArgv('session-123', 'stable')).toEqual(['piggercode', '--runtime-context', expect.any(String), 'resume', 'session-123']);
     expect(createHerdrResumeArgv('session-123', 'preview')).toEqual(['hprev', '--runtime-context', expect.any(String), 'resume', 'session-123']);
     expect(createHerdrResumeArgv('session-123', 'publicdev')).toEqual(['hdev', '--runtime-context', expect.any(String), 'resume', 'session-123']);
   });
 
-  it('binds a Happier session to an exact Herdr terminal and ignores other hosts', async () => {
+  it('binds a PiggerCode session to an exact Herdr terminal and ignores other hosts', async () => {
     const session = createLifecycleSession();
     const request = vi.fn(async () => ({}));
     const client = {
@@ -66,7 +66,7 @@ describe('bindManagedHerdrSession', () => {
       client,
     });
     await vi.waitFor(() => expect(request).toHaveBeenCalledWith('pane.report_agent', expect.objectContaining({
-      pane_id: 'w1:p2', agent: 'codex', resume_argv: ['happier', '--runtime-context', expect.any(String), 'resume', 'session-123'],
+      pane_id: 'w1:p2', agent: 'codex', resume_argv: ['piggercode', '--runtime-context', expect.any(String), 'resume', 'session-123'],
     })));
     request.mockClear();
     await bindHerdrAgentIfNeeded({ session, sessionId: 'other', agent: 'codex', terminal: { mode: 'plain' }, client });
@@ -184,7 +184,7 @@ describe('bindManagedHerdrSession', () => {
       }),
     });
     await vi.waitFor(() => expect(request).toHaveBeenCalledWith('pane.report_agent', expect.objectContaining({
-      pane_id: 'w1:p2', agent: 'codex', resume_argv: ['happier', '--runtime-context', expect.any(String), 'resume', 'session-hosted'],
+      pane_id: 'w1:p2', agent: 'codex', resume_argv: ['piggercode', '--runtime-context', expect.any(String), 'resume', 'session-hosted'],
     })));
   });
 
@@ -223,7 +223,7 @@ describe('bindManagedHerdrSession', () => {
     expect(request).not.toHaveBeenCalledWith('pane.release_agent', expect.anything());
   });
 
-  it('projects existing Happier presence and resume, then releases the pane on close', async () => {
+  it('projects existing PiggerCode presence and resume, then releases the pane on close', async () => {
     const session = createLifecycleSession();
     const request = vi.fn(async () => ({}));
     const findPane = vi.fn(async () => ({ paneId: 'w1:p2', terminalId: 'term_42', workspaceId: 'w1', tabId: 'w1:t1' }));
@@ -241,7 +241,7 @@ describe('bindManagedHerdrSession', () => {
       source: 'happier',
       agent: 'codex',
       state: 'idle',
-      resume_argv: ['happier', '--runtime-context', expect.any(String), 'resume', 'session-123'],
+      resume_argv: ['piggercode', '--runtime-context', expect.any(String), 'resume', 'session-123'],
     })));
 
     session.emit('local-presence', { thinking: true, mode: 'remote' });

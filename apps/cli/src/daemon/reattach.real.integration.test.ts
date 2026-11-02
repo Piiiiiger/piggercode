@@ -95,7 +95,7 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
       const { findHappyProcessByPid } = await import('./doctor');
       const { hashProcessCommand, listSessionMarkers, writeSessionMarker } = await import('./sessionRegistry');
       const child = spawnTestProcess(process.execPath, [
-        '-e', `/* ${projectPath()}/bin/happier.mjs --started-by daemon --existing-session foreign-home */ setInterval(() => {}, 1000000)`,
+        '-e', `/* ${projectPath()}/bin/piggercode.mjs --started-by daemon --existing-session foreign-home */ setInterval(() => {}, 1000000)`,
       ], { env: { ...process.env, PIGGERCODE_HOME_DIR: `${process.env.PIGGERCODE_HOME_DIR}-foreign` } });
       spawned.push(() => { child.kill('SIGTERM'); });
       expect(child.pid).toBeDefined();
@@ -154,7 +154,7 @@ describe.skipIf(!shouldRunDaemonReattachIntegration())(
         const legacy = scenario.name === 'legacy-scope';
         if (legacy) envScope.patch({ PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: undefined });
         const child = spawnTestProcess(process.execPath, [
-          '-e', `/* ${projectPath()}/bin/happier.mjs --started-by daemon --existing-session ${scenario.name} */ setInterval(() => {}, 1000000)`,
+          '-e', `/* ${projectPath()}/bin/piggercode.mjs --started-by daemon --existing-session ${scenario.name} */ setInterval(() => {}, 1000000)`,
         ], { env: { ...process.env, PIGGERCODE_HOME_DIR: scenario.home,
           PIGGERCODE_DAEMON_LIFECYCLE_SCOPE_ID: scenario.scope,
           PIGGERCODE_ACTIVE_SERVER_ID: configuration.activeServerId,

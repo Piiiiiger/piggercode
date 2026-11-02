@@ -46,12 +46,12 @@ describe('service definition home attribution', () => {
       mkdirSync(dirname(definition.path), { recursive: true });
       writeFileSync(definition.path, definition.content);
       const isTaskFolderListing = (command: string, args: readonly string[]) => (
-        command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\Happier")'))
+        command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\PiggerCode")'))
       );
       spawnSyncMock.mockImplementation((command: string, args: readonly string[]) => ({
         status: 0, stderr: '', stdout: args.includes('/XML')
           ? `<Task><Actions><Exec><Arguments>-File &quot;${definition.path}&quot;</Arguments></Exec></Actions></Task>`
-          : isTaskFolderListing(command, args) ? '["\\\\Happier\\\\happier-daemon.default"]' : '',
+          : isTaskFolderListing(command, args) ? '["\\\\PiggerCode\\\\piggercode-daemon.default"]' : '',
       }));
       const cli = await import('./cli');
       expect(cli.resolveDaemonServiceInstallationSnapshotFromEnv()).toMatchObject({

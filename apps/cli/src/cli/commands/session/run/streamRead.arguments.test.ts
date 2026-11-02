@@ -6,7 +6,7 @@ const readExecutionRunStream = vi.fn();
 vi.mock('@/session/services/resolveSessionTransportContext', () => ({ resolveSessionTransportContext }));
 vi.mock('@/session/services/executionRuns', () => ({ readExecutionRunStream }));
 
-describe('happier session run stream-read arguments', () => {
+describe('piggercode session run stream-read arguments', () => {
   it.each([
     ['a malformed cursor', ['session', 'run', 'sess-prefix', 'run-1', 'stream-1', '--cursor', '0oops']],
     ['a non-positive max-events value', ['session', 'run', 'sess-prefix', 'run-1', 'stream-1', '--cursor', '0', '--max-events', '0']],

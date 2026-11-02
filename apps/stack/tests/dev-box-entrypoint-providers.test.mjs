@@ -10,7 +10,7 @@ import { buildStackHarnessEnv, writeFakeBin } from '../scripts/testkit/core/fake
 
 const repoRoot = fileURLToPath(new URL('../../..', import.meta.url));
 
-test('dev-box entrypoint installs provider CLIs via happier when PIGGERCODE_PROVIDER_CLIS is set', (t) => {
+test('dev-box entrypoint installs provider CLIs via piggercode when PIGGERCODE_PROVIDER_CLIS is set', (t) => {
   const tmp = mkdtempSync(join(tmpdir(), 'happier-dev-box-entrypoint-'));
   t.after(() => rmSync(tmp, { recursive: true, force: true }));
 

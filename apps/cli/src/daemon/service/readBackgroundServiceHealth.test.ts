@@ -41,8 +41,8 @@ describe('readBackgroundServiceHealth', () => {
         return {
           status: 0,
           stdout: [
-            'Apr 29 17:00:01 host happier-daemon.default[123]: starting',
-            'Apr 29 17:00:02 host happier-daemon.default[123]: not authenticated',
+            'Apr 29 17:00:01 host piggercode-daemon.default[123]: starting',
+            'Apr 29 17:00:02 host piggercode-daemon.default[123]: not authenticated',
             '',
           ].join('\n'),
           stderr: '',
@@ -54,7 +54,7 @@ describe('readBackgroundServiceHealth', () => {
     const health = readBackgroundServiceHealth({
       platform: 'linux',
       uid: 98765,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       errLogPath: null,
     });
 
@@ -62,7 +62,7 @@ describe('readBackgroundServiceHealth', () => {
       runs: 7,
       lastExitCode: 1,
       isCrashLooping: true,
-      lastErrorLine: 'Apr 29 17:00:02 host happier-daemon.default[123]: not authenticated',
+      lastErrorLine: 'Apr 29 17:00:02 host piggercode-daemon.default[123]: not authenticated',
       suspectedCause: 'auth_missing',
       conflictingManualDaemonPid: null,
     });

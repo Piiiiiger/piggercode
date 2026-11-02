@@ -52,7 +52,7 @@ async function writeConnectedServicePet(activeServerDir: string, serviceId: stri
   await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
     id: `blink-${serviceId}`,
     displayName: 'Blink',
-    description: 'Happier companion pet',
+    description: 'PiggerCode companion pet',
     spritesheetPath: 'spritesheet.png',
   }));
   await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -64,7 +64,7 @@ async function writeManagedLocalPet(happyHomeDir: string): Promise<void> {
   await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
     id: 'blink',
     displayName: 'Blink',
-    description: 'Happier companion pet',
+    description: 'PiggerCode companion pet',
     spritesheetPath: 'spritesheet.png',
   }));
   await writeFile(join(packagePath, 'spritesheet.png'), pngHeader(1536, 1872));
@@ -182,7 +182,7 @@ describe('handleDiscoverPets', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
     }));
     await writeFile(join(packagePath, 'spritesheet.webp'), await transparentPetAtlasWebp());
@@ -290,7 +290,7 @@ describe('handleDiscoverPets', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'milo',
       displayName: 'Milo',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
     }));
     await writeFile(join(packagePath, 'spritesheet.webp'), await transparentPetAtlasWebp());
@@ -375,7 +375,7 @@ describe('handleDiscoverPets', () => {
     await writeFile(join(packagePath, 'pet.json'), JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
     }));
     await writeFile(join(packagePath, 'spritesheet.webp'), await transparentPetAtlasWebp());

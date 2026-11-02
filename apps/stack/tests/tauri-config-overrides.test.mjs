@@ -13,7 +13,7 @@ test('applyStackTauriOverrides keeps upstream productName by default', () => {
   const out = applyStackTauriOverrides({ tauriConfig: structuredClone(base), env: {} });
 
   // Default identifier is stack-scoped to avoid reusing storage.
-  assert.equal(out.identifier, 'com.happier.stack');
+  assert.equal(out.identifier, 'com.piggercode.stack');
   // Default product name should follow upstream config (not hardcoded to hstack).
   assert.equal(out.productName, 'Happier');
   assert.equal(out.app.windows[0].title, 'Happier');
@@ -70,7 +70,7 @@ test('applyStackTauriOverrides handles missing windows array and missing product
     env: {},
   });
 
-  assert.equal(out.identifier, 'com.happier.stack');
+  assert.equal(out.identifier, 'com.piggercode.stack');
   assert.equal(out.productName, 'Happier');
   assert.deepEqual(out.app, {});
 });

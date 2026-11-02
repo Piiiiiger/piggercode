@@ -8,7 +8,7 @@ import { createTempDir, removeTempDir } from '@/testkit/fs/tempDir';
 import { captureStdoutJsonOutput } from '@/testkit/logger/captureOutput';
 import { handleServerCommand } from './server';
 
-describe('happier server --json', () => {
+describe('piggercode server --json', () => {
   let home = '';
   let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 

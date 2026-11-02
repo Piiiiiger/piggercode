@@ -13,8 +13,8 @@ import type { Credentials } from '@/persistence';
 
 describe('adoptSessionsFromMarkers respawn descriptor', () => {
   it('adopts a classified runner with command drift when its process-instance fingerprint matches', () => {
-    const markerCommand = 'happier plugins list --json';
-    const runningCommand = 'happier claude --resume sess-existing';
+    const markerCommand = 'piggercode plugins list --json';
+    const runningCommand = 'piggercode claude --resume sess-existing';
     const marker = {
       pid: 121,
       happySessionId: 'sess-process-instance',
@@ -360,7 +360,7 @@ describe('adoptSessionsFromMarkers respawn descriptor', () => {
   });
 
   it('adopts daemon-started respawn markers during cli-update takeover when marker command is non-owned and live command identity is degraded', () => {
-    const markerCommand = 'happier claude --happy-starting-mode remote --started-by daemon';
+    const markerCommand = 'piggercode claude --happy-starting-mode remote --started-by daemon';
     const marker = {
       pid: 679,
       happySessionId: 'sess-679',
@@ -392,7 +392,7 @@ describe('adoptSessionsFromMarkers respawn descriptor', () => {
   });
 
   it('adopts daemon-started respawn markers when process classification degrades to user-session during takeover', () => {
-    const markerCommand = 'happier claude --happy-starting-mode remote --started-by daemon';
+    const markerCommand = 'piggercode claude --happy-starting-mode remote --started-by daemon';
     const marker = {
       pid: 680,
       happySessionId: 'sess-680',

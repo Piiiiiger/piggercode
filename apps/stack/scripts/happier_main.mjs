@@ -52,7 +52,7 @@ function runCliProfileReconciliation({ resolvedCli, env, cliHomeDir, internalSer
         });
   if (result.error || result.status !== 0) {
     const detail = result.error instanceof Error ? result.error.message : `exit=${result.status ?? 'unknown'}`;
-    throw new Error(`[happier] failed to refresh the stack-owned relay profile before launch (${detail}).`);
+    throw new Error(`[piggercode] failed to refresh the stack-owned relay profile before launch (${detail}).`);
   }
   if (verifyPersistedProfile) {
     assertStackServerProfileReconciled({
@@ -69,8 +69,8 @@ function printHstackHappierHelp({ json }) {
     json,
     data: { passthrough: true },
     text: [
-      '[happier] usage:',
-      '  hstack happier <happier-cli args...>',
+      '[piggercode] usage:',
+      '  hstack piggercode <happier-cli args...>',
       '',
       'notes:',
       '  - This runs the monorepo CLI component (apps/cli) with stack env defaults.',
@@ -298,14 +298,14 @@ async function main() {
   }
   if (!resolvedCli) {
     const expectedDistEntrypoint = join(cliDir, 'dist', 'index.mjs');
-    console.error(`[happier] missing CLI build at: ${expectedDistEntrypoint}`);
+    console.error(`[piggercode] missing CLI build at: ${expectedDistEntrypoint}`);
     console.error('Run: hstack bootstrap');
     process.exit(1);
   }
 
   let env = { ...baseProcessEnv };
   // IMPORTANT:
-  // When running under a stack-scoped wrapper (`hstack stack happier <name>` / `hstack <stack> happier`),
+  // When running under a stack-scoped wrapper (`hstack stack piggercode <name>` / `hstack <stack> happier`),
   // the user's CLI settings.json may still point at Happier Cloud (or another server). We must not let that
   // override the stack-local server URL; otherwise stack-scoped commands would silently target the wrong
   // server and resolve credentials from the wrong per-server directory.
@@ -427,7 +427,7 @@ async function main() {
 
   if (res.error) {
     const msg = res.error instanceof Error ? res.error.message : String(res.error);
-    console.error(`[happier] failed to run CLI: ${msg}`);
+    console.error(`[piggercode] failed to run CLI: ${msg}`);
     process.exit(1);
   }
 
@@ -436,7 +436,7 @@ async function main() {
 
 main().catch((err) => {
   const message = err instanceof Error ? err.message : String(err);
-  console.error('[happier] failed:', message);
+  console.error('[piggercode] failed:', message);
   if (process.env.DEBUG && err instanceof Error && err.stack) {
     console.error(err.stack);
   }

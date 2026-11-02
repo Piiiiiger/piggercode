@@ -22,7 +22,7 @@ const FEATURE_CATALOG_DEFINITION = {
     representation: 'client',
   },
   'pets.companion': {
-    description: 'Happier pet companion surfaces and local package selection.',
+    description: 'PiggerCode pet companion surfaces and local package selection.',
     defaultFailMode: 'fail_closed',
     dependencies: [],
     representation: 'server',
@@ -34,13 +34,13 @@ const FEATURE_CATALOG_DEFINITION = {
     representation: 'server',
   },
   voice: {
-    description: 'Happier voice assistant feature availability.',
+    description: 'PiggerCode voice assistant feature availability.',
     defaultFailMode: 'fail_closed',
     dependencies: [],
     representation: 'server',
   },
   'voice.happierVoice': {
-    description: 'Happier-hosted voice backend availability (server-configured voice).',
+    description: 'PiggerCode-hosted voice backend availability (server-configured voice).',
     defaultFailMode: 'fail_closed',
     dependencies: ['voice'],
     representation: 'server',

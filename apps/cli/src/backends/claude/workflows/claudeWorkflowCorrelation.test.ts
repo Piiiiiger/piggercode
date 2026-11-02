@@ -243,7 +243,7 @@ await parallel([
       const fact = parseClaudeWorkflowFact(createClaudeWorkflowAgentProfileWrapper({
         workflowToolUseId: 'toolu_wf',
         agentId: 'a48f516fb1d79d150',
-        prompt: 'You are auditing the Happier monorepo at /Users/leeroy/dev (branch dev).\nRules:\n- READ ONLY.',
+        prompt: 'You are auditing the PiggerCode monorepo at /Users/leeroy/dev (branch dev).\nRules:\n- READ ONLY.',
       }));
 
       expect(fact).toEqual({
@@ -285,8 +285,8 @@ await parallel([
         workflowToolUseId: 'toolu_wf',
         agentId: 'a609311d862fabc1c',
         prompt: [
-          'PROGRAM: Happier is adding "Review" — a provider-agnostic pull-request / issue / code-review inbox.',
-          '- Task↔PR: PRs are created per-TURN (`POST /wham/tasks/{task_id}/turns/{task_turn_id}/pr` with mode/add_codex_tag/hide_pr_title_and_body/additional_labels). Reverse PR→task link does not exist in the UI — a genuine Codex gap Happier closes for free via ask #3.',
+          'PROGRAM: PiggerCode is adding "Review" — a provider-agnostic pull-request / issue / code-review inbox.',
+          '- Task↔PR: PRs are created per-TURN (`POST /wham/tasks/{task_id}/turns/{task_turn_id}/pr` with mode/add_codex_tag/hide_pr_title_and_body/additional_labels). Reverse PR→task link does not exist in the UI — a genuine Codex gap PiggerCode closes for free via ask #3.',
           '',
           "LANE: **The integration design.** Produce the single coherent specification that answers the user's",
           'three asks.',

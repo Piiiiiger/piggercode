@@ -144,7 +144,7 @@ describe('claudeRemote', () => {
     expect(call?.options?.includeHookEvents).toBe(true);
   });
 
-  it('binds the managed Happier session id into the legacy remote child environment', async () => {
+  it('binds the managed PiggerCode session id into the legacy remote child environment', async () => {
     mockQuery.mockReturnValue(messageStream(resultMessage()));
 
     const { claudeRemote } = await import('./claudeRemote');
@@ -591,13 +591,13 @@ describe('claudeRemote', () => {
     expect(call?.options?.extraArgs).toEqual(['--replay-user-messages']);
   });
 
-  it('appends Happier MCP config after user MCP config while keeping both payloads out of argv', async () => {
+  it('appends PiggerCode MCP config after user MCP config while keeping both payloads out of argv', async () => {
     mockQuery.mockReturnValue(messageStream(resultMessage()));
 
     const { claudeRemote } = await import('./claudeRemote');
 
     const happierMcp = JSON.stringify({
-      mcpServers: { happier: { type: 'stdio', command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
+      mcpServers: { happier: { type: 'stdio', command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
     });
     const userMcp = JSON.stringify({ mcpServers: { fixture: { type: 'stdio', command: 'node', args: ['server.mjs'] } } });
 
@@ -612,7 +612,7 @@ describe('claudeRemote', () => {
     const call = mockQuery.mock.calls[0]?.[0] as QueryCall | undefined;
     expect(call?.options?.extraArgs?.filter((arg) => arg === '--mcp-config')).toHaveLength(2);
     expect(JSON.stringify(call?.options?.extraArgs)).not.toContain('server.mjs');
-    expect(JSON.stringify(call?.options?.extraArgs)).not.toContain('happier-mcp.mjs');
+    expect(JSON.stringify(call?.options?.extraArgs)).not.toContain('piggercode-mcp.mjs');
     const configPaths = [call?.options?.extraArgs?.[1], call?.options?.extraArgs?.[3]];
     for (const configPath of configPaths) {
       expect(configPath).not.toBe(userMcp);

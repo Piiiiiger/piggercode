@@ -105,7 +105,7 @@ function shortReasonForResume(category: ResumeIneligibilityCategory): string {
     case 'archived':
       return 'archived';
     case 'still_active':
-      return 'currently running — use happier attach';
+      return 'currently running — use piggercode attach';
     case 'vendor_resume_not_supported':
       return 'this agent does not support resume';
     case 'vendor_resume_id_missing':
@@ -126,7 +126,7 @@ function fullReasonForResume(category: ResumeIneligibilityCategory): string {
     case 'archived':
       return 'This session is archived and cannot be resumed.';
     case 'still_active':
-      return 'This session is currently running. Use `happier attach` to attach a terminal to it instead.';
+      return 'This session is currently running. Use `piggercode attach` to attach a terminal to it instead.';
     case 'vendor_resume_not_supported':
       return 'This session\'s agent does not support resume from the CLI.';
     case 'vendor_resume_id_missing':
@@ -171,7 +171,7 @@ function buildResumeSelectionModelFromSessions(params: Readonly<
     if (rowModel.archivedAt !== null) continue;        // archives are out of scope here
     if (rowModel.active === true) {
       // Surface active sessions only as a footer count — they belong to
-      // `happier attach`, not `happier resume`. Showing them mixed in
+      // `piggercode attach`, not `piggercode resume`. Showing them mixed in
       // would muddle resume's mental model (stopped sessions only).
       activeRunningCount += 1;
       continue;
@@ -229,7 +229,7 @@ export function formatResumeSelectionFooter(hint: ResumeSelectionFooterHint): st
   const sessionWord = (n: number) => (n === 1 ? 'session' : 'sessions');
   const fragments: string[] = [];
   if (hint.activeRunningCount > 0) {
-    fragments.push(`${hint.activeRunningCount} ${sessionWord(hint.activeRunningCount)} running — use \`happier attach\` to attach a terminal.`);
+    fragments.push(`${hint.activeRunningCount} ${sessionWord(hint.activeRunningCount)} running — use \`piggercode attach\` to attach a terminal.`);
   }
   if (hint.ineligibleCount > 0) {
     fragments.push(`${hint.ineligibleCount} ${sessionWord(hint.ineligibleCount)} can't be resumed (see reasons above).`);

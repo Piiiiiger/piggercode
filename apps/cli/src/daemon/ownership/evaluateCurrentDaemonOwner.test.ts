@@ -176,7 +176,7 @@ describe('evaluateCurrentDaemonOwner', () => {
             const { daemonProcessMatchesCurrentScope } = await import('./daemonProcessScopeIdentity');
             const runner = {
                 pid: process.pid + 1000,
-                command: `${process.execPath} happier claude --started-by daemon`,
+                command: `${process.execPath} piggercode claude --started-by daemon`,
                 type: 'daemon-spawned-session',
                 daemonOwnershipEnvironmentVariables: {
                     PIGGERCODE_HOME_DIR: homeDir,
@@ -411,7 +411,7 @@ describe('evaluateCurrentDaemonOwner', () => {
                 startedWithPublicReleaseChannel: 'preview',
                 runtimeId: 'runtime-conflict',
                 startupSource: 'background-service',
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             });
 
             const evaluation = await evaluateCurrentDaemonOwner();
@@ -422,7 +422,7 @@ describe('evaluateCurrentDaemonOwner', () => {
             expect(evaluation.owner.serviceManaged).toBe(true);
             expect(evaluation.owner.versionMatches).toBe(false);
             expect(evaluation.owner.releaseChannelMatches).toBe(false);
-            expect(evaluation.owner.state.serviceLabel).toBe('com.happier.cli.daemon.default');
+            expect(evaluation.owner.state.serviceLabel).toBe('com.piggercode.cli.daemon.default');
         });
     });
 
@@ -482,7 +482,7 @@ describe('evaluateCurrentDaemonOwner', () => {
                 startedWithCliVersion: '0.0.0-other',
                 startedWithPublicReleaseChannel: 'preview',
                 runtimeId: 'runtime-legacy-service',
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             });
 
             const evaluation = await evaluateCurrentDaemonOwner();

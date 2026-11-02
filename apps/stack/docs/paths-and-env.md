@@ -17,18 +17,18 @@ hstack where
   - This is *not* necessarily your current shell `cwd`.
   - It can be:
     - a cloned repo checkout (e.g. `/Users/<you>/.../happier-dev`), or
-    - the installed runtime package under `~/.happier-stack/runtime/node_modules/@piggercode/stack` (see “Runtime dir”).
+    - the installed runtime package under `~/.piggercode-stack/runtime/node_modules/@piggercode/stack` (see “Runtime dir”).
 
 - **Home dir** (`PIGGERCODE_STACK_HOME_DIR`)
-  - Default: `~/.happier-stack`
+  - Default: `~/.piggercode-stack`
   - Stores **global user config** + caches, and may include a runtime install.
 
 - **Runtime dir** (`PIGGERCODE_STACK_RUNTIME_DIR`)
-  - Default: `~/.happier-stack/runtime`
+  - Default: `~/.piggercode-stack/runtime`
   - Used by `hstack self update` to install/upgrade a pinned `@piggercode/stack` runtime package.
 
 - **Workspace dir** (`PIGGERCODE_STACK_WORKSPACE_DIR`)
-  - Default: `~/.happier-stack/workspace` (when it exists).
+  - Default: `~/.piggercode-stack/workspace` (when it exists).
   - This is the **storage workspace for the Happier monorepo checkout + worktrees** used by hstack.
   - It typically contains:
     - `<workspace>/main` (stable monorepo checkout)
@@ -48,9 +48,9 @@ hstack where
   - tmp: `<workspace>/tmp/<owner>/...`
 
 - **Stacks storage dir**
-  - Default: `~/.happier/stacks`
-  - Each stack lives under `~/.happier/stacks/<name>/...` and has its own env file:
-    - `~/.happier/stacks/<name>/env`
+  - Default: `~/.piggercode/stacks`
+  - Each stack lives under `~/.piggercode/stacks/<name>/...` and has its own env file:
+    - `~/.piggercode/stacks/<name>/env`
 
 ---
 
@@ -83,7 +83,7 @@ hstack loads env in `scripts/utils/env.mjs`.
 
 If `PIGGERCODE_STACK_HOME_DIR` is *not* set, we first try to read the **canonical pointer** env file to discover the intended home dir (useful for LaunchAgents / SwiftBar / minimal shells).
 
-- Default canonical pointer path: `~/.happier-stack/.env`
+- Default canonical pointer path: `~/.piggercode-stack/.env`
 - Override canonical pointer location:
   - `PIGGERCODE_STACK_CANONICAL_HOME_DIR=/some/dir` (pointer becomes `<dir>/.env`)
 
@@ -91,8 +91,8 @@ If `PIGGERCODE_STACK_HOME_DIR` is *not* set, we first try to read the **canonica
 
 If home config exists, we load:
 
-- `~/.happier-stack/.env` (**defaults**)
-- `~/.happier-stack/env.local` (**overrides**, prefix-aware for `PIGGERCODE_STACK_*`)
+- `~/.piggercode-stack/.env` (**defaults**)
+- `~/.piggercode-stack/env.local` (**overrides**, prefix-aware for `PIGGERCODE_STACK_*`)
 
 If home config does *not* exist (cloned repo usage before `hstack init`), we load:
 
@@ -105,7 +105,7 @@ Even when home config exists, we also load:
 
 - `<cliRootDir>/.env` (non-overriding fallback)
 
-This exists so repo-local dev settings (example: `PIGGERCODE_CODEX_ACP_BIN`) can work without forcing everyone to duplicate them into `~/.happier-stack/env.local`.
+This exists so repo-local dev settings (example: `PIGGERCODE_CODEX_ACP_BIN`) can work without forcing everyone to duplicate them into `~/.piggercode-stack/env.local`.
 
 Notes:
 - This is a **fallback only** (`override: false`): it won’t stomp on values already provided by the environment or home config.
@@ -124,9 +124,9 @@ Stack env files are allowed to contain **non-prefixed keys** (like `DATABASE_URL
 
 ## What should go where? (rules of thumb)
 
-- Put **global, machine-wide defaults** in `~/.happier-stack/.env`.
-- Put **your personal overrides** in `~/.happier-stack/env.local`.
-- Put **per-stack isolation config** in the stack env file `~/.happier/stacks/<name>/env` (this is what `hstack stack edit` and `hstack stack wt` mutate).
+- Put **global, machine-wide defaults** in `~/.piggercode-stack/.env`.
+- Put **your personal overrides** in `~/.piggercode-stack/env.local`.
+- Put **per-stack isolation config** in the stack env file `~/.piggercode/stacks/<name>/env` (this is what `hstack stack edit` and `hstack stack wt` mutate).
 - Put **repo-local dev-only defaults** in `<cliRootDir>/.env` (works best when you’re actually running from that checkout as the CLI root dir).
 
 ---

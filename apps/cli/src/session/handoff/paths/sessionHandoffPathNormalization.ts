@@ -36,7 +36,7 @@ export function resolveSessionHandoffLocalHomeDir(params: Readonly<{
     const fallbackHomeDir = trimTrailingSeparators(params.fallbackHomeDir);
     const normalizedActiveServerDir = activeServerDir.replace(/\\/g, '/');
 
-    const marker = '/.happier/';
+    const marker = '/.piggercode/';
     const markerIndex = normalizedActiveServerDir.indexOf(marker);
     if (markerIndex > 0) {
         return activeServerDir.slice(0, markerIndex);
@@ -45,8 +45,8 @@ export function resolveSessionHandoffLocalHomeDir(params: Readonly<{
         return fallbackHomeDir;
     }
 
-    if (normalizedActiveServerDir.endsWith('/.happier')) {
-        const prefix = activeServerDir.slice(0, -'/.happier'.length);
+    if (normalizedActiveServerDir.endsWith('/.piggercode')) {
+        const prefix = activeServerDir.slice(0, -'/.piggercode'.length);
         return prefix || fallbackHomeDir;
     }
 
@@ -96,17 +96,17 @@ export function normalizeSessionHandoffTargetPathForLocalMachine(params: Readonl
         return expanded;
     }
 
-    // Handoff commonly uses app-owned `~/.happier/**` roots. When the request carries an absolute path
-    // from another machine (macOS `/Users/...` vs Linux `/home/...`), rebase that `/.happier/` suffix
+    // Handoff commonly uses app-owned `~/.piggercode/**` roots. When the request carries an absolute path
+    // from another machine (macOS `/Users/...` vs Linux `/home/...`), rebase that `/.piggercode/` suffix
     // onto the local home dir so the target machine always uses a machine-local writable root.
-    const marker = '/.happier/';
+    const marker = '/.piggercode/';
     const markerIndex = normalizedExpanded.indexOf(marker);
     if (markerIndex >= 0) {
         const remainder = normalizedExpanded.slice(markerIndex + marker.length);
-        return join(homeDir, '.happier', remainder);
+        return join(homeDir, '.piggercode', remainder);
     }
-    if (normalizedExpanded.endsWith('/.happier')) {
-        return join(homeDir, '.happier');
+    if (normalizedExpanded.endsWith('/.piggercode')) {
+        return join(homeDir, '.piggercode');
     }
 
     // General cross-machine normalization: when a caller passes a macOS/Linux home-rooted path

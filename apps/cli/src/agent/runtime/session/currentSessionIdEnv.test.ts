@@ -7,7 +7,7 @@ import {
 } from './currentSessionIdEnv';
 
 describe('currentSessionIdEnv', () => {
-  it('binds a child environment to the current Happier session', () => {
+  it('binds a child environment to the current PiggerCode session', () => {
     const env = withCurrentHappierSessionId({ PATH: '/bin' }, 'session-123');
 
     expect(env).toEqual({

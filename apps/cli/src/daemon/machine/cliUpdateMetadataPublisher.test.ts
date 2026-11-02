@@ -98,7 +98,7 @@ describe('the daemon republishes its CLI update facts when the update record cha
       fallbackMetadata: () => initialMachineMetadata,
       preferredHost: initialMachineMetadata.host,
       readFacts: () => ({
-        currentVersion: '1.0.0', latestVersion: null, channel: 'stable', installSource: 'managed', updateCommand: 'happier self update',
+        currentVersion: '1.0.0', latestVersion: null, channel: 'stable', installSource: 'managed', updateCommand: 'piggercode self update',
         canUpdateRemotely: true, lastUpdate: { targetVersion: null, outcome: 'failed', at: facts.value, message: `attempt ${facts.value}` },
       }),
       onError: () => {},

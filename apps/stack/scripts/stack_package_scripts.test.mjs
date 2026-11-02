@@ -14,6 +14,6 @@ test('apps/stack package.json routes package aliases through their canonical ent
 
   assert.equal(scripts['ui:tauri'], 'node ./scripts/tauri_dev.mjs');
   assert.equal(scripts['tauri:dev'], 'node ./scripts/tauri_dev.mjs');
-  assert.equal(scripts.happier, 'node ./bin/happier.mjs');
+  assert.equal(scripts.piggercode, 'node ./bin/piggercode.mjs');
   assert.equal(scripts.stack, 'node ./bin/hstack.mjs stack');
 });

@@ -8,11 +8,11 @@ test('resolveStackContext expands ~/ explicit env file overrides against HOME', 
     env: {
       HOME: '/scoped/home',
       PIGGERCODE_STACK_STACK: 'dev',
-      PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+      PIGGERCODE_STACK_ENV_FILE: '~/.piggercode/stacks/dev/env',
     },
   });
 
   assert.equal(out.stackMode, true);
   assert.equal(out.stackName, 'dev');
-  assert.equal(out.envPath, '/scoped/home/.happier/stacks/dev/env');
+  assert.equal(out.envPath, '/scoped/home/.piggercode/stacks/dev/env');
 });

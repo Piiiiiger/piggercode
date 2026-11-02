@@ -143,7 +143,7 @@ describe('sessionStopWithServerScope', () => {
     mockMachineRpcWithServerScope.mockRejectedValue(err);
     mockSessionRpcWithServerScope.mockResolvedValue({
       success: true,
-      message: 'Killing happier process',
+      message: 'Killing piggercode process',
     });
 
     const res = await sessionStopWithServerScope('sid-old-daemon', { serverId: 'server-a' });
@@ -182,7 +182,7 @@ describe('sessionStopWithServerScope', () => {
       new Error('Session machine control unavailable'),
       { rpcErrorCode: 'RPC_SESSION_MACHINE_CONTROL_UNAVAILABLE' },
     ));
-    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing happier process' });
+    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing piggercode process' });
 
     await expect(sessionStopWithServerScope('sid-missing-machine-control', { serverId: 'server-a' })).resolves.toEqual({
       success: false,
@@ -261,7 +261,7 @@ describe('sessionStopWithServerScope', () => {
       error: 'Method not found',
       errorCode: RPC_ERROR_CODES.METHOD_NOT_FOUND,
     });
-    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing happier process' });
+    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing piggercode process' });
 
     const res = await sessionStopWithServerScope('sid-old-daemon-envelope', { serverId: 'server-a' });
 
@@ -296,7 +296,7 @@ describe('sessionStopWithServerScope', () => {
     mockMachineRpcWithServerScope.mockResolvedValue({
       error: 'Session not found or failed to stop',
     });
-    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing happier process' });
+    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing piggercode process' });
 
     const res = await sessionStopWithServerScope('sid-stale-machine-target', { serverId: 'server-a' });
 
@@ -317,7 +317,7 @@ describe('sessionStopWithServerScope', () => {
   it('treats the released runner Stop response as request acknowledgement without patching inactive', async () => {
     mockSessionRpcWithServerScope.mockResolvedValue({
       success: true,
-      message: 'Killing happier process',
+      message: 'Killing piggercode process',
     });
 
     const res = await sessionStopWithServerScope('sid-killed', { serverId: 'server-a' });
@@ -423,7 +423,7 @@ describe('sessionStopWithServerScope', () => {
       status: 'incomplete',
       reason: 'tracked_runner_absent',
     });
-    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing happier process' });
+    mockSessionRpcWithServerScope.mockResolvedValue({ success: true, message: 'Killing piggercode process' });
 
     await expect(sessionStopWithServerScope('sid-untracked-runner', { serverId: 'server-a' })).resolves.toEqual({
       success: false,

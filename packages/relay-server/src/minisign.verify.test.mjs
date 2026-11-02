@@ -38,7 +38,7 @@ test('verifyMinisign validates Ed25519 minisign signatures (Ed)', () => {
   assert.equal(globalSignature.length, 64);
 
   const sigFile = [
-    'untrusted comment: signature from happier test',
+    'untrusted comment: signature from piggercode test',
     b64(sigLineBytes),
     trustedComment,
     b64(globalSignature),

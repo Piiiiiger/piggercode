@@ -25,7 +25,7 @@ describe('RelayHostEngine (remote launchd control)', () => {
       },
       copyLocalDirectoryToRemote: async () => {},
       installRemoteComponent: async () => ({
-        binaryPath: '$HOME/.happier/happier-server/current/happier-server',
+        binaryPath: '$HOME/.piggercode/happier-server/current/happier-server',
         versionId: 'publicdev-1',
       }),
     });

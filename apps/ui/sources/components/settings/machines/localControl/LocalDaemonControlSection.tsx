@@ -72,7 +72,7 @@ function resolveCliDetail(facts: DesktopLocalReadinessFacts): string | undefined
 }
 
 /**
- * R12 — the copy of `happier` still installed beside the managed one, whether or not the managed
+ * R12 — the copy of `piggercode` still installed beside the managed one, whether or not the managed
  * shim was already first on PATH and a choice was unnecessary. Its removal command is shown and
  * copyable, never run: it belongs to the package manager.
  */

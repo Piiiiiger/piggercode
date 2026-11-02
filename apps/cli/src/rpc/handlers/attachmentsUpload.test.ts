@@ -109,7 +109,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'hello.txt',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'gitignore',
         vcsIgnoreWritesEnabled: true,
       });
@@ -255,7 +255,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'hello.txt',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       });
@@ -303,7 +303,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'hello.txt',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       });
@@ -311,7 +311,7 @@ describe('attachments upload (chunked)', () => {
 
       const excludeContents = await readFile(join(workingDirectory, '.git', 'info', 'exclude'), 'utf8');
       expect(excludeContents).toContain('# existing');
-      expect(excludeContents).toContain('/.happier/uploads/');
+      expect(excludeContents).toContain('/.piggercode/uploads/');
     } finally {
       await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
     }
@@ -354,7 +354,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'hello.txt',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'gitignore',
         vcsIgnoreWritesEnabled: true,
       });
@@ -362,7 +362,7 @@ describe('attachments upload (chunked)', () => {
 
       const ignoreContents = await readFile(join(workingDirectory, '.gitignore'), 'utf8');
       expect(ignoreContents).toContain('# existing');
-      expect(ignoreContents).toContain('/.happier/uploads/');
+      expect(ignoreContents).toContain('/.piggercode/uploads/');
     } finally {
       await rm(workingDirectory, { recursive: true, force: true }).catch(() => {});
     }
@@ -411,7 +411,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'hello.txt',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'none',
         vcsIgnoreWritesEnabled: false,
       });
@@ -427,7 +427,7 @@ describe('attachments upload (chunked)', () => {
       const finalizeResult: any = await finalize({ uploadId: initResult.uploadId });
       expect(finalizeResult).toMatchObject({
         success: true,
-        path: expect.stringMatching(/^\.happier\/uploads\/messages\/message-1\/[0-9a-f]{8}-hello\.txt$/),
+        path: expect.stringMatching(/^\.piggercode\/uploads\/messages\/message-1\/[0-9a-f]{8}-hello\.txt$/),
         sizeBytes: 11,
       });
       await expect(readFile(resolve(workingDirectory, finalizeResult.path), 'utf8')).resolves.toBe('hello world');
@@ -476,7 +476,7 @@ describe('attachments upload (chunked)', () => {
         sizeBytes: 11,
         uploadLocation: 'workspace',
         workspaceRootPath: workspaceRoot,
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'gitignore',
         vcsIgnoreWritesEnabled: true,
       });
@@ -492,12 +492,12 @@ describe('attachments upload (chunked)', () => {
       const finalizeResult: any = await finalize({ uploadId: initResult.uploadId });
       expect(finalizeResult).toMatchObject({
         success: true,
-        path: expect.stringMatching(/^\.happier\/uploads\/messages\/message-absolute-root\/[0-9a-f]{8}-hello\.txt$/),
+        path: expect.stringMatching(/^\.piggercode\/uploads\/messages\/message-absolute-root\/[0-9a-f]{8}-hello\.txt$/),
         sizeBytes: 11,
       });
       await expect(readFile(resolve(workspaceRoot, finalizeResult.path), 'utf8')).resolves.toBe('hello world');
       await expect(readFile(resolve(machineWorkingDirectory, finalizeResult.path), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
-      await expect(readFile(join(workspaceRoot, '.gitignore'), 'utf8')).resolves.toContain('/.happier/uploads/');
+      await expect(readFile(join(workspaceRoot, '.gitignore'), 'utf8')).resolves.toContain('/.piggercode/uploads/');
       await expect(readFile(join(machineWorkingDirectory, '.gitignore'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
     } finally {
       await rm(machineWorkingDirectory, { recursive: true, force: true }).catch(() => {});
@@ -545,7 +545,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'note.txt',
         sizeBytes: 3,
         uploadLocation: 'os_temp',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'git_info_exclude',
         vcsIgnoreWritesEnabled: true,
       });
@@ -630,7 +630,7 @@ describe('attachments upload (chunked)', () => {
         fileName: 'big.bin',
         sizeBytes: 11,
         uploadLocation: 'workspace',
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'none',
         vcsIgnoreWritesEnabled: false,
       });
@@ -692,7 +692,7 @@ describe('attachments upload (chunked)', () => {
         sizeBytes,
         uploadLocation: 'shared_folder',
         sharedFolderPath,
-        workspaceRelativeDir: '.happier/uploads',
+        workspaceRelativeDir: '.piggercode/uploads',
         vcsIgnoreStrategy: 'gitignore',
         vcsIgnoreWritesEnabled: true,
       };

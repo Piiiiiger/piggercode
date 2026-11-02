@@ -21,7 +21,7 @@ export async function cmdSessionVoiceAgentStart(
     valueFlags: ['--backends', '--backend', '--instructions', '--permission-mode', '--retention', '--run-class', '--io-mode'],
   });
   if (!idOrPrefix) {
-    throw new Error('Usage: happier session voice-agent start <session-id-or-prefix> --backends <id1,id2> --instructions <text> [--json]');
+    throw new Error('Usage: piggercode session voice-agent start <session-id-or-prefix> --backends <id1,id2> --instructions <text> [--json]');
   }
 
   const backendsRaw = readFlagValue(argv, '--backends') ?? readFlagValue(argv, '--backend');
@@ -34,7 +34,7 @@ export async function cmdSessionVoiceAgentStart(
   const ioMode = readFlagValue(argv, '--io-mode') ?? undefined;
 
   if (backendTargetKeys.length === 0 || !instructions.trim()) {
-    throw new Error('Usage: happier session voice-agent start <session-id> --backends <id1,id2> --instructions <text> [--json]');
+    throw new Error('Usage: piggercode session voice-agent start <session-id> --backends <id1,id2> --instructions <text> [--json]');
   }
 
   const input = {
@@ -52,7 +52,7 @@ export async function cmdSessionVoiceAgentStart(
       await printJsonEnvelope({ ok: false, kind: 'session_voice_agent_start', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

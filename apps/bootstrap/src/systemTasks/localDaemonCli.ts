@@ -72,7 +72,7 @@ export type DaemonRuntimeConvergence = Readonly<{
 
 /**
  * The ambient inspection. The flat fields are the long-standing summary; the nested blocks
- * carry every fact `happier daemon status --json` emitted, plus which CLI answered.
+ * carry every fact `piggercode daemon status --json` emitted, plus which CLI answered.
  */
 export type DaemonStatusSnapshot = Readonly<{
   serviceInstalled: boolean;
@@ -163,7 +163,7 @@ export type AuthPairingClaim = Readonly<{
 }>;
 
 /**
- * The structured answer of `happier daemon service install --dry-run --json` (the `service …`
+ * The structured answer of `piggercode daemon service install --dry-run --json` (the `service …`
  * alias runs the same command), as bootstrap consumes it. Every ownership/conflict decision stays
  * inside the CLI: bootstrap only reads whether the intended apply would take over a manual daemon
  * or replace competing services (consent), or is blocked outright.
@@ -684,7 +684,7 @@ export async function setDaemonServiceAutostart(
 }
 
 /**
- * `happier daemon status --json` prints exactly the doctor snapshot's daemon-status block
+ * `piggercode daemon status --json` prints exactly the doctor snapshot's daemon-status block
  * (`readDaemonStatusSnapshot` is typed from it), so the protocol schema that already owns that
  * wire shape is the parser. One validation, one failure behaviour: corrupt output fails by field
  * name instead of degrading into "no service, no daemon, not authenticated" — the facts that make
@@ -1216,7 +1216,7 @@ export async function planLocalHappierCliUpdateRestart(params: Readonly<{
   const processEnv = params.processEnv ?? process.env;
   const reportProgress = (message: string) => {
     if (params.emit) params.emit({ type: 'progress', stepId: 'cli.update.restartServices', message });
-    else process.stderr.write(`[happier] ${message}\n`);
+    else process.stderr.write(`[piggercode] ${message}\n`);
   };
   const service = createSelectedCliInvocation({ cli: current, processEnv });
   const [status, pinned] = await Promise.all([
@@ -1232,7 +1232,7 @@ export async function planLocalHappierCliUpdateRestart(params: Readonly<{
         ? `Could not read the background services for ${unreadable.join(', ')}; they keep running the previous version until they restart.`
         : 'Could not list this computer\'s other background services; any of them keeps running the previous version until it restarts.');
   }
-  // Which daemons come back is the shared rule `happier self update` uses too.
+  // Which daemons come back is the shared rule `piggercode self update` uses too.
   return planServiceDaemonsRestartAfterCliUpdate({
     defaultFollowing: observeService('default', status, service),
     // A pinned service whose status could not be read is not known to run a daemon; the

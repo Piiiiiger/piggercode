@@ -167,7 +167,7 @@ describe('runPkgrollBuild', () => {
       },
       bundledDependencies: ['@piggercode/protocol'],
       bin: {
-        happier: './bin/happier.mjs',
+        happier: './bin/piggercode.mjs',
       },
     }), 'utf8');
     const updatedCanonicalManifestRaw = readFileSync(fixture.packageJsonPath, 'utf8');
@@ -295,7 +295,7 @@ runPkgrollBuild({
         },
       },
       bin: {
-        happier: './bin/happier.mjs',
+        happier: './bin/piggercode.mjs',
       },
       files: ['package-dist', 'package-dist/**', 'bin'],
     });
@@ -334,7 +334,7 @@ runPkgrollBuild({
           },
         },
         bin: {
-          happier: './bin/happier.mjs',
+          happier: './bin/piggercode.mjs',
         },
       },
       { outputDir: '.tmp.cli-dist-build' },

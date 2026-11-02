@@ -21,7 +21,7 @@ describe('createTerminalPresentation', () => {
     expect(stripAnsi(banner)).toBe('setup\nGuided setup');
 
     expect(stripAnsi(presentation.sectionTitle('Plan'))).toBe('Plan');
-    expect(stripAnsi(presentation.cmd('happier auth login'))).toBe('happier auth login');
+    expect(stripAnsi(presentation.cmd('piggercode auth login'))).toBe('piggercode auth login');
     expect(stripAnsi(presentation.bullets(['one', null, 'two']))).toBe('- one\n- two');
 
     const definitionList = presentation.definitionList([

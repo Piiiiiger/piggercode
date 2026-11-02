@@ -125,7 +125,7 @@ describe('auth pair-remote server selection', () => {
       expect(output.logs.join('\n')).toContain('Remote machine paired');
       expect(spawnSyncMock.mock.calls[0]?.[1]).toEqual([
         'user@host',
-        'happier',
+        'piggercode',
         'auth',
         'request',
         '--json',
@@ -211,7 +211,7 @@ describe('auth pair-remote server selection', () => {
       expect(requests.has(remotePublicKey)).toBe(true);
       expect(spawnSyncMock.mock.calls[0]?.[1]).toEqual([
         'user@host',
-        'happier',
+        'piggercode',
         'auth',
         'request',
         '--json',

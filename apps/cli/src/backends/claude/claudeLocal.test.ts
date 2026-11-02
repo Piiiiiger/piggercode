@@ -293,7 +293,7 @@ describe('claudeLocal --continue handling', () => {
 
     it('inserts a "--" delimiter before positional prompts when --mcp-config is present (variadic flag)', async () => {
         const happierMcp = JSON.stringify({
-            mcpServers: { happier: { command: 'node', args: ['happier-mcp.mjs'] } },
+            mcpServers: { happier: { command: 'node', args: ['piggercode-mcp.mjs'] } },
         });
 
         await claudeLocal({
@@ -321,7 +321,7 @@ describe('claudeLocal --continue handling', () => {
 
     it('injects --mcp-config through a temporary file and removes it after Claude exits', async () => {
         const mcpJson = JSON.stringify({
-            mcpServers: { happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
+            mcpServers: { happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
         });
 
         await claudeLocal({
@@ -397,12 +397,12 @@ describe('claudeLocal --continue handling', () => {
         expect(debugMessages).toContain('[redacted-mcp-config]');
     });
 
-    it('appends Happier --mcp-config after any user --mcp-config flags (last-wins on collisions)', async () => {
+    it('appends PiggerCode --mcp-config after any user --mcp-config flags (last-wins on collisions)', async () => {
         const userMcp = JSON.stringify({
             mcpServers: { fixture: { command: 'node', args: ['server.mjs'] } },
         });
         const happierMcp = JSON.stringify({
-            mcpServers: { happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
+            mcpServers: { happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
         });
 
         await claudeLocal({
@@ -425,7 +425,7 @@ describe('claudeLocal --continue handling', () => {
         const happierMcpPath = spawnArgs[mcpFlags[1]! + 1]!;
         expect(userMcpPath).not.toBe(userMcp);
         expect(happierMcpPath).not.toBe(happierMcp);
-        expect(JSON.stringify(spawnArgs)).not.toContain('happier-mcp.mjs');
+        expect(JSON.stringify(spawnArgs)).not.toContain('piggercode-mcp.mjs');
         await expect(stat(userMcpPath)).rejects.toMatchObject({ code: 'ENOENT' });
         await expect(stat(happierMcpPath)).rejects.toMatchObject({ code: 'ENOENT' });
     });
@@ -435,7 +435,7 @@ describe('claudeLocal --continue handling', () => {
             mcpServers: { fixture: { command: 'node', args: ['server.mjs'] } },
         });
         const happierMcp = JSON.stringify({
-            mcpServers: { happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
+            mcpServers: { happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
         });
 
         await claudeLocal({
@@ -459,7 +459,7 @@ describe('claudeLocal --continue handling', () => {
 
     it('treats -p as a flag-with-value so the prompt is not misclassified as a positional arg', async () => {
         const happierMcp = JSON.stringify({
-            mcpServers: { happier: { command: 'node', args: ['happier-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
+            mcpServers: { happier: { command: 'node', args: ['piggercode-mcp.mjs', '--url', 'http://127.0.0.1:1234'] } },
         });
 
         await claudeLocal({
@@ -791,7 +791,7 @@ describe('claudeLocal --continue handling', () => {
     it('normalizes equals-form permission mode so resumed launches keep --resume before the permission flag', async () => {
         const root = mkdtempSync(join(tmpdir(), 'happier-claude-local-yolo-'));
         const hookSettingsPath = join(root, 'hooks.json');
-        writeFileSync(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__happier__change_title'] } }));
+        writeFileSync(hookSettingsPath, JSON.stringify({ permissions: { allow: ['mcp__piggercode__change_title'] } }));
 
         try {
             await claudeLocal({
@@ -816,7 +816,7 @@ describe('claudeLocal --continue handling', () => {
             expect(settingsIndex).toBeGreaterThan(-1);
             expect(spawnArgs[settingsIndex + 1]).toBe(hookSettingsPath.replace(/\.json$/, '.overlay.json'));
             expect(JSON.parse(readFileSync(spawnArgs[settingsIndex + 1]!, 'utf8'))).toEqual({
-                permissions: { allow: ['mcp__happier__change_title'] },
+                permissions: { allow: ['mcp__piggercode__change_title'] },
                 skipDangerousModePermissionPrompt: true,
             });
             expect(JSON.parse(readFileSync(hookSettingsPath, 'utf8'))).not.toHaveProperty('skipDangerousModePermissionPrompt');
@@ -1274,7 +1274,7 @@ describe('claudeLocal launcher selection', () => {
         expect(spawnOpts?.env?.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS).toBe('1');
     });
 
-    it.each(['', 'offline-local-session'])('does not inherit an outer Happier session id for unusable managed id %j', async (happierSessionId: string) => {
+    it.each(['', 'offline-local-session'])('does not inherit an outer PiggerCode session id for unusable managed id %j', async (happierSessionId: string) => {
         const previousSessionId = process.env.PIGGERCODE_SESSION_ID;
         process.env.PIGGERCODE_SESSION_ID = 'outer-session';
 
@@ -1301,7 +1301,7 @@ describe('claudeLocal launcher selection', () => {
         }
     });
 
-    it('binds a usable managed Happier session id at the Claude child-process boundary', async () => {
+    it('binds a usable managed PiggerCode session id at the Claude child-process boundary', async () => {
         await claudeLocal({
             abort: new AbortController().signal,
             sessionId: null,

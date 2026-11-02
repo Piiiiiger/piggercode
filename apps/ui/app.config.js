@@ -462,7 +462,7 @@ const baseExpoConfig = {
                 // production bundle IDs without disabling production-only native configuration.
                 // The product name shown in copy (translations name the upstream app).
                 productName: APP_BRAND.productName,
-                // The command shown in copy (translations name the upstream `happier` command).
+                // The command shown in copy; text from older components that names the upstream command maps to it.
                 cliCommandName: APP_BRAND.cliCommandName,
                 // The coding agents this build offers, and its source repository.
                 agentIds: [...APP_BRAND.agentIds],

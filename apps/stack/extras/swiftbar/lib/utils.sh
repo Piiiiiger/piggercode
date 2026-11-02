@@ -309,7 +309,7 @@ expand_home_path() {
 }
 
 resolve_canonical_home_dir() {
-  local canonical="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.happier-stack}"
+  local canonical="${PIGGERCODE_STACK_CANONICAL_HOME_DIR:-$HOME/.piggercode-stack}"
   echo "$(expand_home_path "$canonical")"
 }
 
@@ -350,7 +350,7 @@ resolve_stacks_storage_root() {
   # 1) explicit env var
   # 2) home env.local
   # 3) home .env (canonical pointer file, written by `hstack init`)
-  # 4) default to ~/.happier/stacks
+  # 4) default to ~/.piggercode/stacks
   if [[ -n "${PIGGERCODE_STACK_STORAGE_DIR:-}" ]]; then
     echo "$(expand_home_path "$PIGGERCODE_STACK_STORAGE_DIR")"
     return
@@ -367,13 +367,13 @@ resolve_stacks_storage_root() {
     return
   fi
 
-  # In sandbox mode, avoid falling back to the user's real ~/.happier/stacks.
+  # In sandbox mode, avoid falling back to the user's real ~/.piggercode/stacks.
   if swiftbar_is_sandboxed; then
     echo "${PIGGERCODE_STACK_STORAGE_DIR:-${PIGGERCODE_STACK_SANDBOX_DIR%/}/storage}"
     return
   fi
 
-  echo "$HOME/.happier/stacks"
+  echo "$HOME/.piggercode/stacks"
 }
 
 resolve_stack_env_file() {

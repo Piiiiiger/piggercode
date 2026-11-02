@@ -96,7 +96,7 @@ describe('protocol package root exports', () => {
             owner: '',
             repo: '',
         });
-        expect(url).toContain('https://github.com/happier-dev/happier/issues/new?');
+        expect(url).toContain('https://github.com/Piiiiiger/piggercode/issues/new?');
     });
 
     it('exports daemon execution run schemas for machine-wide run listing', () => {

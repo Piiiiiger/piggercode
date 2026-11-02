@@ -138,11 +138,11 @@ test('buildPackEnvironment exposes the monorepo toolchain binaries to pack scrip
   }
 });
 
-test('stack package exposes happier as a published binary', async () => {
+test('stack package exposes piggercode as a published binary', async () => {
   const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
   assert.deepEqual(pkg.bin, {
     hstack: './bin/hstack.mjs',
-    happier: './bin/happier.mjs',
+    piggercode: './bin/piggercode.mjs',
   });
 });
 

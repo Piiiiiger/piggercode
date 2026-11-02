@@ -85,7 +85,7 @@ function buildHappierFixtureEnv({ rootDir, fixtureDir, homeDir, extra = {} }) {
   return env;
 }
 
-test('hstack happier defaults serverUrl/webappUrl from existing CLI settings (no localServerUrl)', async (t) => {
+test('hstack piggercode defaults serverUrl/webappUrl from existing CLI settings (no localServerUrl)', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-settings-defaults-' });
 
@@ -114,7 +114,7 @@ test('hstack happier defaults serverUrl/webappUrl from existing CLI settings (no
 
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   const parsed = JSON.parse(res.stdout.trim());
   assert.equal(parsed.serverUrl, 'http://localhost:53288');
@@ -124,7 +124,7 @@ test('hstack happier defaults serverUrl/webappUrl from existing CLI settings (no
   assert.equal(parsed.homeDir, homeDir);
 });
 
-test('hstack happier prefers existing CLI settings over stack defaults even when stack env is pinned', async (t) => {
+test('hstack piggercode prefers existing CLI settings over stack defaults even when stack env is pinned', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-settings-cloud-over-stack-' });
   const pinnedPortReservation = await holdEphemeralLoopbackPort(t);
@@ -160,7 +160,7 @@ test('hstack happier prefers existing CLI settings over stack defaults even when
   });
   await pinnedPortReservation.release();
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   const parsed = JSON.parse(res.stdout.trim());
   assert.equal(parsed.serverUrl, 'https://api.happier.dev');
@@ -169,7 +169,7 @@ test('hstack happier prefers existing CLI settings over stack defaults even when
   assert.equal(parsed.homeDir, homeDir);
 });
 
-test('hstack happier defaults serverUrl via localServerUrl when present in settings', async (t) => {
+test('hstack piggercode defaults serverUrl via localServerUrl when present in settings', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-settings-local-defaults-' });
 
@@ -199,7 +199,7 @@ test('hstack happier defaults serverUrl via localServerUrl when present in setti
 
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
-  const res = await runNodeCapture([hstackBinPath(rootDir), 'happier'], { cwd: rootDir, env });
+  const res = await runNodeCapture([hstackBinPath(rootDir), 'piggercode'], { cwd: rootDir, env });
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
   const parsed = JSON.parse(res.stdout.trim());
   assert.equal(parsed.publicServerUrl, 'https://public.example.test');
@@ -208,7 +208,7 @@ test('hstack happier defaults serverUrl via localServerUrl when present in setti
   assert.equal(parsed.webappUrl, 'https://app.example.test');
 });
 
-test('hstack happier treats non-prefix --server as explicit server selection', async (t) => {
+test('hstack piggercode treats non-prefix --server as explicit server selection', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-subcommand-server-flag-' });
 
@@ -238,7 +238,7 @@ test('hstack happier treats non-prefix --server as explicit server selection', a
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
   const res = await runNodeCapture(
-    [hstackBinPath(rootDir), 'happier', 'doctor', '--server', 'example'],
+    [hstackBinPath(rootDir), 'piggercode', 'doctor', '--server', 'example'],
     { cwd: rootDir, env },
   );
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
@@ -248,7 +248,7 @@ test('hstack happier treats non-prefix --server as explicit server selection', a
   assert.equal(parsed.activeServerId, null, 'activeServerId should be cleared when --server is explicit');
 });
 
-test('hstack happier honors explicit --server-url even when other top-level flags appear first', async (t) => {
+test('hstack piggercode honors explicit --server-url even when other top-level flags appear first', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-server-url-after-json-' });
 
@@ -278,7 +278,7 @@ test('hstack happier honors explicit --server-url even when other top-level flag
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
   const res = await runNodeCapture(
-    [hstackBinPath(rootDir), 'happier', '--json', '--server-url=https://override.example'],
+    [hstackBinPath(rootDir), 'piggercode', '--json', '--server-url=https://override.example'],
     { cwd: rootDir, env },
   );
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
@@ -291,7 +291,7 @@ test('hstack happier honors explicit --server-url even when other top-level flag
   );
 });
 
-test('hstack happier honors explicit --server-url after a forwarded subcommand', async (t) => {
+test('hstack piggercode honors explicit --server-url after a forwarded subcommand', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-server-url-after-subcommand-' });
 
@@ -321,7 +321,7 @@ test('hstack happier honors explicit --server-url after a forwarded subcommand',
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
   const res = await runNodeCapture(
-    [hstackBinPath(rootDir), 'happier', 'auth', 'login', '--server-url=https://override.example'],
+    [hstackBinPath(rootDir), 'piggercode', 'auth', 'login', '--server-url=https://override.example'],
     { cwd: rootDir, env },
   );
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);
@@ -334,7 +334,7 @@ test('hstack happier honors explicit --server-url after a forwarded subcommand',
   );
 });
 
-test('hstack happier treats auth subcommand --server as explicit server selection', async (t) => {
+test('hstack piggercode treats auth subcommand --server as explicit server selection', async (t) => {
   const rootDir = stackRootDirFromMeta(import.meta.url);
   const fixture = await createMonorepoFixture(t, { prefix: 'hstack-happier-auth-server-subcommand-' });
 
@@ -364,7 +364,7 @@ test('hstack happier treats auth subcommand --server as explicit server selectio
   const env = buildHappierFixtureEnv({ rootDir, fixtureDir: fixture.dir, homeDir });
 
   const res = await runNodeCapture(
-    [hstackBinPath(rootDir), 'happier', 'auth', 'login', '--server', 'example'],
+    [hstackBinPath(rootDir), 'piggercode', 'auth', 'login', '--server', 'example'],
     { cwd: rootDir, env },
   );
   assert.equal(res.code, 0, `expected exit 0, got ${res.code}\nstderr:\n${res.stderr}\nstdout:\n${res.stdout}`);

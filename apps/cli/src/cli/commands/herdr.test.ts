@@ -37,7 +37,7 @@ beforeEach(() => {
 
 afterEach(() => envScope.restore());
 
-describe('happier herdr server admission', () => {
+describe('piggercode herdr server admission', () => {
   it('refuses an older running server before opening its TUI', async () => {
     await withHerdrApi(async (api) => {
       executable.socketPath = api.socketPath;

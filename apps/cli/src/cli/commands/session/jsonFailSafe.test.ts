@@ -14,7 +14,7 @@ vi.mock('axios', async () => {
   };
 });
 
-describe('happier session --json fail-safe', () => {
+describe('piggercode session --json fail-safe', () => {
   it('prints a session_list error envelope (server_unreachable) on unexpected network errors', async () => {
     mockAxiosGet.mockImplementation(() => {
       const err: any = new Error('connect ECONNREFUSED 127.0.0.1:1');

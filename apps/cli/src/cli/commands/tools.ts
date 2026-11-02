@@ -94,7 +94,7 @@ async function resolveToolsBaseContext(
   directory: string;
 }> {
   const credentials = await deps.readCredentials();
-  if (!credentials) throw new Error('Not authenticated. Run "happier auth login" first.');
+  if (!credentials) throw new Error('Not authenticated. Run "piggercode auth login" first.');
 
   const sessionId = options?.requireSessionId === true
     ? requireFlagValue(args, '--session-id')
@@ -164,7 +164,7 @@ function printHumanToolList(params: Readonly<{
   customTools: ReadonlyArray<CustomToolEntry>;
   warnings: ReadonlyArray<ResolvedCustomHappierToolWarning>;
 }>): void {
-  console.log('happier');
+  console.log('piggercode');
   for (const tool of params.builtInTools) {
     console.log(`- ${tool.name}: ${tool.description}`);
   }
@@ -204,7 +204,7 @@ export async function handleToolsCommand(args: string[], overrides?: Partial<Too
             kind,
             data: {
               sources: {
-                happier: builtInTools.map((tool) => ({
+                piggercode: builtInTools.map((tool) => ({
                   name: tool.name,
                   title: tool.title,
                   description: tool.description,
@@ -248,7 +248,7 @@ export async function handleToolsCommand(args: string[], overrides?: Partial<Too
       const parsedArgs = JSON.parse(argsJson);
 
       let result: ToolCallResult;
-      if (source === 'happier') {
+      if (source === 'piggercode') {
         const context = await resolveToolsBaseContext(args, deps, { requireSessionId: true });
         const sessionAgentBridge = args.includes('--session-agent-bridge');
         const toolCallId = sessionAgentBridge ? (getFlagValue(args, '--tool-call-id') ?? '') : '';
@@ -308,7 +308,7 @@ export async function handleToolsCommand(args: string[], overrides?: Partial<Too
       return;
     }
 
-    throw new Error('Usage: happier tools <list|call> ...');
+    throw new Error('Usage: piggercode tools <list|call> ...');
   } catch (error) {
     if (!json) throw error;
     const mapped = mapUnknownErrorToControlError(error);

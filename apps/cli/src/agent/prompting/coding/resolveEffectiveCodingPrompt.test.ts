@@ -183,7 +183,7 @@ describe('resolveEffectiveCodingPromptText', () => {
 
     expect(out).not.toContain('You are an AI assistant');
     expect(out).not.toContain('Tool execution ordering');
-    expect(out).toContain('Happier tools are available through the CLI bridge');
+    expect(out).toContain('PiggerCode tools are available through the CLI bridge');
   });
 
   it('omits shell-bridge title guidance when coding prompt title updates are disabled', async () => {
@@ -206,8 +206,8 @@ describe('resolveEffectiveCodingPromptText', () => {
       fetchPromptArtifactRecord: async () => null,
     });
 
-    expect(out).toContain('Happier tools are available through the CLI bridge');
-    expect(out).toContain('when you need to discover the available built-in Happier tools');
+    expect(out).toContain('PiggerCode tools are available through the CLI bridge');
+    expect(out).toContain('when you need to discover the available built-in PiggerCode tools');
     expect(out).toContain('Use the listed tool `name` verbatim for `--tool`');
     expect(out).toContain('ActionSpec IDs (for example, `subagents.delegate.start`) are not tool names');
     expect(out).toContain('invoke the listed `action_execute` tool and pass the ID as `actionId`');
@@ -254,7 +254,7 @@ describe('resolveEffectiveCodingPromptText', () => {
     expect(out).not.toContain('rename the session');
     expect(out).not.toContain('# Session title');
     expect(out).not.toContain('Required first action');
-    expect(out).toContain('Happier tools are available through the CLI bridge');
+    expect(out).toContain('PiggerCode tools are available through the CLI bridge');
   });
 
   it('keeps shell-bridge title guidance when no profile override applies (REQ-2)', async () => {
@@ -277,7 +277,7 @@ describe('resolveEffectiveCodingPromptText', () => {
       fetchPromptArtifactRecord: async () => null,
     });
 
-    expect(out).toContain('Happier tools are available through the CLI bridge');
+    expect(out).toContain('PiggerCode tools are available through the CLI bridge');
     expect(out).toContain('# Session title');
     expect(out).toContain('change_title');
   });

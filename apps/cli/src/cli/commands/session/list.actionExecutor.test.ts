@@ -9,7 +9,7 @@ vi.mock('@/session/actions/createCliActionExecutorFromCredentials', () => ({
   createCliActionExecutorFromCredentials,
 }));
 
-describe('happier session list (action executor)', () => {
+describe('piggercode session list (action executor)', () => {
   beforeEach(() => {
     execute.mockReset();
     createCliActionExecutorFromCredentials.mockClear();

@@ -38,7 +38,7 @@ describe('initialMachineMetadata', () => {
       latestVersion: '0.2.14',
       channel: 'stable' as const,
       installSource: 'managed' as const,
-      updateCommand: 'happier self update',
+      updateCommand: 'piggercode self update',
       canUpdateRemotely: true,
       lastUpdate: { targetVersion: '0.2.13', outcome: 'succeeded' as const, at: 10, message: null },
     };

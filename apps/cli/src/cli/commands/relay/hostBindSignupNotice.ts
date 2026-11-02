@@ -21,8 +21,8 @@ export type RelayBindSignupNotice = Readonly<{
   details: readonly string[];
 }>;
 
-/** Where the operator reads about requiring an identity provider instead. */
-const AUTH_DOCS_URL = 'https://docs.happier.dev/self-hosting/auth';
+/** Where the operator reads how to close sign-up once their own account can sign in. */
+const AUTH_DOCS_URL = 'https://github.com/Piiiiiger/piggercode#readme';
 
 export function describeRelayBindSignupExposure(
   /** The relay's `PIGGERCODE_SERVER_HOST` override, or null to keep its default. */

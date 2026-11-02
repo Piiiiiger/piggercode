@@ -15,9 +15,9 @@ function normalizeToolName(raw: unknown): string {
 function normalizeFirstPartyHappierToolName(toolName: string): string | null {
   const normalized = normalizeToolName(toolName);
   if (!normalized) return null;
-  if (normalized.startsWith('mcp__happier__')) return normalized.slice('mcp__happier__'.length);
-  if (normalized.startsWith('happier__')) return normalized.slice('happier__'.length);
-  if (normalized.startsWith('happier_')) return normalized.slice('happier_'.length);
+  if (normalized.startsWith('mcp__piggercode__')) return normalized.slice('mcp__piggercode__'.length);
+  if (normalized.startsWith('piggercode__')) return normalized.slice('piggercode__'.length);
+  if (normalized.startsWith('piggercode_')) return normalized.slice('piggercode_'.length);
   if (getEquivalentActionIdForBuiltInTool(normalized)) return normalized;
   return null;
 }

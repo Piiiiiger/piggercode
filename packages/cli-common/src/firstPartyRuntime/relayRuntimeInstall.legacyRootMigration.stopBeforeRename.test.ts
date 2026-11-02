@@ -161,7 +161,7 @@ describe('installOrUpdateRelayRuntimeLocal legacy root migration', () => {
                 homeDir,
             });
 
-            const legacyInstallRoot = join(homeDir, '.happier', 'l1');
+            const legacyInstallRoot = join(homeDir, '.piggercode', 'l1');
             await mkdir(legacyInstallRoot, { recursive: true });
             await mkdir(join(legacyInstallRoot, 'data'), { recursive: true });
             await writeFile(join(legacyInstallRoot, 'data', 'session-marker.txt'), 'legacy-session\n', 'utf8');

@@ -11,10 +11,10 @@ The paths are complementary. If the user selects both, upload privately first so
 
 ## Private upload
 
-Construct the current command from verified `happier bug-report --help` output. A typical invocation is:
+Construct the current command from verified `piggercode bug-report --help` output. A typical invocation is:
 
 ```bash
-happier bug-report \
+piggercode bug-report \
   --title "<specific title>" \
   --summary "<concise evidence-backed summary>" \
   --current-behavior "<observed behavior>" \

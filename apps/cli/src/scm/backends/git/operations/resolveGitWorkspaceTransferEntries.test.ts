@@ -21,7 +21,7 @@ async function runGit(cwd: string, args: readonly string[]): Promise<string> {
 
 async function configureGitRepo(cwd: string): Promise<void> {
     await runGit(cwd, ['config', 'user.email', 'test@example.com']);
-    await runGit(cwd, ['config', 'user.name', 'Happier Test']);
+    await runGit(cwd, ['config', 'user.name', 'PiggerCode Test']);
 }
 
 async function resolveGitBinaryPath(): Promise<string> {
@@ -192,12 +192,12 @@ describe('resolveGitWorkspaceTransferEntries', () => {
         try {
             await runGit(repoRoot, ['init']);
             await configureGitRepo(repoRoot);
-            await mkdir(join(repoRoot, '.happier', 'uploads', 'generated', 'message-1'), { recursive: true });
-            await mkdir(join(repoRoot, '.happier', 'uploads', 'generated', 'message-2'), { recursive: true });
-            await writeFile(join(repoRoot, '.gitignore'), '.happier/uploads/**\n', 'utf8');
+            await mkdir(join(repoRoot, '.piggercode', 'uploads', 'generated', 'message-1'), { recursive: true });
+            await mkdir(join(repoRoot, '.piggercode', 'uploads', 'generated', 'message-2'), { recursive: true });
+            await writeFile(join(repoRoot, '.gitignore'), '.piggercode/uploads/**\n', 'utf8');
             await writeFile(join(repoRoot, 'README.md'), 'hello\n', 'utf8');
-            await writeFile(join(repoRoot, '.happier', 'uploads', 'generated', 'message-1', 'image[1].png'), 'referenced\n', 'utf8');
-            await writeFile(join(repoRoot, '.happier', 'uploads', 'generated', 'message-2', 'image1.png'), 'unrelated\n', 'utf8');
+            await writeFile(join(repoRoot, '.piggercode', 'uploads', 'generated', 'message-1', 'image[1].png'), 'referenced\n', 'utf8');
+            await writeFile(join(repoRoot, '.piggercode', 'uploads', 'generated', 'message-2', 'image1.png'), 'unrelated\n', 'utf8');
             await runGit(repoRoot, ['add', 'README.md', '.gitignore']);
             await runGit(repoRoot, ['commit', '-m', 'initial']);
 
@@ -214,14 +214,14 @@ describe('resolveGitWorkspaceTransferEntries', () => {
                 workspaceTransfer: {
                     strategy: 'transfer_snapshot',
                     includeIgnoredMode: 'include_selected',
-                    ignoredIncludeGlobs: [':(literal).happier/uploads/generated/message-1/image[1].png'],
+                    ignoredIncludeGlobs: [':(literal).piggercode/uploads/generated/message-1/image[1].png'],
                 },
             });
 
             expect(entries).toEqual(expect.arrayContaining([
-                expect.objectContaining({ relativePath: '.happier/uploads/generated/message-1/image[1].png' }),
+                expect.objectContaining({ relativePath: '.piggercode/uploads/generated/message-1/image[1].png' }),
             ]));
-            expect(entries.some((entry) => entry.relativePath === '.happier/uploads/generated/message-2/image1.png')).toBe(false);
+            expect(entries.some((entry) => entry.relativePath === '.piggercode/uploads/generated/message-2/image1.png')).toBe(false);
         } finally {
             await rm(repoRoot, { recursive: true, force: true });
         }

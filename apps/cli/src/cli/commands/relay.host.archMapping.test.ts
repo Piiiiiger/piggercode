@@ -140,7 +140,7 @@ function withPatchedPath<T>(binDir: string, run: () => Promise<T>): Promise<T> {
     });
 }
 
-describe('happier relay host arch resolution', () => {
+describe('piggercode relay host arch resolution', () => {
     let home = '';
     let envScope = createEnvKeyScope(['PIGGERCODE_HOME_DIR']);
 

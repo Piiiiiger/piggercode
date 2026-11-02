@@ -69,7 +69,7 @@ afterEach(async () => {
 });
 
 describe('gh release-binary installer', () => {
-  it('detects a managed GitHub CLI binary in the Happier tools directory', async () => {
+  it('detects a managed GitHub CLI binary in the PiggerCode tools directory', async () => {
     const home = await mkdtemp(join(tmpdir(), 'happier-gh-home-'));
     tempDirs.add(home);
     envScope.patch({ PIGGERCODE_HOME_DIR: home, PATH: '' });

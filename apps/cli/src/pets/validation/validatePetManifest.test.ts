@@ -14,7 +14,7 @@ describe('validatePetManifest', () => {
     const result = mod.validatePetManifestBytes(Buffer.from(JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
     })));
 
@@ -30,7 +30,7 @@ describe('validatePetManifest', () => {
       const result = mod.validatePetManifestBytes(Buffer.from(JSON.stringify({
         id: 'blink',
         displayName: 'Blink',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath,
       })));
 
@@ -46,7 +46,7 @@ describe('validatePetManifest', () => {
     const result = mod.validatePetManifestBytes(Buffer.from(JSON.stringify({
       id: 'blink',
       displayName: 'Blink',
-      description: 'Happier companion pet',
+      description: 'PiggerCode companion pet',
       spritesheetPath: 'spritesheet.webp',
       remoteUrl: 'https://example.test/spritesheet.webp',
     })));

@@ -154,7 +154,7 @@ describe('createClaudeGoalWorkStateSource', () => {
     expect(published).toHaveLength(0);
   });
 
-  it('accepts goal_status whose sessionId matches the channel-established Claude id even when the injected getter returns a non-matching (Happier) id', () => {
+  it('accepts goal_status whose sessionId matches the channel-established Claude id even when the injected getter returns a non-matching (PiggerCode) id', () => {
     // Production reality: the launcher feeds the HAPPIER session id (e.g. `cmqs...`) into the getter,
     // which never equals the Claude transcript `sessionId` (`b27b...`). The source therefore learns
     // the Claude session id from the channel's establishing records (system/assistant/user) and

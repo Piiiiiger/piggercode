@@ -33,8 +33,8 @@ function writeInstalledPayloadFixture(params: Readonly<{
   const currentPath = join(installRoot, 'current');
   for (const dir of [versionPath, currentPath]) {
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'happier'), params.binaryContents, 'utf8');
-    chmodSync(join(dir, 'happier'), 0o755);
+    writeFileSync(join(dir, 'piggercode'), params.binaryContents, 'utf8');
+    chmodSync(join(dir, 'piggercode'), 0o755);
   }
   writeFileSync(join(installRoot, 'current.version'), `${params.versionId}\n`, 'utf8');
 }
@@ -65,11 +65,11 @@ afterEach(() => {
 });
 
 describe('runLocalHappierJsonCommand', () => {
-  it('acquires the managed happier cli on demand before running local bootstrap commands', async () => {
+  it('acquires the managed piggercode cli on demand before running local bootstrap commands', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-install-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     const payloadRoot = join(rootDir, 'payload');
-    const installedBinaryPath = join(payloadRoot, 'happier');
+    const installedBinaryPath = join(payloadRoot, 'piggercode');
 
     try {
       mkdirSync(payloadRoot, { recursive: true });
@@ -122,7 +122,7 @@ describe('runLocalHappierJsonCommand', () => {
     }
   });
 
-  it('treats a signal-terminated happier process as a failed command', async () => {
+  it('treats a signal-terminated piggercode process as a failed command', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-signal-'));
     const cliPath = join(rootDir, 'fake-happier');
 
@@ -236,7 +236,7 @@ describe('the environment a Happier CLI runs with (R12, macOS)', () => {
         releaseRing: 'stable',
         args: ['daemon', 'status', '--json'],
         processEnv: { HOME: '/Users/me', PATH: '/usr/bin:/bin:/usr/sbin:/sbin' },
-        cli: { command: '/opt/homebrew/bin/happier', provenance: 'override' },
+        cli: { command: '/opt/homebrew/bin/piggercode', provenance: 'override' },
       });
 
       const env = runCommandCaptureMock.mock.calls[0]?.[0]?.env as NodeJS.ProcessEnv;
@@ -291,7 +291,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
    */
   it('fails without installing when the ring\'s newest CLI is below the floor', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-setup-floor-managed-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     try {
       writeInstalledPayloadFixture({
         happyHomeDir,
@@ -313,13 +313,13 @@ describe('ensureSetupCapableLocalHappierCli', () => {
   });
 
   /**
-   * One default-following service per `~/.happier`, owned by the default channel (R10 D2): an app
+   * One default-following service per `~/.piggercode`, owned by the default channel (R10 D2): an app
    * of another channel drives this computer through that channel's managed CLI, so it never
    * acquires a second CLI that would compete for the service or read its daemon as foreign.
    */
   it('adopts the default channel\'s managed CLI for an app of another channel, and acquires its own ring otherwise', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-default-channel-adoption-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     try {
       writeInstalledPayloadFixture({
         happyHomeDir,
@@ -334,7 +334,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
 
       await expect(ensureSetupCapableLocalHappierCli({ releaseRing: 'preview', processEnv }, { readVersion }))
         .resolves.toEqual({
-          command: join(happyHomeDir, 'cli', 'current', 'happier'),
+          command: join(happyHomeDir, 'cli', 'current', 'piggercode'),
           provenance: 'managed',
           version: SETUP_CLI_VERSION_FLOOR,
         });
@@ -352,14 +352,14 @@ describe('ensureSetupCapableLocalHappierCli', () => {
   });
 
   /**
-   * R12 × D2 (R13 b): a `happier` the user installed follows the default channel, so the service it
+   * R12 × D2 (R13 b): a `piggercode` the user installed follows the default channel, so the service it
    * runs is the default channel's. "Let Happier manage it" replaces that CLI with the default
    * channel's managed one — never the app's own ring, whose first install would repoint the default
    * and turn the user's service into another ring's service to remove.
    */
   it('"Let Happier manage it" on a computer whose CLI was the user\'s adopts the default channel, not the app\'s ring', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-choice-default-channel-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     try {
       const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir, PATH: '' };
       await writeHappierCliChoice({ choice: { mode: 'managed' }, processEnv });
@@ -379,7 +379,7 @@ describe('ensureSetupCapableLocalHappierCli', () => {
    */
   it('names the default channel it adopted when that channel cannot satisfy the floor (RV-9)', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-default-channel-floor-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     try {
       writeInstalledPayloadFixture({
         happyHomeDir,
@@ -407,8 +407,8 @@ describe('ensureSetupCapableLocalHappierCli', () => {
 
   it('updates a managed CLI below the floor when the ring has a newer one', async () => {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-setup-floor-reacquire-'));
-    const happyHomeDir = join(rootDir, '.happier-home');
-    const binaryPath = join(happyHomeDir, 'cli', 'current', 'happier');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
+    const binaryPath = join(happyHomeDir, 'cli', 'current', 'piggercode');
     try {
       writeInstalledPayloadFixture({
         happyHomeDir,
@@ -418,8 +418,8 @@ describe('ensureSetupCapableLocalHappierCli', () => {
       const payloadRoot = join(rootDir, 'payload');
       mkdirSync(join(payloadRoot, 'package-dist'), { recursive: true });
       writeFileSync(join(payloadRoot, 'package-dist', 'index.mjs'), 'export {};\n');
-      writeFileSync(join(payloadRoot, 'happier'), `#!/bin/sh\nprintf "${SETUP_CLI_VERSION_FLOOR}\\n"\n`);
-      chmodSync(join(payloadRoot, 'happier'), 0o755);
+      writeFileSync(join(payloadRoot, 'piggercode'), `#!/bin/sh\nprintf "${SETUP_CLI_VERSION_FLOOR}\\n"\n`);
+      chmodSync(join(payloadRoot, 'piggercode'), 0o755);
       preparePayloadMock.mockResolvedValue({ versionId: SETUP_CLI_VERSION_FLOOR, payloadRoot, cleanup: async () => {} });
       const readVersion = async ({ command }: Readonly<{ command: string }>) => {
         const match = /printf "([^\\"]+)/u.exec(readFileSync(command, 'utf8'));
@@ -439,12 +439,12 @@ describe('ensureSetupCapableLocalHappierCli', () => {
 });
 
 describe('updateManagedLocalHappierCli', () => {
-  /** A staged release payload whose `happier` prints `versionId`, as the real one does. */
+  /** A staged release payload whose `piggercode` prints `versionId`, as the real one does. */
   function stagePayload(rootDir: string, versionId: string, reports: string = versionId): string {
     const payloadRoot = join(rootDir, `payload-${versionId}`);
     mkdirSync(join(payloadRoot, 'package-dist'), { recursive: true });
-    writeFileSync(join(payloadRoot, 'happier'), `#!/bin/sh\necho ${reports}\n`, 'utf8');
-    chmodSync(join(payloadRoot, 'happier'), 0o755);
+    writeFileSync(join(payloadRoot, 'piggercode'), `#!/bin/sh\necho ${reports}\n`, 'utf8');
+    chmodSync(join(payloadRoot, 'piggercode'), 0o755);
     writeFileSync(join(payloadRoot, 'package-dist', 'index.mjs'), 'export {};\n', 'utf8');
     return payloadRoot;
   }
@@ -458,7 +458,7 @@ describe('updateManagedLocalHappierCli', () => {
 
   function setup(prefix: string) {
     const rootDir = mkdtempSync(join(tmpdir(), prefix));
-    const happyHomeDir = join(rootDir, '.happier-home');
+    const happyHomeDir = join(rootDir, '.piggercode-home');
     writeInstalledPayloadFixture({ happyHomeDir, versionId: '0.2.13', binaryContents: '#!/bin/sh\necho 0.2.13\n' });
     const processEnv = { ...process.env, PIGGERCODE_HOME_DIR: happyHomeDir, PIGGERCODE_BOOTSTRAP_CLI_PATH: '', PIGGERCODE_STACK_REPO_DIR: rootDir };
     return { rootDir, happyHomeDir, processEnv };
@@ -479,7 +479,7 @@ describe('updateManagedLocalHappierCli', () => {
 
       expect(updated).toEqual({
         previousVersion: '0.2.13',
-        cli: { command: join(happyHomeDir, 'cli', 'current', 'happier'), provenance: 'managed', version: '0.2.14' },
+        cli: { command: join(happyHomeDir, 'cli', 'current', 'piggercode'), provenance: 'managed', version: '0.2.14' },
         restarted: false,
       });
       expect(readFileSync(join(happyHomeDir, 'cli', 'current.version'), 'utf8').trim()).toBe('0.2.14');
@@ -509,7 +509,7 @@ describe('updateManagedLocalHappierCli', () => {
 
       expect(restarts).toEqual(['activated:0.2.14', 'restored:0.2.13']);
       expect(readFileSync(join(happyHomeDir, 'cli', 'current.version'), 'utf8').trim()).toBe('0.2.13');
-      expect(readFileSync(join(happyHomeDir, 'cli', 'current', 'happier'), 'utf8')).toContain('0.2.13');
+      expect(readFileSync(join(happyHomeDir, 'cli', 'current', 'piggercode'), 'utf8')).toContain('0.2.13');
     } finally {
       rmSync(rootDir, { recursive: true, force: true });
     }
@@ -547,18 +547,18 @@ describe('updateManagedLocalHappierCli', () => {
 });
 
 describe('the one-CLI question (R12)', () => {
-  /** An npm global install of the CLI: `<prefix>/bin/happier` → the package's own entry. */
+  /** An npm global install of the CLI: `<prefix>/bin/piggercode` → the package's own entry. */
   function withNpmCli(run: (params: Readonly<{ command: string; processEnv: NodeJS.ProcessEnv }>) => Promise<void>) {
     const rootDir = mkdtempSync(join(tmpdir(), 'hsetup-cli-choice-'));
     const packageRoot = join(rootDir, 'npm-global', 'lib', 'node_modules', '@piggercode', 'cli');
     mkdirSync(join(packageRoot, 'bin'), { recursive: true });
     writeFileSync(join(packageRoot, 'package.json'), JSON.stringify({ name: '@piggercode/cli' }), 'utf8');
-    writeFileSync(join(packageRoot, 'bin', 'happier.mjs'), '#!/bin/sh\n', 'utf8');
-    chmodSync(join(packageRoot, 'bin', 'happier.mjs'), 0o755);
+    writeFileSync(join(packageRoot, 'bin', 'piggercode.mjs'), '#!/bin/sh\n', 'utf8');
+    chmodSync(join(packageRoot, 'bin', 'piggercode.mjs'), 0o755);
     const npmBin = join(rootDir, 'npm-global', 'bin');
     mkdirSync(npmBin, { recursive: true });
-    const command = join(npmBin, 'happier');
-    symlinkSync(join(packageRoot, 'bin', 'happier.mjs'), command);
+    const command = join(npmBin, 'piggercode');
+    symlinkSync(join(packageRoot, 'bin', 'piggercode.mjs'), command);
     return run({
       command,
       processEnv: { HOME: rootDir, PIGGERCODE_HOME_DIR: join(rootDir, 'home'), PIGGERCODE_STACK_REPO_DIR: join(rootDir, 'elsewhere'), PATH: npmBin },
@@ -589,15 +589,15 @@ describe('the one-CLI question (R12)', () => {
     await withNpmCli(async ({ command, processEnv }) => {
       const readVersion = vi.fn(async () => '0.2.13');
       const happyHomeDir = String(processEnv.PIGGERCODE_HOME_DIR);
-      // The official installer: a managed install, its shim, and `~/.local/bin/happier` → that shim,
+      // The official installer: a managed install, its shim, and `~/.local/bin/piggercode` → that shim,
       // ahead of an npm copy on PATH.
       writeInstalledPayloadFixture({ happyHomeDir, versionId: '0.2.13', binaryContents: '#!/bin/sh\n' });
       mkdirSync(join(happyHomeDir, 'bin'), { recursive: true });
-      symlinkSync(join(happyHomeDir, 'cli', 'current', 'happier'), join(happyHomeDir, 'bin', 'happier'));
+      symlinkSync(join(happyHomeDir, 'cli', 'current', 'piggercode'), join(happyHomeDir, 'bin', 'piggercode'));
       const localBin = join(happyHomeDir, '..', 'local-bin');
       mkdirSync(localBin, { recursive: true });
-      const installerLink = join(localBin, 'happier');
-      symlinkSync(join(happyHomeDir, 'bin', 'happier'), installerLink);
+      const installerLink = join(localBin, 'piggercode');
+      symlinkSync(join(happyHomeDir, 'bin', 'piggercode'), installerLink);
       const env = { ...processEnv, PATH: `${localBin}:${processEnv.PATH}` };
 
       // The terminal runs the managed CLI: nothing to ask, even with the npm copy further down.
@@ -635,13 +635,13 @@ describe('the one-CLI question (R12)', () => {
       const required = new SystemTaskExecutionError('cli_choice_required', 'gone');
       expect(describeUnservedCliChoiceFailure(required, { releaseRing: 'stable', processEnv })).toBe(required);
 
-      // A happier installed since somewhere else is what there is to choose now.
+      // A piggercode installed since somewhere else is what there is to choose now.
       const otherBin = join(String(processEnv.PIGGERCODE_HOME_DIR), '..', 'brew', 'bin');
       mkdirSync(otherBin, { recursive: true });
-      writeFileSync(join(otherBin, 'happier'), '#!/bin/sh\n', 'utf8');
-      chmodSync(join(otherBin, 'happier'), 0o755);
+      writeFileSync(join(otherBin, 'piggercode'), '#!/bin/sh\n', 'utf8');
+      chmodSync(join(otherBin, 'piggercode'), 0o755);
       await expect(inspectLocalHappierCliChoice({ processEnv: { ...processEnv, PATH: `${processEnv.PATH}:${otherBin}` } }, { readVersion }))
-        .resolves.toMatchObject({ question: { command: join(otherBin, 'happier'), version: '0.2.13', missing: false } });
+        .resolves.toMatchObject({ question: { command: join(otherBin, 'piggercode'), version: '0.2.13', missing: false } });
     });
   });
 

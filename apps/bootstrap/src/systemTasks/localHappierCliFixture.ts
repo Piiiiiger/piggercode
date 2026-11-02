@@ -15,7 +15,7 @@ export async function installManagedCliFixture(params: Readonly<{
   try {
     await mkdir(join(payloadRoot, 'package-dist'));
     await writeFile(join(payloadRoot, 'package-dist', 'index.mjs'), 'export {};\n');
-    await writeFile(join(payloadRoot, process.platform === 'win32' ? 'happier.exe' : 'happier'), 'process boundary fixture\n');
+    await writeFile(join(payloadRoot, process.platform === 'win32' ? 'piggercode.exe' : 'piggercode'), 'process boundary fixture\n');
     await installVersionedPayload({ componentId: 'happier-cli', processEnv: params.processEnv, releaseRing, versionId: '0.2.13', payloadRoot });
   } finally {
     await rm(payloadRoot, { recursive: true, force: true });

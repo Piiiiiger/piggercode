@@ -90,7 +90,7 @@ export function renderSetupWelcome(options: Readonly<{
   const lines = rich && width >= 40 && (process.stdout.rows ?? 24) >= 18 && supportsBrailleArt()
     ? renderPlanet({ color: !process.env.NO_COLOR })
     : [];
-  return [...lines, '', 'Happier', options.subtitle, `Computer: ${options.machineName}`, ''].join('\n');
+  return [...lines, '', 'PiggerCode', options.subtitle, `Computer: ${options.machineName}`, ''].join('\n');
 }
 
 export type SetupChoice = Readonly<{
@@ -170,7 +170,7 @@ function renderSetupChoiceText(options: SetupChoiceRenderOptions, width: number,
   if (options.showWelcome !== false) {
     // One slow highlight across the name while the planet rises; then it stays still.
     const brandPhase = options.seconds === undefined ? -1 : (options.seconds - 0.5) / 1.6;
-    if (showBrand) lines.push(title(color ? shimmerText('Happier', brandPhase) : 'Happier'));
+    if (showBrand) lines.push(title(color ? shimmerText('PiggerCode', brandPhase) : 'PiggerCode'));
     lines.push(...wrapSetupText(options.subtitle, width));
     lines.push(...wrapSetupText(`Computer: ${options.machineName}`, width), '');
   }

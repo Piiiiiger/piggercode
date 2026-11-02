@@ -20,13 +20,13 @@ describe('ensureSessionMediaIgnoreRule', () => {
             workingDirectory,
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
             },
         });
 
-        await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toContain('/.happier/uploads/');
+        await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toContain('/.piggercode/uploads/');
     });
 
     it('writes workspace .gitignore for gitignore strategy even when no git directory exists', async () => {
@@ -36,12 +36,12 @@ describe('ensureSessionMediaIgnoreRule', () => {
             workingDirectory,
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'gitignore',
                 vcsIgnoreWritesEnabled: true,
             },
         });
 
-        await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toContain('/.happier/uploads/');
+        await expect(readFile(join(workingDirectory, '.gitignore'), 'utf8')).resolves.toContain('/.piggercode/uploads/');
     });
 });

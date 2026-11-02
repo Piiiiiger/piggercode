@@ -14,7 +14,7 @@
  *     │                                         
  *     ├─► startHookServer() ──► HTTP server on random port (e.g., 52290)
  *     │                                         
- *     ├─► generateHookSettingsFile(port) ──► ~/.happier/tmp/hooks/session-hook-<pid>.json
+ *     ├─► generateHookSettingsFile(port) ──► ~/.piggercode/tmp/hooks/session-hook-<pid>.json
  *     │   (contains SessionStart hook pointing to our server)
  *     │                                         
  *     └─► loop() ──► claudeLocal/claudeRemote
@@ -44,10 +44,10 @@
  * ```
  * 
  * ### Triggered By
- * - `happier` (fresh start) - new session created
- * - `happier --continue` - continues last session (may fork)
- * - `happier --resume` - interactive picker, then resume
- * - `happier --resume <id>` - resume specific session
+ * - `piggercode` (fresh start) - new session created
+ * - `piggercode --continue` - continues last session (may fork)
+ * - `piggercode --resume` - interactive picker, then resume
+ * - `piggercode --resume <id>` - resume specific session
  * - `/compact` command - compacts and forks session
  * - Double-escape fork - user forks conversation in CLI
  * 

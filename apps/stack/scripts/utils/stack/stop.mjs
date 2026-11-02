@@ -440,7 +440,7 @@ async function stopStackWithEnvInternal({
   const internalServerUrl = port ? `http://127.0.0.1:${port}` : 'http://127.0.0.1:3005';
   const cliHomeDir = (env.PIGGERCODE_STACK_CLI_HOME_DIR ?? join(baseDir, 'cli')).toString();
   const cliDir = getComponentDir(rootDir, 'happier-cli', env);
-  const cliBin = join(cliDir, 'bin', 'happier.mjs');
+  const cliBin = join(cliDir, 'bin', 'piggercode.mjs');
   const envPath = resolveExplicitStackEnvFilePath(env);
   const selfPgid = await getProcessGroupIdImpl(process.pid);
   const cleanupResults = [];
@@ -632,7 +632,7 @@ async function stopStackWithEnvInternal({
 
   if (!preserveDaemon) {
     try {
-      // If happier-cli isn't built yet (common in repo checkouts), running `happier.mjs` can fail noisily.
+      // If happier-cli isn't built yet (common in repo checkouts), running `piggercode.mjs` can fail noisily.
       // Stopping stack infra should still work without the daemon stop step.
       const cliDistIndex = join(cliDir, 'dist', 'index.mjs');
       if (existsSync(cliDistIndex)) {

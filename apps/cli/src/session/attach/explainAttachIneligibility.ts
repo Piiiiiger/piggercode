@@ -5,7 +5,7 @@ import type { CliSessionAttachEligibility } from './evaluateCliSessionAttachElig
 /**
  * Translate a non-eligible attach decision into a stable category + human copy
  * the selector can render under each disabled row, *and* the explicit
- * `happier attach <sessionId>` path can print as a friendly error.
+ * `piggercode attach <sessionId>` path can print as a friendly error.
  *
  * Why a separate explainer instead of expanding `evaluateCliSessionAttachEligibility`:
  * - The eligibility evaluator's contract is a *permission* boundary; it
@@ -99,7 +99,7 @@ export function explainAttachIneligibility(input: Readonly<{
       fullReason: eligibility.reasonCode === 'archived'
         ? 'This session is archived and cannot be attached.'
         : 'This session is no longer active and cannot be attached.',
-      nextStepHint: 'Use `happier resume` to revive a stopped session.',
+      nextStepHint: 'Use `piggercode resume` to revive a stopped session.',
     };
   }
 
@@ -108,7 +108,7 @@ export function explainAttachIneligibility(input: Readonly<{
       category: 'metadata_unreadable',
       shortReason: 'metadata cannot be decrypted on this machine',
       fullReason: 'This CLI cannot decrypt this session\'s metadata on this machine.',
-      nextStepHint: 'Sign in again with the device that originally created the session, or run `happier auth pair-remote`.',
+      nextStepHint: 'Sign in again with the device that originally created the session, or run `piggercode auth pair-remote`.',
     };
   }
 
@@ -144,7 +144,7 @@ export function explainAttachIneligibility(input: Readonly<{
       category: 'started_outside_tmux',
       shortReason: 'started outside tmux',
       fullReason: 'This session was started outside tmux and can\'t be attached.',
-      nextStepHint: 'Enable "Spawn Sessions in Tmux" in the Happier app → Session Settings, then start a new session.',
+      nextStepHint: 'Enable "Spawn Sessions in Tmux" in the PiggerCode app → Session Settings, then start a new session.',
     };
   }
 
@@ -170,9 +170,9 @@ export function explainAttachIneligibility(input: Readonly<{
     if (sessionHost && input.currentMachineHost && compareMachineHosts(sessionHost, input.currentMachineHost)) {
       return {
         category: 'machine_identity_mismatch',
-        shortReason: 'different Happier machine identity; no terminal attach target',
-        fullReason: 'This session is running on this computer under a different Happier machine identity, but this CLI does not have a tmux target or local attachment marker for it.',
-        nextStepHint: 'Use the same Happier app or daemon that started the session, or start a new tmux-backed session from this CLI profile.',
+        shortReason: 'different PiggerCode machine identity; no terminal attach target',
+        fullReason: 'This session is running on this computer under a different PiggerCode machine identity, but this CLI does not have a tmux target or local attachment marker for it.',
+        nextStepHint: 'Use the same PiggerCode app or daemon that started the session, or start a new tmux-backed session from this CLI profile.',
       };
     }
 
@@ -183,7 +183,7 @@ export function explainAttachIneligibility(input: Readonly<{
       fullReason: sessionHost
         ? `This session is running${remoteSuffix} and can't be attached from this computer.`
         : 'Session belongs to another machine and cannot be attached from this computer.',
-      nextStepHint: 'Switch to that machine, or use `happier session list --active` to see all running sessions.',
+      nextStepHint: 'Switch to that machine, or use `piggercode session list --active` to see all running sessions.',
     };
   }
 
@@ -197,7 +197,7 @@ export function explainAttachIneligibility(input: Readonly<{
         category: 'remote_machine',
         shortReason: `running on ${sessionHost}`,
         fullReason: `This session is running on ${sessionHost} and can't be attached from this computer.`,
-        nextStepHint: 'Switch to that machine, or use `happier session list --active` to see all running sessions.',
+        nextStepHint: 'Switch to that machine, or use `piggercode session list --active` to see all running sessions.',
       };
     }
   }
@@ -208,7 +208,7 @@ export function explainAttachIneligibility(input: Readonly<{
     category: 'no_local_state',
     shortReason: 'attachment state not available on this computer',
     fullReason: eligibility.reason ?? 'No local attachment state is available for this session on this computer.',
-    nextStepHint: 'Start the daemon with `happier daemon start` and retry, or attach from the original terminal.',
+    nextStepHint: 'Start the daemon with `piggercode daemon start` and retry, or attach from the original terminal.',
   };
 }
 

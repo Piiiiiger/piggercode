@@ -26,7 +26,7 @@ async function initRepoWithCommit(prefix: string): Promise<string> {
     const repoRoot = await makeTempDir(prefix);
     await runGit(repoRoot, ['init']);
     await runGit(repoRoot, ['config', 'user.email', 'test@example.com']);
-    await runGit(repoRoot, ['config', 'user.name', 'Happier Test']);
+    await runGit(repoRoot, ['config', 'user.name', 'PiggerCode Test']);
     await runGit(repoRoot, ['branch', '-M', 'main']);
     await writeFile(join(repoRoot, 'README.md'), 'hello\n', 'utf8');
     await runGit(repoRoot, ['add', 'README.md']);

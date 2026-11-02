@@ -28,9 +28,9 @@ describe('resolveDaemonServiceListEntries', () => {
 
   it('matches a default-following systemd unit installed through the managed default shim', async () => {
     await withTempDir('happier-daemon-service-list-managed-default-shim-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
       const managedBinDir = join(happierHomeDir, 'bin');
-      const defaultShimPath = join(managedBinDir, 'happier');
+      const defaultShimPath = join(managedBinDir, 'piggercode');
       const previewShimPath = join(managedBinDir, 'hprev');
       mkdirSync(managedBinDir, { recursive: true });
       writeFileSync(defaultShimPath, '#!/bin/sh\n', 'utf8');
@@ -94,7 +94,7 @@ describe('resolveDaemonServiceListEntries', () => {
 
   it('reports when the installed default-following systemd unit does not match the expected contents', async () => {
     await withTempDir('happier-daemon-service-list-definition-match-', async (userHomeDir) => {
-      const happierHomeDir = join(userHomeDir, '.happier');
+      const happierHomeDir = join(userHomeDir, '.piggercode');
       mkdirSync(happierHomeDir, { recursive: true });
 
       envScope.patch({
@@ -147,7 +147,7 @@ describe('resolveDaemonServiceListEntries', () => {
 
       const expectedServicePath = plannedFile?.path ?? '';
       const expectedServiceContents = plannedFile?.content ?? '';
-      expect(expectedServicePath).toMatch(/happier-daemon\.default\.service$/u);
+      expect(expectedServicePath).toMatch(/piggercode-daemon\.default\.service$/u);
 
       const installedServiceContents = expectedServiceContents
         .replaceAll(/^ManagedOOMPreference=.*\n/gmu, '');
@@ -164,11 +164,11 @@ describe('resolveDaemonServiceListEntries', () => {
   it('does not bootstrap the managed js runtime when a Windows default-following scheduled task wrapper is missing', async () => {
     await withTempDir('happier-daemon-service-list-windows-wrapper-missing-', async (hostHomeDir) => {
       const userHomeDir = 'C:\\Users\\tester';
-      const happierHomeDir = 'C:\\Users\\tester\\.happier';
-      const expectedWrapperPath = 'C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1';
+      const happierHomeDir = 'C:\\Users\\tester\\.piggercode';
+      const expectedWrapperPath = 'C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.default.ps1';
 
       envScope.patch({
-        PIGGERCODE_HOME_DIR: join(hostHomeDir, '.happier'),
+        PIGGERCODE_HOME_DIR: join(hostHomeDir, '.piggercode'),
         PIGGERCODE_ACTIVE_SERVER_ID: 'default',
         PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
       });
@@ -189,7 +189,7 @@ describe('resolveDaemonServiceListEntries', () => {
             mode: 'user',
             happierHomeDir,
             releaseChannel: 'preview',
-            label: 'Happier\\happier-daemon.default',
+            label: 'PiggerCode\\piggercode-daemon.default',
             targetMode: 'default-following',
           }],
         };
@@ -213,7 +213,7 @@ describe('resolveDaemonServiceListEntries', () => {
         webappUrl: 'http://127.0.0.1:3005',
         publicServerUrl: 'http://127.0.0.1:3005',
         nodePath: 'C:\\Program Files\\nodejs\\node.exe',
-        entryPath: 'C:\\Users\\tester\\.happier\\cli-preview\\current\\package-dist\\index.mjs',
+        entryPath: 'C:\\Users\\tester\\.piggercode\\cli-preview\\current\\package-dist\\index.mjs',
       };
 
       const expectedPlan = planDaemonServiceInstall({

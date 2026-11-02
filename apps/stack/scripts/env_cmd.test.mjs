@@ -26,7 +26,7 @@ test('hstack env path defaults to main stack env file when no explicit env file 
 
   const baseEnv = {
     ...process.env,
-    // Prevent loading the user's real ~/.happier-stack/.env via canonical discovery.
+    // Prevent loading the user's real ~/.piggercode-stack/.env via canonical discovery.
     PIGGERCODE_STACK_HOME_DIR: homeDir,
     PIGGERCODE_STACK_STORAGE_DIR: storageDir,
   };
@@ -78,7 +78,7 @@ test('hstack env expands ~/ explicit env file overrides against HOME', async (t)
 
   const storageDir = join(tmp, 'storage');
   const homeDir = join(tmp, 'home');
-  const envPath = join(homeDir, '.happier', 'stacks', 'dev', 'env');
+  const envPath = join(homeDir, '.piggercode', 'stacks', 'dev', 'env');
   await mkdir(storageDir, { recursive: true });
   await mkdir(homeDir, { recursive: true });
 
@@ -87,7 +87,7 @@ test('hstack env expands ~/ explicit env file overrides against HOME', async (t)
     HOME: homeDir,
     PIGGERCODE_STACK_HOME_DIR: homeDir,
     PIGGERCODE_STACK_STORAGE_DIR: storageDir,
-    PIGGERCODE_STACK_ENV_FILE: '~/.happier/stacks/dev/env',
+    PIGGERCODE_STACK_ENV_FILE: '~/.piggercode/stacks/dev/env',
   };
 
   const setRes = await runNode([join(rootDir, 'scripts', 'env.mjs'), 'set', 'FOO=bar'], { cwd: rootDir, env: baseEnv });

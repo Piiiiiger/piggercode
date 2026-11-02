@@ -17,7 +17,7 @@ describe('ConnectedServiceOauthEmbeddedView', () => {
     let tree!: renderer.ReactTestRenderer;
     tree = (await renderScreen(<ConnectedServiceOauthEmbeddedView
           name="Claude subscription"
-          command="happier connect claude"
+          command="piggercode connect claude"
           config={{ authUrl: () => '', tokenExchange: async () => ({}) }}
         />)).tree;
 

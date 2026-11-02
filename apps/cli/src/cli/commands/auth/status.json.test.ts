@@ -23,7 +23,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('happier auth status --json', () => {
+describe('piggercode auth status --json', () => {
   it('prints a not_authenticated JSON envelope when no credentials exist', async () => {
     const prevExitCode = process.exitCode;
     process.exitCode = undefined;

@@ -3,22 +3,22 @@ import { describe, expect, it } from 'vitest';
 import { buildLaunchAgentPlistXml } from './service/darwin';
 
 describe('daemon service (darwin) plist', () => {
-  it('builds a user LaunchAgent plist that runs happier daemon start-sync', () => {
+  it('builds a user LaunchAgent plist that runs piggercode daemon start-sync', () => {
     const xml = buildLaunchAgentPlistXml({
-      label: 'com.happier.cli.daemon',
+      label: 'com.piggercode.cli.daemon',
       programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
       env: {
         PATH: '/usr/bin:/bin',
         PIGGERCODE_NO_BROWSER_OPEN: '1',
       },
-      stdoutPath: '/Users/test/.happier/logs/daemon-service.out.log',
-      stderrPath: '/Users/test/.happier/logs/daemon-service.err.log',
+      stdoutPath: '/Users/test/.piggercode/logs/daemon-service.out.log',
+      stderrPath: '/Users/test/.piggercode/logs/daemon-service.err.log',
       abandonProcessGroup: true,
       workingDirectory: '/tmp',
     });
 
     expect(xml).toContain('<key>Label</key>');
-    expect(xml).toContain('<string>com.happier.cli.daemon</string>');
+    expect(xml).toContain('<string>com.piggercode.cli.daemon</string>');
     expect(xml).toContain('<key>ProgramArguments</key>');
     expect(xml).toContain('<string>/usr/local/bin/happier</string>');
     expect(xml).toContain('<string>daemon</string>');
@@ -32,14 +32,14 @@ describe('daemon service (darwin) plist', () => {
 
   it('preserves intentionally empty environment variable values', () => {
     const xml = buildLaunchAgentPlistXml({
-      label: 'com.happier.cli.daemon',
+      label: 'com.piggercode.cli.daemon',
       programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
       env: {
         PATH: '/usr/bin:/bin',
         EMPTY_VALUE: '',
       },
-      stdoutPath: '/Users/test/.happier/logs/daemon-service.out.log',
-      stderrPath: '/Users/test/.happier/logs/daemon-service.err.log',
+      stdoutPath: '/Users/test/.piggercode/logs/daemon-service.out.log',
+      stderrPath: '/Users/test/.piggercode/logs/daemon-service.err.log',
       workingDirectory: '/tmp',
     });
 
@@ -49,11 +49,11 @@ describe('daemon service (darwin) plist', () => {
 
   it('omits WorkingDirectory when no workingDirectory is provided', () => {
     const xml = buildLaunchAgentPlistXml({
-      label: 'com.happier.cli.daemon',
+      label: 'com.piggercode.cli.daemon',
       programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
       env: { PATH: '/usr/bin:/bin' },
-      stdoutPath: '/Users/test/.happier/logs/daemon-service.out.log',
-      stderrPath: '/Users/test/.happier/logs/daemon-service.err.log',
+      stdoutPath: '/Users/test/.piggercode/logs/daemon-service.out.log',
+      stderrPath: '/Users/test/.piggercode/logs/daemon-service.err.log',
       workingDirectory: null,
     });
 
@@ -62,18 +62,18 @@ describe('daemon service (darwin) plist', () => {
 
   it('escapes XML-sensitive characters in label and env values', () => {
     const xml = buildLaunchAgentPlistXml({
-      label: 'com.happier.cli.daemon<&>"\'',
+      label: 'com.piggercode.cli.daemon<&>"\'',
       programArgs: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
       env: {
         PATH: '/usr/bin:/bin',
         ESCAPED: `A&B<C>"'`,
       },
-      stdoutPath: '/Users/test/.happier/logs/daemon-service.out.log',
-      stderrPath: '/Users/test/.happier/logs/daemon-service.err.log',
+      stdoutPath: '/Users/test/.piggercode/logs/daemon-service.out.log',
+      stderrPath: '/Users/test/.piggercode/logs/daemon-service.err.log',
       workingDirectory: '/tmp',
     });
 
-    expect(xml).toContain('com.happier.cli.daemon&lt;&amp;&gt;&quot;&apos;');
+    expect(xml).toContain('com.piggercode.cli.daemon&lt;&amp;&gt;&quot;&apos;');
     expect(xml).toContain('<key>ESCAPED</key>');
     expect(xml).toContain('<string>A&amp;B&lt;C&gt;&quot;&apos;</string>');
   });

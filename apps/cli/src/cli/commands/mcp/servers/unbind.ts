@@ -20,13 +20,13 @@ export async function cmdMcpServersUnbind(
       await printJsonEnvelope({ ok: false, kind: 'mcp_servers_unbind', error: { code: 'not_authenticated' } }, { exitCode: 1 });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exitCode = 1;
     return;
   }
 
   const bindingId = readFlagValue(argv, '--binding-id');
-  if (!bindingId) throw new Error('Usage: happier mcp servers unbind --binding-id <id> [--json]');
+  if (!bindingId) throw new Error('Usage: piggercode mcp servers unbind --binding-id <id> [--json]');
 
   await deps.updateAccountSettingsV2WithRetry({
     credentials,

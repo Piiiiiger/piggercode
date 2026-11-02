@@ -23,7 +23,7 @@ test('0.2 adapter delegates only to the controller entrypoint materialized by 0.
   const calls = [];
   const controller = '/Users/dev/happier/dev/apps/stack/scripts/execution_host_bridge.mjs';
   const resolved = resolveExecutionHostController({
-    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
+    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.piggercode-stack' },
     platform: 'darwin',
     fileOps: {
       existsSync: () => true,
@@ -67,7 +67,7 @@ test('0.2 adapter delegates only to the controller entrypoint materialized by 0.
 
 test('0.2 adapter fails closed when the configured 0.3 controller profile is malformed', () => {
   assert.throws(() => resolveExecutionHostController({
-    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.happier-stack' },
+    env: { PIGGERCODE_STACK_HOME_DIR: '/Users/dev/.piggercode-stack' },
     platform: 'darwin',
     fileOps: { existsSync: () => true, readFileSync: () => '{broken' },
   }), /failed to read execution-host controller/);

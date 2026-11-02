@@ -1,7 +1,7 @@
 const GLOBAL_FLAG_CONTRACTS = [
   {
     usage: '--sandbox-dir PATH',
-    description: 'Run fully isolated under PATH (no writes to your real ~/.happier-stack or ~/.happier/stacks)',
+    description: 'Run fully isolated under PATH (no writes to your real ~/.piggercode-stack or ~/.piggercode/stacks)',
   },
 ];
 
@@ -26,7 +26,7 @@ export function gethstackRegistry() {
       scriptRelPath: 'scripts/init.mjs',
       rootUsage:
         'hstack init [--home-dir=PATH] [--workspace-dir=PATH] [--runtime-dir=PATH] [--install-path] [--no-runtime] [--no-bootstrap] [--] [bootstrap args...]',
-      description: 'Initialize ~/.happier-stack (runtime + shims)',
+      description: 'Initialize ~/.piggercode-stack (runtime + shims)',
       hidden: true,
     },
     {
@@ -81,7 +81,7 @@ export function gethstackRegistry() {
       kind: 'node',
       scriptRelPath: 'scripts/uninstall.mjs',
       rootUsage: 'hstack uninstall [--remove-workspace] [--remove-stacks] [--yes] [--json]',
-      description: 'Remove ~/.happier-stack and related files',
+      description: 'Remove ~/.piggercode-stack and related files',
     },
     {
       name: 'where',
@@ -282,10 +282,10 @@ export function gethstackRegistry() {
       description: 'Auth helpers (login + dev-auth seeding)',
     },
     {
-      name: 'happier',
+      name: 'piggercode',
       kind: 'node',
-      scriptRelPath: 'scripts/happier.mjs',
-      rootUsage: 'hstack happier <happier-cli args...>',
+      scriptRelPath: 'scripts/piggercode.mjs',
+      rootUsage: 'hstack piggercode <happier-cli args...>',
       description: 'Run the Happier CLI against this stack',
     },
     {

@@ -210,8 +210,8 @@ export function resolveRelayRuntimeDefaults(params: Readonly<{
   }
 
   const happierHome = platform === 'win32'
-    ? `${homeDir || 'C:\\Users\\Default'}\\.happier`
-    : `${homeDir || '/tmp'}/.happier`;
+    ? `${homeDir || 'C:\\Users\\Default'}\\.piggercode`
+    : `${homeDir || '/tmp'}/.piggercode`;
   const installRoot = appendChannelSuffix(
     platform === 'win32' ? `${happierHome}\\self-host` : `${happierHome}/self-host`,
     channel,

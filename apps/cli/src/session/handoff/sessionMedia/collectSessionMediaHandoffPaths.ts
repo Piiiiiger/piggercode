@@ -4,9 +4,9 @@ import { createInterface } from 'node:readline';
 
 const SESSION_MEDIA_ENVELOPE_KIND = 'session_media.v1';
 const ATTACHMENTS_ENVELOPE_KIND = 'attachments.v1';
-const ATTACHMENT_MEDIA_PREFIX = '.happier/uploads/messages/';
-const GENERATED_MEDIA_PREFIX = '.happier/uploads/generated/';
-const ARTIFACT_MEDIA_PREFIX = '.happier/uploads/artifacts/';
+const ATTACHMENT_MEDIA_PREFIX = '.piggercode/uploads/messages/';
+const GENERATED_MEDIA_PREFIX = '.piggercode/uploads/generated/';
+const ARTIFACT_MEDIA_PREFIX = '.piggercode/uploads/artifacts/';
 const MAX_LITERAL_GIT_PATHSPEC_PATH_LENGTH = 500;
 
 function asRecord(value: unknown): Record<string, unknown> | null {

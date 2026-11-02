@@ -45,7 +45,7 @@ describe('readTrustedSessionAttachmentLocalImages', () => {
   it('rejects bytes whose read length differs from the declared and statted upload size', async () => {
     const declaredSizeBytes = 4;
     const replacementBytes = Buffer.from([1, 2, 3]);
-    const uploadPath = '.happier/uploads/messages/message-1/screen.png';
+    const uploadPath = '.piggercode/uploads/messages/message-1/screen.png';
     mockOpenedFile(replacementBytes, declaredSizeBytes);
 
     const trusted = await readTrustedSessionAttachmentLocalImages({
@@ -79,7 +79,7 @@ describe('readTrustedSessionAttachmentLocalImages', () => {
 
   it('fails with a stable code before reading an upload beyond the configured file-upload limit', async () => {
     const bytes = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
-    const uploadPath = '.happier/uploads/messages/message-1/screen.png';
+    const uploadPath = '.piggercode/uploads/messages/message-1/screen.png';
     vi.stubEnv('PIGGERCODE_FILES_UPLOAD_MAX_FILE_BYTES', String(bytes.byteLength - 1));
     reloadConfiguration();
     const opened = mockOpenedFile(bytes);
@@ -119,7 +119,7 @@ describe('readTrustedSessionAttachmentLocalImages', () => {
 
   it('bounds the open-handle read when a verified upload grows after stat', async () => {
     const bytes = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
-    const uploadPath = '.happier/uploads/messages/message-1/screen.png';
+    const uploadPath = '.piggercode/uploads/messages/message-1/screen.png';
     vi.stubEnv('PIGGERCODE_FILES_UPLOAD_MAX_FILE_BYTES', String(bytes.byteLength - 1));
     reloadConfiguration();
     const opened = mockOpenedFile(bytes, bytes.byteLength - 1);

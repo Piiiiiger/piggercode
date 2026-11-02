@@ -154,7 +154,7 @@ function isLikelyUserFacingText(text: string): boolean {
     if (!/\p{L}/u.test(trimmed)) return false;
 
     // Ignore strings that look like internal identifiers / enum tokens / routes.
-    // Examples: "loading", "read_only", "flex-start", "happier://...", "/restore", "small"
+    // Examples: "loading", "read_only", "flex-start", "piggercode://...", "/restore", "small"
     if (/^([a-z]+):\/\//i.test(trimmed)) return false;
     if (trimmed.startsWith('/')) return false;
     if (/^[a-z0-9._/-]+$/.test(trimmed) && trimmed === trimmed.toLowerCase() && trimmed.length <= 48) return false;

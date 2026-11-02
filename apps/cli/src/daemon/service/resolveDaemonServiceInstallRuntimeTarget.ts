@@ -52,7 +52,7 @@ async function resolveDefaultFollowingManagedShimPath(processEnv: NodeJS.Process
 
 /**
  * The managed shim a service of this target runs when nothing overrides it: the default channel's
- * `happier` shim for the default-following service, the channel shim for a pinned one. `null`
+ * `piggercode` shim for the default-following service, the channel shim for a pinned one. `null`
  * when that shim is not installed, or when this computer chose to keep its own CLI (plan R12): the
  * service then runs the CLI that installs it, so a copy the managed layout still holds is never
  * the expected runtime and no switch to it is proposed.

@@ -14,7 +14,7 @@ vi.mock('@/cli/output/jsonEnvelope', () => ({
   printJsonEnvelope,
 }));
 
-describe('happier session run wait (action executor)', () => {
+describe('piggercode session run wait (action executor)', () => {
   beforeEach(() => {
     execute.mockReset();
     createCliActionExecutorFromCredentials.mockClear();

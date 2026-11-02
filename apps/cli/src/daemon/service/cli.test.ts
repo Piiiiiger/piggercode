@@ -36,7 +36,7 @@ function doMockChildProcessSpawnSync(
 }
 
 function isHappierTaskFolderListing(command: string, args: readonly string[]): boolean {
-  return command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\Happier")'));
+  return command === 'powershell.exe' && args.some((arg) => arg.includes('.GetFolder("\\PiggerCode")'));
 }
 
 const SCOPED_ENV_KEYS = [
@@ -82,8 +82,8 @@ function writeValidInstalledDaemonServiceFile(
   writeFileSync(
     installedPath,
     renderSystemdServiceUnit({
-      description: 'Happier Daemon',
-      execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+      description: 'PiggerCode Daemon',
+      execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
       env: {
         PIGGERCODE_HOME_DIR: process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR ?? process.env.PIGGERCODE_HOME_DIR ?? '',
         PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -110,7 +110,7 @@ function writeValidInstalledWindowsDaemonServiceFile(
         installedPath,
         renderWindowsScheduledTaskWrapperPs1({
             workingDirectory: 'C:\\Users\\tester',
-            programArgs: ['C:\\hq\\happier.exe', 'daemon', 'start-sync'],
+            programArgs: ['C:\\hq\\piggercode.exe', 'daemon', 'start-sync'],
             env: {
                 PIGGERCODE_HOME_DIR: happierHomeDir,
                 PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: happierHomeDir,
@@ -176,7 +176,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('restores the manual daemon when service restart takeover fails to run the service command', async () => {
     await withTempDir('happier-service-restart-takeover-failure-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -228,7 +228,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('restores the manual daemon when service install takeover fails to load the service', async () => {
     await withTempDir('happier-service-install-takeover-failure-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -274,7 +274,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('restores the manual daemon when service install takeover never reaches a healthy loaded service state', async () => {
     await withTempDir('happier-service-install-takeover-postcondition-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -321,7 +321,7 @@ describe('runDaemonServiceCliCommand', () => {
   it('restores the manual daemon when service install takeover only reaches a different background service label', async () => {
     await withTempDir('happier-service-install-takeover-other-label-', async (homeDir) => {
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -383,7 +383,7 @@ describe('runDaemonServiceCliCommand', () => {
       let expectedServiceLabel = '';
       let installedPath = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
@@ -405,7 +405,7 @@ describe('runDaemonServiceCliCommand', () => {
           installedPath,
           buildLaunchdPlistXml({
             label: expectedServiceLabel,
-            programArgs: ['/Users/other/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            programArgs: ['/Users/other/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
               PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
@@ -471,7 +471,7 @@ describe('runDaemonServiceCliCommand', () => {
       let ownerWritten = false;
       const delayedOwnerWrites: Array<Promise<void>> = [];
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -561,7 +561,7 @@ describe('runDaemonServiceCliCommand', () => {
       let ownerWritten = false;
       const delayedOwnerWrites: Array<Promise<void>> = [];
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -576,7 +576,7 @@ describe('runDaemonServiceCliCommand', () => {
       });
       vi.resetModules();
       doMockChildProcessSpawnSync((command: string, args: readonly string[] = []) => {
-        if (command === 'systemctl' && args.includes('disable') && args.includes('happier-daemon.service')) {
+        if (command === 'systemctl' && args.includes('disable') && args.includes('piggercode-daemon.service')) {
           return { status: 1, stdout: Buffer.from(''), stderr: Buffer.from('legacy cleanup should not run') };
         }
         if (command === 'systemctl' && args.includes('is-active')) {
@@ -655,7 +655,7 @@ describe('runDaemonServiceCliCommand', () => {
       let ownerWritten = false;
       const delayedOwnerWrites: Array<Promise<void>> = [];
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -669,11 +669,11 @@ describe('runDaemonServiceCliCommand', () => {
       });
       vi.resetModules();
       doMockChildProcessSpawnSync((command: string, args: readonly string[] = []) => {
-        if (command === 'systemctl' && args.includes('disable') && args.includes('happier-daemon.service')) {
+        if (command === 'systemctl' && args.includes('disable') && args.includes('piggercode-daemon.service')) {
           return {
             status: 1,
             stdout: Buffer.from(''),
-            stderr: Buffer.from('Failed to disable unit: Unit file happier-daemon.service does not exist.'),
+            stderr: Buffer.from('Failed to disable unit: Unit file piggercode-daemon.service does not exist.'),
           };
         }
         if (command === 'systemctl' && args.includes('is-active')) {
@@ -747,14 +747,14 @@ describe('runDaemonServiceCliCommand', () => {
     });
   });
 
-  it('restarts an already-active linux background service so the current Happier home takes ownership', async () => {
+  it('restarts an already-active linux background service so the current PiggerCode home takes ownership', async () => {
     await withTempDir('happier-service-install-linux-restart-active-unit-', async (homeDir) => {
       let expectedServiceLabel = '';
       let installedPath = '';
       let currentCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
       let restartObserved = false;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -793,8 +793,8 @@ describe('runDaemonServiceCliCommand', () => {
             writeFileSync(
               installedPath,
               renderSystemdServiceUnit({
-                description: 'Happier Daemon',
-                execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+                description: 'PiggerCode Daemon',
+                execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
                 env: {
                   PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
                   PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -842,7 +842,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('treats an active wait-for-auth background service as a successful install when the current relay has no credentials', async () => {
     await withTempDir('happier-service-install-wait-for-auth-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -860,11 +860,11 @@ describe('runDaemonServiceCliCommand', () => {
         return {
           ...actual,
           spawnSync: vi.fn((command: string, args: readonly string[] = []) => {
-            if (command === 'systemctl' && args.includes('disable') && args.includes('happier-daemon.service')) {
+            if (command === 'systemctl' && args.includes('disable') && args.includes('piggercode-daemon.service')) {
               return {
                 status: 1,
                 stdout: Buffer.from(''),
-                stderr: Buffer.from('Failed to disable unit: Unit file happier-daemon.service does not exist.'),
+                stderr: Buffer.from('Failed to disable unit: Unit file piggercode-daemon.service does not exist.'),
               };
             }
             if (command === 'systemctl' && args.includes('is-active')) {
@@ -909,7 +909,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('sets systemd user bus env when probing service health during install', async () => {
     await withTempDir('happier-service-install-systemd-env-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -975,7 +975,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('allows darwin service install when the expected launchd owner runs from a packaged entrypoint', async () => {
     await withTempDir('happier-service-install-darwin-packaged-entrypoint-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       let expectedServiceLabel = '';
       let ownerWritten = false;
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1045,7 +1045,7 @@ describe('runDaemonServiceCliCommand', () => {
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
       let clearDaemonStateImpl: (() => void) | null = null;
       let healthChecks = 0;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -1159,7 +1159,7 @@ describe('runDaemonServiceCliCommand', () => {
     expect(runtime.userHomeDir).toBe('/real-user-home');
   });
 
-  it('prefers the invoking sudo user home + happier home for user-scoped service operations run as root', async () => {
+  it('prefers the invoking sudo user home + piggercode home for user-scoped service operations run as root', async () => {
     envScope.patch({
       // Mirror typical `sudo` behavior where user env is not preserved unless explicitly requested.
       PIGGERCODE_HOME_DIR: '',
@@ -1180,7 +1180,7 @@ describe('runDaemonServiceCliCommand', () => {
         ...actual,
         resolveLinuxSystemUserPaths: vi.fn(() => ({
           userHomeDir: '/home/sudo-user',
-          happierHomeDir: '/home/sudo-user/.happier',
+          happierHomeDir: '/home/sudo-user/.piggercode',
         })),
       };
     });
@@ -1197,7 +1197,7 @@ describe('runDaemonServiceCliCommand', () => {
     });
 
     expect(runtime.userHomeDir).toBe('/home/sudo-user');
-    expect(runtime.happierHomeDir).toBe('/home/sudo-user/.happier');
+    expect(runtime.happierHomeDir).toBe('/home/sudo-user/.piggercode');
   });
 
   it('expands ~/ daemon service home overrides against the provided HOME', async () => {
@@ -1219,7 +1219,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('fails closed when starting a background service while a manually started daemon is already running', async () => {
     await withTempDir('happier-service-start-owner-conflict-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -1245,8 +1245,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_HOME_DIR: happierHomeDir,
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -1277,7 +1277,7 @@ describe('runDaemonServiceCliCommand', () => {
         const payload = output.json();
         expect(payload.ok).toBe(false);
         expect(payload.error).toBe('owner_conflict');
-        expect(payload.message).toContain('happier daemon stop');
+        expect(payload.message).toContain('piggercode daemon stop');
         expect(payload.message).toContain('--takeover');
       } finally {
         output.restore();
@@ -1287,7 +1287,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('treats an active wait-for-auth background service as a successful start when the current relay has no credentials', async () => {
     await withTempDir('happier-service-start-wait-for-auth-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -1344,7 +1344,7 @@ describe('runDaemonServiceCliCommand', () => {
       let expectedServiceLabel = '';
       let currentPublicReleaseChannel: 'stable' | 'preview' | 'dev' = 'stable';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -1416,7 +1416,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('renders background service start and stop as timed steps', async () => {
     await withTempDir('happier-service-start-stop-steps-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -1469,7 +1469,7 @@ describe('runDaemonServiceCliCommand', () => {
   it('restarts a drifted linux service on start so the running default-following service adopts the active relay', async () => {
     await withTempDir('happier-service-start-drifted-active-unit-', async (homeDir) => {
       const spawnedCommands: Array<{ command: string; args: readonly string[] }> = [];
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       let expectedServiceLabel = '';
       let expectedCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1545,9 +1545,9 @@ describe('runDaemonServiceCliCommand', () => {
   it('starts a stopped linux service that runs another CLI as it is instead of switching it to the managed CLI', async () => {
     await withTempDir('happier-service-start-foreign-runtime-', async (homeDir) => {
       const spawnedCommands: Array<{ command: string; args: readonly string[] }> = [];
-      const happierHomeDir = `${homeDir}/.happier`;
-      const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
+      const happierHomeDir = `${homeDir}/.piggercode`;
+      const managedShim = `${happierHomeDir}/bin/piggercode`;
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/piggercode';
       let expectedServiceLabel = '';
       let expectedCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1648,7 +1648,7 @@ describe('runDaemonServiceCliCommand', () => {
   it('restarts a running default-following service on start when it is not active for the selected relay', async () => {
     await withTempDir('happier-service-start-running-default-following-wrong-relay-', async (homeDir) => {
       const spawnedCommands: Array<{ command: string; args: readonly string[] }> = [];
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       let expectedServiceLabel = '';
       let expectedCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1740,7 +1740,7 @@ describe('runDaemonServiceCliCommand', () => {
   ])('restarts the linux service on %s when its own running daemon is not the installed CLI version', async (_action, argv) => {
     await withTempDir('happier-service-start-stale-version-owner-', async (homeDir) => {
       const spawnedCommands: Array<{ command: string; args: readonly string[] }> = [];
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       let expectedServiceLabel = '';
       let expectedCliVersion = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1837,7 +1837,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('allows darwin service start when the expected launchd owner runs from a packaged entrypoint', async () => {
     await withTempDir('happier-service-start-darwin-packaged-entrypoint-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       let expectedServiceLabel = '';
       let ownerWritten = false;
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
@@ -1919,7 +1919,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('uses extended Windows ownership wait defaults for background-service restarts', async () => {
     await withTempDir('happier-service-restart-win32-wait-budget-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       const observedWaitTimeouts: number[] = [];
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
@@ -1968,7 +1968,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('fails service restart when the background-service owner keeps the old release channel', async () => {
     await withTempDir('happier-service-restart-stale-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -2025,7 +2025,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('preserves a running Windows service across install and retry', async () => {
     await withTempDir('happier-service-install-win32-same-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       const lifecycleEvents: string[] = [];
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
       envScope.patch({
@@ -2145,7 +2145,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('stops the current Windows service owner before restarting the same service label', async () => {
     await withTempDir('happier-service-restart-win32-same-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       const lifecycleEvents: string[] = [];
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
       envScope.patch({
@@ -2256,7 +2256,7 @@ describe('runDaemonServiceCliCommand', () => {
       let ownerWritten = false;
       let expectedServiceLabel = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -2300,8 +2300,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_HOME_DIR: happierHomeDir,
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -2345,7 +2345,7 @@ describe('runDaemonServiceCliCommand', () => {
       let ownerWritten = false;
       let expectedServiceLabel = '';
       let writeDaemonStateImpl: ((state: DaemonLocallyPersistedState) => void) | null = null;
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -2389,8 +2389,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_HOME_DIR: happierHomeDir,
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -2431,7 +2431,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('restores the manual daemon when service start takeover does not switch relay ownership', async () => {
     await withTempDir('happier-service-start-owner-takeover-postcondition-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -2466,8 +2466,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_HOME_DIR: happierHomeDir,
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -2502,7 +2502,7 @@ describe('runDaemonServiceCliCommand', () => {
    */
   it('runs nothing when starting the healthy darwin service that already owns the running daemon', async () => {
     await withTempDir('happier-service-start-same-owner-noop-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
@@ -2605,7 +2605,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('allows restarting the currently owning background service label', async () => {
     await withTempDir('happier-service-restart-same-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
@@ -2680,7 +2680,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('treats an active wait-for-auth background service as a successful restart when the current relay has no credentials', async () => {
     await withTempDir('happier-service-restart-wait-for-auth-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -2746,14 +2746,14 @@ describe('runDaemonServiceCliCommand', () => {
     expect(plan.commands).toEqual([
       {
         cmd: 'launchctl',
-        args: ['kickstart', '-k', `gui/${uid}/com.happier.cli.daemon.default`],
+        args: ['kickstart', '-k', `gui/${uid}/com.piggercode.cli.daemon.default`],
       },
     ]);
   });
 
   it('refreshes the darwin launch agent definition before starting an installed stopped service', async () => {
     await withTempDir('happier-service-start-darwin-refreshes-plist-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
@@ -2831,7 +2831,7 @@ describe('runDaemonServiceCliCommand', () => {
         paths.installedPath,
         buildLaunchdPlistXml({
           label: paths.label,
-          programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_HOME_DIR: happierHomeDir,
             PATH: '/usr/bin:/bin',
@@ -2867,7 +2867,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('treats installing the currently owning darwin background service as a no-op when the installed definition already matches', async () => {
     await withTempDir('happier-service-install-same-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'darwin',
@@ -3032,7 +3032,7 @@ describe('runDaemonServiceCliCommand', () => {
       expect(payload.ok).toBe(true);
       expect(payload.platform).toBe('linux');
       expect(payload.paths.unitPath).toContain('/etc/systemd/system/');
-      expect(payload.paths.unitName).toContain('happier-daemon.');
+      expect(payload.paths.unitName).toContain('piggercode-daemon.');
     } finally {
       output.restore();
     }
@@ -3060,7 +3060,7 @@ describe('runDaemonServiceCliCommand', () => {
 
       const payload = output.json();
       expect(payload.ok).toBe(true);
-      expect(payload.plan.files[0]?.path).toBe('/tmp/.config/systemd/user/happier-daemon.default.service');
+      expect(payload.plan.files[0]?.path).toBe('/tmp/.config/systemd/user/piggercode-daemon.default.service');
       expect(payload.plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_TARGET_MODE=default-following');
       expect(payload.plan.files[0]?.content).toContain('Environment=PIGGERCODE_PUBLIC_RELEASE_CHANNEL=preview');
       expect(payload.plan.files[0]?.content).not.toContain('Environment=PIGGERCODE_ACTIVE_SERVER_ID=');
@@ -3101,12 +3101,12 @@ describe('runDaemonServiceCliCommand', () => {
 
     const byDefault = await runInstallPreview(['install', '--dry-run', '--json']);
     expect(byDefault.autostart).toBe('at-login');
-    expect(commandText(byDefault)).toContain('systemctl --user enable happier-daemon.default.service');
+    expect(commandText(byDefault)).toContain('systemctl --user enable piggercode-daemon.default.service');
 
     const onDemand = await runInstallPreview(['install', '--dry-run', '--json', '--no-autostart']);
     expect(onDemand.autostart).toBe('on-demand');
-    expect(commandText(onDemand)).toContain('systemctl --user disable happier-daemon.default.service');
-    expect(commandText(onDemand)).not.toContain('systemctl --user enable happier-daemon.default.service');
+    expect(commandText(onDemand)).toContain('systemctl --user disable piggercode-daemon.default.service');
+    expect(commandText(onDemand)).not.toContain('systemctl --user enable piggercode-daemon.default.service');
     expect(onDemand.plan.files[0]?.content).toContain('Environment=PIGGERCODE_DAEMON_SERVICE_AUTOSTART=on-demand');
 
     const explicit = await runInstallPreview(['install', '--dry-run', '--json', '--autostart=on-demand']);
@@ -3122,7 +3122,7 @@ describe('runDaemonServiceCliCommand', () => {
    */
   it('lets the installed definition outrank the inherited autostart env, and the flag outrank both', async () => {
     await withTempDir('happier-service-install-autostart-precedence-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       const baseEnv = {
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3202,7 +3202,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('reports competing background services in install dry-run JSON output', async () => {
     await withTempDir('happier-service-install-dry-run-conflict-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3226,7 +3226,7 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         stablePaths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -3257,7 +3257,7 @@ describe('runDaemonServiceCliCommand', () => {
           message: expect.stringContaining('Competing background services detected'),
         }));
         expect(payload.installConflict?.competingServices).toEqual([
-          expect.objectContaining({ label: 'happier-daemon.default' }),
+          expect.objectContaining({ label: 'piggercode-daemon.default' }),
         ]);
       } finally {
         output.restore();
@@ -3267,9 +3267,9 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('reports a service that runs another CLI as an install conflict needing consent instead of rewriting it', async () => {
     await withTempDir('happier-service-install-dry-run-foreign-runtime-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
-      const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
+      const happierHomeDir = `${homeDir}/.piggercode`;
+      const managedShim = `${happierHomeDir}/bin/piggercode`;
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/piggercode';
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3331,9 +3331,9 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('after "Keep my own" reports a service that runs the managed CLI as a switch to the kept CLI, never as drift (R13)', async () => {
     await withTempDir('happier-service-install-dry-run-kept-runtime-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
-      const managedShim = `${happierHomeDir}/bin/happier`;
-      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/happier';
+      const happierHomeDir = `${homeDir}/.piggercode`;
+      const managedShim = `${happierHomeDir}/bin/piggercode`;
+      const userCli = '/usr/local/lib/node_modules/@piggercode/cli/bin/piggercode';
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3469,15 +3469,15 @@ describe('runDaemonServiceCliCommand', () => {
 
       const installPayload = installOutput.json();
       expect(installPayload.ok).toBe(true);
-      expect(installPayload.plan.files[0]?.path).toBe('/etc/systemd/system/happier-daemon.company.service');
+      expect(installPayload.plan.files[0]?.path).toBe('/etc/systemd/system/piggercode-daemon.company.service');
       expect(installPayload.plan.files[0]?.content).toContain('User=happier');
       expect(installPayload.plan.files[0]?.content).toContain('WorkingDirectory=/home/happier');
-      expect(installPayload.plan.files[0]?.content).toContain('Environment=PIGGERCODE_HOME_DIR=/home/happier/.happier');
+      expect(installPayload.plan.files[0]?.content).toContain('Environment=PIGGERCODE_HOME_DIR=/home/happier/.piggercode');
       expect(installPayload.plan.files[0]?.content).toContain('Environment=PATH=');
       expect(installPayload.plan.files[0]?.content).toContain('/home/happier/.local/bin');
       expect(installPayload.plan.files[0]?.content).toContain('/home/happier/bin');
       expect(installPayload.plan.files[0]?.content).not.toContain('/root/.local/bin');
-      expect(installPayload.plan.files[0]?.content).not.toContain('/root/.happier');
+      expect(installPayload.plan.files[0]?.content).not.toContain('/root/.piggercode');
     } finally {
       installOutput.restore();
     }
@@ -3491,8 +3491,8 @@ describe('runDaemonServiceCliCommand', () => {
 
       const pathsPayload = pathsOutput.json();
       expect(pathsPayload.ok).toBe(true);
-      expect(pathsPayload.paths.stdoutPath).toBe('/home/happier/.happier/logs/daemon-service.company.out.log');
-      expect(pathsPayload.paths.stderrPath).toBe('/home/happier/.happier/logs/daemon-service.company.err.log');
+      expect(pathsPayload.paths.stdoutPath).toBe('/home/happier/.piggercode/logs/daemon-service.company.out.log');
+      expect(pathsPayload.paths.stderrPath).toBe('/home/happier/.piggercode/logs/daemon-service.company.err.log');
     } finally {
       pathsOutput.restore();
     }
@@ -3546,7 +3546,7 @@ describe('runDaemonServiceCliCommand', () => {
 
       const installPayload = installOutput.json();
       expect(installPayload.ok).toBe(true);
-      expect(installPayload.plan.files[0]?.path).toBe('/etc/systemd/system/happier-daemon.dev.company.service');
+      expect(installPayload.plan.files[0]?.path).toBe('/etc/systemd/system/piggercode-daemon.dev.company.service');
       expect(installPayload.plan.files[0]?.content).toContain('Environment=PIGGERCODE_PUBLIC_RELEASE_CHANNEL=dev');
     } finally {
       installOutput.restore();
@@ -3580,7 +3580,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('reports the current relay owner and invocation mismatch in service status JSON', async () => {
     await withTempDir('happier-service-status-owner-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3600,8 +3600,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -3655,7 +3655,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('includes a services inventory field in service status JSON', async () => {
     await withTempDir('happier-service-status-inventory-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3695,8 +3695,8 @@ describe('runDaemonServiceCliCommand', () => {
       writeFileSync(
         paths.installedPath,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
@@ -3752,7 +3752,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('keeps the relay owner source unknown in service status JSON for legacy daemon state', async () => {
     await withTempDir('happier-service-status-owner-legacy-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3769,7 +3769,7 @@ describe('runDaemonServiceCliCommand', () => {
       const runtime = resolveDaemonServiceCliRuntimeFromEnv({ processEnv: process.env });
       const paths = resolveDaemonServicePaths(runtime);
       mkdirSync(dirname(paths.installedPath), { recursive: true });
-      writeFileSync(paths.installedPath, '[Unit]\nDescription=Happier\n');
+      writeFileSync(paths.installedPath, '[Unit]\nDescription=PiggerCode\n');
 
       await writeDaemonState({
         pid: process.pid,
@@ -3806,7 +3806,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('fails closed when enabling automatic startup while a manually started daemon is already running', async () => {
     await withTempDir('happier-service-install-owner-conflict-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3850,7 +3850,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('allows planning an automatic-startup takeover for a manual daemon with --takeover', async () => {
     await withTempDir('happier-service-install-owner-takeover-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3894,7 +3894,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('fails closed and classifies a legacy manual owner correctly during service install', async () => {
     await withTempDir('happier-service-install-owner-legacy-conflict-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -3938,7 +3938,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('allows planning a background-service install takeover for a legacy manual relay owner with --takeover', async () => {
     await withTempDir('happier-service-install-owner-legacy-takeover-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -4006,7 +4006,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('fails closed when starting a daemon service whose installed file is invalid', async () => {
     await withTempDir('happier-service-start-invalid-installed-file-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -4033,7 +4033,7 @@ describe('runDaemonServiceCliCommand', () => {
 
   it('reports that stopping the background service will not stop a manual daemon', async () => {
     await withTempDir('happier-service-stop-owner-note-', async (homeDir) => {
-      const happierHomeDir = `${homeDir}/.happier`;
+      const happierHomeDir = `${homeDir}/.piggercode`;
       envScope.patch({
         PIGGERCODE_HOME_DIR: happierHomeDir,
         PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -4069,7 +4069,7 @@ describe('runDaemonServiceCliCommand', () => {
         const payload = output.json();
         expect(payload.ok).toBe(true);
         expect(payload.warning).toContain('will not stop the current daemon');
-        expect(payload.warning).toContain('happier daemon stop');
+        expect(payload.warning).toContain('piggercode daemon stop');
       } finally {
         output.restore();
       }
@@ -4094,7 +4094,7 @@ describe('runDaemonServiceCliCommand', () => {
       },
       async ({ homeDir }) => {
         process.env.PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR = homeDir;
-        process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.happier');
+        process.env.PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR = join(homeDir, '.piggercode');
         process.env.PIGGERCODE_DAEMON_SERVICE_CHANNEL = 'stable';
         await writeDaemonSettingsFixture(homeDir);
 
@@ -4143,7 +4143,7 @@ describe('runDaemonServiceCliCommand', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/tmp/happier-list-home',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-list-home/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-list-home/.piggercode',
     });
     vi.resetModules();
 
@@ -4153,12 +4153,12 @@ describe('runDaemonServiceCliCommand', () => {
           serverId: 'company',
           name: 'Company',
           installed: true as const,
-          path: '/etc/systemd/system/happier-daemon.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.company.service',
           platform: 'linux' as const,
           mode: 'system' as const,
-          happierHomeDir: '/tmp/happier-list-home/.happier',
+          happierHomeDir: '/tmp/happier-list-home/.piggercode',
           releaseChannel: 'stable' as const,
-          label: 'happier-daemon.company',
+          label: 'piggercode-daemon.company',
           targetMode: 'pinned' as const,
         }];
       }
@@ -4167,12 +4167,12 @@ describe('runDaemonServiceCliCommand', () => {
         serverId: 'cloud',
         name: 'Default background service',
         installed: true as const,
-        path: '/tmp/happier-list-home/.config/systemd/user/happier-daemon.default.service',
+        path: '/tmp/happier-list-home/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux' as const,
         mode: 'user' as const,
-        happierHomeDir: '/tmp/happier-list-home/.happier',
+        happierHomeDir: '/tmp/happier-list-home/.piggercode',
         releaseChannel: 'preview' as const,
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following' as const,
       }];
     });
@@ -4205,7 +4205,7 @@ describe('runDaemonServiceCliCommand', () => {
         expect.objectContaining({
           serverId: 'company',
           mode: 'system',
-          path: '/etc/systemd/system/happier-daemon.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.company.service',
         }),
       ]);
     } finally {
@@ -4217,7 +4217,7 @@ describe('runDaemonServiceCliCommand', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/tmp/happier-uninstall-home',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-uninstall-home/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-uninstall-home/.piggercode',
     });
     vi.spyOn(process as NodeJS.Process & { getuid: () => number }, 'getuid').mockReturnValue(0);
     vi.resetModules();
@@ -4228,12 +4228,12 @@ describe('runDaemonServiceCliCommand', () => {
           serverId: 'company',
           name: 'Company',
           installed: true as const,
-          path: '/etc/systemd/system/happier-daemon.company.legacy.service',
+          path: '/etc/systemd/system/piggercode-daemon.company.legacy.service',
           platform: 'linux' as const,
           mode: 'system' as const,
-          happierHomeDir: '/tmp/happier-uninstall-home/.happier',
+          happierHomeDir: '/tmp/happier-uninstall-home/.piggercode',
           releaseChannel: 'stable' as const,
-          label: 'happier-daemon.company',
+          label: 'piggercode-daemon.company',
           targetMode: 'pinned' as const,
         }];
       }
@@ -4242,12 +4242,12 @@ describe('runDaemonServiceCliCommand', () => {
         serverId: 'cloud',
         name: 'Default background service',
         installed: true as const,
-        path: '/tmp/happier-uninstall-home/.config/systemd/user/happier-daemon.default.legacy.service',
+        path: '/tmp/happier-uninstall-home/.config/systemd/user/piggercode-daemon.default.legacy.service',
         platform: 'linux' as const,
         mode: 'user' as const,
-        happierHomeDir: '/tmp/happier-uninstall-home/.happier',
+        happierHomeDir: '/tmp/happier-uninstall-home/.piggercode',
         releaseChannel: 'preview' as const,
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following' as const,
       }];
     });
@@ -4276,10 +4276,10 @@ describe('runDaemonServiceCliCommand', () => {
       expect(output.json()).toEqual(expect.objectContaining({ ok: true, removed: 2 }));
       expect(output.json().plans).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          filesToRemove: expect.arrayContaining(['/tmp/happier-uninstall-home/.config/systemd/user/happier-daemon.default.legacy.service']),
+          filesToRemove: expect.arrayContaining(['/tmp/happier-uninstall-home/.config/systemd/user/piggercode-daemon.default.legacy.service']),
         }),
         expect.objectContaining({
-          filesToRemove: expect.arrayContaining(['/etc/systemd/system/happier-daemon.company.legacy.service']),
+          filesToRemove: expect.arrayContaining(['/etc/systemd/system/piggercode-daemon.company.legacy.service']),
         }),
       ]));
     } finally {
@@ -4291,11 +4291,11 @@ describe('runDaemonServiceCliCommand', () => {
     envScope.patch({
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
       PIGGERCODE_DAEMON_SERVICE_USER_HOME_DIR: '/tmp/happier-uninstall-runtime-home',
-      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-uninstall-runtime-home/.happier',
+      PIGGERCODE_DAEMON_SERVICE_PIGGERCODE_HOME_DIR: '/tmp/happier-uninstall-runtime-home/.piggercode',
     });
     vi.resetModules();
 
-    const legacyUserUnitPath = '/tmp/happier-uninstall-runtime-home/.config/systemd/user/happier-daemon.default.legacy.service';
+    const legacyUserUnitPath = '/tmp/happier-uninstall-runtime-home/.config/systemd/user/piggercode-daemon.default.legacy.service';
     const discoverInstalledDaemonServiceEntriesMock = vi.fn(async () => [{
       serverId: 'cloud',
       name: 'Default background service',
@@ -4303,9 +4303,9 @@ describe('runDaemonServiceCliCommand', () => {
       path: legacyUserUnitPath,
       platform: 'linux' as const,
       mode: 'user' as const,
-      happierHomeDir: '/tmp/happier-uninstall-runtime-home/.happier',
+      happierHomeDir: '/tmp/happier-uninstall-runtime-home/.piggercode',
       releaseChannel: 'stable' as const,
-      label: 'happier-daemon.default',
+      label: 'piggercode-daemon.default',
       targetMode: 'default-following' as const,
     }]);
 
@@ -4323,7 +4323,7 @@ describe('runDaemonServiceCliCommand', () => {
 
     const { runDaemonServiceCliCommand } = await loadCliModule();
     mkdirSync(dirname(legacyUserUnitPath), { recursive: true });
-    writeFileSync(legacyUserUnitPath, '[Unit]\nDescription=Legacy Happier\n', 'utf-8');
+    writeFileSync(legacyUserUnitPath, '[Unit]\nDescription=Legacy PiggerCode\n', 'utf-8');
 
     const output = captureStdoutJsonOutput<{ ok: boolean; removed: number }>();
     try {
@@ -4350,7 +4350,7 @@ describe('runDaemonServiceCliCommand', () => {
         ...actual,
         resolveLinuxSystemUserPaths: vi.fn(({ systemUser }: { systemUser: string }) => ({
           userHomeDir: systemUser === 'happier' ? '/srv/happier' : '/home/sudo-user',
-          happierHomeDir: systemUser === 'happier' ? '/srv/happier/.happier' : '/home/sudo-user/.happier',
+          happierHomeDir: systemUser === 'happier' ? '/srv/happier/.piggercode' : '/home/sudo-user/.piggercode',
         })),
       };
     });
@@ -4362,12 +4362,12 @@ describe('runDaemonServiceCliCommand', () => {
           {
             mode: 'user',
             userHomeDir: '/home/sudo-user',
-            happierHomeDir: '/home/sudo-user/.happier',
+            happierHomeDir: '/home/sudo-user/.piggercode',
           },
           {
             mode: 'system',
             userHomeDir: '/srv/happier',
-            happierHomeDir: '/srv/happier/.happier',
+            happierHomeDir: '/srv/happier/.piggercode',
           },
         ])),
       };
@@ -4379,12 +4379,12 @@ describe('runDaemonServiceCliCommand', () => {
           serverId: 'company',
           name: 'Company',
           installed: true as const,
-          path: '/etc/systemd/system/happier-daemon.company.service',
+          path: '/etc/systemd/system/piggercode-daemon.company.service',
           platform: 'linux' as const,
           mode: 'system' as const,
-          happierHomeDir: '/srv/happier/.happier',
+          happierHomeDir: '/srv/happier/.piggercode',
           releaseChannel: 'stable' as const,
-          label: 'happier-daemon.company',
+          label: 'piggercode-daemon.company',
           targetMode: 'pinned' as const,
         }];
       }
@@ -4393,12 +4393,12 @@ describe('runDaemonServiceCliCommand', () => {
         serverId: 'cloud',
         name: 'Default background service',
         installed: true as const,
-        path: '/home/sudo-user/.config/systemd/user/happier-daemon.default.service',
+        path: '/home/sudo-user/.config/systemd/user/piggercode-daemon.default.service',
         platform: 'linux' as const,
         mode: 'user' as const,
-        happierHomeDir: '/home/sudo-user/.happier',
+        happierHomeDir: '/home/sudo-user/.piggercode',
         releaseChannel: 'preview' as const,
-        label: 'happier-daemon.default',
+        label: 'piggercode-daemon.default',
         targetMode: 'default-following' as const,
       }];
     });
@@ -4426,10 +4426,10 @@ describe('runDaemonServiceCliCommand', () => {
       expect(output.json()).toEqual(expect.objectContaining({ ok: true, removed: 2 }));
       expect(output.json().plans).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          filesToRemove: expect.arrayContaining(['/home/sudo-user/.config/systemd/user/happier-daemon.default.service']),
+          filesToRemove: expect.arrayContaining(['/home/sudo-user/.config/systemd/user/piggercode-daemon.default.service']),
         }),
         expect.objectContaining({
-          filesToRemove: expect.arrayContaining(['/etc/systemd/system/happier-daemon.company.service']),
+          filesToRemove: expect.arrayContaining(['/etc/systemd/system/piggercode-daemon.company.service']),
         }),
       ]));
     } finally {

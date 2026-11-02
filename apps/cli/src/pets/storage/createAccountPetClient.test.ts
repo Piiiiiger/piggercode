@@ -38,7 +38,7 @@ describe('createAccountPetViaActiveServer', () => {
       manifest: {
         id: 'blink',
         displayName: 'Blink',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.png',
       },
       spritesheet: {
@@ -65,7 +65,7 @@ describe('createAccountPetViaActiveServer', () => {
             manifest: {
               id: 'blink',
               displayName: 'Blink',
-              description: 'Happier companion pet',
+              description: 'PiggerCode companion pet',
               spritesheetPath: 'spritesheet.png',
             },
             spritesheetAssetRef: {
@@ -112,7 +112,7 @@ describe('createAccountPetViaActiveServer', () => {
       manifest: {
         id: 'blink',
         displayName: 'Blink',
-        description: 'Happier companion pet',
+        description: 'PiggerCode companion pet',
         spritesheetPath: 'spritesheet.png',
       },
       spritesheet: {
@@ -138,7 +138,7 @@ describe('createAccountPetViaActiveServer', () => {
             manifest: {
               id: 'blink',
               displayName: 'Blink',
-              description: 'Happier companion pet',
+              description: 'PiggerCode companion pet',
               spritesheetPath: 'spritesheet.png',
             },
             spritesheetAssetRef: {

@@ -1647,9 +1647,9 @@ describe('createClaudeUnifiedAcceptedPromptTranscriptDiscovery', () => {
       '',
       'Attachments: open and analyze these files before answering.',
       '[attachments]',
-      '- .happier/uploads/messages/ea470cda/01711b9b-mobile_cta_target_design.png (mobile_cta_target_design.png, image/png, 342082 bytes)',
-      '- .happier/uploads/messages/ea470cda/0b2c73c9-desktop_horizontal_scroll_wrong.png (desktop_horizontal_scroll_wrong.png, image/png, 366831 bytes)',
-      '- .happier/uploads/messages/ea470cda/7c365255-mobile_parallax_block.png (mobile_parallax_block.png, image/png, 262290 bytes)',
+      '- .piggercode/uploads/messages/ea470cda/01711b9b-mobile_cta_target_design.png (mobile_cta_target_design.png, image/png, 342082 bytes)',
+      '- .piggercode/uploads/messages/ea470cda/0b2c73c9-desktop_horizontal_scroll_wrong.png (desktop_horizontal_scroll_wrong.png, image/png, 366831 bytes)',
+      '- .piggercode/uploads/messages/ea470cda/7c365255-mobile_parallax_block.png (mobile_parallax_block.png, image/png, 262290 bytes)',
       '[/attachments]',
     ].join('\n');
     const recordedPrompt = `  ${transcriptPrompt.replace(/\n/g, '\r\n')}  `;

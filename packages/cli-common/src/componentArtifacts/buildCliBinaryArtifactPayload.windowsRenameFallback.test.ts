@@ -164,7 +164,7 @@ module.exports = { unpackTools };
 
         await expect(readFile(join(payloadDir, 'package-dist', 'index.mjs'), 'utf8')).resolves.toBe('export const cli = "fresh";\n');
         await expect(readFile(join(cliDistDir, 'index.mjs'), 'utf8')).resolves.toBe('export const cli = "fresh";\n');
-        expect(existsSync(join(payloadDir, 'happier.exe'))).toBe(true);
+        expect(existsSync(join(payloadDir, 'piggercode.exe'))).toBe(true);
         await expect(readFile(join(payloadDir, 'node_modules', 'sharp', 'index.js'), 'utf8'))
             .resolves.toBe('module.exports = {};\n');
         await expect(readFile(join(payloadDir, 'node_modules', '@img', 'sharp-win32-x64', 'index.js'), 'utf8'))

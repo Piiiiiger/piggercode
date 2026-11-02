@@ -85,7 +85,7 @@ describe('serviceRepair prompt copy', () => {
     };
     const copy = copyAuthExpiredForActiveProfile(finding, 'hdev');
 
-    // `happier auth` alone only prints help; the remedy must be the parsed
+    // `piggercode auth` alone only prints help; the remedy must be the parsed
     // `auth login` form so the printed command actually runs.
     expect(copy).toContain('  hdev auth login');
     expect(copy).not.toContain('  hdev auth\n');

@@ -66,7 +66,7 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
                 startedWithPublicReleaseChannel: 'preview',
                 runtimeId: 'runtime-conflict',
                 startupSource: 'background-service',
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             });
 
             const output = captureConsoleText();
@@ -80,7 +80,7 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
             expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
             expect(output.text()).toContain('background service');
             expect(output.text()).toContain('selected relay');
-            expect(output.text()).toContain('happier doctor repair');
+            expect(output.text()).toContain('piggercode doctor repair');
         });
     });
 
@@ -119,7 +119,7 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
             expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
             expect(output.text()).toContain('manually started daemon');
             expect(output.text()).toContain('without starting another daemon');
-            expect(output.text()).toContain('happier daemon restart');
+            expect(output.text()).toContain('piggercode daemon restart');
         });
     });
 
@@ -148,12 +148,12 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
                         name: 'Cloud',
                         relayUrl: 'https://cloud.example.test',
                         installed: true,
-                        path: '/tmp/happier-daemon.service',
+                        path: '/tmp/piggercode-daemon.service',
                         platform: 'linux' as const,
                         mode: 'user' as const,
-                        happierHomeDir: '/tmp/.happier',
+                        happierHomeDir: '/tmp/.piggercode',
                         releaseChannel: 'stable' as const,
-                        label: 'happier-daemon.service',
+                        label: 'piggercode-daemon.service',
                         targetMode: 'default-following' as const,
                     }],
                 })),
@@ -172,6 +172,6 @@ describe('ensureDaemonRunningForSessionCommand conflict handling', () => {
 
         expect(spawnDetachedDaemonStartSyncMock).not.toHaveBeenCalled();
         expect(output.text()).toContain('A background service is already installed');
-        expect(output.text()).toContain('happier service start');
+        expect(output.text()).toContain('piggercode service start');
     });
 });

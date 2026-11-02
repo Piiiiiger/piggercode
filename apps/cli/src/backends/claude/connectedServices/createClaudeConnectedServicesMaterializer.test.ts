@@ -511,7 +511,7 @@ describe('createClaudeConnectedServicesMaterializer', () => {
     }
   });
 
-  it('deletes every Happier-managed derived keychain item for the account (live or legacy) while protecting the global login and other accounts', async () => {
+  it('deletes every PiggerCode-managed derived keychain item for the account (live or legacy) while protecting the global login and other accounts', async () => {
     if (ORIGINAL_PLATFORM_DESCRIPTOR) {
       Object.defineProperty(process, 'platform', { ...ORIGINAL_PLATFORM_DESCRIPTOR, value: 'darwin' });
     }
@@ -520,7 +520,7 @@ describe('createClaudeConnectedServicesMaterializer', () => {
       const homeDir = await mkdtemp(join(tmpdir(), 'happier-claude-materializer-machine-home-'));
       const activeServerDir = join(
         homeDir,
-        '.happier',
+        '.piggercode',
         'stacks',
         'stack-a',
         'cli',
@@ -529,7 +529,7 @@ describe('createClaudeConnectedServicesMaterializer', () => {
       );
       const siblingServerDir = join(
         homeDir,
-        '.happier',
+        '.piggercode',
         'stacks',
         'stack-b',
         'cli',

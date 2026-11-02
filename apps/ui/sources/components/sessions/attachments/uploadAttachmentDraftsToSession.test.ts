@@ -12,7 +12,7 @@ describe('uploadAttachmentDraftsToSession', () => {
 
         sessionAttachmentsUploadFileSpy.mockResolvedValue({
             success: true,
-            path: '.happier/uploads/messages/m1/12345678-file.png',
+            path: '.piggercode/uploads/messages/m1/12345678-file.png',
             sizeBytes: 5,
             sha256: 'h1',
         });
@@ -39,7 +39,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             onProgress?.({ uploadedBytes: 5, totalBytes: 5 });
             return {
                 success: true,
-                path: '.happier/uploads/messages/m1/12345678-file.png',
+                path: '.piggercode/uploads/messages/m1/12345678-file.png',
                 sizeBytes: 5,
                 sha256: 'h1',
             };
@@ -51,7 +51,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -64,7 +64,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             messageLocalId: 'm1',
             config: expect.objectContaining({
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
             }),
         }));
 
@@ -73,15 +73,15 @@ describe('uploadAttachmentDraftsToSession', () => {
             uploaded: [
                 {
                     name: 'file.png',
-                    path: '.happier/uploads/messages/m1/12345678-file.png',
+                    path: '.piggercode/uploads/messages/m1/12345678-file.png',
                     mimeType: 'image/png',
                     sizeBytes: 5,
                     sha256: 'h1',
                     structuredInput: {
                         type: 'localImage',
                         kind: 'image',
-                        localPath: '.happier/uploads/messages/m1/12345678-file.png',
-                        path: '.happier/uploads/messages/m1/12345678-file.png',
+                        localPath: '.piggercode/uploads/messages/m1/12345678-file.png',
+                        path: '.piggercode/uploads/messages/m1/12345678-file.png',
                         provenance: { kind: 'sessionAttachmentUpload' },
                         mimeType: 'image/png',
                         name: 'file.png',
@@ -100,7 +100,7 @@ describe('uploadAttachmentDraftsToSession', () => {
         expect(progressValues.at(-1)).toMatchObject({ uploadedBytes: 5, totalBytes: 5 });
         expect(patches.at(-1)?.patch).toMatchObject({
             status: 'uploaded',
-            uploadedPath: '.happier/uploads/messages/m1/12345678-file.png',
+            uploadedPath: '.piggercode/uploads/messages/m1/12345678-file.png',
             uploadedSizeBytes: 5,
             uploadedMimeType: 'image/png',
             sha256: 'h1',
@@ -112,7 +112,7 @@ describe('uploadAttachmentDraftsToSession', () => {
 
         sessionAttachmentsUploadFileSpy.mockResolvedValue({
             success: true,
-            path: '.happier/uploads/messages/m1/readme.md',
+            path: '.piggercode/uploads/messages/m1/readme.md',
             sizeBytes: 12,
             sha256: 'h2',
         });
@@ -137,7 +137,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -147,7 +147,7 @@ describe('uploadAttachmentDraftsToSession', () => {
 
         expect(res.uploaded[0]).toEqual({
             name: 'readme.md',
-            path: '.happier/uploads/messages/m1/readme.md',
+            path: '.piggercode/uploads/messages/m1/readme.md',
             mimeType: 'text/markdown',
             sizeBytes: 12,
             sha256: 'h2',
@@ -160,7 +160,7 @@ describe('uploadAttachmentDraftsToSession', () => {
         sessionAttachmentsUploadFileSpy.mockClear();
         sessionAttachmentsUploadFileSpy.mockResolvedValue({
             success: true,
-            path: '.happier/uploads/messages/m1/second.md',
+            path: '.piggercode/uploads/messages/m1/second.md',
             sizeBytes: 14,
             sha256: 'h-second',
         });
@@ -176,7 +176,7 @@ describe('uploadAttachmentDraftsToSession', () => {
                     sizeBytes: 12,
                 },
                 status: 'uploaded',
-                uploadedPath: '.happier/uploads/messages/m1/first.md',
+                uploadedPath: '.piggercode/uploads/messages/m1/first.md',
                 uploadedSizeBytes: 12,
                 uploadedMimeType: 'text/markdown',
                 sha256: 'h-first',
@@ -200,7 +200,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,
@@ -216,14 +216,14 @@ describe('uploadAttachmentDraftsToSession', () => {
         expect(res.uploaded).toEqual([
             {
                 name: 'first.md',
-                path: '.happier/uploads/messages/m1/first.md',
+                path: '.piggercode/uploads/messages/m1/first.md',
                 mimeType: 'text/markdown',
                 sizeBytes: 12,
                 sha256: 'h-first',
             },
             {
                 name: 'second.md',
-                path: '.happier/uploads/messages/m1/second.md',
+                path: '.piggercode/uploads/messages/m1/second.md',
                 mimeType: 'text/markdown',
                 sizeBytes: 14,
                 sha256: 'h-second',
@@ -260,7 +260,7 @@ describe('uploadAttachmentDraftsToSession', () => {
             messageLocalId: 'm1',
             config: {
                 uploadLocation: 'workspace',
-                workspaceRelativeDir: '.happier/uploads',
+                workspaceRelativeDir: '.piggercode/uploads',
                 vcsIgnoreStrategy: 'git_info_exclude',
                 vcsIgnoreWritesEnabled: true,
                 maxFileBytes: 25 * 1024 * 1024,

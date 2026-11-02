@@ -252,11 +252,11 @@ test('resolveSpawnDetachedNodeInvocation uses script when execPath is a JS runti
 test('resolveSpawnDetachedNodeInvocation omits script when execPath is a self-contained CLI binary', () => {
   assert.deepEqual(
     resolveSpawnDetachedNodeInvocation({
-      execPath: '/home/user/.happier/bin/happier',
+      execPath: '/home/user/.piggercode/bin/happier',
       script: '/$bunfs/dist/index.mjs',
       args: ['self', 'check', '--quiet'],
     }),
-    { file: '/home/user/.happier/bin/happier', args: ['self', 'check', '--quiet'], isRuntime: false },
+    { file: '/home/user/.piggercode/bin/happier', args: ['self', 'check', '--quiet'], isRuntime: false },
   );
 });
 

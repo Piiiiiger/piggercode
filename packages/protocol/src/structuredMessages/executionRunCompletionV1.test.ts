@@ -15,7 +15,7 @@ describe('buildExecutionRunCompletionInputV1', () => {
 
     expect(input.text).toBe([
       '<happier_execution_run_notification>',
-      'This is an automated background-run notification from Happier, not a user message.',
+      'This is an automated background-run notification from PiggerCode, not a user message.',
       'Run ID: run_1',
       'Status: succeeded',
       '',
@@ -39,7 +39,7 @@ describe('buildExecutionRunCompletionInputV1', () => {
         canInspect: false,
       }).text).toBe([
         '<happier_execution_run_notification>',
-        'This is an automated background-run notification from Happier, not a user message.',
+        'This is an automated background-run notification from PiggerCode, not a user message.',
         'Run ID: run_1',
         `Status: ${status}`,
         '</happier_execution_run_notification>',

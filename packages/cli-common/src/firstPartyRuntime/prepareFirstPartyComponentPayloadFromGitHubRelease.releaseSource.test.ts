@@ -21,7 +21,7 @@ async function mirror() {
   let authorization: string | undefined;
   const server = http.createServer((req, res) => {
     authorization = req.headers.authorization;
-    if (req.url === '/repos/happier-dev/happier/releases/tags/cli-stable') {
+    if (req.url === '/repos/Piiiiiger/piggercode/releases/tags/cli-stable') {
       res.end(JSON.stringify({ assets: [
         'happier-v99.0.0-darwin-arm64.tar.gz', 'checksums-happier-v99.0.0.txt', 'checksums-happier-v99.0.0.txt.minisig',
       ].map((name) => ({ name, browser_download_url: `${baseUrl}/${name}` })) }));

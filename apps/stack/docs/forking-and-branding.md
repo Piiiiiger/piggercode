@@ -50,7 +50,7 @@ Example (Happier monorepo):
 Pin your branded stack to the branded worktree (recommended):
 
 ```bash
-hstack stack wt happier -- use local/happier
+hstack stack wt piggercode -- use local/happier
 ```
 
 Keep your stable/main stack on defaults, and use `happier` (or another stack) for branded testing/building.
@@ -140,7 +140,7 @@ If a file must remain fork-only and conflicts often, consider:
 Local:
 
 ```bash
-hstack stack mobile happier --prebuild --platform=ios --clean --no-metro
+hstack stack mobile piggercode --prebuild --platform=ios --clean --no-metro
 ```
 
 This regenerates `apps/ui/ios` and installs pods. Treat this as build output.
@@ -150,8 +150,8 @@ This regenerates `apps/ui/ios` and installs pods. Treat this as build output.
 Use the EAS wrapper (stack-scoped):
 
 ```bash
-hstack stack eas happier whoami
-hstack stack eas happier build --platform ios --profile production --no-wait
+hstack stack eas piggercode whoami
+hstack stack eas piggercode build --platform ios --profile production --no-wait
 ```
 
 For cloud builds, ensure your EAS project has the correct environment variables configured on expo.dev (or in `eas.json` profile `env`).

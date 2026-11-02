@@ -135,7 +135,7 @@ type PathExposureOutcome = Readonly<{
 export type SetupThisComputerDeps = Readonly<{
   /** R12 — the recorded CLI choice and the one question to ask, if any. Read-only. */
   inspectCliChoice: (params: Readonly<{ reconsider: boolean }>) => Promise<LocalHappierCliChoiceInspection>;
-  /** R12 — records the answer for this computer (every Happier app in this `~/.happier`). */
+  /** R12 — records the answer for this computer (every Happier app in this `~/.piggercode`). */
   recordCliChoice: (choice: HappierCliChoice) => Promise<void>;
   /** "Keep my own" — takes back only the PATH lines Desktop wrote, so the terminal runs that CLI. */
   removePathExposure: () => Promise<HappierCliPathRemovalResult>;
@@ -269,7 +269,7 @@ function readRefusalReason(answer: unknown): string | null {
  * The one executor that makes this computer ready for the relay the app selected (R9/INV1).
  *
  * Order (plan §R12, and revision R12 "one CLI per computer" first): validate the explicit target →
- * ask the one-CLI question when this computer has a `happier` it did not install and no answer →
+ * ask the one-CLI question when this computer has a `piggercode` it did not install and no answer →
  * ensure a trusted, floor-compatible CLI →
  * preview the service install and obtain consent before any mutation → configure the relay →
  * validate credentials for that relay → pair (or claim with `--replace-existing` on an account
@@ -331,7 +331,7 @@ export function createSetupThisComputerKind(
         if (cliChoice.mode === 'own') {
           const removal = await deps.removePathExposure();
           if (removal.failure) {
-            ctx.emit({ type: 'progress', stepId: STEP.pathExposure, message: `Could not remove happier from your PATH: ${removal.failure}` });
+            ctx.emit({ type: 'progress', stepId: STEP.pathExposure, message: `Could not remove piggercode from your PATH: ${removal.failure}` });
           }
         }
         throwIfCancelled(ctx.signal);
@@ -708,7 +708,7 @@ function observePathExposure(exposure: Promise<PathExposureOutcome>): SettledPat
 function emitPathExposureFailure(ctx: InteractiveSystemTaskContext, exposure: SettledPathExposure | null): void {
   const failure = exposure?.readFailure() ?? null;
   if (failure) {
-    ctx.emit({ type: 'progress', stepId: STEP.pathExposure, message: `Could not add happier to your PATH: ${failure}` });
+    ctx.emit({ type: 'progress', stepId: STEP.pathExposure, message: `Could not add piggercode to your PATH: ${failure}` });
   }
 }
 

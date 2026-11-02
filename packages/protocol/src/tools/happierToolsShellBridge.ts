@@ -36,7 +36,7 @@ function isRuntimeExecutableToken(token: string): boolean {
 function isLikelyHappierCliEntrypointToken(token: string): boolean {
   const normalized = normalizeShellPathLike(token);
   const base = getShellPathBasename(token);
-  if (base.includes('happier')) return true;
+  if (base.includes('piggercode') || base.includes('happier')) return true;
   if (normalized.includes('/@piggercode/cli/')) return true;
   if (normalized.includes('/apps/cli/')) return true;
   return (base === 'index.mjs' || base === 'index.ts') && normalized.includes('/cli/');
@@ -183,13 +183,13 @@ function parseBridgeFlags(subcommand: 'list' | 'call', tokens: readonly string[]
 
 function normalizeHappierToolsTokens(tokens: readonly string[]): string[] | null {
   if (tokens.length < 3) return null;
-  if (tokens[0] === 'happier' && tokens[1] === 'tools') return [...tokens];
+  if ((tokens[0] === 'piggercode' || tokens[0] === 'happier') && tokens[1] === 'tools') return [...tokens];
   if (!isRuntimeExecutableToken(tokens[0] ?? '')) return null;
 
   for (let index = 1; index < tokens.length - 2; index++) {
     if (!isLikelyHappierCliEntrypointToken(tokens[index] ?? '')) continue;
     if (tokens[index + 1] !== 'tools') continue;
-    return ['happier', ...tokens.slice(index + 1)];
+    return ['piggercode', ...tokens.slice(index + 1)];
   }
 
   return null;

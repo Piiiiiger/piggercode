@@ -41,7 +41,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
     await mkdir(daemonProcDir, { recursive: true });
     await writeFile(
       join(daemonProcDir, 'cgroup'),
-      '0::/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service\n',
+      '0::/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service\n',
       'utf8',
     );
 
@@ -70,7 +70,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
     await mkdir(daemonProcDir, { recursive: true });
     await writeFile(
       join(daemonProcDir, 'cgroup'),
-      '0::/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service\n',
+      '0::/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service\n',
       'utf8',
     );
     const immutableEntrypoint = '/runtime/.runner-snapshots/0123456789abcdef/index.mjs';
@@ -171,7 +171,7 @@ describe('buildCgroupSelfMigratingHappyCliLaunchSpec', () => {
     await mkdir(daemonProcDir, { recursive: true });
     await writeFile(
       join(daemonProcDir, 'cgroup'),
-      '0::/user.slice/user-501.slice/user@501.service/app.slice/happier-daemon.default.service\n',
+      '0::/user.slice/user-501.slice/user@501.service/app.slice/piggercode-daemon.default.service\n',
       'utf8',
     );
     mocks.systemdResourceGovernorExecFile.mockResolvedValue({

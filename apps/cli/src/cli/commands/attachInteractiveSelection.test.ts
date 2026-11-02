@@ -278,6 +278,6 @@ describe('formatAttachIneligibilityFooter', () => {
       ineligibleCount: 2,
       effectiveSessionTmux: null,
     });
-    expect(text).toMatch(/happier resume/i);
+    expect(text).toMatch(/piggercode resume/i);
   });
 });

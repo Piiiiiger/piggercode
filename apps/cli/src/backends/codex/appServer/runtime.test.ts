@@ -73,9 +73,9 @@ function createRuntimeMetadata(path: string): Metadata {
         path,
         host: 'test-host',
         homeDir: path,
-        happyHomeDir: join(path, '.happier'),
-        happyLibDir: join(path, '.happier', 'lib'),
-        happyToolsDir: join(path, '.happier', 'tools'),
+        happyHomeDir: join(path, '.piggercode'),
+        happyLibDir: join(path, '.piggercode', 'lib'),
+        happyToolsDir: join(path, '.piggercode', 'tools'),
     };
 }
 
@@ -259,7 +259,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         `        process.stdout.write(JSON.stringify({ id: msg.id, result: { threadId: "thread-started", model: "gpt-5.4", serviceTier: ${JSON.stringify(params.threadStartServiceTier ?? null)}, activePermissionProfile: msg.params?.permissions ?? null } }) + "\\n");`,
         `        if (${JSON.stringify(params.emitIdleMcpRequestAfterThreadStart === true)}) {`,
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: "idle-mcp-request", method: "mcpServer/elicitation/request", params: { threadId: "thread-started", id: "request_scoped_idle_mcp", serverName: "happier", message: "Tool \\"change_title\\" needs input", _meta: { tool_params: { title: "Idle Title" } } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: "idle-mcp-request", method: "mcpServer/elicitation/request", params: { threadId: "thread-started", id: "request_scoped_idle_mcp", serverName: "piggercode", message: "Tool \\"change_title\\" needs input", _meta: { tool_params: { title: "Idle Title" } } } }) + "\\n");',
         '            }, 5);',
         '        }',
         '        continue;',
@@ -802,7 +802,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request", method: "mcpServer/elicitation/request", params: { toolUseId: "mcp_tool_1", invocation: { server: "happier", tool: "change_title", arguments: { title: "New Title" } } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request", method: "mcpServer/elicitation/request", params: { toolUseId: "mcp_tool_1", invocation: { server: "piggercode", tool: "change_title", arguments: { title: "New Title" } } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -811,7 +811,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-callid") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request-callid", method: "mcpServer/elicitation/request", params: { callId: "call_test_1", invocation: { tool: "mcp__happier__change_title", arguments: { title: "New Title" } } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request-callid", method: "mcpServer/elicitation/request", params: { callId: "call_test_1", invocation: { tool: "mcp__piggercode__change_title", arguments: { title: "New Title" } } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -820,7 +820,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-param-id") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request-param-id", method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, id: "mcp_request_param_id_1", serverName: "happier", mode: "form", _meta: { tool_title: "change_title", tool_params: { title: "New Title" } }, message: "Allow the happier MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: "mcp-elicitation-request-param-id", method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, id: "mcp_request_param_id_1", serverName: "piggercode", mode: "form", _meta: { tool_title: "change_title", tool_params: { title: "New Title" } }, message: "Allow the piggercode MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -829,7 +829,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-meta") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "happier", mode: "form", _meta: { tool_params: { title: "New Title" } }, message: "Allow the happier MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "piggercode", mode: "form", _meta: { tool_params: { title: "New Title" } }, message: "Allow the piggercode MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -838,7 +838,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-meta-tool-title") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "happier", mode: "form", _meta: { tool_title: "change_title", tool_params: { title: "New Title" } }, requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "piggercode", mode: "form", _meta: { tool_title: "change_title", tool_params: { title: "New Title" } }, requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -847,7 +847,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-display-title-with-message-tool") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "happier", mode: "form", _meta: { tool_title: "Change Chat Title", tool_description: "Change the title of the current chat session", tool_params: { title: "New Title" } }, message: "Allow the happier MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "piggercode", mode: "form", _meta: { tool_title: "Change Chat Title", tool_description: "Change the title of the current chat session", tool_params: { title: "New Title" } }, message: "Allow the piggercode MCP server to run tool \\"change_title\\"?", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -856,7 +856,7 @@ async function writeFakeCodexAppServerScript(params: Readonly<{
         '        }',
         '        if (text === "bridge-mcp-elicitation-unidentified") {',
         '            setTimeout(() => {',
-        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "happier", mode: "form", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
+        '                process.stdout.write(JSON.stringify({ id: 0, method: "mcpServer/elicitation/request", params: { threadId: msg.params?.threadId ?? null, turnId: turnId, serverName: "piggercode", mode: "form", requestedSchema: { type: "object", properties: {} } } }) + "\\n");',
         '            }, 6);',
         '            setTimeout(() => {',
         '                process.stdout.write(JSON.stringify({ method: "turn/completed", params: { threadId: msg.params?.threadId ?? null, turn: { id: turnId } } }) + "\\n");',
@@ -2683,9 +2683,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (updater: (current: Metadata) => Metadata) => {
             metadata = updater(metadata);
@@ -3105,10 +3105,10 @@ describe('createCodexAppServerRuntime', () => {
             session: { updateMetadata: vi.fn() } as any,
             permissionMode: 'default',
         });
-        const uploadedPath = '.happier/uploads/messages/m1/screenshot.png';
+        const uploadedPath = '.piggercode/uploads/messages/m1/screenshot.png';
         const uploadedContent = Buffer.from('fake screenshot');
         const sha256 = createHash('sha256').update(uploadedContent).digest('hex');
-        await mkdir(join(root, '.happier', 'uploads', 'messages', 'm1'), { recursive: true });
+        await mkdir(join(root, '.piggercode', 'uploads', 'messages', 'm1'), { recursive: true });
         await writeFile(join(root, uploadedPath), uploadedContent);
 
         await runtime.startOrLoad({});
@@ -5169,10 +5169,10 @@ describe('createCodexAppServerRuntime', () => {
             onThinkingChange: vi.fn(),
             session: { updateMetadata: vi.fn() } as any,
         });
-        const uploadedPath = '.happier/uploads/messages/race/screenshot.png';
+        const uploadedPath = '.piggercode/uploads/messages/race/screenshot.png';
         const uploadedContent = Buffer.from('race screenshot');
         const sha256 = createHash('sha256').update(uploadedContent).digest('hex');
-        await mkdir(join(root, '.happier', 'uploads', 'messages', 'race'), { recursive: true });
+        await mkdir(join(root, '.piggercode', 'uploads', 'messages', 'race'), { recursive: true });
         await writeFile(join(root, uploadedPath), uploadedContent);
 
         await runtime.startOrLoad({});
@@ -5296,7 +5296,7 @@ describe('createCodexAppServerRuntime', () => {
         );
     });
 
-    it('commits attached-client user prompts without duplicating Happier-originated prompts', async () => {
+    it('commits attached-client user prompts without duplicating PiggerCode-originated prompts', async () => {
         const { root } = await createRuntimeFixture('happier-codex-app-server-runtime-provider-user-');
 
         const sendUserTextMessageCommitted = vi.fn(async () => {});
@@ -5326,7 +5326,7 @@ describe('createCodexAppServerRuntime', () => {
         );
     });
 
-    it('does not re-import a fresh Happier prompt when its provider echo precedes transcript sequence observation', async () => {
+    it('does not re-import a fresh PiggerCode prompt when its provider echo precedes transcript sequence observation', async () => {
         const { root } = await createRuntimeFixture('happier-codex-app-server-runtime-provider-user-race-');
 
         const sendUserTextMessageCommitted = vi.fn(async () => {});
@@ -5678,7 +5678,7 @@ describe('createCodexAppServerRuntime', () => {
             mediaKind: 'image',
             mimeType: 'image/png',
             name: 'generated-image.png',
-            path: '.happier/uploads/generated/message-1/media-1.png',
+            path: '.piggercode/uploads/generated/message-1/media-1.png',
             sizeBytes: 67,
             sha256: 'a'.repeat(64),
             origin: {
@@ -5738,7 +5738,7 @@ describe('createCodexAppServerRuntime', () => {
             mediaKind: 'image' as const,
             mimeType: 'image/png' as const,
             name: `${id}.png`,
-            path: `.happier/uploads/generated/${id}.png`,
+            path: `.piggercode/uploads/generated/${id}.png`,
             sizeBytes: 67,
             origin: { source: 'provider-generated' as const, generationId: id },
         });
@@ -5831,7 +5831,7 @@ describe('createCodexAppServerRuntime', () => {
             mediaKind: 'image',
             mimeType: 'image/png',
             name: 'generated-image.png',
-            path: '.happier/uploads/generated/message-1/media-1.png',
+            path: '.piggercode/uploads/generated/message-1/media-1.png',
             sizeBytes: 67,
             sha256: 'a'.repeat(64),
             origin: {
@@ -7302,12 +7302,12 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             'mcp_tool_1',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
     });
 
-    it('syncs completed Happier title tool calls to the Codex native thread name', async () => {
+    it('syncs completed PiggerCode title tool calls to the Codex native thread name', async () => {
         const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-native-title-sync-');
 
         const runtime = createCodexAppServerRuntime({
@@ -7342,7 +7342,7 @@ describe('createCodexAppServerRuntime', () => {
         }
     });
 
-    it('syncs completed Happier title tool calls returned in MCP content envelopes to the Codex native thread name', async () => {
+    it('syncs completed PiggerCode title tool calls returned in MCP content envelopes to the Codex native thread name', async () => {
         const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-native-title-sync-content-');
 
         const runtime = createCodexAppServerRuntime({
@@ -7377,7 +7377,7 @@ describe('createCodexAppServerRuntime', () => {
         }
     });
 
-    it('does not sync blank completed Happier title tool calls to the Codex native thread name', async () => {
+    it('does not sync blank completed PiggerCode title tool calls to the Codex native thread name', async () => {
         const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-native-title-sync-blank-');
 
         const runtime = createCodexAppServerRuntime({
@@ -7404,7 +7404,7 @@ describe('createCodexAppServerRuntime', () => {
         }
     });
 
-    it('does not sync failed completed Happier title tool calls to the Codex native thread name', async () => {
+    it('does not sync failed completed PiggerCode title tool calls to the Codex native thread name', async () => {
         const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-native-title-sync-failed-');
 
         const runtime = createCodexAppServerRuntime({
@@ -7431,7 +7431,7 @@ describe('createCodexAppServerRuntime', () => {
         }
     });
 
-    it('keeps completed Happier title tool calls accepted when Codex native title sync fails', async () => {
+    it('keeps completed PiggerCode title tool calls accepted when Codex native title sync fails', async () => {
         const { root, requestLogPath } = await createRuntimeFixture('happier-codex-app-server-runtime-native-title-sync-fails-');
         const sendCodexMessage = vi.fn();
 
@@ -7508,7 +7508,7 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             'call_test_1',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
     });
@@ -7549,7 +7549,7 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             'mcp_request_param_id_1',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
         expect(sessionTurnLifecycle.attachProviderTurnId).toHaveBeenCalledWith({
@@ -7641,7 +7641,7 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             '0',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
     });
@@ -7681,7 +7681,7 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             '0',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
     });
@@ -7721,7 +7721,7 @@ describe('createCodexAppServerRuntime', () => {
 
         expect(permissionHandler.handleToolCall).toHaveBeenCalledWith(
             '0',
-            'mcp__happier__change_title',
+            'mcp__piggercode__change_title',
             { title: 'New Title' },
         );
     });
@@ -9061,9 +9061,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         (metadata as Record<string, unknown>).connectedServices = {
             v: 1,
@@ -9317,9 +9317,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         (metadata as Record<string, unknown>).connectedServices = {
             v: 1,
@@ -9397,9 +9397,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         (metadata as Record<string, unknown>).connectedServices = {
             v: 1,
@@ -9586,9 +9586,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         (metadata as Record<string, unknown>).connectedServices = {
             v: 1,
@@ -9893,9 +9893,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10277,9 +10277,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10355,9 +10355,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
             ...(olderWait ? { sessionUsageLimitRecoveryV1: {
                 v: 1 as const, status: 'waiting' as const,
                 issueFingerprint: 'usage-limit:codex:old-turn:1:no-reset', armedAtMs: 1,
@@ -10439,9 +10439,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10501,9 +10501,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10626,9 +10626,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10721,9 +10721,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10792,9 +10792,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -10895,9 +10895,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const onUsageLimitGroupRecovery = vi.fn(async () => ({
             handled: true,
@@ -10978,9 +10978,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const onUsageLimitGroupRecovery = vi.fn(async () => ({
             handled: false,
@@ -11057,9 +11057,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const onUsageLimitGroupRecovery = vi.fn(async () => ({
             handled: false,
@@ -11217,9 +11217,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -11277,9 +11277,9 @@ describe('createCodexAppServerRuntime', () => {
                 path: root,
                 host: 'test-host',
                 homeDir: root,
-                happyHomeDir: join(root, '.happier'),
-                happyLibDir: join(root, '.happier', 'lib'),
-                happyToolsDir: join(root, '.happier', 'tools'),
+                happyHomeDir: join(root, '.piggercode'),
+                happyLibDir: join(root, '.piggercode', 'lib'),
+                happyToolsDir: join(root, '.piggercode', 'tools'),
             };
             const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
                 metadata = handler(metadata);
@@ -11337,9 +11337,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
         };
         const updateMetadata = vi.fn(async (handler: (current: Metadata) => Metadata) => {
             metadata = handler(metadata);
@@ -11396,9 +11396,9 @@ describe('createCodexAppServerRuntime', () => {
             path: root,
             host: 'test-host',
             homeDir: root,
-            happyHomeDir: join(root, '.happier'),
-            happyLibDir: join(root, '.happier', 'lib'),
-            happyToolsDir: join(root, '.happier', 'tools'),
+            happyHomeDir: join(root, '.piggercode'),
+            happyLibDir: join(root, '.piggercode', 'lib'),
+            happyToolsDir: join(root, '.piggercode', 'tools'),
             sessionUsageLimitRecoveryV1: {
                 v: 1,
                 status: 'waiting',

@@ -442,7 +442,7 @@ vi.mock('@/ui/logger', () => ({
     info: vi.fn(),
     infoFile: vi.fn(),
     warn: vi.fn(),
-    logFilePath: '/tmp/happier-daemon.log',
+    logFilePath: '/tmp/piggercode-daemon.log',
   },
 }));
 
@@ -4256,7 +4256,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     vi.mocked(buildHappyCliSubprocessLaunchSpec).mockImplementation((args) => ({
       runtime: 'node',
       filePath: process.execPath,
-      args: ['/home/alice/.happier/cli/versions/0.2.11/package-dist/index.mjs', ...args],
+      args: ['/home/alice/.piggercode/cli/versions/0.2.11/package-dist/index.mjs', ...args],
     }));
     const envKeys = ['PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED', ...Object.keys(options.env ?? {})];
     const envBackup = new Map(envKeys.map((key) => [key, process.env[key]]));
@@ -4274,7 +4274,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
           happySessionId: 'sess-stale-on-update',
           reattachedFromDiskMarker: true,
           processCommand:
-            'node /home/alice/.happier/cli/versions/0.2.10/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon',
+            'node /home/alice/.piggercode/cli/versions/0.2.10/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon',
           vendorResumeId: 'claude-stale-thread',
           spawnOptions: {
             directory: '/tmp/workspace-stale-on-update',
@@ -4288,7 +4288,7 @@ describe('startDaemon spawn resume wiring (integration)', () => {
           happySessionId: 'sess-current-on-update',
           reattachedFromDiskMarker: true,
           processCommand:
-            'node /home/alice/.happier/cli/versions/0.2.11/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon',
+            'node /home/alice/.piggercode/cli/versions/0.2.11/package-dist/index.mjs claude --happy-starting-mode remote --started-by daemon',
           vendorResumeId: 'claude-current-thread',
           spawnOptions: {
             directory: '/tmp/workspace-current-on-update',
@@ -4800,8 +4800,8 @@ describe('startDaemon spawn resume wiring (integration)', () => {
       return originalKill(targetPid, signal);
     }) as typeof process.kill);
     vi.spyOn(doctor, 'findAllHappyProcesses').mockResolvedValue([
-      { pid, command: 'happier claude', type: 'user-session' },
-      ...(descriptorCase === 'owned_concurrent' ? [{ pid: pid + 1, command: 'happier claude', type: 'user-session' }] : []),
+      { pid, command: 'piggercode claude', type: 'user-session' },
+      ...(descriptorCase === 'owned_concurrent' ? [{ pid: pid + 1, command: 'piggercode claude', type: 'user-session' }] : []),
     ]);
     vi.mocked(reattach.reattachTrackedSessionsFromMarkers).mockImplementation(actualReattachmentOwner.reattachTrackedSessionsFromMarkers);
     vi.mocked(exits.createOnChildExited).mockImplementation((params) => {
@@ -4847,12 +4847,12 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     });
     try {
       await markers.writeSessionMarker({ pid, happySessionId: sessionId, startedBy: 'terminal',
-        processCommandHash: markers.hashProcessCommand('happier claude'), metadata });
+        processCommandHash: markers.hashProcessCommand('piggercode claude'), metadata });
       await attachments.writeTerminalAttachmentInfo({ happyHomeDir: fixtureHome, sessionId, attachmentId,
         lifecycle: owned ? 'owned' : 'borrowed', terminal, handle: buildTerminalHostHandleFromAttachmentMetadata(terminal)! });
       if (descriptorCase === 'owned_concurrent') {
         await markers.writeSessionMarker({ pid: pid + 1, happySessionId: secondSessionId, startedBy: 'terminal',
-          processCommandHash: markers.hashProcessCommand('happier claude'), metadata: secondServer.metadata });
+          processCommandHash: markers.hashProcessCommand('piggercode claude'), metadata: secondServer.metadata });
         await attachments.writeTerminalAttachmentInfo({ happyHomeDir: fixtureHome, sessionId: secondSessionId,
           attachmentId: secondAttachmentId, lifecycle: 'owned', terminal: secondTerminal,
           handle: buildTerminalHostHandleFromAttachmentMetadata(secondTerminal)! });

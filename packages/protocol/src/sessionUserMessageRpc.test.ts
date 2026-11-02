@@ -179,7 +179,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
               {
                 type: 'localImage',
                 kind: 'image',
-                localPath: '.happier/uploads/messages/m1/secret.png',
+                localPath: '.piggercode/uploads/messages/m1/secret.png',
                 mimeType: 'image/png',
                 provenance: { kind: 'sessionAttachmentUpload' },
               },
@@ -208,7 +208,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
               attachments: [
                 {
                   name: 'screen.png',
-                  path: '.happier/uploads/messages/m1/screen.png',
+                  path: '.piggercode/uploads/messages/m1/screen.png',
                   mimeType: 'image/png',
                   sizeBytes: 42,
                 },
@@ -221,7 +221,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
               {
                 type: 'localImage',
                 kind: 'image',
-                localPath: '.happier/uploads/messages/m1/screen.png',
+                localPath: '.piggercode/uploads/messages/m1/screen.png',
                 mimeType: 'image/png',
                 provenance: { kind: 'sessionAttachmentUpload' },
               },
@@ -238,7 +238,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
             attachments: [
               {
                 name: 'screen.png',
-                path: '.happier/uploads/messages/m1/screen.png',
+                path: '.piggercode/uploads/messages/m1/screen.png',
                 mimeType: 'image/png',
                 sizeBytes: 42,
               },
@@ -260,7 +260,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
           attachments: [
             {
               name: 'screen.png',
-              path: '.happier/uploads/messages/m1/screen.png',
+              path: '.piggercode/uploads/messages/m1/screen.png',
               mimeType: 'image/png',
               sizeBytes: 42,
             },
@@ -273,7 +273,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
           {
             type: 'localImage',
             kind: 'image',
-            localPath: '.happier/uploads/messages/m1/screen.png',
+            localPath: '.piggercode/uploads/messages/m1/screen.png',
             mimeType: 'image/png',
             provenance: { kind: 'sessionAttachmentUpload' },
           },
@@ -281,17 +281,17 @@ describe('SessionUserMessageSendRequestSchema', () => {
       },
     };
 
-    expect(readAttachmentEnvelopeLocalImagePaths(meta)).toEqual(new Set(['.happier/uploads/messages/m1/screen.png']));
+    expect(readAttachmentEnvelopeLocalImagePaths(meta)).toEqual(new Set(['.piggercode/uploads/messages/m1/screen.png']));
     expect(sanitizeSessionUserMessageSendMeta(meta, {
-      allowedLocalImagePaths: new Set(['.happier/uploads/messages/m1/screen.png']),
+      allowedLocalImagePaths: new Set(['.piggercode/uploads/messages/m1/screen.png']),
     })).toMatchObject({
       happierStructuredInputV1: {
         v: 1,
         attachments: [
           {
             type: 'localImage',
-            localPath: '.happier/uploads/messages/m1/screen.png',
-            path: '.happier/uploads/messages/m1/screen.png',
+            localPath: '.piggercode/uploads/messages/m1/screen.png',
+            path: '.piggercode/uploads/messages/m1/screen.png',
             provenance: { kind: 'sessionAttachmentUpload' },
           },
         ],
@@ -307,7 +307,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
           attachments: [
             {
               name: 'screen.png',
-              path: '.happier/uploads/messages/m1/screen.png',
+              path: '.piggercode/uploads/messages/m1/screen.png',
               mimeType: 'image/png',
               sizeBytes: 42,
             },
@@ -320,7 +320,7 @@ describe('SessionUserMessageSendRequestSchema', () => {
           {
             type: 'localImage',
             kind: 'image',
-            localPath: '.happier/uploads/messages/m1/screen.png',
+            localPath: '.piggercode/uploads/messages/m1/screen.png',
             mimeType: 'image/png',
             provenance: { kind: 'sessionAttachmentUpload' },
           },
@@ -335,15 +335,15 @@ describe('SessionUserMessageSendRequestSchema', () => {
     };
 
     expect(sanitizeSessionUserMessageSendMeta(meta, {
-      allowedLocalImagePaths: new Set(['.happier/uploads/messages/m1/screen.png']),
+      allowedLocalImagePaths: new Set(['.piggercode/uploads/messages/m1/screen.png']),
     })).toMatchObject({
       happierStructuredInputV1: {
         v: 1,
         imageInputs: [
           {
             type: 'localImage',
-            localPath: '.happier/uploads/messages/m1/screen.png',
-            path: '.happier/uploads/messages/m1/screen.png',
+            localPath: '.piggercode/uploads/messages/m1/screen.png',
+            path: '.piggercode/uploads/messages/m1/screen.png',
             provenance: { kind: 'sessionAttachmentUpload' },
           },
           {

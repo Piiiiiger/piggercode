@@ -1032,7 +1032,7 @@ describe('runClaude startup metadata ordering', () => {
         );
     });
 
-    it('exposes the current permission mode to the regular Happier MCP bridge setup path', async () => {
+    it('exposes the current permission mode to the regular PiggerCode MCP bridge setup path', async () => {
         currentMetadataVersion = 1;
         initializeRuntimeOverridesSynchronizerMock.mockImplementationOnce(async (params: RuntimeOverridesSynchronizerParams) => {
             lastRuntimeOverridesSynchronizerParams = params;

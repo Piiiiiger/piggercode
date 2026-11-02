@@ -7,7 +7,7 @@ import { withTempDir } from '@/testkit/fs/tempDir';
 import { doesInstalledDaemonServiceDefinitionMatchExpected } from './doesInstalledDaemonServiceDefinitionMatchExpected';
 
 // Fixtures modelled on the actual plist shapes we produce for the
-// `com.happier.cli.daemon.default` default-following service. The key point
+// `com.piggercode.cli.daemon.default` default-following service. The key point
 // is that two definitions can *differ* in their `ProgramArguments` launcher
 // and `PATH` env var yet still launch the same daemon under the same config.
 
@@ -16,7 +16,7 @@ const BOILERPLATE = `<?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.happier.cli.daemon.default</string>
+    <string>com.piggercode.cli.daemon.default</string>
     <key>ProgramArguments</key>
     <array>__PROGRAM_ARGS__
     </array>
@@ -32,9 +32,9 @@ const BOILERPLATE = `<?xml version="1.0" encoding="UTF-8"?>
     <key>WorkingDirectory</key>
     <string>/tmp</string>
     <key>StandardOutPath</key>
-    <string>/Users/me/.happier/logs/daemon-service.default.out.log</string>
+    <string>/Users/me/.piggercode/logs/daemon-service.default.out.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/me/.happier/logs/daemon-service.default.err.log</string>
+    <string>/Users/me/.piggercode/logs/daemon-service.default.err.log</string>
     <key>EnvironmentVariables</key>
     <dict>
       <key>PATH</key>
@@ -46,7 +46,7 @@ const BOILERPLATE = `<?xml version="1.0" encoding="UTF-8"?>
       <key>PIGGERCODE_DAEMON_STARTUP_SOURCE</key>
       <string>background-service</string>
       <key>PIGGERCODE_DAEMON_SERVICE_LABEL</key>
-      <string>com.happier.cli.daemon.default</string>
+      <string>com.piggercode.cli.daemon.default</string>
       <key>PIGGERCODE_DAEMON_SERVICE_TARGET_MODE</key>
       <string>default-following</string>
       <key>PIGGERCODE_NO_BROWSER_OPEN</key>
@@ -62,12 +62,12 @@ const BOILERPLATE = `<?xml version="1.0" encoding="UTF-8"?>
 
 const PROGRAM_ARGS_NODE_ENTRY = `
       <string>/Users/me/.local/share/fnm/node-versions/v22.22.1/installation/bin/node</string>
-      <string>/Users/me/.happier/cli-dev/current/package-dist/index.mjs</string>
+      <string>/Users/me/.piggercode/cli-dev/current/package-dist/index.mjs</string>
       <string>daemon</string>
       <string>start-sync</string>`;
 
 const PROGRAM_ARGS_SHIM = `
-      <string>/Users/me/.happier/bin/happier</string>
+      <string>/Users/me/.piggercode/bin/happier</string>
       <string>daemon</string>
       <string>start-sync</string>`;
 
@@ -79,7 +79,7 @@ function plist(programArgs: string, path: string): string {
 }
 
 function writePlistFile(dir: string, contents: string): string {
-  const filePath = join(dir, 'com.happier.cli.daemon.default.plist');
+  const filePath = join(dir, 'com.piggercode.cli.daemon.default.plist');
   writeFileSync(filePath, contents, 'utf-8');
   return filePath;
 }
@@ -157,7 +157,7 @@ describe('doesInstalledDaemonServiceDefinitionMatchExpected', () => {
     await withTempDir('plist-signature-', async (dir) => {
       const installedPath = writePlistFile(dir, plist(PROGRAM_ARGS_SHIM, PATH_A));
       const expectedContents = plist(PROGRAM_ARGS_SHIM, PATH_A)
-        .replaceAll('com.happier.cli.daemon.default', 'com.happier.cli.daemon.other');
+        .replaceAll('com.piggercode.cli.daemon.default', 'com.piggercode.cli.daemon.other');
       expect(doesInstalledDaemonServiceDefinitionMatchExpected({
         installedPath,
         expectedContents,
@@ -170,7 +170,7 @@ describe('doesInstalledDaemonServiceDefinitionMatchExpected', () => {
       const installedPath = writePlistFile(dir, plist(PROGRAM_ARGS_SHIM, PATH_A));
       const different = plist(
         `
-      <string>/Users/me/.happier/bin/happier</string>
+      <string>/Users/me/.piggercode/bin/happier</string>
       <string>daemon</string>
       <string>start-verbose</string>`,
         PATH_A,

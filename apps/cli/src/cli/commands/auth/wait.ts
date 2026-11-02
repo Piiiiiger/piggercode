@@ -28,7 +28,7 @@ type PendingAuthState = Readonly<{
 }>;
 
 const V3_REQUIRED_ERROR =
-  'Authenticated terminal pairing v3 is required. Update the Happier mobile app and scan a new QR code.';
+  'Authenticated terminal pairing v3 is required. Update the PiggerCode mobile app and scan a new QR code.';
 
 function pendingAuthStateDir(): string {
   return join(configuration.activeServerDir, 'auth', 'pending');
@@ -139,7 +139,7 @@ export async function handleAuthWait(argsRaw: string[]): Promise<void> {
     return;
   }
   if (pairingRequirement === 'v3' && !pairing) {
-    console.error(`${V3_REQUIRED_ERROR} Run \`happier auth request --json\` again.`);
+    console.error(`${V3_REQUIRED_ERROR} Run \`piggercode auth request --json\` again.`);
     process.exit(1);
   }
 
@@ -152,7 +152,7 @@ export async function handleAuthWait(argsRaw: string[]): Promise<void> {
     });
     const status = statusRes?.data?.status;
     if (status === 'not_found') {
-      console.error('Authentication request expired. Run `happier auth request --json` again.');
+      console.error('Authentication request expired. Run `piggercode auth request --json` again.');
       process.exit(1);
     }
 

@@ -345,7 +345,7 @@ describe('createCodexMcpMessageHandler', () => {
       expect(session.sendCodexMessage).not.toHaveBeenCalled();
   });
 
-  it('normalizes built-in Happier MCP tool names before emitting Codex tool-call events', () => {
+  it('normalizes built-in PiggerCode MCP tool names before emitting Codex tool-call events', () => {
     let thinking = false;
     let currentTaskId: string | null = null;
     const session = {
@@ -380,7 +380,7 @@ describe('createCodexMcpMessageHandler', () => {
       type: 'mcp_tool_call_begin',
       call_id: 'call_1',
       invocation: {
-        server: 'happier__happier',
+        server: 'piggercode__piggercode',
         tool: 'change_title',
         arguments: {
           title: 'Normalized title',
@@ -391,7 +391,7 @@ describe('createCodexMcpMessageHandler', () => {
     expect(session.sendCodexMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'tool-call',
-        name: 'mcp__happier__change_title',
+        name: 'mcp__piggercode__change_title',
         callId: 'call_1',
         input: {
           title: 'Normalized title',

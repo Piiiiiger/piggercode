@@ -29,8 +29,8 @@ test('apps/cli package exposes the published CLI binaries', () => {
   const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
 
   assert.deepEqual(pkg.bin, {
-    happier: './bin/happier.mjs',
-    'happier-dev': './bin/happier-dev.mjs',
-    'happier-mcp': './bin/happier-mcp.mjs',
+    happier: './bin/piggercode.mjs',
+    'happier-dev': './bin/piggercode-dev.mjs',
+    'piggercode-mcp': './bin/piggercode-mcp.mjs',
   });
 });

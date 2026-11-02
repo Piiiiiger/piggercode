@@ -18,22 +18,22 @@ yarn build
 
 ## Development Commands
 
-### Global `happier-dev` Command
+### Global `piggercode-dev` Command
 
-Create a global `happier-dev` command that runs your local development build:
+Create a global `piggercode-dev` command that runs your local development build:
 
 ```bash
-yarn link:dev      # Create happier-dev symlink
-yarn unlink:dev    # Remove happier-dev symlink
+yarn link:dev      # Create piggercode-dev symlink
+yarn unlink:dev    # Remove piggercode-dev symlink
 ```
 
-This creates a `happier-dev` command in your PATH pointing to your local build, while leaving any npm-installed `happier` command untouched.
+This creates a `piggercode-dev` command in your PATH pointing to your local build, while leaving any npm-installed `happier` command untouched.
 
 | Command | Runs |
 |---------|------|
 | `happier` | Stable npm version (from `npm install -g @piggercode/cli`) |
 | `happy` | Stable npm version (legacy alias) |
-| `happier-dev` | Local development version (from this repo) |
+| `piggercode-dev` | Local development version (from this repo) |
 | `happy-dev` | Local development version (legacy alias) |
 
 **Note:** Run `yarn build` before `yarn link:dev` to ensure the binary exists.
@@ -200,7 +200,7 @@ npm run dev:daemon:status       # Shows ~/.happy-dev/ data location
 sudo yarn link:dev
 ```
 
-### `happier-dev` command not found after linking?
+### `piggercode-dev` command not found after linking?
 - Ensure your global npm bin is in PATH: `npm bin -g`
 - Try opening a new terminal window
 - Check the symlink was created: `ls -la $(npm bin -g)/happier-dev`
@@ -245,8 +245,8 @@ npm run stable:daemon:start
 
 The system uses the built-in `PIGGERCODE_HOME_DIR` environment variable to separate data:
 
-- **Stable scripts** set: `PIGGERCODE_HOME_DIR=~/.happier`
-- **Dev scripts** set: `PIGGERCODE_HOME_DIR=~/.happier-dev`
+- **Stable scripts** set: `PIGGERCODE_HOME_DIR=~/.piggercode`
+- **Dev scripts** set: `PIGGERCODE_HOME_DIR=~/.piggercode-dev`
 
 Everything else (auth, sessions, logs, daemon) automatically follows the `PIGGERCODE_HOME_DIR` setting.
 
@@ -280,19 +280,19 @@ The UI and CLI import these helpers (the UI may re-export them for convenience).
 2. **Verify CLI receives profile:**
    ```bash
    # List profiles (built-ins always present; custom requires auth)
-   happier profiles list
-   happier profiles list --json
+   piggercode profiles list
+   piggercode profiles list --json
 
    # Force-refresh settings before listing (useful during iterative development)
-   happier profiles list --refresh-settings
+   piggercode profiles list --refresh-settings
    ```
 
 3. **Test profile-based session spawning:**
    ```bash
    # Start sessions explicitly with a profile:
-   happier --profile <id-or-name>
-   happier claude --profile <id-or-name>
-   happier codex --profile <id-or-name>
+   piggercode --profile <id-or-name>
+   piggercode claude --profile <id-or-name>
+   piggercode codex --profile <id-or-name>
    ```
 
 4. **Verify environment variable expansion:**
@@ -335,4 +335,4 @@ This runs tests, builds, and publishes to npm. The published package includes:
 - `happy` - Main CLI command
 - `happy-mcp` - MCP bridge command
 
-**Note:** `happier-dev` is intentionally excluded from the npm package - it's for local development only.
+**Note:** `piggercode-dev` is intentionally excluded from the npm package - it's for local development only.

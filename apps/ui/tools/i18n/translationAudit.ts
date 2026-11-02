@@ -72,7 +72,7 @@ const ALLOW_SAME_STRING_VALUES = new Set<string>([
     'Windows',
     'Windows Terminal',
     'Happier Voice',
-    'happier',
+    'piggercode',
     // Technical ids that should remain unchanged across locales.
     'Xenova/all-MiniLM-L6-v2',
 ]);
@@ -165,7 +165,7 @@ function isAllCapsToken(value: string): boolean {
 }
 
 function isPlaceholderLike(value: string): boolean {
-    // Examples: "XXXXX-XXXXX", "agent_...", "xi-api-key", "happier://terminal?..."
+    // Examples: "XXXXX-XXXXX", "agent_...", "xi-api-key", "piggercode://terminal?..."
     if (value.includes('...')) return true;
     if (/^X{2,}/.test(value)) return true;
     if (value.startsWith('$ ')) return true;

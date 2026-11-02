@@ -126,7 +126,7 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
   });
 
   function patchHome(homeDir: string): void {
-    const happierHomeDir = `${homeDir}/.happier`;
+    const happierHomeDir = `${homeDir}/.piggercode`;
     envScope.patch({
       PIGGERCODE_HOME_DIR: happierHomeDir,
       PIGGERCODE_DAEMON_SERVICE_PLATFORM: 'linux',
@@ -190,7 +190,7 @@ describe('service daemon restart after an update', { timeout: 240_000 }, () => {
 
       expect(result).toEqual({ kind: 'restarted', labels: [defaultLabel] });
       const restartCall = calls.find((call) => call.args.join(' ') === 'daemon service restart');
-      expect(restartCall?.command).toMatch(/[\\/]cli[\\/]current[\\/]happier(?:\.exe)?$/);
+      expect(restartCall?.command).toMatch(/[\\/]cli[\\/]current[\\/]piggercode(?:\.exe)?$/);
       expect(restartCall?.env?.PIGGERCODE_DAEMON_SERVICE_TARGET_MODE).toBe('default-following');
     });
   });

@@ -72,7 +72,7 @@ export function stripHappyInternalSettingsFlag(
     i++; // Consume the value (if any), like upstream's behavior.
 
     const displayedValue = typeof settingsValue === 'string' ? settingsValue : '<missing>';
-    warn(presentationWarn('--settings is used internally by Happier for session tracking.'));
+    warn(presentationWarn('--settings is used internally by PiggerCode for session tracking.'));
     warn(chalk.yellow(`   Your settings file "${displayedValue}" will be ignored.`));
     warn(chalk.yellow(`   To configure Claude, edit ~/.claude/settings.json instead.`));
   }
@@ -157,7 +157,7 @@ function shouldPromoteTmuxRemoteStartToUnifiedLocal(params: Readonly<{
 export async function handleClaudeCliCommand(context: CommandContext): Promise<void> {
   const args = [...context.args];
 
-  // Support `happier claude ...` while keeping `happier ...` as the default Claude flow.
+  // Support `piggercode claude ...` while keeping `happier ...` as the default Claude flow.
   const explicitClaudeSubcommand = args.length > 0 && args[0] === 'claude';
   if (explicitClaudeSubcommand) {
     args.shift();
@@ -207,10 +207,10 @@ export async function handleClaudeCliCommand(context: CommandContext): Promise<v
     const providerHelpArgs = [...parsed.providerArgs, '--help'];
     const providerHelpCommand = `claude ${providerHelpArgs.join(' ')}`;
     console.log(`${buildRootHelpText()}
-${chalk.bold('Happier supports ALL Claude options!')}
+${chalk.bold('PiggerCode supports ALL Claude options!')}
   Use any claude flag with happier as you would with claude. Our favorite:
 
-  happier --resume
+  piggercode --resume
 
 ${chalk.gray('─'.repeat(60))}
 ${chalk.bold.cyan(`Claude Code Options (from \`${providerHelpCommand}\`):`)}

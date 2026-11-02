@@ -24,8 +24,8 @@ test('archive service lifecycle resolves platform service definitions for the st
   assert.deepEqual(
     resolveStackServiceDefinitionCandidates({ platform: 'win32', homeDir: 'C:\\Users\\alice', label: 'dev.happier.stack.exp' }),
     [
-      { mode: 'user', path: 'C:\\Users\\alice\\.happier\\services\\dev.happier.stack.exp.ps1' },
-      { mode: 'system', path: 'C:\\ProgramData\\happier\\services\\dev.happier.stack.exp.ps1' },
+      { mode: 'user', path: 'C:\\Users\\alice\\.piggercode\\services\\dev.happier.stack.exp.ps1' },
+      { mode: 'system', path: 'C:\\ProgramData\\piggercode\\services\\dev.happier.stack.exp.ps1' },
     ],
   );
 });

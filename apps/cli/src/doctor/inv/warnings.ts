@@ -14,7 +14,7 @@ function buildRepairRecommendedWarning(actionCount: number): DoctorWarning {
     message: actionCount === 1
       ? 'Automatic startup repair is recommended for this installation.'
       : `Automatic startup repair is recommended (${actionCount} actions).`,
-    repairCommands: ['happier doctor repair --yes'],
+    repairCommands: ['piggercode doctor repair --yes'],
   };
 }
 
@@ -23,7 +23,7 @@ function buildManualRepairWarning(message: string): DoctorWarning {
     code: 'backgroundServiceRepairManual',
     severity: 'warning',
     message,
-    repairCommands: ['happier doctor repair'],
+    repairCommands: ['piggercode doctor repair'],
   };
 }
 
@@ -44,9 +44,9 @@ function buildRunningDaemonMismatchWarning(params: Readonly<{
   }
 
   const repairCommands = daemon.serviceManaged === true
-    ? ['happier doctor repair']
+    ? ['piggercode doctor repair']
     : daemon.serviceManaged === false
-      ? ['happier daemon restart']
+      ? ['piggercode daemon restart']
       : [];
 
   return {

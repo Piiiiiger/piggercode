@@ -520,12 +520,12 @@ describe('sessionScanner', () => {
         JSON.stringify({
           type: 'assistant',
           uuid: 'already_committed',
-          message: { role: 'assistant', content: [{ type: 'text', text: 'already in Happier' }] },
+          message: { role: 'assistant', content: [{ type: 'text', text: 'already in PiggerCode' }] },
         }),
         JSON.stringify({
           type: 'assistant',
           uuid: 'missing_during_runner_restart',
-          message: { role: 'assistant', content: [{ type: 'text', text: 'missing from Happier' }] },
+          message: { role: 'assistant', content: [{ type: 'text', text: 'missing from PiggerCode' }] },
         }),
       ].join('\n') + '\n',
     )

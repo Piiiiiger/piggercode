@@ -347,7 +347,7 @@ describe('capabilities.invoke pre-session catalogs', () => {
     });
   }, 180_000);
 
-  it('discovers cwd-scoped Codex skills without creating a provider thread or Happier session', async () => {
+  it('discovers cwd-scoped Codex skills without creating a provider thread or PiggerCode session', async () => {
     await withTempDir('preflight-catalogs-', async (cwd) => {
       const { call } = createEncryptedRpcTestClient({
         scopePrefix: 'machine-catalog-test',

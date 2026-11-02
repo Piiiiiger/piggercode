@@ -71,7 +71,7 @@ const {
         runtimeId: 'runtime-123',
         startupSource: 'background-service',
         serviceManaged: true,
-        serviceLabel: 'com.happier.cli.daemon.default',
+        serviceLabel: 'com.piggercode.cli.daemon.default',
       },
       service: {
         installed: true,
@@ -98,7 +98,7 @@ const {
     startedWithPublicReleaseChannel: 'preview',
     startupSource: 'background-service',
     serviceManaged: true,
-    serviceLabel: 'com.happier.cli.daemon.default',
+    serviceLabel: 'com.piggercode.cli.daemon.default',
     runtimeId: 'runtime-123',
   })),
   readSettingsMock: vi.fn(async () => ({
@@ -127,9 +127,9 @@ vi.mock('@/configuration', () => ({
     publicServerUrl: 'https://relay.example.test',
     webappUrl: 'https://app.example.test',
     publicReleaseRing: 'stable',
-    happyHomeDir: '/tmp/user/.happier',
-    logsDir: '/tmp/user/.happier/logs',
-    daemonStateFile: '/tmp/user/.happier/daemon.state.json',
+    happyHomeDir: '/tmp/user/.piggercode',
+    logsDir: '/tmp/user/.piggercode/logs',
+    daemonStateFile: '/tmp/user/.piggercode/daemon.state.json',
     currentCliVersion: '9.9.9',
   },
 }));
@@ -178,7 +178,7 @@ describe('doctor cleanup ownership summary', () => {
       expect(output.text()).toContain('Local relay installs:');
       expect(output.text()).toContain('http://127.0.0.1:4400');
       expect(output.text()).toContain('Current status:');
-      expect(output.text()).toContain('happier doctor repair');
+      expect(output.text()).toContain('piggercode doctor repair');
       expect(readDaemonStateMock).not.toHaveBeenCalled();
       expect(checkIfDaemonRunningAndCleanupStaleStateMock).not.toHaveBeenCalled();
     } finally {

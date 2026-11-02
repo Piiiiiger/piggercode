@@ -333,7 +333,7 @@ describe('detectCliSnapshotOnDaemonPath', () => {
       const originalBunDescriptor = Object.getOwnPropertyDescriptor(process.versions, 'bun');
       Object.defineProperty(process, 'execPath', {
         configurable: true,
-        value: '/Applications/Happier.app/Contents/MacOS/happier',
+        value: '/Applications/PiggerCode.app/Contents/MacOS/happier',
       });
       Object.defineProperty(process.versions, 'bun', {
         configurable: true,

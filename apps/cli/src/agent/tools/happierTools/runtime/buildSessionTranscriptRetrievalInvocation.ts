@@ -74,7 +74,7 @@ export function buildSessionTranscriptRetrievalInvocation(params: Readonly<{
     '--directory',
     params.directory,
     '--source',
-    'happier',
+    'piggercode',
     '--tool',
     toolName,
     '--args-json',

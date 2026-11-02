@@ -123,14 +123,14 @@ describe('authorizeFilesystemPath', () => {
     symlinkSync(realRoot, aliasRoot);
 
     const result = authorizeFilesystemPath({
-      targetPath: join(aliasRoot, '.happier', 'uploads', 'generated'),
+      targetPath: join(aliasRoot, '.piggercode', 'uploads', 'generated'),
       defaultDirectory: aliasRoot,
       accessPolicy: { kind: 'restrictedRoots', roots: [aliasRoot] },
     });
 
     expect(result).toEqual({
       valid: true,
-      resolvedPath: join(aliasRoot, '.happier', 'uploads', 'generated'),
+      resolvedPath: join(aliasRoot, '.piggercode', 'uploads', 'generated'),
     });
   });
 
@@ -191,7 +191,7 @@ describe('prepareFilesystemPathAuthorizer', () => {
       defaultDirectory: aliasRoot,
       accessPolicy: { kind: 'restrictedRoots', roots: [aliasRoot] },
     });
-    const targetPath = join(aliasRoot, '.happier', 'uploads', 'generated');
+    const targetPath = join(aliasRoot, '.piggercode', 'uploads', 'generated');
 
     await expect(authorizePath(targetPath)).resolves.toEqual({
       valid: true,

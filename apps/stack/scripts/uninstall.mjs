@@ -44,7 +44,7 @@ async function main() {
         '',
         'notes:',
         '  - default removes: runtime, shims, cache, SwiftBar assets + plugin files, and LaunchAgent services',
-        '  - stacks under ~/.happier/stacks are kept unless --remove-stacks is provided',
+        '  - stacks under ~/.piggercode/stacks are kept unless --remove-stacks is provided',
       ].join('\n'),
     });
     return;

@@ -608,7 +608,7 @@ await server.connect(new StdioServerTransport());
               && e.kind === 'tool-call',
           ) as Array<{ payload?: any }>;
           const toolNames = relevant.map((e) => String(e.payload?.name ?? '')).filter(Boolean);
-          const allowed = new Set(['Read', 'ToolSearch', 'mcp__happier__change_title']);
+          const allowed = new Set(['Read', 'ToolSearch', 'mcp__piggercode__change_title']);
           const unexpected = toolNames.filter((name) => !allowed.has(name));
           if (unexpected.length > 0) {
             throw new Error(`Unexpected tool call(s) during read_known_file: ${unexpected.join(', ')}`);
@@ -2161,8 +2161,8 @@ await server.connect(new StdioServerTransport());
           `Note: current working directory is ${workspaceDir}`,
         ].join('\n'),
       requiredAnyFixtureKeys: [
-        [`acp/${pid}/tool-call/change_title`, `acp/${pid}/tool-call/mcp__happier__change_title`],
-        [`acp/${pid}/tool-result/change_title`, `acp/${pid}/tool-result/mcp__happier__change_title`],
+        [`acp/${pid}/tool-call/change_title`, `acp/${pid}/tool-call/mcp__piggercode__change_title`],
+        [`acp/${pid}/tool-result/change_title`, `acp/${pid}/tool-result/mcp__piggercode__change_title`],
       ],
       requiredTraceSubstrings: [title],
     };

@@ -11,7 +11,7 @@ import {
 } from './settingsGuard';
 
 const tempRoots: string[] = [];
-const lockDirName = '.happier-tui-control.lock';
+const lockDirName = '.piggercode-tui-control.lock';
 const journalFileName = 'settings-journal.json';
 
 async function makeTempDir(prefix: string): Promise<string> {

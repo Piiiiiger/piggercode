@@ -30,7 +30,7 @@ vi.mock('node:child_process', async (importOriginal) => ({
 }));
 
 function isHappierTaskFolderListing(command: string, args: readonly string[] | undefined): boolean {
-  return command === 'powershell.exe' && Boolean(args?.some((arg) => arg.includes('.GetFolder("\\Happier")')));
+  return command === 'powershell.exe' && Boolean(args?.some((arg) => arg.includes('.GetFolder("\\PiggerCode")')));
 }
 
 function happierTaskFolderListing(taskPaths: readonly string[]) {
@@ -59,23 +59,23 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     const error = Object.assign(new Error('cannot enumerate services'), { code });
     readdirSyncMock.mockImplementationOnce(() => { throw error; });
     await expect(discoverInstalledDaemonServiceEntries({
-      platform: 'linux', userHomeDir: '/unused', happierHomeDir: '/unused/.happier', mode: 'user', serversById: {},
+      platform: 'linux', userHomeDir: '/unused', happierHomeDir: '/unused/.piggercode', mode: 'user', serversById: {},
     })).rejects.toMatchObject({ code: 'service_inventory_unavailable', cause: error });
   });
 
   it.each(['linux', 'darwin', 'win32'] as const)('requires readable %s definitions to prove installation while optional metadata remains unknown', (platform) => {
     const cause = Object.assign(new Error('cannot read service definition'), { code: 'EACCES' });
     readFileSyncMock.mockImplementation(() => { throw cause; });
-    expect(() => isValidInstalledDaemonServiceFile({ platform, path: '/unused', expectedLabel: 'happier-daemon.default' }))
+    expect(() => isValidInstalledDaemonServiceFile({ platform, path: '/unused', expectedLabel: 'piggercode-daemon.default' }))
       .toThrow(expect.objectContaining({ code: 'service_inventory_unavailable', cause }));
     expect(readInstalledDaemonServiceAutostartMode({ platform, path: '/unused' })).toBeNull();
-    const installedPath = platform === 'linux' ? '/unused/happier-daemon.default.service'
-      : platform === 'darwin' ? '/unused/com.happier.cli.daemon.default.plist'
-      : '/unused/happier-daemon.default.ps1';
+    const installedPath = platform === 'linux' ? '/unused/piggercode-daemon.default.service'
+      : platform === 'darwin' ? '/unused/com.piggercode.cli.daemon.default.plist'
+      : '/unused/piggercode-daemon.default.ps1';
     expect(readInstalledDaemonServiceTargetMode({ platform, path: installedPath })).toBeNull();
 
     readFileSyncMock.mockImplementation(() => { throw Object.assign(new Error('missing'), { code: 'ENOENT' }); });
-    expect(isValidInstalledDaemonServiceFile({ platform, path: '/unused', expectedLabel: 'happier-daemon.default' })).toBe(false);
+    expect(isValidInstalledDaemonServiceFile({ platform, path: '/unused', expectedLabel: 'piggercode-daemon.default' })).toBe(false);
   });
 
   it.each(['daemon-start', 'service-install', 'self-update'] as const)('names unknown inventory before %s can change services', async (operation) => {
@@ -95,17 +95,17 @@ describe('discoverInstalledDaemonServiceEntries', () => {
   it('reports a missing service directory as an empty inventory', async () => {
     readdirSyncMock.mockImplementationOnce(() => { throw Object.assign(new Error('missing'), { code: 'ENOENT' }); });
     await expect(discoverInstalledDaemonServiceEntries({
-      platform: 'linux', userHomeDir: '/unused', happierHomeDir: '/unused/.happier', mode: 'user', serversById: {},
+      platform: 'linux', userHomeDir: '/unused', happierHomeDir: '/unused/.piggercode', mode: 'user', serversById: {},
     })).resolves.toEqual([]);
   });
 
   it('propagates a Windows task enumeration error rather than losing services with missing wrappers', async () => {
     await withTempDir('happier-discover-task-error-', async (homeDir) => {
-      mkdirSync(join(homeDir, '.happier', 'services'), { recursive: true });
+      mkdirSync(join(homeDir, '.piggercode', 'services'), { recursive: true });
       const error = Object.assign(new Error('cannot enumerate scheduled tasks'), { code: 'EACCES' });
       spawnSyncMock.mockReturnValueOnce({ status: null, error, stdout: '', stderr: '' } as never);
       await expect(discoverInstalledDaemonServiceEntries({
-        platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.happier'), mode: 'user', serversById: {},
+        platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.piggercode'), mode: 'user', serversById: {},
       })).rejects.toMatchObject({ code: 'service_inventory_unavailable', cause: error });
     });
   });
@@ -114,12 +114,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     await withTempDir('happier-discover-service-entry-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
       mkdirSync(servicesDir, { recursive: true });
-      const path = join(servicesDir, 'happier-daemon.env_9675c02.service');
+      const path = join(servicesDir, 'piggercode-daemon.env_9675c02.service');
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_ACTIVE_SERVER_ID: 'cloud',
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -133,7 +133,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {
           cloud: {
@@ -162,12 +162,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     await withTempDir('happier-discover-service-entry-pinned-default-segment-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
       mkdirSync(servicesDir, { recursive: true });
-      const path = join(servicesDir, 'happier-daemon.default.service');
+      const path = join(servicesDir, 'piggercode-daemon.default.service');
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_ACTIVE_SERVER_ID: 'default',
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -182,7 +182,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: { default: { name: 'Default', serverUrl: 'https://relay.example.test' } },
       });
@@ -197,12 +197,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     await withTempDir('happier-discover-service-entry-pinned-active-profile-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
       mkdirSync(servicesDir, { recursive: true });
-      const path = join(servicesDir, 'happier-daemon.service-instance.service');
+      const path = join(servicesDir, 'piggercode-daemon.service-instance.service');
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_ACTIVE_SERVER_ID: 'company-profile',
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -217,7 +217,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {
           'company-profile': {
@@ -250,13 +250,13 @@ describe('discoverInstalledDaemonServiceEntries', () => {
      */
     it('reads the darwin login trigger from RunAtLoad, not from the recorded declaration', async () => {
       await withTempDir('happier-autostart-darwin-runatload-', async (homeDir) => {
-        const path = join(homeDir, 'Library', 'LaunchAgents', 'com.happier.cli.daemon.default.plist');
+        const path = join(homeDir, 'Library', 'LaunchAgents', 'com.piggercode.cli.daemon.default.plist');
         mkdirSync(join(homeDir, 'Library', 'LaunchAgents'), { recursive: true });
         writeFileSync(
           path,
           buildLaunchdPlistXml({
-            label: 'com.happier.cli.daemon.default',
-            programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            label: 'com.piggercode.cli.daemon.default',
+            programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_AUTOSTART: 'at-login',
@@ -275,13 +275,13 @@ describe('discoverInstalledDaemonServiceEntries', () => {
 
     it('reads an at-login darwin definition from RunAtLoad', async () => {
       await withTempDir('happier-autostart-darwin-runatload-login-', async (homeDir) => {
-        const path = join(homeDir, 'Library', 'LaunchAgents', 'com.happier.cli.daemon.default.plist');
+        const path = join(homeDir, 'Library', 'LaunchAgents', 'com.piggercode.cli.daemon.default.plist');
         mkdirSync(join(homeDir, 'Library', 'LaunchAgents'), { recursive: true });
         writeFileSync(
           path,
           buildLaunchdPlistXml({
-            label: 'com.happier.cli.daemon.default',
-            programArgs: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+            label: 'com.piggercode.cli.daemon.default',
+            programArgs: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_AUTOSTART: 'on-demand',
@@ -310,12 +310,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
      */
     it('keeps the recorded declaration on win32', async () => {
       await withTempDir('happier-autostart-win32-declaration-', async (homeDir) => {
-        const path = join(homeDir, '.happier', 'services', 'happier-daemon.default.ps1');
-        mkdirSync(join(homeDir, '.happier', 'services'), { recursive: true });
+        const path = join(homeDir, '.piggercode', 'services', 'piggercode-daemon.default.ps1');
+        mkdirSync(join(homeDir, '.piggercode', 'services'), { recursive: true });
         writeFileSync(
           path,
           renderWindowsScheduledTaskWrapperPs1({
-            programArgs: ['C:\\Users\\test\\.happier\\cli\\current\\happier.exe', 'daemon', 'start-sync'],
+            programArgs: ['C:\\Users\\test\\.piggercode\\cli\\current\\piggercode.exe', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
               PIGGERCODE_DAEMON_SERVICE_AUTOSTART: 'on-demand',
@@ -332,12 +332,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
 
     it('keeps the recorded declaration on linux', async () => {
       await withTempDir('happier-autostart-linux-declaration-', async (homeDir) => {
-        const path = join(homeDir, '.config', 'systemd', 'user', 'happier-daemon.default.service');
+        const path = join(homeDir, '.config', 'systemd', 'user', 'piggercode-daemon.default.service');
         mkdirSync(join(homeDir, '.config', 'systemd', 'user'), { recursive: true });
         writeFileSync(
           path,
           renderSystemdServiceUnit({
-            description: 'Happier CLI daemon (default)',
+            description: 'PiggerCode CLI daemon (default)',
             execStart: ['/usr/local/bin/happier', 'daemon', 'start-sync'],
             env: {
               PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -358,7 +358,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const servicesDir = join(homeDir, 'Library', 'LaunchAgents');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
-        join(servicesDir, 'com.happier.cli.daemon.default.plist'),
+        join(servicesDir, 'com.piggercode.cli.daemon.default.plist'),
         '# installed background service',
         'utf-8',
       );
@@ -366,7 +366,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'darwin',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -375,27 +375,27 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     });
   });
 
-  it('accepts legacy darwin launch agents installed by older Happier installers without startup-source metadata', async () => {
+  it('accepts legacy darwin launch agents installed by older PiggerCode installers without startup-source metadata', async () => {
     await withTempDir('happier-discover-service-entry-darwin-legacy-', async (homeDir) => {
       const servicesDir = join(homeDir, 'Library', 'LaunchAgents');
-      const path = join(servicesDir, 'com.happier.cli.daemon.default.plist');
+      const path = join(servicesDir, 'com.piggercode.cli.daemon.default.plist');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
         path,
         buildLaunchdPlistXml({
-          label: 'com.happier.cli.daemon.default',
+          label: 'com.piggercode.cli.daemon.default',
           programArgs: [
-            '/Users/tester/.happier/cli/current/happier',
+            '/Users/tester/.piggercode/cli/current/happier',
             'daemon',
             'start-sync',
           ],
           env: {
-            PIGGERCODE_HOME_DIR: '/Users/tester/.happier',
+            PIGGERCODE_HOME_DIR: '/Users/tester/.piggercode',
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
           },
-          stdoutPath: '/tmp/happier-daemon.log',
-          stderrPath: '/tmp/happier-daemon.log',
+          stdoutPath: '/tmp/piggercode-daemon.log',
+          stderrPath: '/tmp/piggercode-daemon.log',
         }),
         'utf-8',
       );
@@ -403,7 +403,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'darwin',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -412,7 +412,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: '/Users/tester/.happier',
+          happierHomeDir: '/Users/tester/.piggercode',
           targetMode: 'default-following',
           releaseChannel: 'stable',
           path,
@@ -421,14 +421,14 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     });
   });
 
-  it('ignores linux units that declare background-service startup without launching happier daemon start-sync', async () => {
+  it('ignores linux units that declare background-service startup without launching piggercode daemon start-sync', async () => {
     await withTempDir('happier-discover-service-entry-linux-invalid-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
-        join(servicesDir, 'happier-daemon.default.service'),
+        join(servicesDir, 'piggercode-daemon.default.service'),
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: ['/usr/bin/env', 'bash', '-lc', 'echo not-happier'],
           env: {
             PIGGERCODE_DAEMON_STARTUP_SOURCE: 'background-service',
@@ -442,7 +442,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -454,12 +454,12 @@ describe('discoverInstalledDaemonServiceEntries', () => {
   it('accepts linux units that launch daemon start-sync through the package-dist node entrypoint', async () => {
     await withTempDir('happier-discover-service-entry-linux-package-dist-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
-      const path = join(servicesDir, 'happier-daemon.default.service');
+      const path = join(servicesDir, 'piggercode-daemon.default.service');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: [
             '/usr/bin/node',
             '/Users/tester/happier/apps/cli/package-dist/index.mjs',
@@ -479,7 +479,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -497,23 +497,23 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     });
   });
 
-  it('accepts legacy linux units installed by older Happier installers without startup-source metadata', async () => {
+  it('accepts legacy linux units installed by older PiggerCode installers without startup-source metadata', async () => {
     await withTempDir('happier-discover-service-entry-linux-legacy-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
-      const path = join(servicesDir, 'happier-daemon.default.service');
+      const path = join(servicesDir, 'piggercode-daemon.default.service');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: [
-            '/home/tester/.happier/tools/js-runtime/current/bin/happier-js-runtime',
-            '/home/tester/.happier/cli-dev/versions/0.2.3-dev.36.1/package-dist/index.mjs',
+            '/home/tester/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
+            '/home/tester/.piggercode/cli-dev/versions/0.2.3-dev.36.1/package-dist/index.mjs',
             'daemon',
             'start-sync',
           ],
           env: {
-            PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+            PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'dev',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
           },
@@ -525,7 +525,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -534,7 +534,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           targetMode: 'default-following',
           releaseChannel: 'publicdev',
           path,
@@ -546,20 +546,20 @@ describe('discoverInstalledDaemonServiceEntries', () => {
   it('accepts raw legacy linux daemon units installed before default-following unit names', async () => {
     await withTempDir('happier-discover-service-entry-linux-raw-legacy-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
-      const path = join(servicesDir, 'happier-daemon.service');
+      const path = join(servicesDir, 'piggercode-daemon.service');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: [
-            '/home/tester/.happier/tools/js-runtime/current/bin/happier-js-runtime',
-            '/home/tester/.happier/cli-preview/versions/0.2.2-preview.1/package-dist/index.mjs',
+            '/home/tester/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
+            '/home/tester/.piggercode/cli-preview/versions/0.2.2-preview.1/package-dist/index.mjs',
             'daemon',
             'start-sync',
           ],
           env: {
-            PIGGERCODE_HOME_DIR: '/home/tester/.happier',
+            PIGGERCODE_HOME_DIR: '/home/tester/.piggercode',
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
           },
@@ -571,7 +571,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -580,10 +580,10 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: '/home/tester/.happier',
+          happierHomeDir: '/home/tester/.piggercode',
           targetMode: 'default-following',
           releaseChannel: 'preview',
-          label: 'happier-daemon',
+          label: 'piggercode-daemon',
           path,
         }),
       ]);
@@ -593,22 +593,22 @@ describe('discoverInstalledDaemonServiceEntries', () => {
   it('unquotes systemd Environment values so discovered metadata does not include surrounding quotes', async () => {
     await withTempDir('happier-discover-service-entry-linux-quoted-env-', async (homeDir) => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
-      const path = join(servicesDir, 'happier-daemon.default.service');
+      const path = join(servicesDir, 'piggercode-daemon.default.service');
       mkdirSync(servicesDir, { recursive: true });
 
       writeFileSync(
         path,
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
+          description: 'PiggerCode Daemon',
           execStart: [
-            '/home/tester/.happier/tools/js-runtime/current/bin/happier-js-runtime',
-            '/home/tester/.happier/cli-preview/versions/0.2.2-preview.1/package-dist/index.mjs',
+            '/home/tester/.piggercode/tools/js-runtime/current/bin/happier-js-runtime',
+            '/home/tester/.piggercode/cli-preview/versions/0.2.2-preview.1/package-dist/index.mjs',
             'daemon',
             'start-sync',
           ],
           env: {
             // Contains a space, so the systemd renderer will quote it.
-            PIGGERCODE_HOME_DIR: '/home/tester/My Happier/.happier',
+            PIGGERCODE_HOME_DIR: '/home/tester/My PiggerCode/.piggercode',
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
           },
@@ -620,14 +620,14 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
 
       expect(entries).toEqual([
         expect.objectContaining({
-          happierHomeDir: '/home/tester/My Happier/.happier',
+          happierHomeDir: '/home/tester/My PiggerCode/.piggercode',
           path,
         }),
       ]);
@@ -639,10 +639,10 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const servicesDir = join(homeDir, '.config', 'systemd', 'user');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
-        join(servicesDir, 'happier-daemon.default.service'),
+        join(servicesDir, 'piggercode-daemon.default.service'),
         renderSystemdServiceUnit({
-          description: 'Happier Daemon',
-          execStart: ['/Users/tester/.happier/cli/current/happier', 'daemon', 'start-sync'],
+          description: 'PiggerCode Daemon',
+          execStart: ['/Users/tester/.piggercode/cli/current/happier', 'daemon', 'start-sync'],
           env: {
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'stable',
           },
@@ -654,7 +654,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'linux',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -663,27 +663,27 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     });
   });
 
-  it('accepts legacy Windows wrappers installed by older Happier installers without startup-source metadata', async () => {
+  it('accepts legacy Windows wrappers installed by older PiggerCode installers without startup-source metadata', async () => {
     await withTempDir('happier-discover-service-entry-windows-legacy-', async (homeDir) => {
-      const servicesDir = join(homeDir, '.happier', 'services');
-      const path = join(servicesDir, 'happier-daemon.default.ps1');
+      const servicesDir = join(homeDir, '.piggercode', 'services');
+      const path = join(servicesDir, 'piggercode-daemon.default.ps1');
       mkdirSync(servicesDir, { recursive: true });
       writeFileSync(
         path,
         renderWindowsScheduledTaskWrapperPs1({
           workingDirectory: 'C:\\Users\\tester',
           programArgs: [
-            'C:\\Users\\tester\\.happier\\cli\\current\\happier.exe',
+            'C:\\Users\\tester\\.piggercode\\cli\\current\\piggercode.exe',
             'daemon',
             'start-sync',
           ],
           env: {
-            PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.happier',
+            PIGGERCODE_HOME_DIR: 'C:\\Users\\tester\\.piggercode',
             PIGGERCODE_PUBLIC_RELEASE_CHANNEL: 'preview',
             PIGGERCODE_DAEMON_SERVICE_TARGET_MODE: 'default-following',
           },
-          stdoutPath: 'C:\\Users\\tester\\.happier\\logs\\daemon-service.out.log',
-          stderrPath: 'C:\\Users\\tester\\.happier\\logs\\daemon-service.err.log',
+          stdoutPath: 'C:\\Users\\tester\\.piggercode\\logs\\daemon-service.out.log',
+          stderrPath: 'C:\\Users\\tester\\.piggercode\\logs\\daemon-service.err.log',
         }),
         'utf-8',
       );
@@ -691,7 +691,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
       const entries = await discoverInstalledDaemonServiceEntries({
         platform: 'win32',
         userHomeDir: homeDir,
-        happierHomeDir: join(homeDir, '.happier'),
+        happierHomeDir: join(homeDir, '.piggercode'),
         mode: 'user',
         serversById: {},
       });
@@ -700,7 +700,7 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: 'C:\\Users\\tester\\.happier',
+          happierHomeDir: 'C:\\Users\\tester\\.piggercode',
           targetMode: 'default-following',
           releaseChannel: 'preview',
           path,
@@ -711,25 +711,25 @@ describe('discoverInstalledDaemonServiceEntries', () => {
 
   it('discovers Windows scheduled tasks even when the wrapper file is missing', async () => {
     await withTempDir('happier-discover-service-entry-windows-orphaned-task-', async (homeDir) => {
-      const happierHomeDir = join(homeDir, '.happier');
+      const happierHomeDir = join(homeDir, '.piggercode');
       mkdirSync(join(happierHomeDir, 'services'), { recursive: true });
 
       spawnSyncMock.mockImplementation((command, args) => {
         if (isHappierTaskFolderListing(command, args)) {
-          return happierTaskFolderListing(['\\Happier\\happier-daemon.default']);
+          return happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.default']);
         }
         if (command !== 'schtasks') {
           return { status: 1, stdout: '', stderr: '' } as never;
         }
         const normalizedArgs = Array.isArray(args) ? args.map((value) => String(value)) : [];
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /XML') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /XML') {
           return {
             status: 0,
             stdout: `
               <Task>
                 <Actions>
                   <Exec>
-                    <Arguments>-NoProfile -ExecutionPolicy Bypass -File "C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1"</Arguments>
+                    <Arguments>-NoProfile -ExecutionPolicy Bypass -File "C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.default.ps1"</Arguments>
                   </Exec>
                 </Actions>
               </Task>
@@ -752,11 +752,11 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: 'C:\\Users\\tester\\.happier',
+          happierHomeDir: 'C:\\Users\\tester\\.piggercode',
           targetMode: 'default-following',
           releaseChannel: 'stable',
-          label: 'Happier\\happier-daemon.default',
-          path: 'C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1',
+          label: 'PiggerCode\\piggercode-daemon.default',
+          path: 'C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.default.ps1',
         }),
       ]);
       expect(ranFullScheduledTaskEnumeration()).toBe(false);
@@ -765,30 +765,30 @@ describe('discoverInstalledDaemonServiceEntries', () => {
 
   it('uses schtasks LIST fallback wrapper path when XML task export is unavailable', async () => {
     await withTempDir('happier-discover-service-entry-windows-list-fallback-', async (homeDir) => {
-      const happierHomeDir = join(homeDir, '.happier');
+      const happierHomeDir = join(homeDir, '.piggercode');
       mkdirSync(join(happierHomeDir, 'services'), { recursive: true });
 
       spawnSyncMock.mockImplementation((command, args) => {
         if (isHappierTaskFolderListing(command, args)) {
-          return happierTaskFolderListing(['\\Happier\\happier-daemon.default']);
+          return happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.default']);
         }
         if (command !== 'schtasks') {
           return { status: 1, stdout: '', stderr: '' } as never;
         }
         const normalizedArgs = Array.isArray(args) ? args.map((value) => String(value)) : [];
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /XML') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /XML') {
           return {
             status: 1,
             stdout: '',
             stderr: 'xml unavailable',
           } as never;
         }
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /FO LIST /V') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /FO LIST /V') {
           return {
             status: 0,
             stdout: [
-              'TaskName: Happier\\happier-daemon.default',
-              'Task To Run: powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\\Users\\tester\\.happier-l21-alt\\services\\happier-daemon.default.ps1"',
+              'TaskName: PiggerCode\\piggercode-daemon.default',
+              'Task To Run: powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\\Users\\tester\\.piggercode-l21-alt\\services\\piggercode-daemon.default.ps1"',
               '',
             ].join('\r\n'),
             stderr: '',
@@ -809,11 +809,11 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         expect.objectContaining({
           serverId: 'default',
           name: 'Default automatic startup',
-          happierHomeDir: 'C:\\Users\\tester\\.happier-l21-alt',
+          happierHomeDir: 'C:\\Users\\tester\\.piggercode-l21-alt',
           targetMode: 'default-following',
           releaseChannel: 'stable',
-          label: 'Happier\\happier-daemon.default',
-          path: 'C:\\Users\\tester\\.happier-l21-alt\\services\\happier-daemon.default.ps1',
+          label: 'PiggerCode\\piggercode-daemon.default',
+          path: 'C:\\Users\\tester\\.piggercode-l21-alt\\services\\piggercode-daemon.default.ps1',
         }),
       ]);
     });
@@ -821,25 +821,25 @@ describe('discoverInstalledDaemonServiceEntries', () => {
 
   it('names an unreadable Windows task instead of claiming an empty inventory', async () => {
     await withTempDir('happier-discover-service-entry-windows-unresolved-task-', async (homeDir) => {
-      const happierHomeDir = join(homeDir, '.happier');
+      const happierHomeDir = join(homeDir, '.piggercode');
       mkdirSync(join(happierHomeDir, 'services'), { recursive: true });
 
       spawnSyncMock.mockImplementation((command, args) => {
         if (isHappierTaskFolderListing(command, args)) {
-          return happierTaskFolderListing(['\\Happier\\happier-daemon.default']);
+          return happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.default']);
         }
         if (command !== 'schtasks') {
           return { status: 1, stdout: '', stderr: '' } as never;
         }
         const normalizedArgs = Array.isArray(args) ? args.map((value) => String(value)) : [];
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /XML') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /XML') {
           return {
             status: 1,
             stdout: '',
             stderr: 'xml unavailable',
           } as never;
         }
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /FO LIST /V') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /FO LIST /V') {
           return {
             status: 1,
             stdout: '',
@@ -855,46 +855,46 @@ describe('discoverInstalledDaemonServiceEntries', () => {
         happierHomeDir,
         mode: 'user',
         serversById: {},
-      })).rejects.toMatchObject({ code: 'service_inventory_unavailable', message: expect.stringContaining('happier-daemon.default') });
+      })).rejects.toMatchObject({ code: 'service_inventory_unavailable', message: expect.stringContaining('piggercode-daemon.default') });
     });
   });
 
   it('enumerates Scheduler without a local wrapper directory and retains foreign tasks', async () => {
     await withTempDir('happier-discover-task-no-directory-', async (homeDir) => {
-      const wrapper = String.raw`C:\Other\.happier\services\happier-daemon.company.ps1`;
+      const wrapper = String.raw`C:\Other\.piggercode\services\piggercode-daemon.company.ps1`;
       spawnSyncMock.mockImplementation((command, args) => (isHappierTaskFolderListing(command, args)
-        ? happierTaskFolderListing(['\\Happier\\happier-daemon.company'])
+        ? happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.company'])
         : { status: 0, stdout: args?.includes('/XML') ? `<Task><Actions><Exec><Arguments>-File "${wrapper}"</Arguments></Exec></Actions></Task>` : '', stderr: '' } as never));
-      const entries = await discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.happier'), mode: 'user', serversById: {} });
+      const entries = await discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.piggercode'), mode: 'user', serversById: {} });
       expect(entries).toEqual([expect.objectContaining({ serverId: 'company', path: wrapper })]);
     });
   });
 
   it('names the task when the OS process boundary throws during inspection', async () => {
     readdirSyncMock.mockReturnValue([]);
-    spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\Happier\\happier-daemon.company']))
+    spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.company']))
       .mockImplementationOnce(() => { throw new Error('OS process unavailable'); });
-    await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.happier', mode: 'user', serversById: {} }))
-      .rejects.toMatchObject({ code: 'service_inventory_unavailable', message: expect.stringContaining('happier-daemon.company') });
+    await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.piggercode', mode: 'user', serversById: {} }))
+      .rejects.toMatchObject({ code: 'service_inventory_unavailable', message: expect.stringContaining('piggercode-daemon.company') });
   });
 
   it('omits a task only after a successful Scheduler enumeration proves it disappeared', async () => {
     await withTempDir('happier-discover-task-disappeared-', async (homeDir) => {
-      mkdirSync(join(homeDir, '.happier', 'services'), { recursive: true });
-      spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\Happier\\happier-daemon.company']))
+      mkdirSync(join(homeDir, '.piggercode', 'services'), { recursive: true });
+      spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.company']))
         .mockReturnValueOnce({ status: 1, stdout: '', stderr: 'not found' } as never)
         .mockReturnValueOnce({ status: 1, stdout: '', stderr: 'not found' } as never)
         .mockReturnValueOnce(happierTaskFolderListing([]));
-      await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.happier'), mode: 'user', serversById: {} })).resolves.toEqual([]);
+      await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.piggercode'), mode: 'user', serversById: {} })).resolves.toEqual([]);
       expect(ranFullScheduledTaskEnumeration()).toBe(false);
     });
   });
 
-  it('reports an unreadable Happier task folder instead of an empty inventory', async () => {
+  it('reports an unreadable PiggerCode task folder instead of an empty inventory', async () => {
     await withTempDir('happier-discover-task-folder-unreadable-', async (homeDir) => {
-      mkdirSync(join(homeDir, '.happier', 'services'), { recursive: true });
+      mkdirSync(join(homeDir, '.piggercode', 'services'), { recursive: true });
       spawnSyncMock.mockReturnValueOnce({ status: 1, stdout: '', stderr: 'Access is denied.' } as never);
-      await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.happier'), mode: 'user', serversById: {} }))
+      await expect(discoverInstalledDaemonServiceEntries({ platform: 'win32', userHomeDir: homeDir, happierHomeDir: join(homeDir, '.piggercode'), mode: 'user', serversById: {} }))
         .rejects.toMatchObject({ code: 'service_inventory_unavailable' });
     });
   });
@@ -903,44 +903,44 @@ describe('discoverInstalledDaemonServiceEntries', () => {
     readdirSyncMock.mockReturnValue([]);
     spawnSyncMock.mockReturnValueOnce({ status: 0, stdout, stderr: '' } as never);
     await expect(discoverInstalledDaemonServiceEntries({
-      platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.happier', mode: 'user', serversById: {},
+      platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.piggercode', mode: 'user', serversById: {},
     })).rejects.toMatchObject({ code: 'service_inventory_unavailable' });
   });
 
   it('does not infer a task disappeared from blank output after its detail reads failed', async () => {
     readdirSyncMock.mockReturnValue([]);
-    spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\Happier\\happier-daemon.company']))
+    spawnSyncMock.mockReturnValueOnce(happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.company']))
       .mockReturnValueOnce({ status: 1, stdout: '', stderr: 'not found' } as never)
       .mockReturnValueOnce({ status: 1, stdout: '', stderr: 'not found' } as never)
       .mockReturnValueOnce({ status: 0, stdout: '', stderr: '' } as never);
     await expect(discoverInstalledDaemonServiceEntries({
-      platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.happier', mode: 'user', serversById: {},
+      platform: 'win32', userHomeDir: '/unused', happierHomeDir: '/unused/.piggercode', mode: 'user', serversById: {},
     })).rejects.toMatchObject({ code: 'service_inventory_unavailable' });
   });
 
   it('applies a timeout to Windows schtasks discovery calls', async () => {
     await withTempDir('happier-discover-service-entry-windows-timeout-', async (homeDir) => {
-      const happierHomeDir = join(homeDir, '.happier');
+      const happierHomeDir = join(homeDir, '.piggercode');
       mkdirSync(join(happierHomeDir, 'services'), { recursive: true });
 
       const observedTimeouts: number[] = [];
       spawnSyncMock.mockImplementation((command, args, options) => {
         observedTimeouts.push(Number((options as { timeout?: number } | undefined)?.timeout ?? 0));
         if (isHappierTaskFolderListing(command, args)) {
-          return happierTaskFolderListing(['\\Happier\\happier-daemon.default']);
+          return happierTaskFolderListing(['\\PiggerCode\\piggercode-daemon.default']);
         }
         if (command !== 'schtasks') {
           return { status: 1, stdout: '', stderr: '' } as never;
         }
         const normalizedArgs = Array.isArray(args) ? args.map((value) => String(value)) : [];
-        if (normalizedArgs.join(' ') === '/Query /TN Happier\\happier-daemon.default /XML') {
+        if (normalizedArgs.join(' ') === '/Query /TN PiggerCode\\piggercode-daemon.default /XML') {
           return {
             status: 0,
             stdout: `
               <Task>
                 <Actions>
                   <Exec>
-                    <Arguments>-NoProfile -ExecutionPolicy Bypass -File "C:\\Users\\tester\\.happier\\services\\happier-daemon.default.ps1"</Arguments>
+                    <Arguments>-NoProfile -ExecutionPolicy Bypass -File "C:\\Users\\tester\\.piggercode\\services\\piggercode-daemon.default.ps1"</Arguments>
                   </Exec>
                 </Actions>
               </Task>

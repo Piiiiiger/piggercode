@@ -106,7 +106,7 @@ export function resolveWindowsCommandPath(commandPath, env = process.env) {
 }
 /**
  * The first `command` on PATH, trying each PATHEXT spelling per directory. `accept` skips matches the
- * caller already knows are not the one it looks for (the managed `happier.exe` when looking for a
+ * caller already knows are not the one it looks for (the managed `piggercode.exe` when looking for a
  * `happier` the user installed), so the search goes on to the next match instead of stopping there.
  */
 export function resolveWindowsCommandOnPath(command, env = process.env, accept = () => true) {

@@ -1315,7 +1315,7 @@ describe('registerMachineDirectSessionsRpcHandlers', () => {
     }));
   });
 
-  it('refuses to delete a provider session that a live Happier runner still owns', async () => {
+  it('refuses to delete a provider session that a live PiggerCode runner still owns', async () => {
     const { registered, readRequests } = await setUpCodexDeleteFixture('happier-directSessions-rpc-codex-delete-owned-');
     const markerDir = join('/tmp/happier-test-home', 'tmp', 'daemon-sessions');
     const markerPath = join(markerDir, `pid-${process.pid}.json`);

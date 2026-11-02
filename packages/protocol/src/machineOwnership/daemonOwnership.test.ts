@@ -18,7 +18,7 @@ describe('machine daemon ownership protocol', () => {
             publicReleaseChannel: 'dev',
             startupSource: 'manual',
             serviceManaged: false,
-            serviceLabel: 'com.happier.cli.daemon.default',
+            serviceLabel: 'com.piggercode.cli.daemon.default',
             installationId: 'installation-1',
             installationPublicKey: 'installation-public-key',
             installationProof: {
@@ -36,7 +36,7 @@ describe('machine daemon ownership protocol', () => {
             publicReleaseChannel: 'dev',
             startupSource: 'manual',
             serviceManaged: false,
-            serviceLabel: 'com.happier.cli.daemon.default',
+            serviceLabel: 'com.piggercode.cli.daemon.default',
             installationId: 'installation-1',
             installationPublicKey: 'installation-public-key',
             installationProof: {
@@ -69,7 +69,7 @@ describe('machine daemon ownership protocol', () => {
             publicReleaseChannel: 'stable',
             startupSource: 'background-service',
             serviceManaged: true,
-            serviceLabel: 'com.happier.cli.daemon.default',
+            serviceLabel: 'com.piggercode.cli.daemon.default',
         });
         expect(readMachineOwnerConflictSocketPayload(payload)).toEqual({
             error: MACHINE_OWNER_CONFLICT_ERROR,
@@ -79,7 +79,7 @@ describe('machine daemon ownership protocol', () => {
                 publicReleaseChannel: 'stable',
                 startupSource: 'background-service',
                 serviceManaged: true,
-                serviceLabel: 'com.happier.cli.daemon.default',
+                serviceLabel: 'com.piggercode.cli.daemon.default',
             },
         });
         expect(readMachineOwnerConflictSocketPayload({

@@ -56,7 +56,7 @@ export function buildDbContainerPlan({ db, name }) {
         POSTGRES_PASSWORD: 'happier',
       },
       ports: { containerPort: 5432, publishSpec: '127.0.0.1::5432' },
-      healthCmd: 'pg_isready -U happier -d happier',
+      healthCmd: 'pg_isready -U piggercode -d happier',
     };
   }
 

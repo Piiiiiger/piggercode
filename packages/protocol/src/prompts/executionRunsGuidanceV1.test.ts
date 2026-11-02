@@ -7,9 +7,9 @@ describe('executionRunsGuidanceV1', () => {
     const result = buildExecutionRunsGuidanceBlockV1({ entries: [], maxChars: 0 });
 
     expect(result.text).toContain("current backend's native subagent facility by default");
-    expect(result.text).toContain('Happier subagent');
-    expect(result.text).toContain('Happier delegation run');
-    expect(result.text).toContain('Happier execution run');
+    expect(result.text).toContain('PiggerCode subagent');
+    expect(result.text).toContain('PiggerCode delegation run');
+    expect(result.text).toContain('PiggerCode execution run');
     expect(result.text).toContain('omit `sessionId`');
     expect(result.text).toContain('intentional explicit cross-session target');
     expect(result.text).toContain('Do not poll `execution.run.get` or `execution.run.list`');
@@ -20,12 +20,12 @@ describe('executionRunsGuidanceV1', () => {
 
   it('keeps the fixed guidance when the custom-rule budget is too small', () => {
     const result = buildExecutionRunsGuidanceBlockV1({
-      entries: [{ id: '1', description: 'Use a Happier review run' }],
+      entries: [{ id: '1', description: 'Use a PiggerCode review run' }],
       maxChars: 1,
     });
 
     expect(result.text).toContain("current backend's native subagent facility by default");
-    expect(result.text).not.toContain('Use a Happier review run');
+    expect(result.text).not.toContain('Use a PiggerCode review run');
     expect(result.includedCount).toBe(0);
     expect(result.remainingCount).toBe(1);
   });
@@ -129,7 +129,7 @@ describe('executionRunsGuidanceV1', () => {
     expect(result.text).toContain('- mcp.execution.list');
   });
 
-  it('uses discovery-first Happier-managed run guidance when rules are present', () => {
+  it('uses discovery-first PiggerCode-managed run guidance when rules are present', () => {
     const result = buildExecutionRunsGuidanceBlockV1({
       entries: [
         {
@@ -141,7 +141,7 @@ describe('executionRunsGuidanceV1', () => {
       maxChars: 10_000,
     });
 
-    expect(result.text).toContain('Happier-Managed Runs');
+    expect(result.text).toContain('PiggerCode-Managed Runs');
     expect(result.text).toContain('Custom Execution-Run Rules');
     expect(result.text).toContain('action_spec_search');
     expect(result.text).toContain('action_spec_get');

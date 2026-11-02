@@ -53,7 +53,7 @@ describe('Herdr managed launch', () => {
     await expect(launch.discard()).resolves.toBeUndefined();
   });
 
-  it('reuses the isolated terminal launch runner so Herdr native hooks cannot override Happier resume', async () => {
+  it('reuses the isolated terminal launch runner so Herdr native hooks cannot override PiggerCode resume', async () => {
     const launch = await createHerdrLaunchSpec({
       workingDirectory: '/tmp',
       spawnArgv: ['/managed/claude', '--model', 'sonnet'],

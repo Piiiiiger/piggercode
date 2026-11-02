@@ -15,7 +15,7 @@ export async function cmdSessionArchive(
   const json = wantsJson(argv);
   const [idOrPrefix = ''] = readCommandPositionals(argv, { startIndex: 1 });
   if (!idOrPrefix) {
-    throw new Error('Usage: happier session archive <session-id-or-prefix> [--json]');
+    throw new Error('Usage: piggercode session archive <session-id-or-prefix> [--json]');
   }
 
   const credentials = await deps.readCredentialsFn();
@@ -24,7 +24,7 @@ export async function cmdSessionArchive(
       await printJsonEnvelope({ ok: false, kind: 'session_archive', error: { code: 'not_authenticated' } });
       return;
     }
-    console.error(fail(`Not signed in. Run ${cmd('happier auth login')} first.`));
+    console.error(fail(`Not signed in. Run ${cmd('piggercode auth login')} first.`));
     process.exit(1);
   }
 

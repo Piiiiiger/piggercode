@@ -10,7 +10,7 @@ function trackedRunner(overrides: Partial<TrackedSession> = {}): TrackedSession 
     happySessionId: 'sess-1',
     startedBy: 'daemon',
     processCommand:
-      'node /Users/alice/.happier/cli-dev/versions/0.2.10/package-dist/index.mjs codex --happy-starting-mode remote --started-by daemon',
+      'node /Users/alice/.piggercode/cli-dev/versions/0.2.10/package-dist/index.mjs codex --happy-starting-mode remote --started-by daemon',
     processCommandHash: 'command-hash',
     vendorResumeId: undefined,
     spawnOptions: {

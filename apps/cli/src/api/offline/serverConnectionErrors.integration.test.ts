@@ -308,7 +308,7 @@ describe('startOfflineReconnection', () => {
 
             expect(attemptCount).toBe(1);
             expect(onNotify).toHaveBeenCalledWith(
-                '❌ Authentication failed. Please re-authenticate with `happier auth`.'
+                '❌ Authentication failed. Please re-authenticate with `piggercode auth`.'
             );
             expect(onReconnected).not.toHaveBeenCalled();
 
@@ -333,7 +333,7 @@ describe('startOfflineReconnection', () => {
             });
 
             expect(onNotify).toHaveBeenCalledWith(
-                '❌ Authentication failed. Please re-authenticate with `happier auth`.'
+                '❌ Authentication failed. Please re-authenticate with `piggercode auth`.'
             );
             await Promise.resolve();
             expect(attemptCount).toBe(1);
@@ -427,7 +427,7 @@ describe('startOfflineReconnection', () => {
             });
 
             expect(onNotify).toHaveBeenCalledWith(
-                '❌ Authentication failed. Please re-authenticate with `happier auth`.'
+                '❌ Authentication failed. Please re-authenticate with `piggercode auth`.'
             );
 
             handle.cancel();
@@ -578,7 +578,7 @@ describe('printOfflineWarning', () => {
 
         // New unified format via connectionState.fail()
         expect(consoleSpy).toHaveBeenCalledWith(
-            expect.stringContaining('⚠️  Happier server unreachable, offline mode with auto-reconnect enabled')
+            expect.stringContaining('⚠️  PiggerCode server unreachable, offline mode with auto-reconnect enabled')
         );
         expect(consoleSpy).toHaveBeenCalledWith(
             expect.stringContaining('Server connection failed')

@@ -29,7 +29,7 @@ describe('machines ops server-scoped routing', () => {
                         host: 'test-machine',
                         platform: 'darwin',
                         happyCliVersion: '0.2.0',
-                        happyHomeDir: '/Users/alice/.happier',
+                        happyHomeDir: '/Users/alice/.piggercode',
                         homeDir: '/Users/alice',
                     },
                     metadataVersion: 1,

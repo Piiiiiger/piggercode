@@ -18,10 +18,10 @@ function makeCurrentCli(overrides: Partial<CurrentCliInfo> = {}): CurrentCliInfo
     releaseChannel: 'dev',
     ringId: 'publicdev',
     version: '0.12.3',
-    binaryPath: '/Users/me/.happier/cli-dev/current/bin/happier',
+    binaryPath: '/Users/me/.piggercode/cli-dev/current/bin/happier',
     shim: 'hdev',
     invoker: 'hdev',
-    pathWinnerShim: 'happier',
+    pathWinnerShim: 'piggercode',
     pathWinnerResolvesToThisBinary: true,
     ...overrides,
   };
@@ -39,8 +39,8 @@ function makeAutomaticStartupEntry(overrides: Partial<AutomaticStartupEntry> = {
     running: true,
     configuredCliVersion: '0.12.3',
     runningCliVersion: '0.12.3',
-    path: '/Users/me/Library/LaunchAgents/com.happier.cli.daemon.default.plist',
-    happierHomeDir: '/Users/me/.happier',
+    path: '/Users/me/Library/LaunchAgents/com.piggercode.cli.daemon.default.plist',
+    happierHomeDir: '/Users/me/.piggercode',
     isForeignHome: false,
     installedDefinitionMatchesExpected: true,
     isLegacyChannelScoped: false,
@@ -212,7 +212,7 @@ describe('buildDoctorRepairReport — --server <id> scoping', async () => {
       healthy: true,
       relayUrl: 'http://127.0.0.1:52753',
       port: 52753,
-      installRoot: '/Users/me/.happier/relay-host-dev',
+      installRoot: '/Users/me/.piggercode/relay-host-dev',
     };
     const otherRelay: LocalRelayEntry = {
       releaseChannel: 'stable',
@@ -224,7 +224,7 @@ describe('buildDoctorRepairReport — --server <id> scoping', async () => {
       healthy: false,
       relayUrl: 'http://127.0.0.1:3005',
       port: 3005,
-      installRoot: '/Users/me/.happier/relay-host-stable',
+      installRoot: '/Users/me/.piggercode/relay-host-stable',
     };
     const targetAuth: AuthSignalsForProfile = {
       serverId: 'target-id',
@@ -277,7 +277,7 @@ describe('buildDoctorRepairReport — --server <id> scoping', async () => {
 describe('buildDoctorRepairReport — foreign home', async () => {
   it('case #12 — foreign-home manual warning short-circuits all findings', async () => {
     const plan = makePlan({
-      manualWarnings: ['Detected default-following background services from another Happier home (/opt/old).'],
+      manualWarnings: ['Detected default-following background services from another PiggerCode home (/opt/old).'],
     });
     const entries = [makeAutomaticStartupEntry({ isForeignHome: true, happierHomeDir: '/opt/old' })];
     const report = await basic(plan, entries);
@@ -323,7 +323,7 @@ describe('buildDoctorRepairReport — lane mismatch', async () => {
       healthy: false,
       relayUrl: 'http://127.0.0.1:3005',
       port: 3005,
-      installRoot: '/Users/me/.happier/relay-host-dev',
+      installRoot: '/Users/me/.piggercode/relay-host-dev',
     };
     const report = await buildDoctorRepairReport({
       currentCli: makeCurrentCli({ version: '0.2.6-dev.125.1' }),
@@ -616,7 +616,7 @@ describe('buildDoctorRepairReport — local relay', async () => {
       healthy: true,
       relayUrl: 'http://localhost:41870',
       port: 41870,
-      installRoot: '/Users/me/.happier/relay-host-stable',
+      installRoot: '/Users/me/.piggercode/relay-host-stable',
     };
     const report = await buildDoctorRepairReport({
       currentCli: makeCurrentCli(),
@@ -649,7 +649,7 @@ describe('buildDoctorRepairReport — local relay', async () => {
       healthy: true,
       relayUrl: 'http://localhost:41872',
       port: 41872,
-      installRoot: '/Users/me/.happier/relay-host-dev',
+      installRoot: '/Users/me/.piggercode/relay-host-dev',
     };
     const report = await buildDoctorRepairReport({
       currentCli: makeCurrentCli({ version: '0.12.3' }),
@@ -681,7 +681,7 @@ describe('buildDoctorRepairReport — local relay', async () => {
       healthy: true,
       relayUrl: 'http://localhost:41872',
       port: 41872,
-      installRoot: '/Users/me/.happier/relay-host-dev',
+      installRoot: '/Users/me/.piggercode/relay-host-dev',
     };
     const report = await buildDoctorRepairReport({
       currentCli: makeCurrentCli({ version: '0.12.3' }),
